@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('BarbrDoApp')
   .controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account) {
     $scope.profile = $rootScope.currentUser;
 

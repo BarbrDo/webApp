@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('BarbrDoApp')
   .controller('ForgotCtrl', function($scope, Account) {
     $scope.forgotPassword = function() {
       Account.forgotPassword($scope.user)

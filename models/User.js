@@ -11,24 +11,71 @@ var schemaOptions = {
 
 var userSchema = new mongoose.Schema({
   name: String,
-  email: { type: String, unique: true},
+  salutation: String,
+  email: {
+    type: String,
+    unique: true
+  },
   password: String,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  phone: Number,
   gender: String,
   location: String,
-  website: String,
   picture: String,
   facebook: String,
-  twitter: String,
   google: String,
-  github: String,
-  vk: String
+  device_type: String,
+  device_token: String,
+  last_login: Date,
+  is_email_marketing: Boolean,
+  info_source: String,
+  payment_methods: [{
+    method: String,
+    card_type: String,
+    is_primary: Boolean,
+    card_id: String,
+    first_name: String,
+    last_name: String,
+    card_no: Number,
+    status: Boolean,
+    created: {
+      type: Date,
+      default: Date.now()
+    },
+    modified: {
+      type: Date,
+      default: Date.now()
+    }
+  }]
+  typeOfUser: {
+    type: String,
+    required: [true, 'User type is required.'],
+    enum: ['customer', 'barber', 'barberShop']
+  },
+  created: {
+    type: Date,
+    default: Date.now()
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false
+  },
+  is_verified: {
+    type: Boolean,
+    default: false
+  },
+  isActive: {
+    type: Boolean,
+    default: false
+  }
 }, schemaOptions);
 
 userSchema.pre('save', function(next) {
   var user = this;
-  if (!user.isModified('password')) { return next(); }
+  if (!user.isModified('password')) {
+    return next();
+  }
   bcrypt.genSalt(10, function(err, salt) {
     bcrypt.hash(user.password, salt, null, function(err, hash) {
       user.password = hash;
@@ -59,6 +106,6 @@ userSchema.options.toJSON = {
   }
 };
 
-var User = mongoose.model('User', userSchema);
+var User = mongoose.model('users', userSchema);
 
 module.exports = User;

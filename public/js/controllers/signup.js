@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('BarbrDoApp')
   .controller('SignupCtrl', function($scope, $rootScope, $location, $window, $auth) {
     $scope.signup = function() {
       $auth.signup($scope.user)

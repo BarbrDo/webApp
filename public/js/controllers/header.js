@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('BarbrDoApp')
   .controller('HeaderCtrl', function($scope, $location, $window, $auth) {
     $scope.isActive = function (viewLocation) {
       return viewLocation === $location.path();

@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('BarbrDoApp')
   .controller('ContactCtrl', function($scope, Contact) {
     $scope.sendContactForm = function() {
       Contact.send($scope.contact)

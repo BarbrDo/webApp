@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('BarbrDoApp')
   .controller('ResetCtrl', function($scope, Account) {
     $scope.resetPassword = function() {
       Account.resetPassword($scope.user)

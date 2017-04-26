@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('BarbrDoApp')
   .factory('Contact', function($http) {
     return {
       send: function(data) {

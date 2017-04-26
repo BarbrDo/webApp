@@ -1,4 +1,4 @@
-angular.module('MyApp', ['ngRoute', 'satellizer'])
+angular.module('BarbrDoApp', ['ngRoute', 'satellizer'])
   .config(function($routeProvider, $locationProvider, $authProvider) {
     $locationProvider.html5Mode(true);
 

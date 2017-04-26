@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('BarbrDoApp')
   .factory('Account', function($http) {
     return {
       updateProfile: function(data) {

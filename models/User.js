@@ -27,27 +27,6 @@ var userSchema = new mongoose.Schema({
   google: String,
   device_type: String,
   device_token: String,
-  last_login: Date,
-  is_email_marketing: Boolean,
-  info_source: String,
-  payment_methods: [{
-    method: String,
-    card_type: String,
-    is_primary: Boolean,
-    card_id: String,
-    first_name: String,
-    last_name: String,
-    card_no: Number,
-    status: Boolean,
-    created: {
-      type: Date,
-      default: Date.now()
-    },
-    modified: {
-      type: Date,
-      default: Date.now()
-    }
-  }]
   typeOfUser: {
     type: String,
     required: [true, 'User type is required.'],

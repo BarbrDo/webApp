@@ -1,5 +1,11 @@
 var mongoose = require('mongoose');
-
+var Schema = mongoose.Schema;
+var schemaOptions = {
+  timestamps: true,
+  toJSON: {
+    virtuals: true
+  }
+};
 var chairRequestSchema = new mongoose.Schema({
   shop_id: {
     type:Schema.Types.ObjectId,

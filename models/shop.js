@@ -1,5 +1,11 @@
 var mongoose = require('mongoose');
-
+var Schema = mongoose.Schema;
+var schemaOptions = {
+  timestamps: true,
+  toJSON: {
+    virtuals: true
+  }
+};
 var shopSchema = new mongoose.Schema({
   user_id: {
     type: Schema.Types.ObjectId,
@@ -51,14 +57,17 @@ var shopSchema = new mongoose.Schema({
     comments: String
   }],
   chairs: [{
-      name: String,
-      chair_image: String,
-      shop_fair_percentage: Number,
-      barber_fair_percentage: Number,
-      availability: {
-        type: String,
-        enum: ["booked", "available"]
-      }
+    name: String,
+    // chair_image: String,
+    shop_fair_percentage: Number,
+    barber_fair_percentage: Number,
+    availability: {
+      type: String,
+      enum: ["booked", "available"]
+    },
+    isActive:{
+      type:Boolean,
+      default:true
     },
     creation_date: {
       type: Date,
@@ -68,7 +77,7 @@ var shopSchema = new mongoose.Schema({
       type: Date,
       default: Date.now()
     }
-  ],
+  }],
   picture: String,
   gallery: [{
     name: {
@@ -82,6 +91,6 @@ var shopSchema = new mongoose.Schema({
 }, schemaOptions);
 
 
-var Shop = mongoose.model('shop', userSchema);
+var Shop = mongoose.model('shop', shopSchema);
 
 module.exports = Shop;

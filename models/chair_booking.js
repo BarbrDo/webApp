@@ -1,6 +1,12 @@
 var mongoose = require('mongoose');
-
-var chairRequestSchema = new mongoose.Schema({
+var Schema = mongoose.Schema;
+var schemaOptions = {
+  timestamps: true,
+  toJSON: {
+    virtuals: true
+  }
+};
+var chairBookingSchema = new mongoose.Schema({
   shop_id: {
     type:Schema.Types.ObjectId,
     ref:'users'
@@ -30,6 +36,6 @@ var chairRequestSchema = new mongoose.Schema({
    }
 }, schemaOptions);
 
-var chairRequest = mongoose.model('chair_requests', chairRequestSchema);
+var chairBooking = mongoose.model('chair_requests', chairBookingSchema);
 
-module.exports = chairRequest;
+module.exports = chairBooking;

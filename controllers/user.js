@@ -6,7 +6,10 @@ var moment = require('moment');
 var request = require('request');
 var qs = require('querystring');
 var User = require('../models/User');
+var Shop = require('../models/shop');
+var objectID = require('mongodb').ObjectID;
 var constantObj = require('./../constants.js');
+
 function generateToken(user) {
   var payload = {
     iss: 'my.domain.com',
@@ -56,14 +59,14 @@ exports.loginPost = function(req, res, next) {
           'Double-check your email address and try again.'
       });
     }
-    console.log("user",user);
+    console.log("user", user);
     user.comparePassword(req.body.password, function(err, isMatch) {
       if (!isMatch) {
         return res.status(401).send({
           msg: 'Invalid email or password'
         });
       }
-      res.send({ 
+      res.send({
         token: generateToken(user),
         user: user.toJSON()
       });
@@ -79,6 +82,9 @@ exports.signupPost = function(req, res, next) {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('typeOfUser', 'Type of user cannot be blank').notEmpty();
+  if (req.body.typeOfUser == 'barberShop') {
+    req.assert('license_number', 'License_number is required').notEmpty().isInt();
+  }
   req.assert('password', 'Password must be at least 6 characters long').len(6);
   req.sanitize('email').normalizeEmail({
     remove_dots: false
@@ -98,27 +104,43 @@ exports.signupPost = function(req, res, next) {
         msg: 'The email address you have entered is already associated with another account.'
       });
     }
-
     var saveData = req.body;
-    if ((req.files) && (req.files.length > 0)) {
-      saveData.picture = req.files[0].filename;
-    } else {
-      saveData.picture = "";
+    if (req.headers.device_type) {
+      saveData.device_type = req.headers.device_type;
     }
-        
+    if (req.headers.device_token) {
+      saveData.device_token = req.headers.device_token;
+    }
 
-    User(saveData).save(function(err,data) {
-      if(err){
-          return res.status(400).send({
+    User(saveData).save(function(err, data) {
+      if (err) {
+        return res.status(400).send({
           msg: err.errors.typeOfUser.message
         })
-      }
-      else{
+      } else {
         console.log(data);
-        res.send({
-        token: generateToken(data),
-        user: data
-      });
+        if (req.body.typeOfUser == 'barberShop') {
+          var saveDataForShop = {};
+          saveDataForShop.user_id = data._id
+          saveDataForShop.license_number = req.body.license_number;
+          Shop(saveDataForShop).save(function(errSaveShop, shopData) {
+            if (errSaveShop) {
+              return res.status(400).send({
+                msg: constantObj.messages.errorInSave
+              })
+            } else {
+              res.send({
+                token: generateToken(shopData),
+                user: shopData
+              });
+            }
+          })
+        } else {
+          res.send({
+            token: generateToken(data),
+            user: data
+          });
+        }
       }
     });
   });
@@ -130,7 +152,7 @@ exports.signupPost = function(req, res, next) {
  * Update profile information OR change password.
  */
 exports.accountPut = function(req, res, next) {
-  console.log("accountPut running",req.body);
+  console.log("accountPut running", req.body);
   if ('password' in req.body) {
     req.assert('password', 'Password must be at least 4 characters long').len(6);
     req.assert('confirm', 'Passwords must match').equals(req.body.password);
@@ -148,7 +170,7 @@ exports.accountPut = function(req, res, next) {
     return res.status(400).send(errors);
   }
   console.log(req.user);
-  return false;
+
   User.findById(req.user.id, function(err, user) {
     if ('password' in req.body) {
       user.password = req.body.password;
@@ -547,3 +569,91 @@ exports.authGoogle = function(req, res) {
 exports.authGoogleCallback = function(req, res) {
   res.send('Loading...');
 };
+
+exports.addChair = function(req, res) {
+  req.assert("_id", "_id is required")
+  var validateId = objectID.isValid(req.body._id)
+  if (validateId) {
+    Shop.findOne({
+      _id: req.body._id
+    }, function(err, data) {
+      if (err) {
+        res.status(400).send({
+          msg: 'Error in finding shop.'
+        });
+      } else {
+        if (data) {
+          var totalNumberOfChairs = data.chairs.length;
+          totalNumberOfChairs = totalNumberOfChairs + 1;
+          var obj = {};
+          var saveChair = [];
+          obj.name = 'Chair' + " " + totalNumberOfChairs
+          console.log(obj);
+          saveChair.push(obj);
+          var saveChairData = {};
+          saveChairData.chairs = saveChair;
+          console.log(saveChairData);
+          Shop.update({
+            _id: req.body._id
+          }, {
+            $push: {
+              chairs: {
+                $each: saveChairData.chairs
+              }
+            }
+          }, function(errorInSaveChair, success) {
+            if (errorInSaveChair) {
+              res.status(400).send({
+                msg: 'Error in finding shop.'
+              });
+            } else {
+              console.log('success', success);
+              res.status(200).send({
+                msg: 'Chair successfully added.'
+              });
+            }
+          })
+        } else {
+          res.status(400).send({
+            msg: 'This shop is not present.'
+          });
+        }
+      }
+    })
+  } else {
+    res.status(400).send({
+      msg: '_id is not valid.'
+    });
+  }
+}
+
+exports.removeChair = function(req, res) {
+  req.assert("_id", "_id is required")
+  req.assert("chair_id", "Chair objectID is required");
+  var validateId = objectID.isValid(req.body._id);
+  var validateChairId = objectID.isValid(req.body.chair_id)
+  if (validateId && validateChairId) {
+    Shop.update({
+      _id: req.body._id,
+      "chairs._id":req.body.chair_id
+    }, {
+      $set: {"chairs.$.isActive":false}
+    }).exec(function(errInDelete, resultInDelete) {
+      if (errInDelete) {
+        console.log("Error in deleteing images", errInDelete)
+        res.status(400).send({
+          msg: 'Error in deleting chair.'
+        });
+      } else {
+        console.log("Success images deleted", resultInDelete);
+          res.status(200).send({
+            msg: 'Chair successfully deleted.'
+          });
+      }
+    })
+  } else {
+    res.status(400).send({
+      msg: 'Please pass correct fields.'
+    });
+  }
+}

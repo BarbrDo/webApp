@@ -8,14 +8,16 @@ const messages = {
 	//change password
 	"errorSendingForgotPasswordEmail": "Username doesn't  exist in database",
 
-
 	//user message
 	"userSuccess": "User saved successfully",
 	"userStatusUpdateFailure" : "Error occured while updating Status",
 	"userStatusUpdateSuccess" : "User update successfully",
 	"userDeleteFailure": "Error occured while deleting the user",
 	"userDeleteSuccess": "User(s) deleted successfully",
-	"userUpdateSuccess": "User updated successfully"
+	"userUpdateSuccess": "User updated successfully",
+
+	// Error Messages for shop
+	"errorInSave":"Error occured while saving shop info"
 }
 
 var obj = {messages:messages};

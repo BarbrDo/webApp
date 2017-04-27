@@ -235,7 +235,6 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
           var $auth = {};
 
           $auth.login = function(user, opts) {
-            console.log('-----',local.login(user, opts))
             return local.login(user, opts);
           };
 

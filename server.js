@@ -11,6 +11,9 @@ var jwt = require('jsonwebtoken');
 var moment = require('moment');
 var request = require('request');
 var multer  = require('multer');
+var objectID = require('mongodb').ObjectID
+
+
   var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './public/uploadedFiles/')
@@ -70,11 +73,13 @@ app.use(function(req, res, next) {
 });
 
 app.post('/contact', contactController.contactPost);
-app.post('/account', userController.ensureAuthenticated, userController.accountPut);
-app.delete('/account', userController.ensureAuthenticated, userController.accountDelete);
-app.post('/signup', upload.any(), userController.signupPost);
-app.post('/login', userController.loginPost);
-app.post('/forgot', userController.forgotPost);
+app.post('/api/v1/account', userController.ensureAuthenticated, userController.accountPut);
+app.delete('/api/v1/account', userController.ensureAuthenticated, userController.accountDelete);
+app.post('/api/v1/addChair',userController.ensureAuthenticated, userController.addChair)
+app.post('/api/v1/removeChair',userController.ensureAuthenticated, userController.removeChair);
+app.post('/api/v1/signup', userController.signupPost);
+app.post('/api/v1/login', userController.loginPost);
+app.post('/api/v1/forgot', userController.forgotPost);
 app.post('/reset/:token', userController.resetPost);
 app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);
 app.post('/auth/facebook', userController.authFacebook);

@@ -1,5 +1,10 @@
 var mongoose = require('mongoose');
-
+var schemaOptions = {
+  timestamps: true,
+  toJSON: {
+    virtuals: true
+  }
+};
 var userSchema = new mongoose.Schema({
   user_id:{
     type:Schema.Types.ObjectId,

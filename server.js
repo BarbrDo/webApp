@@ -74,7 +74,6 @@ app.post('/account', userController.ensureAuthenticated, userController.accountP
 app.delete('/account', userController.ensureAuthenticated, userController.accountDelete);
 app.post('/signup', upload.any(), userController.signupPost);
 app.post('/login', userController.loginPost);
-// app.post('/updateProfile',userController.updatUserProfile)
 app.post('/forgot', userController.forgotPost);
 app.post('/reset/:token', userController.resetPost);
 app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);

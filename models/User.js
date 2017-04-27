@@ -1,17 +1,16 @@
 var crypto = require('crypto');
 var bcrypt = require('bcrypt-nodejs');
 var mongoose = require('mongoose');
-
+var Schema = mongoose.Schema;
 var schemaOptions = {
   timestamps: true,
   toJSON: {
     virtuals: true
   }
 };
-
 var userSchema = new mongoose.Schema({
-  name: String,
-  salutation: String,
+  first_name: String,
+  last_name: String,
   email: {
     type: String,
     unique: true
@@ -19,14 +18,64 @@ var userSchema = new mongoose.Schema({
   password: String,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  salutation: String,
   phone: Number,
   gender: String,
-  location: String,
   picture: String,
   facebook: String,
   google: String,
   device_type: String,
   device_token: String,
+  last_login: Date,
+  is_email_marketing: Boolean,
+  info_source: String,
+  payment_methods: [{
+    method: String,
+    card_type: String,
+    is_primary: Boolean,
+    card_id: String,
+    first_name: String,
+    last_name: String,
+    card_no: Number,
+    status: Boolean,
+    created: {
+      type: Date,
+      default: Date.now()
+    },
+    modified: {
+      type: Date,
+      default: Date.now()
+    }
+  }],
+  ratings: [{
+    rated_by: {
+      type:Schema.Types.ObjectId,
+      ref:'users' // ratings from barber
+    },
+    score: Number,
+    comments: String,
+  }],
+  bookings: [{
+    shop_id: {
+      type: Schema.Types.ObjectId,
+      ref: 'users'
+    },
+    shop_name: String,
+    barber_id: {
+      type: Schema.Types.ObjectId,
+      ref: 'users'
+    },
+    barber_name: String,
+    items: Array,
+    booking_date: Date,
+    appointment_date: Date,
+    appointment_status: String,
+    amount: Number,
+    currency_code: String,
+    payment_method: String,
+    card_lastfourdigit: Number,
+    payment_status: String
+  }],
   typeOfUser: {
     type: String,
     required: [true, 'User type is required.'],

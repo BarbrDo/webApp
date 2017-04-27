@@ -1,69 +1,86 @@
-var crypto = require('crypto');
-var bcrypt = require('bcrypt-nodejs');
 var mongoose = require('mongoose');
 
-var schemaOptions = {
-  timestamps: true,
-  toJSON: {
-    virtuals: true
-  }
-};
-
 var shopSchema = new mongoose.Schema({
-  shop_id : {
-     type:Schema.Types.ObjectId,
-     ref:'users'
+  user_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'users'
   },
+  name: String,
   address: String,
+  city: String,
+  state: String,
+  zip: String,
   latLong: {
     type: [Number],
     index: '2dsphere'
   },
-  picture: String,
-  chairs:[{
-     name:String,
-     chair_image:String,
-     shop_fair_percentage:Number,
-     barber_fair_percentage:Number 
+  phone: Number,
+  license_number: Number,
+  create_date: {
+    type: Date,
+    default: Date.now()
+  },
+  modified_date: {
+    type: Date,
+    default: Date.now()
+  },
+  payment_methods: [{
+    method: String,
+    card_type: String,
+    is_primary: Boolean,
+    card_id: String,
+    first_name: String,
+    last_name: String,
+    card_no: Number,
+    status: Boolean,
+    created: {
+      type: Date,
+      default: Date.now()
+    },
+    modified: {
+      type: Date,
+      default: Date.now()
+    }
+  }],
+  ratings: [{
+    rated_by: {
+      type: Schema.Types.ObjectId,
+      ref: 'users'
+    },
+    score: Number,
+    comments: String
+  }],
+  chairs: [{
+      name: String,
+      chair_image: String,
+      shop_fair_percentage: Number,
+      barber_fair_percentage: Number,
+      availability: {
+        type: String,
+        enum: ["booked", "available"]
+      }
     },
     creation_date: {
       type: Date,
       default: Date.now()
-    }]
+    },
+    modified_date: {
+      type: Date,
+      default: Date.now()
+    }
+  ],
+  picture: String,
+  gallery: [{
+    name: {
+      type: String
+    },
+    creationDate: {
+      type: Date,
+      default: Date.now()
+    }
+  }]
 }, schemaOptions);
 
-shopSchema.pre('save', function(next) {
-  var user = this;
-  if (!user.isModified('password')) { return next(); }
-  bcrypt.genSalt(10, function(err, salt) {
-    bcrypt.hash(user.password, salt, null, function(err, hash) {
-      user.password = hash;
-      next();
-    });
-  });
-});
-
-shopSchema.methods.comparePassword = function(password, cb) {
-  bcrypt.compare(password, this.password, function(err, isMatch) {
-    cb(err, isMatch);
-  });
-};
-
-shopSchema.virtual('gravatar').get(function() {
-  if (!this.get('email')) {
-    return 'https://gravatar.com/avatar/?s=200&d=retro';
-  }
-  var md5 = crypto.createHash('md5').update(this.get('email')).digest('hex');
-  return 'https://gravatar.com/avatar/' + md5 + '?s=200&d=retro';
-});
-
-shopSchema.options.toJSON = {
-  transform: function(doc, ret, options) {
-    delete ret.password;
-    delete ret.passwordResetToken;
-    delete ret.passwordResetExpires;
-  }
-};
 
 var Shop = mongoose.model('shop', userSchema);
 

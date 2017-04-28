@@ -13,13 +13,15 @@ var userSchema = new mongoose.Schema({
   last_name: String,
   email: {
     type: String,
-    unique: true
+    unique: true,
+    require:true,
   },
   password: String,
   passwordResetToken: String,
   passwordResetExpires: Date,
   salutation: String,
-  phone: Number,
+  mobile_number: Number,
+  randomString:String,
   gender: String,
   picture: String,
   facebook: String,
@@ -29,6 +31,7 @@ var userSchema = new mongoose.Schema({
   last_login: Date,
   is_email_marketing: Boolean,
   info_source: String,
+  barber_license_number: Number,
   payment_methods: [{
     method: String,
     card_type: String,
@@ -76,10 +79,9 @@ var userSchema = new mongoose.Schema({
     card_lastfourdigit: Number,
     payment_status: String
   }],
-  typeOfUser: {
-    type: String,
-    required: [true, 'User type is required.'],
-    enum: ['customer', 'barber', 'barberShop']
+  user_type: {
+     type:Schema.Types.ObjectId,
+     ref:'user_types'
   },
   created: {
     type: Date,

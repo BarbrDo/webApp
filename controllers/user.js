@@ -9,6 +9,8 @@ var User = require('../models/User');
 var Shop = require('../models/shop');
 var objectID = require('mongodb').ObjectID;
 var constantObj = require('./../constants.js');
+let userTypes = require('../models/user_type');
+let commonObj = require('../common/common');
 
 function generateToken(user) {
   var payload = {
@@ -52,7 +54,7 @@ exports.loginPost = function(req, res, next) {
 
   User.findOne({
     email: req.body.email
-  }, function(err, user) {
+  }).populate('user_type').exec(function(err, user) {
     if (!user) {
       return res.status(401).send({
         msg: 'The email address ' + req.body.email + ' is not associated with any account. ' +
@@ -78,12 +80,17 @@ exports.loginPost = function(req, res, next) {
  * POST /signup
  */
 exports.signupPost = function(req, res, next) {
-  req.assert('name', 'Name cannot be blank').notEmpty();
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('typeOfUser', 'Type of user cannot be blank').notEmpty();
-  if (req.body.typeOfUser == 'barberShop') {
-    req.assert('license_number', 'License_number is required').notEmpty().isInt();
+  req.assert('user_type', 'Usertype cannot be blank').notEmpty();
+  req.assert('mobile_number','Mobile number cannot be blank').notEmpty();
+
+  if (req.body.typeOfUser == 'barber shop') {
+    req.assert('license_number', 'Shop license_number is required').notEmpty().isInt();
+  }
+  if(req.body.typeOfUser == 'barber'){
+    req.assert('barber_license_number', 'Barber license_number is required').notEmpty().isInt();
   }
   req.assert('password', 'Password must be at least 6 characters long').len(6);
   req.sanitize('email').normalizeEmail({
@@ -111,7 +118,9 @@ exports.signupPost = function(req, res, next) {
     if (req.headers.device_token) {
       saveData.device_token = req.headers.device_token;
     }
-
+    let email_encrypt = commonObj.encrypt(req.body.email);
+    let generatedText = commonObj.makeid();
+    saveData.randomString = generatedText;
     User(saveData).save(function(err, data) {
       if (err) {
         return res.status(400).send({
@@ -119,7 +128,8 @@ exports.signupPost = function(req, res, next) {
         })
       } else {
         console.log(data);
-        if (req.body.typeOfUser == 'barberShop') {
+        var resetUrl = "http://" + req.headers.host + "/#/" + "admin/" + email_encrypt + "/" + generatedText;
+        if (req.body.typeOfUser == 'barber shop') {
           var saveDataForShop = {};
           saveDataForShop.user_id = data._id
           saveDataForShop.license_number = req.body.license_number;
@@ -129,16 +139,20 @@ exports.signupPost = function(req, res, next) {
                 msg: constantObj.messages.errorInSave
               })
             } else {
-              res.send({
+              res.status(200).send({
+                msg:"Activate your account on the given link.",
+                link:resetUrl,
                 token: generateToken(shopData),
-                user: shopData
+                data: shopData
               });
             }
           })
         } else {
           res.send({
+            msg:"Activate your account on the given link.",
+            link:resetUrl,
             token: generateToken(data),
-            user: data
+            data: data
           });
         }
       }
@@ -656,4 +670,21 @@ exports.removeChair = function(req, res) {
       msg: 'Please pass correct fields.'
     });
   }
+}
+
+exports.getUserType = function(req,res){
+  userTypes.find({isDeleted:false},{isDeleted:0},function(err,data){
+    if(err){
+       res.status(400).send({
+          msg: constantObj.messages.errorRetreivingData
+        });
+    }
+    else{
+      console.log(data);
+       res.status(200).send({
+          msg: constantObj.messages.successRetreivingData,
+          data:data
+        });
+    }
+  })
 }

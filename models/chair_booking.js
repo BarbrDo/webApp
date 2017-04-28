@@ -1,11 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var schemaOptions = {
-  timestamps: true,
-  toJSON: {
-    virtuals: true
-  }
-};
+
 var chairBookingSchema = new mongoose.Schema({
   shop_id: {
     type:Schema.Types.ObjectId,
@@ -34,7 +29,7 @@ var chairBookingSchema = new mongoose.Schema({
      type: Date,
     default: Date.now()
    }
-}, schemaOptions);
+});
 
 var chairBooking = mongoose.model('chair_requests', chairBookingSchema);
 

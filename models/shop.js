@@ -1,11 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var schemaOptions = {
-  timestamps: true,
-  toJSON: {
-    virtuals: true
-  }
-};
+
 var shopSchema = new mongoose.Schema({
   user_id: {
     type: Schema.Types.ObjectId,
@@ -88,7 +83,7 @@ var shopSchema = new mongoose.Schema({
       default: Date.now()
     }
   }]
-}, schemaOptions);
+});
 
 
 var Shop = mongoose.model('shop', shopSchema);

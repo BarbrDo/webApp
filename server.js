@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var expressValidator = require('express-validator');
 var dotenv = require('dotenv');
-var mongoose = require('mongoose');
+var db = require('./db.js');
 var jwt = require('jsonwebtoken');
 var moment = require('moment');
 var request = require('request');
@@ -33,16 +33,11 @@ var User = require('./models/User');
 // Controllers
 var userController = require('./controllers/user');
 var contactController = require('./controllers/contact');
+var customerController = require('./controllers/customer');
+var shopController = require('./controllers/shop');
 
 var app = express();
 
-
-mongoose.connect('mongodb://localhost/barberdo');
-// mongoose.connect('mongodb://barbrdo:barbrdo2780@127.0.0.1:27017/barbrdo',{auth:{authdb:"barbrdo"}});
-mongoose.connection.on('error', function() {
-  console.log('MongoDB Connection Error. Please make sure that MongoDB is running.');
-  process.exit(1);
-});
 app.set('port', process.env.PORT || 3000);
 app.use(compression());
 app.use(logger('dev'));
@@ -80,6 +75,8 @@ app.post('/api/v1/addChair',userController.ensureAuthenticated, userController.a
 app.post('/api/v1/removeChair',userController.ensureAuthenticated, userController.removeChair);
 app.post('/api/v1/signup', userController.signupPost);
 app.post('/api/v1/login', userController.loginPost);
+app.get('/api/v1/shops', customerController.allShops);
+app.post('/api/v1/shops',upload.any() ,shopController.editShop);
 app.get('/api/v1/getUserType', userController.getUserType);
 app.post('/api/v1/forgot', userController.forgotPost);
 app.post('/reset/:token', userController.resetPost);

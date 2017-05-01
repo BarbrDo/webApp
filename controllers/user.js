@@ -54,15 +54,23 @@ exports.loginPost = function(req, res, next) {
 
   User.findOne({
     email: req.body.email
-  }).populate('user_type').exec(function(err, user) {
+  }).exec(function(err, user) {
+
     if (!user) {
       return res.status(401).send({
         msg: 'The email address ' + req.body.email + ' is not associated with any account. ' +
           'Double-check your email address and try again.'
       });
     }
-    console.log("user", user);
-    user.comparePassword(req.body.password, function(err, isMatch) {
+
+    /*-- this condition is for check that this account is active or not---- */
+      // if(user.isActive == false && user.is_verified== false){
+      //    return res.status(401).send({
+      //     msg: 'Your account is not activated yet.'
+      //   });
+      // }
+
+      user.comparePassword(req.body.password, function(err, isMatch) {
       if (!isMatch) {
         return res.status(401).send({
           msg: 'Invalid email or password'
@@ -80,18 +88,11 @@ exports.loginPost = function(req, res, next) {
  * POST /signup
  */
 exports.signupPost = function(req, res, next) {
+  req.assert('first_name','First name cannot be blank. ');
+  req.assert('last_name','Last name cannot be blank. ');
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
-  req.assert('typeOfUser', 'Type of user cannot be blank').notEmpty();
-  req.assert('user_type', 'Usertype cannot be blank').notEmpty();
   req.assert('mobile_number','Mobile number cannot be blank').notEmpty();
-
-  if (req.body.typeOfUser == 'barber shop') {
-    req.assert('license_number', 'Shop license_number is required').notEmpty().isInt();
-  }
-  if(req.body.typeOfUser == 'barber'){
-    req.assert('barber_license_number', 'Barber license_number is required').notEmpty().isInt();
-  }
   req.assert('password', 'Password must be at least 6 characters long').len(6);
   req.sanitize('email').normalizeEmail({
     remove_dots: false
@@ -112,14 +113,20 @@ exports.signupPost = function(req, res, next) {
       });
     }
     var saveData = req.body;
+   
     if (req.headers.device_type) {
       saveData.device_type = req.headers.device_type;
     }
-    if (req.headers.device_token) {
-      saveData.device_token = req.headers.device_token;
+    if (req.headers.device_id) {
+      saveData.device_id = req.headers.device_id;
     }
+    if (req.headers.device_longitude && req.headers.device_latitude) {
+      saveData.latLong = [req.headers.device_longitude,req.headers.device_latitude];
+    }
+
     let email_encrypt = commonObj.encrypt(req.body.email);
     let generatedText = commonObj.makeid();
+    saveData.user_type ="customer" //customer id
     saveData.randomString = generatedText;
     User(saveData).save(function(err, data) {
       if (err) {
@@ -128,7 +135,7 @@ exports.signupPost = function(req, res, next) {
         })
       } else {
         console.log(data);
-        var resetUrl = "http://" + req.headers.host + "/#/" + "admin/" + email_encrypt + "/" + generatedText;
+        var resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
         if (req.body.typeOfUser == 'barber shop') {
           var saveDataForShop = {};
           saveDataForShop.user_id = data._id

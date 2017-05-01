@@ -27,10 +27,14 @@ var userSchema = new mongoose.Schema({
   facebook: String,
   google: String,
   device_type: String,
-  device_token: String,
+  device_id: String,
   last_login: Date,
   is_email_marketing: Boolean,
   info_source: String,
+  latLong: {
+    type: [Number], // longitude first and latitude after
+    index: '2dsphere'
+  },
   barber_license_number: Number,
   payment_methods: [{
     method: String,
@@ -80,8 +84,7 @@ var userSchema = new mongoose.Schema({
     payment_status: String
   }],
   user_type: {
-     type:Schema.Types.ObjectId,
-     ref:'user_types'
+     type:String,
   },
   created: {
     type: Date,

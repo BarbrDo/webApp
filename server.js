@@ -13,6 +13,9 @@ var request = require('request');
 var multer  = require('multer');
 var objectID = require('mongodb').ObjectID
 
+/* Swagger Configuration */
+const swaggerUi      = require('swagger-ui-express');
+const swaggerJSDoc   = require('swagger-jsdoc');
 
   var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -52,6 +55,45 @@ app.use(expressValidator());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+/* server configuration */
+const host = process.env.HOST || 'localhost';
+const port = process.env.PORT || '3000';
+var defaultUrl = '';
+if(  host == 'localhost' && port == '3000'){
+    var defaultUrl = host+':'+port;
+}else{
+    var defaultUrl = 'barbrdo.com';    
+}
+/* swagger Configuration. */
+var swaggerDefinition = {
+    info: { // API informations (required)
+        title: 'eFarmX API Documentation', // Title (required)
+        version: '0.0.0', // Version (required)
+        description: 'API Documentation', // Description (optional)
+    },
+    host:  defaultUrl, // Host (optional)
+    basePath: '/api', // Base path (optional)
+};
+
+// Options for the swagger docs
+var options = {
+    // Import swaggerDefinitions
+    swaggerDefinition: swaggerDefinition,
+    // Path to the API docs
+    apis: ['./routes/*.js'],
+};
+
+var swaggerSpec = swaggerJSDoc(options);
+
+app.get('/swagger.json', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+});
+
+app.use('/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+
+
 app.use(function(req, res, next) {
   req.isAuthenticated = function() {
     var token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
@@ -73,21 +115,7 @@ app.use(function(req, res, next) {
   }
 });
 
-app.post('/contact', contactController.contactPost);
-app.post('/api/v1/account', userController.ensureAuthenticated, userController.accountPut);
-app.delete('/api/v1/account', userController.ensureAuthenticated, userController.accountDelete);
-app.post('/api/v1/addChair',userController.ensureAuthenticated, userController.addChair)
-app.post('/api/v1/removeChair',userController.ensureAuthenticated, userController.removeChair);
-app.post('/api/v1/signup', userController.signupPost);
-app.post('/api/v1/login', userController.loginPost);
-app.get('/api/v1/getUserType', userController.getUserType);
-app.post('/api/v1/forgot', userController.forgotPost);
-app.post('/reset/:token', userController.resetPost);
-app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);
-app.post('/auth/facebook', userController.authFacebook);
-app.get('/auth/facebook/callback', userController.authFacebookCallback);
-app.post('/auth/google', userController.authGoogle);
-app.get('/auth/google/callback', userController.authGoogleCallback);
+
 
 app.get('*', function(req, res) {
   res.redirect('/#' + req.originalUrl);

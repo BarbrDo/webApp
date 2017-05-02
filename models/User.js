@@ -9,6 +9,38 @@ var schemaOptions = {
     }
 };
 var userSchema = new mongoose.Schema({
+  first_name: String,
+  last_name: String,
+  email: {
+    type: String,
+    unique: true,
+    require:true,
+  },
+  password: String,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
+  salutation: String,
+  mobile_number: Number,
+  randomString:String,
+  gender: String,
+  picture: String,
+  facebook: String,
+  google: String,
+  device_type: String,
+  device_id: String,
+  last_login: Date,
+  is_email_marketing: Boolean,
+  info_source: String,
+  latLong: {
+    type: [Number], // longitude first and latitude after
+    index: '2dsphere'
+  },
+  barber_license_number: Number,
+  payment_methods: [{
+    method: String,
+    card_type: String,
+    is_primary: Boolean,
+    card_id: String,
     first_name: String,
     last_name: String,
     email: {
@@ -95,10 +127,36 @@ var userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    isActive: {
-        type: Boolean,
-        default: false
-    }
+    barber_name: String,
+    items: Array,
+    booking_date: Date,
+    appointment_date: Date,
+    appointment_status: String,
+    amount: Number,
+    currency_code: String,
+    payment_method: String,
+    card_lastfourdigit: Number,
+    payment_status: String
+  }],
+  user_type: {
+     type:String,
+  },
+  created: {
+    type: Date,
+    default: Date.now()
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false
+  },
+  is_verified: {
+    type: Boolean,
+    default: false
+  },
+  isActive: {
+    type: Boolean,
+    default: false
+  }
 }, schemaOptions);
 
 userSchema.pre('save', function (next) {

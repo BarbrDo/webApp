@@ -12,7 +12,7 @@ var shopSchema = new mongoose.Schema({
   state: String,
   zip: String,
   latLong: {
-    type: [Number],
+    type: [Number], // longitude first and latitude after
     index: '2dsphere'
   },
   phone: Number,
@@ -73,7 +73,7 @@ var shopSchema = new mongoose.Schema({
       default: Date.now()
     }
   }],
-  picture: String,
+  image: String,
   gallery: [{
     name: {
       type: String

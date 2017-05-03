@@ -138,7 +138,7 @@ exports.signupPost = function(req, res, next) {
     User(saveData).save(function(err, data) {
       if (err) {
         return res.status(400).send({
-          msg: err.errors.typeOfUser.message
+          msg: constantObj.messages.errorInSave
         })
       } else {
         console.log(data);
@@ -434,7 +434,6 @@ exports.authFacebook = function(req, res) {
         msg: accessToken.error.message
       });
     }
-
     // Step 2. Retrieve user's profile information.
     request.get({
       url: graphApiUrl,

@@ -141,7 +141,6 @@ exports.signupPost = function(req, res, next) {
           msg: constantObj.messages.errorInSave
         })
       } else {
-        console.log(data);
         var resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
         if (req.body.typeOfUser == 'barber shop') {
           var saveDataForShop = {};
@@ -180,7 +179,6 @@ exports.signupPost = function(req, res, next) {
  * Update profile information OR change password.
  */
 exports.accountPut = function(req, res, next) {
-  console.log("accountPut running", req.body);
   if ('password' in req.body) {
     req.assert('password', 'Password must be at least 4 characters long').len(6);
     req.assert('confirm', 'Passwords must match').equals(req.body.password);
@@ -200,7 +198,6 @@ exports.accountPut = function(req, res, next) {
       err:errors
       });
   }
-  console.log(req.user);
 
   User.findById(req.user.id, function(err, user) {
     if ('password' in req.body) {
@@ -418,7 +415,7 @@ exports.authFacebook = function(req, res) {
 
   var params = {
     code: req.body.code,
-    client_id: req.body.clientId,
+    client_id: process.env.FACEBOOK_CLIENTID,
     client_secret: process.env.FACEBOOK_SECRET,
     redirect_uri: req.body.redirectUri
   };
@@ -445,7 +442,8 @@ exports.authFacebook = function(req, res) {
           msg: profile.error.message
         });
       }
-
+      let name = profile.name;
+      let splitName = name.split(" ");
       // Step 3a. Link accounts if user is authenticated.
       if (req.isAuthenticated()) {
         User.findOne({
@@ -457,7 +455,8 @@ exports.authFacebook = function(req, res) {
             });
           }
           user = req.user;
-          user.name = user.name || profile.name;
+          user.first_name = splitName[0];
+          user.last_name = splitName[1];
           user.gender = user.gender || profile.gender;
           user.picture = user.picture || 'https://graph.facebook.com/' + profile.id + '/picture?type=large';
           user.facebook = profile.id;
@@ -488,7 +487,8 @@ exports.authFacebook = function(req, res) {
               })
             }
             user = new User({
-              name: profile.name,
+              first_name : splitName[0],
+              last_name : splitName[1],
               email: profile.email,
               gender: profile.gender,
               location: profile.location && profile.location.name,
@@ -625,11 +625,9 @@ exports.addChair = function(req, res) {
           var saveChair = [];
           obj.name = 'Chair' + " " + totalNumberOfChairs
           obj.availability = "available";
-          console.log(obj);
           saveChair.push(obj);
           var saveChairData = {};
           saveChairData.chairs = saveChair;
-          console.log(saveChairData);
           Shop.update({
             _id: req.body._id
           }, {
@@ -644,7 +642,6 @@ exports.addChair = function(req, res) {
                 msg: 'Error in finding shop.'
               });
             } else {
-              console.log('success', success);
               res.status(200).send({
                 msg: 'Chair successfully added.'
               });
@@ -677,12 +674,10 @@ exports.removeChair = function(req, res) {
       $set: {"chairs.$.isActive":false}
     }).exec(function(errInDelete, resultInDelete) {
       if (errInDelete) {
-        console.log("Error in deleteing images", errInDelete)
         res.status(400).send({
           msg: 'Error in deleting chair.'
         });
       } else {
-        console.log("Success images deleted", resultInDelete);
           res.status(200).send({
             msg: 'Chair successfully deleted.'
           });
@@ -703,7 +698,6 @@ exports.getUserType = function(req,res){
         });
     }
     else{
-      console.log(data);
        res.status(200).send({
           msg: constantObj.messages.successRetreivingData,
           data:data

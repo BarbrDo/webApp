@@ -33,6 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 var swaggerUi = require('swagger-ui-express');
 var swaggerJSDoc = require('swagger-jsdoc');
 var defaultUrl = process.env.HOST + ':' + process.env.PORT;
+console.log(defaultUrl);
 var swaggerDefinition = {
     info: {
         title: 'BarbrDo API Documentation',

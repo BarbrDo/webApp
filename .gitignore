@@ -41,5 +41,5 @@ jspm_packages
 public/uploadedFiles/
 
 #environment and db files
-#db.js
-#.env
+db.js
+.env

@@ -1,7 +1,7 @@
 let objectID = require('mongodb').ObjectID;
 let constantObj = require('./../constants.js');
-var appointment = require('../models/appointment');
-
+let appointment = require('../models/appointment');
+let moment = require('moment');
 exports.takeAppointment = function(req, res) {
 	req.assert("shop_id", "shop_id cannot be blank").notEmpty();
 	req.assert("shop_name", "shop_name cannot be blank").notEmpty();
@@ -29,17 +29,78 @@ exports.takeAppointment = function(req, res) {
 			err: errors
 		});
 	}
-var saveData = req.body;
-appointment(saveData).save(function(err, data) {
-	if (err) {
+	var saveData = req.body;
+	appointment(saveData).save(function(err, data) {
+		if (err) {
+			return res.status(400).send({
+				msg: constantObj.messages.errorInSave
+			});
+		} else {
+			return res.status(200).send({
+				msg: constantObj.messages.saveSuccessfully,
+				data: data
+			});
+		}
+	})
+}
+
+exports.customerAppointments = function(req, res) {
+	req.assert("req.body.customer_id");
+	var errors = req.validationErrors();
+	if (errors) {
 		return res.status(400).send({
-			msg: constantObj.messages.errorInSave
-		});
-	} else {
-		return res.status(200).send({
-			msg: constantObj.messages.saveSuccessfully,
-			data: data
+			msg: "error in your request",
+			err: errors
 		});
 	}
-})
+	var currentDate = moment().format("YYYY-MM-DD");
+	appointment.find({
+		"customer_id": req.body.customer_id,
+		"appointment_date": {
+			$gte: currentDate
+		}
+	}).populate('barber_id', 'first_name last_name ratings').populate('shop_id', 'name address city state gallery').exec(function(err, result) {
+		if (err) {
+			return res.status(400).send({
+				msg: constantObj.messages.errorRetreivingData
+			});
+		} else {
+			console.log("result", result);
+			return res.status(200).send({
+				msg: constantObj.messages.successRetreivingData,
+				data: result
+			});
+		}
+	})
+}
+
+exports.customerCompletedAppointments = function(req, res) {
+	req.assert("req.body.customer_id");
+	var errors = req.validationErrors();
+	if (errors) {
+		return res.status(400).send({
+			msg: "error in your request",
+			err: errors
+		});
+	}
+	var currentDate = moment().format("YYYY-MM-DD");
+	appointment.find({
+		"customer_id": req.body.customer_id,
+		"appointment_status":"completed",
+		"appointment_date": {
+			$lt: currentDate
+		}
+	}).populate('barber_id', 'first_name last_name ratings').populate('shop_id', 'name address city state gallery').exec(function(err, result) {
+		if (err) {
+			return res.status(400).send({
+				msg: constantObj.messages.errorRetreivingData
+			});
+		} else {
+			console.log("result", result);
+			return res.status(200).send({
+				msg: constantObj.messages.successRetreivingData,
+				data: result
+			});
+		}
+	})
 }

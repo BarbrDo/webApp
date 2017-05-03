@@ -1,7 +1,7 @@
 {
-  "name": "autumn-hat",
+  "name": "BardrDo",
   "version": "1.0.0",
-  "description": "My app description",
+  "description": "BarderDo",
   "scripts": {
     "start": "node server.js"
   },

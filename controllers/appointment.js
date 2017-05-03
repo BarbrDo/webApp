@@ -45,7 +45,7 @@ exports.takeAppointment = function(req, res) {
 }
 
 exports.customerAppointments = function(req, res) {
-	req.assert("req.body.customer_id");
+	req.assert("customer_id", "Customer id cannot be blank").notEmpty();
 	var errors = req.validationErrors();
 	if (errors) {
 		return res.status(400).send({
@@ -75,7 +75,7 @@ exports.customerAppointments = function(req, res) {
 }
 
 exports.customerCompletedAppointments = function(req, res) {
-	req.assert("req.body.customer_id");
+	req.assert("customer_id", "Customer id cannot be blank").notEmpty();
 	var errors = req.validationErrors();
 	if (errors) {
 		return res.status(400).send({

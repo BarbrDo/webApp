@@ -42,4 +42,4 @@ public/uploadedFiles/
 
 #environment and db files
 db.js
-*.env
+.env

@@ -17,7 +17,7 @@ var shopSchema = new mongoose.Schema({
   },
   phone: Number,
   license_number: Number,
-  create_date: {
+  created_date: {
     type: Date,
     default: Date.now()
   },
@@ -34,11 +34,11 @@ var shopSchema = new mongoose.Schema({
     last_name: String,
     card_no: Number,
     status: Boolean,
-    created: {
+    created_date: {
       type: Date,
       default: Date.now()
     },
-    modified: {
+    modified_date: {
       type: Date,
       default: Date.now()
     }
@@ -53,18 +53,29 @@ var shopSchema = new mongoose.Schema({
   }],
   chairs: [{
     name: String,
-    // chair_image: String,
-    shop_fair_percentage: Number,
-    barber_fair_percentage: Number,
     availability: {
       type: String,
       enum: ["booked", "available"]
     },
+    type:{
+      type: String,
+      enum: ["weekly", "monthly","percentage"]
+    },
+    amount:Number,
+    shop_percentage: Number,
+    barber_percentage: Number,
+    booking_start:Date,
+    booking_end:Date,
+    barber_id:{
+      type: Schema.Types.ObjectId,
+      ref: 'users'
+    },
+    barber_name:String,
     isActive:{
       type:Boolean,
       default:true
     },
-    creation_date: {
+    created_date: {
       type: Date,
       default: Date.now()
     },
@@ -78,7 +89,7 @@ var shopSchema = new mongoose.Schema({
     name: {
       type: String
     },
-    creationDate: {
+    created_date: {
       type: Date,
       default: Date.now()
     }

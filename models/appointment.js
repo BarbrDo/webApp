@@ -1,11 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var schemaOptions = {
-  timestamps: true,
-  toJSON: {
-    virtuals: true
-  }
-};
+
 var appointmentSchema = new mongoose.Schema({
   shop_id: {
     type:Schema.Types.ObjectId,
@@ -22,11 +17,14 @@ var appointmentSchema = new mongoose.Schema({
     ref:'users'
   },
   customer_name:String,
-  servies:[],
+  servies:{
+
+  },
   appointment_date:Date,
   appointment_status:{
     type:String,
-    enum:["pending","confirm","completed","reschedule"]
+    enum:["pending","confirm","completed","reschedule"],
+    default:"pending"
   },
   tax_amount:Number,
   tax_percent:String,
@@ -39,8 +37,9 @@ var appointmentSchema = new mongoose.Schema({
   card_lastfourdigit:Number,
   payment_status:{
     type:String,
-    enum:["pending","confirm"]
-  }
+    enum:["pending","confirm"],
+    default:"pending"
+  },
    created_date:{
     type:Date,
     default:Date.now()
@@ -49,7 +48,7 @@ var appointmentSchema = new mongoose.Schema({
      type: Date,
     default: Date.now()
    }
-}, schemaOptions);
+},{strict:false});
 
 var appointment = mongoose.model('appointments', appointmentSchema);
 

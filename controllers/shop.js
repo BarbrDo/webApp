@@ -2,14 +2,26 @@ var shop = require('../models/shop');
 var constantObj = require('./../constants.js');
 
 exports.editShop = function(req, res) {
-	console.log(req.body);
+	// console.log(req.body);
 	var updateData = JSON.parse(JSON.stringify(req.body));
-
-	console.log(updateData);
+	// console.log(req.files);
+	// console.log(updateData);
 	delete updateData._id;
-	if (req.files.length > 0) {
-		updateData.image = req.files[0].filename;
+	if ((req.files) && (req.files.length > 0)) {
+		var userimg = [];
+		for (var i = 0; i < req.files.length; i++) {
+			if (req.files[i].fieldname == 'image') {
+				updateData.image = req.files[i].filename;
+			}
+			else{
+				var obj = {};
+				obj.name = req.files[i].filename;
+				userimg.push(obj);
+			}
+		}
+		updateData.gallery = userimg;
 	}
+	// console.log("updateData",updateData);
 	shop.update({
 		_id: req.body._id
 	}, updateData, function(err, data) {

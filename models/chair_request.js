@@ -21,10 +21,10 @@ var chairRequestSchema = new mongoose.Schema({
    },
    status:{
     type:String,
-    enum: ['pending', 'confirmed', 'declined']
+    enum: ['pending', 'confirmed', 'declinedte']
    },
    booking_date:{
-    type:Da
+    type:Date
    },
    request_by:{
     type:String

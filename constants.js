@@ -17,7 +17,8 @@ const messages = {
 	"userUpdateSuccess": "User updated successfully",
 
 	// Error Messages for shop
-	"errorInSave":"Error occured while saving shop info",
+	"errorInSave":"Error occured while saving.",
+	"saveSuccessfully":"Successfully saved.",
 
 	// for the required fields
 	"requiredFields":"Please pass the required fields."

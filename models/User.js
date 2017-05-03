@@ -86,7 +86,7 @@ var userSchema = new mongoose.Schema({
   user_type: {
      type:String,
   },
-  created: {
+  created_date: {
     type: Date,
     default: Date.now()
   },

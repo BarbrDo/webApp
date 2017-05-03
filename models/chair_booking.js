@@ -31,6 +31,6 @@ var chairBookingSchema = new mongoose.Schema({
    }
 });
 
-var chairBooking = mongoose.model('chair_requests', chairBookingSchema);
+var chairBooking = mongoose.model('chair_bookings', chairBookingSchema);
 
 module.exports = chairBooking;

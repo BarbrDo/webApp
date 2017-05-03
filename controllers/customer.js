@@ -4,8 +4,7 @@ exports.allShops = function(req, res) {
 	if (req.headers.device_latitude && req.headers.device_longitude) {
 		var long = parseFloat(req.headers.device_longitude);
 		var lati = parseFloat(req.headers.device_latitude);
-		var maxDistanceToFind = 50
-
+		var maxDistanceToFind = 500000;
 		User.aggregate([{
 			$geoNear: {
 				near: {

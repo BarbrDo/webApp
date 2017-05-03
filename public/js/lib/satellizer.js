@@ -461,6 +461,7 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
         };
 
         Local.signup = function(user, opts) {
+
           opts = opts || {};
           opts.url = opts.url ? opts.url : utils.joinUrl(config.baseUrl, config.signupUrl);
           opts.data = user || opts.data;

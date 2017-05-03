@@ -88,12 +88,13 @@ exports.loginPost = function(req, res, next) {
  * POST /signup
  */
 exports.signupPost = function(req, res, next) {
-  req.assert('first_name','First name cannot be blank. ');
-  req.assert('last_name','Last name cannot be blank. ');
+  req.assert('first_name', 'First name cannot be blank.').notEmpty();
+  req.assert('last_name', 'Last name cannot be blank.').notEmpty();
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('mobile_number','Mobile number cannot be blank').notEmpty();
   req.assert('password', 'Password must be at least 6 characters long').len(6);
+  
   req.sanitize('email').normalizeEmail({
     remove_dots: false
   });
@@ -609,6 +610,7 @@ exports.addChair = function(req, res) {
           var obj = {};
           var saveChair = [];
           obj.name = 'Chair' + " " + totalNumberOfChairs
+          obj.availability = "available";
           console.log(obj);
           saveChair.push(obj);
           var saveChairData = {};

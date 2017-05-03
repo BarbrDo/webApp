@@ -1,6 +1,28 @@
 module.exports = function(app,express){
    let router  = express.Router();
-   
+    let User = require('../models/User');
+   app.use(function (req, res, next) {
+    req.isAuthenticated = function () {
+        var token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
+        try {
+            return jwt.verify(token, process.env.TOKEN_SECRET);
+        } catch (err) {
+            return false;
+        }
+    };
+
+    if (req.isAuthenticated()) {
+        var payload = req.isAuthenticated();
+        User.findById(payload.sub, function (err, user) {
+            req.user = user;
+            next();
+        });
+    } else {
+        next();
+    }
+});
+
+
    var multer = require('multer');
    var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -13,7 +35,7 @@ module.exports = function(app,express){
 var upload = multer({storage: storage})
    
     // Models
-    // let User = require('./models/User');
+   
 
     // Controllers
     let userController = require('./../controllers/user');

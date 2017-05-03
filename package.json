@@ -1,7 +1,7 @@
 {
-  "name": "autumn-hat",
+  "name": "BardrDo",
   "version": "1.0.0",
-  "description": "My app description",
+  "description": "BarderDo",
   "scripts": {
     "start": "node server.js"
   },
@@ -20,7 +20,9 @@
     "morgan": "^1.7.0",
     "multer": "^1.3.0",
     "nodemailer": "^2.3.0",
-    "request": "^2.69.0"
+    "request": "^2.69.0",
+    "swagger-jsdoc": "^1.9.3",
+    "swagger-ui-express": "^1.0.7"
   },
   "devDependencies": {},
   "engines": {

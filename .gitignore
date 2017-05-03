@@ -39,3 +39,7 @@ jspm_packages
 
 # shop images
 public/uploadedFiles/
+
+#environment and db files
+db.js
+*.env

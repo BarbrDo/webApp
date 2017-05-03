@@ -39,8 +39,8 @@ angular.module('BarbrDoApp', ['ngRoute', 'satellizer'])
         templateUrl: 'partials/404.html'
       });
 
-    $authProvider.loginUrl = '/login';
-    $authProvider.signupUrl = '/signup';
+    $authProvider.loginUrl = '/api/v1/login';
+    $authProvider.signupUrl = '/api/v1/signup';
     $authProvider.facebook({
       url: '/auth/facebook',
       clientId: '980220002068787',

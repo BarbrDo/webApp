@@ -5,6 +5,7 @@ module.exports = function(app,express){
     req.isAuthenticated = function () {
         var token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
         try {
+            console.log("token",token);
             return jwt.verify(token, process.env.TOKEN_SECRET);
         } catch (err) {
             return false;

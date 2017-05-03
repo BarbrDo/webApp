@@ -165,7 +165,8 @@ exports.signupPost = function(req, res, next) {
             msg:"Activate your account on the given link.",
             link:resetUrl,
             token: generateToken(data),
-            data: data
+            user: data.toJSON()
+            // data: data
           });
         }
       }

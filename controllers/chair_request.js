@@ -156,11 +156,8 @@ exports.bookChair = function(req, res) {
 	2. In case of if type is percentage then booking_end date is one month ahead
 	3. In case of if type is monthly then booking_end date is one month ahead
 	*/
-
-	console.log(updateCollectionData);
-	console.log(bookingEndDate);
-
-
+	// console.log(updateCollectionData);
+	// console.log(bookingEndDate);
 	var shopId = objectID.isValid(req.body.shop_id)
 	var chairId = objectID.isValid(req.body.chair_id)
 	var barbrId = objectID.isValid(req.body.barber_id)

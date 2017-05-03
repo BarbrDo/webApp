@@ -136,4 +136,5 @@ app.post('/api/v1/requestChair', chairRequestController.requestChair);
 app.post('/api/v1/bookChair', chairRequestController.bookChair);
 app.post('/api/v1/shops',upload.any() ,shopController.editShop);
 app.get('/api/v1/getUserType',userController.ensureAuthenticated, userController.getUserType);
+app.post('/api/v1/customerAppointments',appointmentController.customerAppointments)
 }

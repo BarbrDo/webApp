@@ -97,6 +97,6 @@ var shopSchema = new mongoose.Schema({
 });
 
 
-var Shop = mongoose.model('shop', shopSchema);
+var Shop = mongoose.model('shops', shopSchema);
 
 module.exports = Shop;

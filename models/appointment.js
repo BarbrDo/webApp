@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 var appointmentSchema = new mongoose.Schema({
   shop_id: {
     type:Schema.Types.ObjectId,
-    ref:'users'
+    ref:'shops'
   },
   shop_name:String,
   barber_id:{

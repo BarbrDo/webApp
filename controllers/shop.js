@@ -2,10 +2,7 @@ var shop = require('../models/shop');
 var constantObj = require('./../constants.js');
 
 exports.editShop = function(req, res) {
-	// console.log(req.body);
 	var updateData = JSON.parse(JSON.stringify(req.body));
-	// console.log(req.files);
-	// console.log(updateData);
 	delete updateData._id;
 	if ((req.files) && (req.files.length > 0)) {
 		var userimg = [];

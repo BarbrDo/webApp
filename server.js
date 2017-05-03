@@ -10,18 +10,11 @@ var db = require('./db.js');
 var jwt = require('jsonwebtoken');
 var moment = require('moment');
 var request = require('request');
-var multer = require('multer');
+
 var objectID = require('mongodb').ObjectID
 
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './public/uploadedFiles/')
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + file.originalname.substr(file.originalname.lastIndexOf("."), file.originalname.length))
-    }
-})
-var upload = multer({storage: storage})
+
+
 
 // Load environment variables from .env file
 dotenv.load();

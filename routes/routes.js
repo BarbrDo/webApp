@@ -1,16 +1,25 @@
 module.exports = function(app,express){
    var router  = express.Router();
-   
+   var multer = require('multer');
+
+   var storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, './public/uploadedFiles/')
+        },
+        filename: function (req, file, cb) {
+            cb(null, Date.now() + file.originalname.substr(file.originalname.lastIndexOf("."), file.originalname.length))
+        }
+    })
     // Models
-    var User = require('./models/User');
+    var User = require('../models/User');
 
     // Controllers
-    let userController = require('./controllers/user');
-    let contactController = require('./controllers/contact');
-    let customerController = require('./controllers/customer');
-    let shopController = require('./controllers/shop');
-    let chairRequestController = require('./controllers/chair_request');
-    let appointmentController = require('./controllers/appointment');
+    let userController = require('../controllers/user');
+    let contactController = require('../controllers/contact');
+    let customerController = require('../controllers/customer');
+    let shopController = require('../controllers/shop');
+    let chairRequestController = require('../controllers/chair_request');
+    let appointmentController = require('../controllers/appointment');
 
 
 /**
@@ -105,7 +114,7 @@ module.exports = function(app,express){
 *         type: "string"
 */
 
-
+var upload = multer({storage: storage})
 
 app.post('/contact', contactController.contactPost);
 app.post('/api/v1/account', userController.ensureAuthenticated, userController.accountPut);

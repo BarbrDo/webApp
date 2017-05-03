@@ -43,12 +43,11 @@ angular.module('BarbrDoApp', ['ngRoute', 'satellizer'])
     $authProvider.signupUrl = '/api/v1/signup';
     $authProvider.facebook({
       url: '/auth/facebook',
-      clientId: '980220002068787',
-      redirectUri: 'http://localhost:3000/auth/facebook/callback'
+      clientId: '653227411528324'
     });
     $authProvider.google({
       url: '/auth/google',
-      clientId: '631036554609-v5hm2amv4pvico3asfi97f54sc51ji4o.apps.googleusercontent.com'
+      clientId: '73291812238-aekh50otlf7b5duqanlvo2q1p2o8e4m9.apps.googleusercontent.com'
     });
 
     function skipIfAuthenticated($location, $auth) {
@@ -62,6 +61,15 @@ angular.module('BarbrDoApp', ['ngRoute', 'satellizer'])
         $location.path('/login');
       }
     }
+
+    $authProvider.oauth2({
+      name: 'foursquare',
+      url: '/auth/foursquare',
+      clientId: 'Foursquare Client ID',
+      redirectUri: window.location.origin,
+      authorizationEndpoint: 'https://foursquare.com/oauth2/authenticate',
+    });
+
   })
   .run(function($rootScope, $window) {
     if ($window.localStorage.user) {

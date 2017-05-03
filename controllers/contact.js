@@ -29,7 +29,10 @@ exports.contactPost = function(req, res) {
   var errors = req.validationErrors();
 
   if (errors) {
-    return res.status(400).send(errors);
+    return res.status(400).send({
+      msg:"error in your request",
+      err:errors
+      });
   }
 
   var mailOptions = {

@@ -24,19 +24,22 @@ exports.takeAppointment = function(req, res) {
 	var errors = req.validationErrors();
 
 	if (errors) {
-		return res.status(400).send(errors);
+		return res.status(400).send({
+			msg: "error in your request",
+			err: errors
+		});
 	}
-	var saveData = req.body;
-	appointment(saveData).save(function(err, data) {
-		if (err) {
-			return res.status(400).send({
-				msg: constantObj.messages.errorInSave
-			});
-		} else {
-			return res.status(200).send({
-				msg: constantObj.messages.saveSuccessfully,
-				data: data
-			});
-		}
-	})
+var saveData = req.body;
+appointment(saveData).save(function(err, data) {
+	if (err) {
+		return res.status(400).send({
+			msg: constantObj.messages.errorInSave
+		});
+	} else {
+		return res.status(200).send({
+			msg: constantObj.messages.saveSuccessfully,
+			data: data
+		});
+	}
+})
 }

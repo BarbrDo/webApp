@@ -15,7 +15,10 @@ exports.requestChair = function(req, res) {
 	var errors = req.validationErrors();
 
 	if (errors) {
-		return res.status(400).send(errors);
+		return res.status(400).send({
+			msg: "error in your request",
+			err: errors
+		});
 	}
 
 	/*This code is to check that weather the booking date is under one month of current date or not*/
@@ -59,13 +62,13 @@ exports.requestChair = function(req, res) {
 	/*End of booking date*/
 }
 exports.bookChair = function(req, res) {
-req.assert("shop_id", "_id is required.").notEmpty();
-req.assert("chair_id", "Chair id is required.").notEmpty();
-req.assert("barber_id", "Barber id is required.").notEmpty();
-req.assert("barber_name", "Barber name is required.").notEmpty();
-req.assert("type", "Type is required.").notEmpty();
-req.assert("booking_date", "booking_start is required.").notEmpty();
-req.assert("created_date", "Chair request created date is required").notEmpty();
+	req.assert("shop_id", "_id is required.").notEmpty();
+	req.assert("chair_id", "Chair id is required.").notEmpty();
+	req.assert("barber_id", "Barber id is required.").notEmpty();
+	req.assert("barber_name", "Barber name is required.").notEmpty();
+	req.assert("type", "Type is required.").notEmpty();
+	req.assert("booking_date", "booking_start is required.").notEmpty();
+	req.assert("created_date", "Chair request created date is required").notEmpty();
 
 
 	let updateCollectionData = {};
@@ -78,7 +81,10 @@ req.assert("created_date", "Chair request created date is required").notEmpty();
 		var errors = req.validationErrors();
 
 		if (errors) {
-			return res.status(400).send(errors);
+			return res.status(400).send({
+				msg: "error in your request",
+				err: errors
+			});
 		}
 
 		bookingEndDate = moment(req.body.booking_date).add(7, 'day')
@@ -98,7 +104,10 @@ req.assert("created_date", "Chair request created date is required").notEmpty();
 		req.assert("barber_percentage", "Barber Percentage is required.")
 		var errors = req.validationErrors();
 		if (errors) {
-			return res.status(400).send(errors);
+			return res.status(400).send({
+				msg: "error in your request",
+				err: errors
+			});
 		}
 		// var currentDate = moment().format("YYYY-MM-DD");
 		let currentDate = moment(req.body.booking_date)

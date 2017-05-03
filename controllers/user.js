@@ -49,7 +49,10 @@ exports.loginPost = function(req, res, next) {
   var errors = req.validationErrors();
 
   if (errors) {
-    return res.status(400).send(errors);
+    return res.status(400).send({
+      msg:"error in your request",
+      err:errors
+      });
   }
 
   User.findOne({
@@ -102,7 +105,10 @@ exports.signupPost = function(req, res, next) {
   var errors = req.validationErrors();
 
   if (errors) {
-    return res.status(400).send(errors);
+    return res.status(400).send({
+      msg:"error in your request",
+      err:errors
+      });
   }
 
   User.findOne({
@@ -189,7 +195,10 @@ exports.accountPut = function(req, res, next) {
   var errors = req.validationErrors();
 
   if (errors) {
-    return res.status(400).send(errors);
+    return res.status(400).send({
+      msg:"error in your request",
+      err:errors
+      });
   }
   console.log(req.user);
 
@@ -282,7 +291,10 @@ exports.forgotPost = function(req, res, next) {
   var errors = req.validationErrors();
 
   if (errors) {
-    return res.status(400).send(errors);
+    return res.status(400).send({
+      msg:"error in your request",
+      err:errors
+      });
   }
 
   async.waterfall([
@@ -345,7 +357,10 @@ exports.resetPost = function(req, res, next) {
   var errors = req.validationErrors();
 
   if (errors) {
-    return res.status(400).send(errors);
+    return res.status(400).send({
+      msg:"error in your request",
+      err:errors
+      });
   }
 
   async.waterfall([

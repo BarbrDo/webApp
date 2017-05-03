@@ -10,7 +10,7 @@ angular.module('BarbrDoApp')
         })
         .catch(function(response) {
           $scope.messages = {
-            error: Array.isArray(response.data) ? response.data : [response.data]
+            error: Array.isArray(response.data) ? response.data : response.data
           };
         });
     };

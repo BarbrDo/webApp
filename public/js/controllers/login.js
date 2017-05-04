@@ -5,7 +5,8 @@ angular.module('BarbrDoApp')
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          $location.path('/account');
+          $('#login').modal('hide');
+          $location.path('/');
         })
         .catch(function(response) {
           $scope.messages = {
@@ -19,6 +20,7 @@ angular.module('BarbrDoApp')
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
+          $('#login').modal('hide');
           $location.path('/');
         })
         .catch(function(response) {

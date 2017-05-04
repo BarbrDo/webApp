@@ -57,26 +57,26 @@ app.get('/swagger.json', function (req, res) {
 app.use('/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 require('./routes/routes')(app, express);
-app.use(function (req, res, next) {
-    req.isAuthenticated = function () {
-        var token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
-        try {
-            return jwt.verify(token, process.env.TOKEN_SECRET);
-        } catch (err) {
-            return false;
-        }
-    };
+// app.use(function (req, res, next) {
+//     req.isAuthenticated = function () {
+//         var token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
+//         try {
+//             return jwt.verify(token, process.env.TOKEN_SECRET);
+//         } catch (err) {
+//             return false;
+//         }
+//     };
 
-    if (req.isAuthenticated()) {
-        var payload = req.isAuthenticated();
-        User.findById(payload.sub, function (err, user) {
-            req.user = user;
-            next();
-        });
-    } else {
-        next();
-    }
-});
+//     if (req.isAuthenticated()) {
+//         var payload = req.isAuthenticated();
+//         User.findById(payload.sub, function (err, user) {
+//             req.user = user;
+//             next();
+//         });
+//     } else {
+//         next();
+//     }
+// });
 
 app.get('*', function (req, res) {
     res.redirect('/#' + req.originalUrl);

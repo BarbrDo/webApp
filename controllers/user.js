@@ -39,6 +39,7 @@ exports.ensureAuthenticated = function(req, res, next) {
  * Sign in with email and password
  */
 exports.loginPost = function(req, res, next) {
+  console.log("asdfsdfsdf");
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('password', 'Password cannot be blank').notEmpty();
@@ -200,7 +201,7 @@ exports.accountPut = function(req, res, next) {
       });
   }
 
-  User.findById(req.user.id, function(err, user) {
+  User.findById(req.body._id, function(err, user) {
     if ('password' in req.body) {
       user.password = req.body.password;
     } else {

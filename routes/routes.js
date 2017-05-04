@@ -239,6 +239,83 @@ module.exports = function (app, express) {
  *               description: "date in UTC when token expires"
  *         400:
  *           description: "Invalid request"
+ *   /appointment:
+ *     post:
+ *       tags:
+ *       - "customer"
+ *       summary: "Create new appointment with barber"
+ *       description: "Create new appointment with barber"
+ *       operationId: "appointment"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5909d7bca8af707ab3c1396c"
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Created appointment object"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/appointment"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *     get:
+ *       tags:
+ *       - "customer"
+ *       summary: "Show my all booked future appointments"
+ *       description: "Show my all booked future appointments"
+ *       operationId: "getappointment"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5909d7bca8af707ab3c1396c"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
  * definitions:
  *    User:
  *     type: "object"
@@ -255,6 +332,12 @@ module.exports = function (app, express) {
  *       mobile_number:
  *         type: "string"
  *         default: "9876543210"
+ *       user_type:
+ *         type: "string"
+ *         enum:
+ *           - "customer"
+ *           - "barber"
+ *           - "shop"
  *    Userlogin:
  *     type: "object"
  *     properties:
@@ -296,4 +379,28 @@ module.exports = function (app, express) {
  *         default: "160071"  
  *       image:
  *         type: "file"
+ *    appointment:
+ *      type: "object"
+ *      properties:
+ *        shop_id:
+ *          type: "string"
+ *          default: "5901e07846c94a225018d5cc"
+ *        barber_id:
+ *          type: "string"
+ *          default: "590829388e6a4812ece58e75"
+ *        payment_method:
+ *          type: "string"
+ *          default: "cash"
+ *        services:
+ *          type: "array"
+ *          items:
+ *            type: "object"
+ *            properties:
+ *              id:
+ *                type: "string"
+ *                default: ""
+ *        appointment_date:
+ *          type: "date"
+ *          default: "2017-07-10 10:00:00"
+ *            
  */

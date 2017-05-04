@@ -1,43 +1,43 @@
-module.exports = function(app,express){
-   let router  = express.Router();
+module.exports = function(app, express) {
+    let router = express.Router();
     let User = require('../models/User');
-   app.use(function (req, res, next) {
-    req.isAuthenticated = function () {
-        var token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
-        try {
-            console.log("token",token);
-            return jwt.verify(token, process.env.TOKEN_SECRET);
-        } catch (err) {
-            return false;
-        }
-    };
-
-    if (req.isAuthenticated()) {
-        var payload = req.isAuthenticated();
-        User.findById(payload.sub, function (err, user) {
-            req.user = user;
-            next();
-        });
-    } else {
+    let jwt = require('jsonwebtoken');
+    app.use(function(req, res, next) {
+        req.isAuthenticated = function() {
+            var token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
+            try {
+                console.log("token", token);
+                return jwt.verify(token, process.env.TOKEN_SECRET);
+            } catch (err) {
+                // throw err;
+                return false;
+            }
+        };
         next();
-    }
-});
+        // if (req.isAuthenticated()) {
+        //     var payload = req.isAuthenticated();
+        //     User.findById(payload.sub, function (err, user) {
+        //         req.user = user;
+        //         next();
+        //     });
+        // } else {
+        //     next();
+        // }
+    });
+    var multer = require('multer');
+    var storage = multer.diskStorage({
+        destination: function(req, file, cb) {
+            cb(null, './public/uploadedFiles/')
+        },
+        filename: function(req, file, cb) {
+            cb(null, Date.now() + file.originalname.substr(file.originalname.lastIndexOf("."), file.originalname.length))
+        }
+    })
+    var upload = multer({
+        storage: storage
+    })
 
-
-   var multer = require('multer');
-   var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './public/uploadedFiles/')
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + file.originalname.substr(file.originalname.lastIndexOf("."), file.originalname.length))
-    }
-})
-var upload = multer({storage: storage})
-   
     // Models
-   
-
     // Controllers
     let userController = require('./../controllers/user');
     let contactController = require('./../controllers/contact');

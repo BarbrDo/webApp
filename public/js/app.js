@@ -62,14 +62,6 @@ angular.module('BarbrDoApp', ['ngRoute', 'satellizer'])
       }
     }
 
-    $authProvider.oauth2({
-      name: 'foursquare',
-      url: '/auth/foursquare',
-      clientId: 'Foursquare Client ID',
-      redirectUri: window.location.origin,
-      authorizationEndpoint: 'https://foursquare.com/oauth2/authenticate',
-    });
-
   })
   .run(function($rootScope, $window) {
     if ($window.localStorage.user) {

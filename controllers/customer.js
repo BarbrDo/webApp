@@ -1,6 +1,8 @@
 var User = require('../models/User');
 var constantObj = require('./../constants.js');
 exports.allShops = function(req, res) {
+	console.log(req.headers);
+	console.log(req.body);
 	if (req.headers.device_latitude && req.headers.device_longitude) {
 		var long = parseFloat(req.headers.device_longitude);
 		var lati = parseFloat(req.headers.device_latitude);

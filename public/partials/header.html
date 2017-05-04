@@ -1,3 +1,9 @@
+<style type="text/css">
+  #login { overflow-y:scroll }
+  #signup { overflow-y:scroll }
+
+</style>
+
 <nav ng-controller="HeaderCtrl" class="navbar navbar-default navbar-static-top">
   <div class="container">
     <div class="navbar-header">
@@ -74,13 +80,13 @@
     </div>
   </div>
   <p class="text-center">
-    Don't have an account? <a href="/signup"><strong>Sign up</strong></a>
+    Don't have an account? <a href="" ng-click="signUpClick()"><strong>Sign up</strong></a>
   </p>
 </div>
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">x</button>
         </div>
       </div>
     </div>
@@ -139,7 +145,7 @@
           Barber Shop
         </label>
         <div class="form-group">
-          <small class="text-muted">By signing up, you agree to the <a href="/">Terms of Service</a>.</small>
+          <small class="text-muted">By signing up, you agree to the <a href="/" ng-click="hideModal()">Terms of Service</a>.</small>
         </div>
         <button type="submit" class="btn btn-success">Create an account</button>
       </form>
@@ -151,7 +157,7 @@
     </div>
   </div>
   <p class="text-center">
-    Already have an account? <a href=""><strong>Please Log in</strong></a>
+    Already have an account? <a href="" ng-click="loginModal()"><strong>Please Log in</strong></a>
   </p>
 </div>
 

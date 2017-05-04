@@ -1,20 +1,23 @@
 let objectID = require('mongodb').ObjectID;
 let constantObj = require('./../constants.js');
 let appointment = require('../models/appointment');
+let user = require('../models/User');
+var shop = require('../models/shop');
 let moment = require('moment');
 exports.takeAppointment = function(req, res) {
+	console.log(req.body);
 	req.assert("shop_id", "shop_id cannot be blank").notEmpty();
-	req.assert("shop_name", "shop_name cannot be blank").notEmpty();
+	// req.assert("shop_name", "shop_name cannot be blank").notEmpty();
 	req.assert("barber_id", "barber_id cannot be blank").notEmpty();
-	req.assert("barber_name", "barber_name cannot be blank").notEmpty();
-	req.assert("customer_id", "customer_id cannot be blank").notEmpty();
-	req.assert("customer_name", "customer_name cannot be blank").notEmpty();
-	req.assert("servies", "servies cannot be blank").notEmpty();
+	// req.assert("barber_name", "barber_name cannot be blank").notEmpty();
+	req.checkHeaders("user_id", "user_id cannot be blank").notEmpty();
+	// req.assert("customer_name", "customer_name cannot be blank").notEmpty();
+	// req.assert("services", "servies cannot be blank").notEmpty();
 	req.assert("appointment_date", "appointment_date cannot be blank").notEmpty();
-	req.assert("tax_amount", "tax_amount cannot be blank").notEmpty();
-	req.assert("tax_percent", "tax_percent cannot be blank").notEmpty();
-	req.assert("amount", "amount cannot be blank").notEmpty();
-	req.assert("currency_code", "currency_code cannot be blank").notEmpty();
+	// req.assert("tax_amount", "tax_amount cannot be blank").notEmpty();
+	// req.assert("tax_percent", "tax_percent cannot be blank").notEmpty();
+	// req.assert("amount", "amount cannot be blank").notEmpty();
+	// req.assert("currency_code", "currency_code cannot be blank").notEmpty();
 	req.assert("payment_method", "payment_method cannot be blank").notEmpty();
 	if (req.body.payment_method == 'card') {
 		req.assert("card_lastfourdigit", "card_lastfourdigit cannot be blank").notEmpty();
@@ -29,23 +32,80 @@ exports.takeAppointment = function(req, res) {
 			err: errors
 		});
 	}
-	var saveData = req.body;
-	appointment(saveData).save(function(err, data) {
+	var shopName = "";
+	var customerName = "";
+	var barberName = ""
+	findShopData(req.body.shop_id, function(result) {
+		shopName = result;
+		findUserId(req.headers.user_id, function(result) {
+			customerName = result
+		});
+		findUserId(req.body.barber_id, function(result) {
+			barberName = result;
+			console.log("barberName,customerName,shopName", barberName, customerName, shopName);
+
+			var saveData = req.body;
+			saveData.customer_name= customerName;
+			saveData.shop_name= shopName;
+			saveData.barber_name =  barberName;
+			saveData.customer_id= req.headers.user_id;
+			
+			appointment(saveData).save(function(err, data) {
+				if (err) {
+					return res.status(400).send({
+						msg: constantObj.messages.errorInSave
+					});
+				} else {
+					return res.status(200).send({
+						msg: constantObj.messages.saveSuccessfully,
+						data: data
+					});
+				}
+			})
+		});
+	});
+}
+
+var findUserId = function(id, cb) {
+	user.findOne({
+		_id: id
+	}, function(err, result) {
 		if (err) {
-			return res.status(400).send({
-				msg: constantObj.messages.errorInSave
-			});
+			console.log("err in FindUserId", err);
 		} else {
-			return res.status(200).send({
-				msg: constantObj.messages.saveSuccessfully,
-				data: data
-			});
+			if (result) {
+				// console.log(result.first_name);
+				cb(result.first_name + " " + result.last_name);;
+			} else {
+				var allResult = ""
+				cb(allResult)
+					// return allResult;
+			}
+		}
+	})
+}
+var findShopData = function(shopp, cb) {
+	shop.findOne({
+		_id: shopp
+	}, function(err, result) {
+		if (err) {
+			console.log("err in FindUserId", err);
+		} else {
+			if (result.name) {
+				// console.log(result.name);
+				cb(result.name);
+			} else {
+				var allResult = ""
+				cb(allResult);
+			}
 		}
 	})
 }
 
+
+
 exports.customerAppointments = function(req, res) {
-	req.assert("customer_id", "Customer id cannot be blank").notEmpty();
+	req.checkHeaders("user_id", "user_id cannot be blank").notEmpty();
 	var errors = req.validationErrors();
 	if (errors) {
 		return res.status(400).send({
@@ -55,7 +115,10 @@ exports.customerAppointments = function(req, res) {
 	}
 	var currentDate = moment().format("YYYY-MM-DD");
 	appointment.find({
-		"customer_id": req.body.customer_id,
+		"customer_id": {
+			$exists: true,
+			$eq: req.headers.user_id
+		},
 		"appointment_date": {
 			$gte: currentDate
 		}
@@ -65,7 +128,6 @@ exports.customerAppointments = function(req, res) {
 				msg: constantObj.messages.errorRetreivingData
 			});
 		} else {
-			console.log("result", result);
 			return res.status(200).send({
 				msg: constantObj.messages.successRetreivingData,
 				data: result
@@ -86,7 +148,7 @@ exports.customerCompletedAppointments = function(req, res) {
 	var currentDate = moment().format("YYYY-MM-DD");
 	appointment.find({
 		"customer_id": req.body.customer_id,
-		"appointment_status":"completed",
+		"appointment_status": "completed",
 		"appointment_date": {
 			$lt: currentDate
 		}

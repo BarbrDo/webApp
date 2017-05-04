@@ -13,9 +13,6 @@ var request = require('request');
 
 var objectID = require('mongodb').ObjectID
 
-
-
-
 // Load environment variables from .env file
 dotenv.load();
 
@@ -34,16 +31,18 @@ var swaggerUi = require('swagger-ui-express');
 var swaggerJSDoc = require('swagger-jsdoc');
 var defaultUrl = process.env.HOST + ':' + process.env.PORT;
 console.log(defaultUrl);
+
+// Swagger
 var swaggerDefinition = {
     info: {
         title: 'BarbrDo API Documentation',
         version: '1.0.0',
         description: 'API Documentation',
     },
-    host: defaultUrl, 
+    host: defaultUrl,
     basePath: '/api/v1',
 };
-// Options for the swagger docs
+
 var options = {
     swaggerDefinition: swaggerDefinition,
     apis: ['./routes/*.js'],
@@ -57,27 +56,6 @@ app.get('/swagger.json', function (req, res) {
 app.use('/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 require('./routes/routes')(app, express);
-// app.use(function (req, res, next) {
-//     req.isAuthenticated = function () {
-//         var token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
-//         try {
-//             return jwt.verify(token, process.env.TOKEN_SECRET);
-//         } catch (err) {
-//             return false;
-//         }
-//     };
-
-//     if (req.isAuthenticated()) {
-//         var payload = req.isAuthenticated();
-//         User.findById(payload.sub, function (err, user) {
-//             req.user = user;
-//             next();
-//         });
-//     } else {
-//         next();
-//     }
-// });
-
 app.get('*', function (req, res) {
     res.redirect('/#' + req.originalUrl);
 });

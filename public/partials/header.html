@@ -63,7 +63,7 @@
           <label for="password">Password</label>
           <input type="password" name="password" id="password" placeholder="Password" class="form-control" ng-model="user.password">
         </div>
-        <div class="form-group"><a href="/forgot"><strong>Forgot your password?</strong></a></div>
+        <div class="form-group"><a href="/forgot" ng-click="modalDismiss()"><strong>Forgot your password?</strong></a></div>
         <button type="submit" class="btn btn-success">Log in</button>
       </form>
       <div class="hr-title"><span>or</span></div>
@@ -126,6 +126,18 @@
           <label for="mobilenumber">Mobile Number</label>
           <input type="text" name="mobile_number" id="mobile_number" placeholder="Mobile Number" class="form-control" ng-model="user.mobile_number">
         </div>
+         <label>
+          <input type="radio" ng-model="user.user_type" value="customer" ng-init="user.user_type='customer'">
+          Customer
+        </label>
+        <label>
+          <input type="radio" ng-model="user.user_type" value="barber">
+          Barber
+        </label>
+        <label>
+          <input type="radio" ng-model="user.user_type" value="shop">
+          Barber Shop
+        </label>
         <div class="form-group">
           <small class="text-muted">By signing up, you agree to the <a href="/">Terms of Service</a>.</small>
         </div>

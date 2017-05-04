@@ -14,6 +14,9 @@ angular.module('BarbrDoApp')
           };
         });
     };
+    $scope.modalDismiss = function(){
+      $('#login').modal('hide');
+    }
 
     $scope.authenticate = function(provider) {
       $auth.authenticate(provider)

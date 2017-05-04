@@ -61,7 +61,7 @@ module.exports = function (app, express) {
     app.post('/api/v1/bookChair', chairRequestController.bookChair);
 //
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
-    app.post('/contact', contactController.contactPost);
+    app.post('/api/v1/contact', contactController.contactPost);
 }
 
 /**

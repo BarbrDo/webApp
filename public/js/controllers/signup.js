@@ -36,4 +36,11 @@ angular.module('BarbrDoApp')
           }
         });
     };
+    $scope.loginModal = function(){
+       $('#signup').modal('hide');
+      $('#login').modal('show');
+    }
+    $scope.hideModal = function(){
+      $('#signup').modal('hide');
+    }
   });

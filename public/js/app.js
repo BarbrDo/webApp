@@ -10,16 +10,16 @@ angular.module('BarbrDoApp', ['ngRoute', 'satellizer'])
         templateUrl: 'partials/contact.html',
         controller: 'ContactCtrl'
       })
-      .when('/login', {
-        templateUrl: 'partials/login.html',
-        controller: 'LoginCtrl',
-        resolve: { skipIfAuthenticated: skipIfAuthenticated }
-      })
-      .when('/signup', {
-        templateUrl: 'partials/signup.html',
-        controller: 'SignupCtrl',
-        resolve: { skipIfAuthenticated: skipIfAuthenticated }
-      })
+      // .when('/login', {
+      //   templateUrl: 'partials/login.html',
+      //   controller: 'LoginCtrl',
+      //   resolve: { skipIfAuthenticated: skipIfAuthenticated }
+      // })
+      // .when('/signup', {
+      //   templateUrl: 'partials/signup.html',
+      //   controller: 'SignupCtrl',
+      //   resolve: { skipIfAuthenticated: skipIfAuthenticated }
+      // })
       .when('/account', {
         templateUrl: 'partials/profile.html',
         controller: 'ProfileCtrl',

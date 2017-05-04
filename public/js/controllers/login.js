@@ -17,6 +17,11 @@ angular.module('BarbrDoApp')
     $scope.modalDismiss = function(){
       $('#login').modal('hide');
     }
+    $scope.signUpClick = function(){
+      $('#login').modal('hide');
+      $('#signup').modal('show');
+    }
+    
 
     $scope.authenticate = function(provider) {
       $auth.authenticate(provider)

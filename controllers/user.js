@@ -40,7 +40,6 @@ exports.ensureAuthenticated = function(req, res, next) {
  * Sign in with email and password
  */
 exports.loginPost = function(req, res, next) {
-  console.log("asdfsdfsdf");
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('password', 'Password cannot be blank').notEmpty();
@@ -52,9 +51,9 @@ exports.loginPost = function(req, res, next) {
 
   if (errors) {
     return res.status(400).send({
-      msg:"error in your request",
-      err:errors
-      });
+      msg: "error in your request",
+      err: errors
+    });
   }
 
   User.findOne({
@@ -69,13 +68,13 @@ exports.loginPost = function(req, res, next) {
     }
 
     /*-- this condition is for check that this account is active or not---- */
-      // if(user.isActive == false && user.is_verified== false){
-      //    return res.status(401).send({
-      //     msg: 'Your account is not activated yet.'
-      //   });
-      // }
+    // if(user.isActive == false && user.is_verified== false){
+    //    return res.status(401).send({
+    //     msg: 'Your account is not activated yet.'
+    //   });
+    // }
 
-      user.comparePassword(req.body.password, function(err, isMatch) {
+    user.comparePassword(req.body.password, function(err, isMatch) {
       if (!isMatch) {
         return res.status(401).send({
           msg: 'Invalid email or password'
@@ -97,9 +96,9 @@ exports.signupPost = function(req, res, next) {
   req.assert('last_name', 'Last name cannot be blank.').notEmpty();
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
-  req.assert('mobile_number','Mobile number cannot be blank').notEmpty();
+  req.assert('mobile_number', 'Mobile number cannot be blank').notEmpty();
   req.assert('password', 'Password must be at least 6 characters long').len(6);
-  
+
   req.sanitize('email').normalizeEmail({
     remove_dots: false
   });
@@ -108,9 +107,9 @@ exports.signupPost = function(req, res, next) {
 
   if (errors) {
     return res.status(400).send({
-      msg:"error in your request",
-      err:errors
-      });
+      msg: "error in your request",
+      err: errors
+    });
   }
 
   User.findOne({
@@ -122,7 +121,7 @@ exports.signupPost = function(req, res, next) {
       });
     }
     var saveData = req.body;
-   
+
     if (req.headers.device_type) {
       saveData.device_type = req.headers.device_type;
     }
@@ -130,7 +129,7 @@ exports.signupPost = function(req, res, next) {
       saveData.device_id = req.headers.device_id;
     }
     if (req.headers.device_longitude && req.headers.device_latitude) {
-      saveData.latLong = [req.headers.device_longitude,req.headers.device_latitude];
+      saveData.latLong = [req.headers.device_longitude, req.headers.device_latitude];
     }
 
     let email_encrypt = commonObj.encrypt(req.body.email);
@@ -155,8 +154,8 @@ exports.signupPost = function(req, res, next) {
               })
             } else {
               res.status(200).send({
-                msg:"Activate your account on the given link.",
-                link:resetUrl,
+                msg: "Activate your account on the given link.",
+                link: resetUrl,
                 token: generateToken(shopData),
                 data: shopData
               });
@@ -164,11 +163,11 @@ exports.signupPost = function(req, res, next) {
           })
         } else {
           res.send({
-            msg:"Activate your account on the given link.",
-            link:resetUrl,
+            msg: "Activate your account on the given link.",
+            link: resetUrl,
             token: generateToken(data),
             user: data.toJSON()
-            // data: data
+              // data: data
           });
         }
       }
@@ -197,9 +196,9 @@ exports.accountPut = function(req, res, next) {
 
   if (errors) {
     return res.status(400).send({
-      msg:"error in your request",
-      err:errors
-      });
+      msg: "error in your request",
+      err: errors
+    });
   }
 
   User.findById(req.body._id, function(err, user) {
@@ -284,7 +283,6 @@ exports.unlink = function(req, res, next) {
 
 
 exports.forgotPost = function(req, res, next) {
-  console.log("forgot post is working");
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.sanitize('email').normalizeEmail({
@@ -295,17 +293,17 @@ exports.forgotPost = function(req, res, next) {
 
   if (errors) {
     return res.status(400).send({
-      msg:"error in your request",
-      err:errors
-      });
+      msg: "error in your request",
+      err: errors
+    });
   }
 
   var auth = {
-  auth: {
-    api_key: 'key-1b5eaf0ccfc850d04b716ed2f8b7a532',
-    domain: 'sandbox7a72418c6b52447db831f142257172bb.mailgun.org'
+    auth: {
+      api_key: process.env.MAILGUN_APIKEY,
+      domain: process.env.MAILGUN_DOMAIN
+    }
   }
-}
 
   async.waterfall([
     function(done) {
@@ -323,7 +321,6 @@ exports.forgotPost = function(req, res, next) {
             msg: 'The email address ' + req.body.email + ' is not associated with any account.'
           });
         }
-        console.log("not user working");
         user.passwordResetToken = token;
         user.passwordResetExpires = Date.now() + 3600000; // expire in 1 hour
         user.save(function(err) {
@@ -332,18 +329,7 @@ exports.forgotPost = function(req, res, next) {
       });
     },
     function(token, user, done) {
-      console.log("user information",user);
-      try{
-
-        var nodemailerMailgun = nodemailer.createTransport(mg(auth));
-
-      //   var transporter = nodemailer.createTransport({
-      //   service: 'Mailgun',
-      //   auth: {
-      //     user: process.env.MAILGUN_USERNAME,
-      //     pass: process.env.MAILGUN_PASSWORD
-      //   }
-      // });
+      var nodemailerMailgun = nodemailer.createTransport(mg(auth));
       var mailOptions = {
         to: user.email,
         from: 'support@barbrdo.com',
@@ -353,22 +339,12 @@ exports.forgotPost = function(req, res, next) {
           'http://' + req.headers.host + '/reset/' + token + '\n\n' +
           'If you did not request this, please ignore this email and your password will remain unchanged.\n'
       };
-      nodemailerMailgun.sendMail(mailOptions, function(err,info) {
-        if(err){
-          console.log(err);
-        }
-        else{
-          console.log(info);
-        }
+      nodemailerMailgun.sendMail(mailOptions, function(err, info) {
         res.send({
           msg: 'An email has been sent to ' + user.email + ' with further instructions.'
         });
         done(err);
       });
-      }
-      catch(e){
-        console.log(e);
-      }
     }
   ]);
 };
@@ -384,9 +360,9 @@ exports.resetPost = function(req, res, next) {
 
   if (errors) {
     return res.status(400).send({
-      msg:"error in your request",
-      err:errors
-      });
+      msg: "error in your request",
+      err: errors
+    });
   }
 
   async.waterfall([
@@ -516,8 +492,8 @@ exports.authFacebook = function(req, res) {
               })
             }
             user = new User({
-              first_name : splitName[0],
-              last_name : splitName[1],
+              first_name: splitName[0],
+              last_name: splitName[1],
               email: profile.email,
               gender: profile.gender,
               location: profile.location && profile.location.name,
@@ -698,18 +674,20 @@ exports.removeChair = function(req, res) {
   if (validateId && validateChairId) {
     Shop.update({
       _id: req.body._id,
-      "chairs._id":req.body.chair_id
+      "chairs._id": req.body.chair_id
     }, {
-      $set: {"chairs.$.isActive":false}
+      $set: {
+        "chairs.$.isActive": false
+      }
     }).exec(function(errInDelete, resultInDelete) {
       if (errInDelete) {
         res.status(400).send({
           msg: 'Error in deleting chair.'
         });
       } else {
-          res.status(200).send({
-            msg: 'Chair successfully deleted.'
-          });
+        res.status(200).send({
+          msg: 'Chair successfully deleted.'
+        });
       }
     })
   } else {
@@ -719,18 +697,21 @@ exports.removeChair = function(req, res) {
   }
 }
 
-exports.getUserType = function(req,res){
-  userTypes.find({isDeleted:false},{isDeleted:0},function(err,data){
-    if(err){
-       res.status(400).send({
-          msg: constantObj.messages.errorRetreivingData
-        });
-    }
-    else{
-       res.status(200).send({
-          msg: constantObj.messages.successRetreivingData,
-          data:data
-        });
+exports.getUserType = function(req, res) {
+  userTypes.find({
+    isDeleted: false
+  }, {
+    isDeleted: 0
+  }, function(err, data) {
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.errorRetreivingData
+      });
+    } else {
+      res.status(200).send({
+        msg: constantObj.messages.successRetreivingData,
+        data: data
+      });
     }
   })
 }

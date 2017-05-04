@@ -184,13 +184,7 @@ exports.accountPut = function(req, res, next) {
   if ('password' in req.body) {
     req.assert('password', 'Password must be at least 4 characters long').len(6);
     req.assert('confirm', 'Passwords must match').equals(req.body.password);
-  } else {
-    req.assert('email', 'Email is not valid').isEmail();
-    req.assert('email', 'Email cannot be blank').notEmpty();
-    req.sanitize('email').normalizeEmail({
-      remove_dots: false
-    });
-  }
+  } 
 
   var errors = req.validationErrors();
 
@@ -205,8 +199,16 @@ exports.accountPut = function(req, res, next) {
     if ('password' in req.body) {
       user.password = req.body.password;
     } else {
-      user.email = req.body.email;
-      user.name = req.body.name;
+      // user.email = req.body.email;
+      if(req.body.first_name){
+        user.first_name = req.body.first_name;  
+      }
+      if(req.body.last_name){
+        user.last_name = req.body.last_name;  
+      }
+      if(req.body.mobile_number){
+       user.mobile_number = req.body.mobile_number; 
+      }
       user.gender = req.body.gender;
       user.location = req.body.location;
       user.website = req.body.website;

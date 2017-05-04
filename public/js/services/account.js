@@ -5,16 +5,16 @@ angular.module('BarbrDoApp')
         return $http.post('/api/v1/account', data);
       },
       changePassword: function(data) {
-        return $http.put('/account', data);
+        return $http.put('/api/v1/account', data);
       },
       deleteAccount: function() {
-        return $http.delete('/account');
+        return $http.delete('/api/v1/account');
       },
       forgotPassword: function(data) {
-        return $http.post('/forgot', data);
+        return $http.post('/api/v1/forgot', data);
       },
       resetPassword: function(data) {
-        return $http.post('/reset', data);
+        return $http.post('/api/v1/reset', data);
       }
     };
   });

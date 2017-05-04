@@ -43,3 +43,6 @@ public/uploadedFiles/
 #environment and db files
 db.js
 .env
+
+
+*.DS_Store

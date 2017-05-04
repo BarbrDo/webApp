@@ -11,6 +11,7 @@ var objectID = require('mongodb').ObjectID;
 var constantObj = require('./../constants.js');
 let userTypes = require('../models/user_type');
 let commonObj = require('../common/common');
+var mg = require('nodemailer-mailgun-transport');
 
 function generateToken(user) {
   var payload = {
@@ -39,6 +40,7 @@ exports.ensureAuthenticated = function(req, res, next) {
  * Sign in with email and password
  */
 exports.loginPost = function(req, res, next) {
+  console.log("asdfsdfsdf");
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('password', 'Password cannot be blank').notEmpty();
@@ -133,7 +135,7 @@ exports.signupPost = function(req, res, next) {
 
     let email_encrypt = commonObj.encrypt(req.body.email);
     let generatedText = commonObj.makeid();
-    saveData.user_type ="customer" //customer id
+    // saveData.user_type ="customer" //customer id
     saveData.randomString = generatedText;
     User(saveData).save(function(err, data) {
       if (err) {
@@ -200,7 +202,7 @@ exports.accountPut = function(req, res, next) {
       });
   }
 
-  User.findById(req.user.id, function(err, user) {
+  User.findById(req.body._id, function(err, user) {
     if ('password' in req.body) {
       user.password = req.body.password;
     } else {
@@ -279,7 +281,10 @@ exports.unlink = function(req, res, next) {
 /**
  * POST /forgot
  */
+
+
 exports.forgotPost = function(req, res, next) {
+  console.log("forgot post is working");
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.sanitize('email').normalizeEmail({
@@ -294,6 +299,13 @@ exports.forgotPost = function(req, res, next) {
       err:errors
       });
   }
+
+  var auth = {
+  auth: {
+    api_key: 'key-1b5eaf0ccfc850d04b716ed2f8b7a532',
+    domain: 'sandbox7a72418c6b52447db831f142257172bb.mailgun.org'
+  }
+}
 
   async.waterfall([
     function(done) {
@@ -311,6 +323,7 @@ exports.forgotPost = function(req, res, next) {
             msg: 'The email address ' + req.body.email + ' is not associated with any account.'
           });
         }
+        console.log("not user working");
         user.passwordResetToken = token;
         user.passwordResetExpires = Date.now() + 3600000; // expire in 1 hour
         user.save(function(err) {
@@ -319,13 +332,18 @@ exports.forgotPost = function(req, res, next) {
       });
     },
     function(token, user, done) {
-      var transporter = nodemailer.createTransport({
-        service: 'Mailgun',
-        auth: {
-          user: process.env.MAILGUN_USERNAME,
-          pass: process.env.MAILGUN_PASSWORD
-        }
-      });
+      console.log("user information",user);
+      try{
+
+        var nodemailerMailgun = nodemailer.createTransport(mg(auth));
+
+      //   var transporter = nodemailer.createTransport({
+      //   service: 'Mailgun',
+      //   auth: {
+      //     user: process.env.MAILGUN_USERNAME,
+      //     pass: process.env.MAILGUN_PASSWORD
+      //   }
+      // });
       var mailOptions = {
         to: user.email,
         from: 'support@barbrdo.com',
@@ -335,12 +353,22 @@ exports.forgotPost = function(req, res, next) {
           'http://' + req.headers.host + '/reset/' + token + '\n\n' +
           'If you did not request this, please ignore this email and your password will remain unchanged.\n'
       };
-      transporter.sendMail(mailOptions, function(err) {
+      nodemailerMailgun.sendMail(mailOptions, function(err,info) {
+        if(err){
+          console.log(err);
+        }
+        else{
+          console.log(info);
+        }
         res.send({
           msg: 'An email has been sent to ' + user.email + ' with further instructions.'
         });
         done(err);
       });
+      }
+      catch(e){
+        console.log(e);
+      }
     }
   ]);
 };

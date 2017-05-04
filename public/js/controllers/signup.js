@@ -6,6 +6,7 @@ angular.module('BarbrDoApp')
           $auth.setToken(response);
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
+          $('#signup').modal('hide');
           $location.path('/');
         })
         .catch(function(response) {
@@ -20,6 +21,7 @@ angular.module('BarbrDoApp')
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
+           $('#signup').modal('hide');
           $location.path('/');
         })
         .catch(function(response) {

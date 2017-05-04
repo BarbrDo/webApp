@@ -11,7 +11,7 @@ var userSchema = new mongoose.Schema({
      ref:'users'
     },
   first_name: String,
-  last_name:String
+  last_name:String,
   salutation: String,
   email: {
     type: String,

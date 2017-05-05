@@ -39,7 +39,8 @@ exports.takeAppointment = function(req, res) {
 		shopName = result;
 		findUserId(req.headers.user_id, function(result) {
 			customerName = result
-		});
+			console.log("customerName",customerName)
+		
 		findUserId(req.body.barber_id, function(result) {
 			barberName = result;
 			console.log("barberName,customerName,shopName", barberName, customerName, shopName);
@@ -50,6 +51,8 @@ exports.takeAppointment = function(req, res) {
 			saveData.barber_name =  barberName;
 			saveData.customer_id= req.headers.user_id;
 			
+			console.log(saveData);
+
 			appointment(saveData).save(function(err, data) {
 				if (err) {
 					return res.status(400).send({
@@ -63,6 +66,7 @@ exports.takeAppointment = function(req, res) {
 				}
 			})
 		});
+		});
 	});
 }
 
@@ -74,8 +78,8 @@ var findUserId = function(id, cb) {
 			console.log("err in FindUserId", err);
 		} else {
 			if (result) {
-				// console.log(result.first_name);
-				cb(result.first_name + " " + result.last_name);;
+				// console.log("customer "result.first_name);
+				cb(result.first_name + " " + result.last_name);
 			} else {
 				var allResult = ""
 				cb(allResult)
@@ -122,7 +126,7 @@ exports.customerAppointments = function(req, res) {
 		"appointment_date": {
 			$gte: currentDate
 		}
-	}).populate('barber_id', 'first_name last_name ratings').populate('shop_id', 'name address city state gallery').exec(function(err, result) {
+	}).populate('barber_id', 'first_name last_name ratings picture').populate('shop_id', 'name address city state gallery').exec(function(err, result) {
 		if (err) {
 			return res.status(400).send({
 				msg: constantObj.messages.errorRetreivingData

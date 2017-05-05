@@ -1,7 +1,7 @@
 var shop = require('../models/shop');
 var constantObj = require('./../constants.js');
 
-exports.editShop = function (req, res) {
+exports.editShop = function(req, res) {
     var updateData = JSON.parse(JSON.stringify(req.body));
     updateData.modified_date = new Date();
     delete updateData._id;
@@ -10,8 +10,7 @@ exports.editShop = function (req, res) {
         for (var i = 0; i < req.files.length; i++) {
             if (req.files[i].fieldname == 'image') {
                 updateData.image = req.files[i].filename;
-            }
-            else {
+            } else {
                 var obj = {};
                 obj.name = req.files[i].filename;
                 userimg.push(obj);
@@ -19,10 +18,13 @@ exports.editShop = function (req, res) {
         }
         updateData.gallery = userimg;
     }
-    // console.log("updateData",updateData);
+    if (req.headers.device_latitude && req.headers.device_longitude) {
+        updateData.latLong = [req.headers.device_longitude, req.headers.device_latitude]
+    }
+    console.log("updateData",updateData);
     shop.update({
         _id: req.body._id
-    }, updateData, function (err, data) {
+    }, updateData, function(err, data) {
         if (err) {
             res.status(400).send({
                 msg: 'Error in updating data.',
@@ -30,7 +32,7 @@ exports.editShop = function (req, res) {
             });
         } else {
             res.status(200).send({
-                msg: 'Successfully updated fields.',
+                msg: 'Successfully updated fieldssss.',
                 "data": data
             });
         }

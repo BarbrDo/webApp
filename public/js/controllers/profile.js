@@ -3,6 +3,7 @@ angular.module('BarbrDoApp')
     $scope.profile = $rootScope.currentUser;
 
     $scope.updateProfile = function() {
+      console.log($scope.profile);
       Account.updateProfile($scope.profile)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;

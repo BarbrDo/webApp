@@ -23,21 +23,37 @@ angular.module('BarbrDoApp', ['ngRoute', 'satellizer'])
       .when('/account', {
         templateUrl: 'partials/profile.html',
         controller: 'ProfileCtrl',
-        resolve: { loginRequired: loginRequired }
+        resolve: {
+          loginRequired: loginRequired
+        }
       })
       .when('/forgot', {
         templateUrl: 'partials/forgot.html',
         controller: 'ForgotCtrl',
-        resolve: { skipIfAuthenticated: skipIfAuthenticated }
+        resolve: {
+          skipIfAuthenticated: skipIfAuthenticated
+        }
       })
       .when('/reset/:token', {
         templateUrl: 'partials/reset.html',
         controller: 'ResetCtrl',
-        resolve: { skipIfAuthenticated: skipIfAuthenticated }
+        resolve: {
+          skipIfAuthenticated: skipIfAuthenticated
+        }
       })
-      .otherwise({
-        templateUrl: 'partials/404.html'
-      });
+
+    .when('/barbershops', {
+        templateUrl: 'partials/barbershops.html',
+        controller: 'ShopCtrl'
+      })
+      .when('/shopdetails/:_id', {
+        templateUrl: 'partials/shopdetails.html',
+        controller: 'ShopCtrl'
+      })
+
+    .otherwise({
+      templateUrl: 'partials/404.html'
+    });
 
     $authProvider.loginUrl = '/api/v1/login';
     $authProvider.signupUrl = '/api/v1/signup';

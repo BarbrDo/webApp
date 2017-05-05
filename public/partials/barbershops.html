@@ -1,0 +1,41 @@
+
+<div>
+     <font color="green">
+    <h2 align="center"><font color="orange">SHOPS</h2></font>
+    <br><br> 
+    </font>    
+       <div  class="row list-group">
+        <div class="item  col-xs-4 col-lg-3" ng-repeat="shop in shops">
+            <div class="thumbnail">
+                <img class="group list-group-image" src="/images/shop.jpg"  />
+                <div class="caption">
+                    <h4 class="group inner list-group-item-heading" align="center"><b>
+                       <font color="red"> {{shop.name}} </font></b></h4>
+                        <hr/>
+                    
+                    <table>
+                    <tr>
+                        <td><h5>NO. OF CHAIRS </h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shop.chairs.length}}</td>
+                    </tr>
+                    <tr>
+                        <td><h5>DISTANCE</h5></td>
+                        <td>{{shop.dist}}</td>
+                    </tr>
+                     </table>
+                     
+                      
+                       
+
+                    <div class="row">
+                        
+                        <div class="col-xs-12 col-md-6" align="right">
+                            <button class="btn btn-success" ng-click="shopdetails(shop)" >Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+     
+

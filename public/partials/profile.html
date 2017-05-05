@@ -31,17 +31,17 @@
           <label class="col-sm-3">Gender</label>
           <div class="col-sm-4">
             <label class="radio-inline radio col-sm-4">
-              <input type="radio" name="gender" value="male" ng-checked="profile.gender === 'male'"><span>Male</span>
+              <input type="radio" name="gender" value="male" ng-model="profile.gender"><span>Male</span>
             </label>
             <label class="radio-inline col-sm-4">
-              <input type="radio" name="gender" value="female" ng-checked="profile.gender === 'female'"><span>Female</span>
+              <input type="radio" name="gender" value="female" ng-model="profile.gender"><span>Female</span>
             </label>
           </div>
         </div>
         <div class="form-group">
           <label for="mobilenumber" class="col-sm-3">Mobile Number</label>
           <div class="col-sm-7">
-            <input type="number" name="mobile_number" id="mobile_number" class="form-control" ng-model="profile.mobile_number">
+            <input type="text" name="mobile_number" id="mobile_number" class="form-control" ng-model="profile.mobile_number">
           </div>
         </div>
         <div class="form-group">

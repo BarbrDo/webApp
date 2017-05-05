@@ -16,7 +16,10 @@ var shopSchema = new mongoose.Schema({
         index: '2dsphere'
     },
     phone: Number,
-    license_number: String,
+    license_number: {
+        type: String,
+        required: true
+    },
     created_date: {
         type: Date,
         default: Date.now()

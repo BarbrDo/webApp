@@ -400,7 +400,7 @@ module.exports = function (app, express) {
  *            properties:
  *              id:
  *                type: "string"
- *                default: ""
+ *                default: "590bfe409e74bc91bc044a66"
  *        appointment_date:
  *          type: "date"
  *          default: "2017-07-10 10:00:00"

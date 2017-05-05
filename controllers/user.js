@@ -7,6 +7,7 @@ var request = require('request');
 var qs = require('querystring');
 var User = require('../models/User');
 var Shop = require('../models/shop');
+var Barber = require('../models/barber');
 var objectID = require('mongodb').ObjectID;
 var constantObj = require('./../constants.js');
 let userTypes = require('../models/user_type');
@@ -98,6 +99,10 @@ exports.signupPost = function(req, res, next) {
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('mobile_number', 'Mobile number cannot be blank').notEmpty();
   req.assert('password', 'Password must be at least 6 characters long').len(6);
+  req.assert('user_type', 'User type cannot be blank').notEmpty();
+  if (req.body.user_type == 'shop' || req.body.user_type == 'barber') {
+      req.assert('license_number', 'License number cannot be blank').notEmpty();
+  }
 
   req.sanitize('email').normalizeEmail({
     remove_dots: false
@@ -134,7 +139,7 @@ exports.signupPost = function(req, res, next) {
 
     let email_encrypt = commonObj.encrypt(req.body.email);
     let generatedText = commonObj.makeid();
-    // saveData.user_type ="customer" //customer id
+    
     saveData.randomString = generatedText;
     User(saveData).save(function(err, data) {
       if (err) {
@@ -143,7 +148,7 @@ exports.signupPost = function(req, res, next) {
         })
       } else {
         var resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
-        if (req.body.typeOfUser == 'barber shop') {
+        if (req.body.user_type == 'shop') {
           var saveDataForShop = {};
           saveDataForShop.user_id = data._id
           saveDataForShop.license_number = req.body.license_number;
@@ -161,13 +166,30 @@ exports.signupPost = function(req, res, next) {
               });
             }
           })
+        } else if(req.body.user_type == 'barber') {
+          var saveDataForBarber = {};
+          saveDataForBarber.user_id = data._id
+          saveDataForBarber.license_number = req.body.license_number;
+          Barber(saveDataForBarber).save(function(errSaveBarber, barberData) {
+            if (errSaveBarber) {
+              return res.status(400).send({
+                msg: constantObj.messages.errorInSave
+              })
+            } else {
+              res.status(200).send({
+                msg: "Activate your account on the given link.",
+                link: resetUrl,
+                token: generateToken(barberData),
+                data: barberData
+              });
+            }
+          })
         } else {
           res.send({
             msg: "Activate your account on the given link.",
             link: resetUrl,
             token: generateToken(data),
             user: data.toJSON()
-              // data: data
           });
         }
       }

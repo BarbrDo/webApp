@@ -13,6 +13,18 @@ angular.module('BarbrDoApp')
       forgotPassword: function(data) {
         return $http.post('/api/v1/forgot', data);
       },
+      shopList: function(data) {
+        return $http({
+          method: 'GET',
+          url: '/api/v1/shops',
+          headers: {
+            'device_latitude': data.latitude,
+            'device_longitude': data.longitude
+          }
+        },data);
+
+        // return $http.get('/api/v1/shops', data);
+      },
       resetPassword: function(data) {
         return $http.post('/api/v1/reset', data);
       }

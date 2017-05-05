@@ -62,6 +62,8 @@ module.exports = function (app, express) {
 //
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
     app.post('/api/v1/contact', contactController.contactPost);
+
+    app.post('/api/v1/shopContainsBarber',customerController.shopContainsBarber);
 }
 
 /**

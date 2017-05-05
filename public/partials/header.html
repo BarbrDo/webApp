@@ -144,6 +144,12 @@
           <input type="radio" ng-model="user.user_type" value="shop">
           Barber Shop
         </label>
+        <div ng-if="user.user_type=='shop' || user.user_type=='barber'" class="form-group">
+          <label for="mobilenumber">LICENSE NUMBER</label>
+          <input type="text" name="license_number" id="license_number" placeholder="License number" class="form-control" ng-model="user.license_number">
+       
+
+        </div>
         <div class="form-group">
           <small class="text-muted">By signing up, you agree to the <a href="/" ng-click="hideModal()">Terms of Service</a>.</small>
         </div>

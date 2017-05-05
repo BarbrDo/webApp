@@ -162,7 +162,7 @@ exports.signupPost = function(req, res, next) {
                 msg: "Activate your account on the given link.",
                 link: resetUrl,
                 token: generateToken(shopData),
-                data: shopData
+                user: shopData
               });
             }
           })
@@ -180,7 +180,7 @@ exports.signupPost = function(req, res, next) {
                 msg: "Activate your account on the given link.",
                 link: resetUrl,
                 token: generateToken(barberData),
-                data: barberData
+                user: barberData
               });
             }
           })
@@ -221,6 +221,9 @@ exports.accountPut = function(req, res, next) {
     if ('password' in req.body) {
       user.password = req.body.password;
     } else {
+      // var saveObject = 
+      // user.email = req.body.email;
+
       if(req.body.first_name){
         user.first_name = req.body.first_name;  
       }
@@ -230,10 +233,14 @@ exports.accountPut = function(req, res, next) {
       if(req.body.mobile_number){
        user.mobile_number = req.body.mobile_number; 
       }
+      console.log(req.body.gender);
       user.gender = req.body.gender;
       user.location = req.body.location;
       user.website = req.body.website;
     }
+
+    console.log("user information",user);
+
     user.save(function(err) {
       if ('password' in req.body) {
         res.send({

@@ -318,6 +318,78 @@ module.exports = function (app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
+ *   /barbers:
+ *     get:
+ *       tags:
+ *       - "barber"
+ *       summary: "List all barbers"
+ *       description: "List all barbers"
+ *       operationId: "barbers"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5909d7bca8af707ab3c1396c"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *     get?{shop_id}:
+ *       tags:
+ *       - "barber"
+ *       summary: "Show my all booked future appointments"
+ *       description: "Show my all booked future appointments"
+ *       operationId: "getappointment"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5909d7bca8af707ab3c1396c"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *           
  * definitions:
  *    User:
  *     type: "object"

@@ -221,7 +221,6 @@ exports.accountPut = function(req, res, next) {
     if ('password' in req.body) {
       user.password = req.body.password;
     } else {
-      // user.email = req.body.email;
       if(req.body.first_name){
         user.first_name = req.body.first_name;  
       }

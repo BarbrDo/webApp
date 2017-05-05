@@ -111,13 +111,13 @@ exports.signupPost = function(req, res, next) {
       err: errors
     });
   }
-
   User.findOne({
     email: req.body.email
   }, function(err, user) {
     if (user) {
       return res.status(400).send({
-        msg: 'The email address you have entered is already associated with another account.'
+        msg: 'The email address you have entered is already associated with another account.',
+        err:[{msg:"The email address you have entered is already associated with another account."}]
       });
     }
     var saveData = req.body;

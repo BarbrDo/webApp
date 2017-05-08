@@ -93,8 +93,8 @@ exports.loginPost = function(req, res, next) {
  * POST /signup
  */
 exports.signupPost = function(req, res, next) {
-  req.assert('first_name', 'First name cannot be blank.').notEmpty();
-  req.assert('last_name', 'Last name cannot be blank.').notEmpty();
+  // req.assert('first_name', 'First name cannot be blank.').notEmpty();
+  // req.assert('last_name', 'Last name cannot be blank.').notEmpty();
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('mobile_number', 'Mobile number cannot be blank').notEmpty();

@@ -7,6 +7,7 @@ angular.module('BarbrDoApp')
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
           $('#signup').modal('hide');
+          $scope.user = {};
           $location.path('/');
         })
         .catch(function(response) {

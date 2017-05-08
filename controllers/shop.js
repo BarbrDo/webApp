@@ -21,7 +21,7 @@ exports.editShop = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
         updateData.latLong = [req.headers.device_longitude, req.headers.device_latitude]
     }
-    console.log("updateData",updateData);
+    console.log("updateData", updateData);
     shop.update({
         _id: req.body._id
     }, updateData, function(err, data) {
@@ -38,3 +38,191 @@ exports.editShop = function(req, res) {
         }
     })
 }
+exports.shopContainsBarber = function(req, res) {
+    console.log("params", req.params);
+    console.log("query", req.query);
+    return false;
+    req.assert('shop_id', 'Shop id is required').notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    shop.find({
+        _id: req.body.shop_id
+    }).populate('chairs.barber_id').exec(function(err, result) {
+        if (err) {
+            return res.status(400).send({
+                msg: "error in your request",
+                err: errors
+            });
+        } else {
+            res.status(200).send({
+                "msg": constantObj.messages.successRetreivingData,
+                "data": result
+            })
+        }
+    })
+}
+exports.allShops = function(req, res) {
+    if (req.headers.device_latitude && req.headers.device_longitude) {
+        var long = parseFloat(req.headers.device_longitude);
+        var lati = parseFloat(req.headers.device_latitude);
+        var maxDistanceToFind = 500000;
+        shop.aggregate([{
+            $geoNear: {
+                near: {
+                    type: "Point",
+                    coordinates: [long, lati]
+                },
+                distanceField: "dist.calculated",
+                maxDistance: maxDistanceToFind,
+                includeLocs: "dist.location",
+                spherical: true
+            }
+        }, {
+            $unwind: "$chairs"
+        }, {
+            $lookup: {
+                from: "users",
+                localField: "chairs.barber_id",
+                foreignField: "_id",
+                as: "barberInformation"
+            }
+        }]).exec(function(err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+                let resultTantArray = [];
+                for (var i = 0; i < data.length; i++) {
+                    var obj = {};
+                    var totalbarbers = 0;
+                    for (var j = 0; j < data.length; j++) {
+                        if (data[i]._id == data[j]._id && data[j].barberInformation.length > 0) {
+                            ++totalbarbers
+                        }
+                    }
+                    if (totalbarbers > 0) {
+                        obj.shopName = data[i].name;
+                        obj.gallery = data[i].gallery;
+                        obj.distance = data[i].dist.calculated;
+                        obj.barbers = totalbarbers
+
+                        resultTantArray.push(obj);
+                    }
+                }
+                res.status(200).send({
+                    "msg": constantObj.messages.successRetreivingData,
+                    "data": resultTantArray
+                })
+            }
+        })
+
+    } else {
+        res.status(400).send({
+            "msg": constantObj.messages.requiredFields
+        })
+    }
+}
+
+exports.allBarbers = function(req, res) {
+        if (req.headers.device_latitude && req.headers.device_longitude) {
+            var long = parseFloat(req.headers.device_longitude);
+            var lati = parseFloat(req.headers.device_latitude);
+            var maxDistanceToFind = 500000;
+            shop.aggregate([{
+                $geoNear: {
+                    near: {
+                        type: "Point",
+                        coordinates: [long, lati]
+                    },
+                    distanceField: "dist.calculated",
+                    maxDistance: maxDistanceToFind,
+                    includeLocs: "dist.location",
+                    spherical: true
+                }
+            }, {
+                $unwind: "$chairs"
+            }, {
+                $lookup: {
+                    from: "users",
+                    localField: "chairs.barber_id",
+                    foreignField: "_id",
+                    as: "barberInformation"
+                }
+            }]).exec(function(err, data) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    let resultTantArray = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var obj = {};
+                        if (data[i].barberInformation.length > 0) {
+                            obj.first_name = data[i].barberInformation[0].first_name;
+                            obj.last_name = data[i].barberInformation[0].last_name;
+                            obj.createdAt = data[i].barberInformation[0].created_date;
+                            obj.rating = data[i].barberInformation[0].ratings;
+                            obj.location = data[i].name
+                            resultTantArray.push(obj);
+                        }
+                    }
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": resultTantArray
+                    })
+                }
+            })
+
+        } else {
+            res.status(400).send({
+                "msg": constantObj.messages.requiredFields
+            })
+        }
+    }
+    // var refineDataForShop = function(req,res,data) {
+    //     let resultTantArray = [];
+    //     for (var i = 0; i < data.length; i++) {
+    //         var obj = {};
+    //         var totalbarbers = 0;
+    //         for (var j = 0; j < data.length; j++) {
+    //             if (data[i]._id == data[j]._id && data[j].barberInformation.length > 0) {
+    //                 ++totalbarbers
+    //             }
+    //         }
+    //         if (totalbarbers > 0) {
+    //             obj.shopName = data[i].name;
+    //             obj.gallery = data[i].gallery;
+    //             obj.distance = data[i].dist.calculated;
+    //             obj.barbers = totalbarbers
+
+//             resultTantArray.push(obj);
+//         }
+//     }
+//     res.status(200).send({
+//         "msg": constantObj.messages.successRetreivingData,
+//         "data": resultTantArray
+//     })
+
+// }
+
+// var refineDataForBarbers = function(req, res, data) {
+//     console.log("data", data.length);
+//     let resultTantArray = [];
+//     for (var i = 0; i < data.length; i++) {
+//         var obj = {};
+//         if (data[i].barberInformation.length > 0) {
+//             obj.first_name = data[i].barberInformation[0].first_name;
+//             obj.last_name = data[i].barberInformation[0].last_name;
+//             obj.createdAt = data[i].barberInformation[0].created_date;
+//             obj.rating = data[i].barberInformation[0].ratings;
+//             obj.location = data[i].name
+//             resultTantArray.push(obj);
+//         }
+//     }
+//     res.status(200).send({
+//         "msg": constantObj.messages.successRetreivingData,
+//         "data": resultTantArray
+//     })
+// }

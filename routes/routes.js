@@ -57,6 +57,7 @@ module.exports = function (app, express) {
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
 
 //Barber
+    app.post('/api/v1/barber/:id', chairRequestController.requestChair);
     app.post('/api/v1/requestChair', chairRequestController.requestChair);
     app.post('/api/v1/bookChair', chairRequestController.bookChair);
 //
@@ -318,7 +319,7 @@ module.exports = function (app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
- *   /barbers:
+ *   /barber:
  *     get:
  *       tags:
  *       - "barber"
@@ -354,12 +355,13 @@ module.exports = function (app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
- *     get?{shop_id}:
+ *   /barber?id=590829388e6a4812ece58e75:  
+ *     get:
  *       tags:
  *       - "barber"
- *       summary: "Show my all booked future appointments"
- *       description: "Show my all booked future appointments"
- *       operationId: "getappointment"
+ *       summary: "Get details of specific barber"
+ *       description: "Get barber details like info, rating & comments, galleries"
+ *       operationId: "getsinglebarber"
  *       produces:
  *       - "application/json"
  *       parameters:
@@ -390,6 +392,42 @@ module.exports = function (app, express) {
  *         400:
  *           description: "Invalid request"
  *           
+ *   /barber?shop_id=590829388e6a4812ece58e75:  
+ *     get:
+ *       tags:
+ *       - "barber"
+ *       summary: "Show all barbers related to shop"
+ *       description: "Show all barber related to shop"
+ *       operationId: "getshopbarber"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5901e07846c94a225018d5cc"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"      
  * definitions:
  *    User:
  *     type: "object"

@@ -1,9 +1,9 @@
-module.exports = function (app, express) {
+module.exports = function(app, express) {
     let router = express.Router();
     let User = require('../models/User');
     let jwt = require('jsonwebtoken');
-    app.use(function (req, res, next) {
-        req.isAuthenticated = function () {
+    app.use(function(req, res, next) {
+        req.isAuthenticated = function() {
             var token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
             try {
                 console.log("token", token);
@@ -16,10 +16,10 @@ module.exports = function (app, express) {
     });
     var multer = require('multer');
     var storage = multer.diskStorage({
-        destination: function (req, file, cb) {
+        destination: function(req, file, cb) {
             cb(null, './public/uploadedFiles/')
         },
-        filename: function (req, file, cb) {
+        filename: function(req, file, cb) {
             cb(null, Date.now() + file.originalname.substr(file.originalname.lastIndexOf("."), file.originalname.length))
         }
     })
@@ -30,42 +30,57 @@ module.exports = function (app, express) {
     // Controllers
     let userController = require('./../controllers/user');
     let contactController = require('./../controllers/contact');
-    let customerController = require('./../controllers/customer');
+    // let customerController = require('./../controllers/customer');
     let shopController = require('./../controllers/shop');
     let chairRequestController = require('./../controllers/chair_request');
     let appointmentController = require('./../controllers/appointment');
-//Users
+    let barberServices = require('./../controllers/barber');
+    //Users
     app.post('/api/v1/signup', userController.signupPost);
     app.post('/api/v1/login', userController.loginPost);
     app.post('/api/v1/forgot', userController.forgotPost);
-    app.post('/api/v1/account', userController.ensureAuthenticated, userController.accountPut);
+    app.put('/api/v1/account', userController.ensureAuthenticated, userController.accountPut);
     app.delete('/api/v1/account', userController.ensureAuthenticated, userController.accountDelete);
     app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);
     app.post('/auth/facebook', userController.authFacebook);
     app.get('/auth/facebook/callback', userController.authFacebookCallback);
     app.post('/auth/google', userController.authGoogle);
     app.get('/auth/google/callback', userController.authGoogleCallback);
-//
     app.post('/reset/:token', userController.resetPost);
-//Shops
-    app.get('/api/v1/shops', customerController.allShops);
+    
+    //Shops
+    app.get('/api/v1/shops', shopController.allShops);
     app.put('/api/v1/shops', upload.any(), shopController.editShop);
-    app.post('/api/v1/addChair', userController.addChair)
-    app.post('/api/v1/removeChair', userController.removeChair);
-//Customer
-    app.post('/api/v1/appointment', appointmentController.takeAppointment); //Book Appointment
-    app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
+    app.post('/api/v1/shops/chair', userController.addChair)
+    app.delete('/api/v1/shops/chair', userController.removeChair);
+    
+    
+    app.get('/api/v1/barber/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
 
-//Barber
+    //Customer
+    app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
+    app.post('/api/v1/appointment', appointmentController.takeAppointment); //Book Appointment
+    
+    //Barber
+    app.get('/api/v1/barbers', shopController.allBarbers); //Get all barbers
+    app.get('/api/v1/barber/:id',barberServices.viewBarberProfile);//Get specific barber's detail
+    
+    app.get('/api/v1/barberService/:id',barberServices.viewAllServiesOfBarber); // Get barber's services
+    
     app.post('/api/v1/requestChair', chairRequestController.requestChair);
     app.post('/api/v1/bookChair', chairRequestController.bookChair);
-//
+    // app.get('/api/v1/barber',barberServices,getAllBarbers); //Get all barbers - radius search
+
+    app.post('/api/v1/barberService', barberServices.addBarberServices); //Add new service in barber
+    
+    
+
+
+    //Others
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
     app.post('/api/v1/contact', contactController.contactPost);
 
-    app.post('/api/v1/shopContainsBarber',customerController.shopContainsBarber);
 }
-
 /**
  * @swagger
  * info:
@@ -123,7 +138,7 @@ module.exports = function (app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid username/password supplied"
-  *   /forgot:
+ *   /forgot:
  *     post:
  *       tags:
  *       - "user"
@@ -144,6 +159,32 @@ module.exports = function (app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid username/password supplied"
+ *   /account:
+ *     put:
+ *       tags:
+ *       - "user"
+ *       summary: "Create user"
+ *       description: "This can only be done by the logged in user."
+ *       operationId: "createUser"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "59072e9a2fe2cb0f2cafa060"
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Created user object"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/User"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
  *   /shops:
  *     get:
  *       tags:
@@ -171,17 +212,6 @@ module.exports = function (app, express) {
  *       responses:
  *         200:
  *           description: "successful operation"
- *           schema:
- *             type: "string"
- *           headers:
- *             X-Rate-Limit:
- *               type: "integer"
- *               format: "int32"
- *               description: "calls per hour allowed by the user"
- *             X-Expires-After:
- *               type: "string"
- *               format: "date-time"
- *               description: "date in UTC when token expires"
  *         400:
  *           description: "Invalid request"
  *     put:
@@ -228,17 +258,89 @@ module.exports = function (app, express) {
  *       responses:
  *         200:
  *           description: "successful operation"
- *           schema:
- *             type: "string"
- *           headers:
- *             X-Rate-Limit:
- *               type: "integer"
- *               format: "int32"
- *               description: "calls per hour allowed by the user"
- *             X-Expires-After:
- *               type: "string"
- *               format: "date-time"
- *               description: "date in UTC when token expires"
+ *         400:
+ *           description: "Invalid request"
+ *   /shops/chair:
+ *     post:
+ *       tags:
+ *       - "shop"
+ *       summary: "Add chair"
+ *       description: "Add chair to shop"
+ *       operationId: "addChair"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "59072e9a2fe2cb0f2cafa060"
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Send shop id"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/addChair"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *     delete:
+ *       tags:
+ *       - "shop"
+ *       summary: "Delete chair"
+ *       description: "Delete chair from shop"
+ *       operationId: "deleteChair"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "59072e9a2fe2cb0f2cafa060"
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Send shop id and chair id"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/deleteChair"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
  *   /appointment:
@@ -318,7 +420,7 @@ module.exports = function (app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
- *   /barbers:
+ *   /barber:
  *     get:
  *       tags:
  *       - "barber"
@@ -354,12 +456,13 @@ module.exports = function (app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
- *     get?{shop_id}:
+ *   /barber?id=590829388e6a4812ece58e75:  
+ *     get:
  *       tags:
  *       - "barber"
- *       summary: "Show my all booked future appointments"
- *       description: "Show my all booked future appointments"
- *       operationId: "getappointment"
+ *       summary: "Get details of specific barber"
+ *       description: "Get barber details like info, rating & comments, galleries"
+ *       operationId: "getsinglebarber"
  *       produces:
  *       - "application/json"
  *       parameters:
@@ -390,6 +493,78 @@ module.exports = function (app, express) {
  *         400:
  *           description: "Invalid request"
  *           
+ *   /barber?shop_id=590829388e6a4812ece58e75:  
+ *     get:
+ *       tags:
+ *       - "barber"
+ *       summary: "Show all barbers related to shop"
+ *       description: "Show all barber related to shop"
+ *       operationId: "getshopbarber"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5901e07846c94a225018d5cc"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"      
+ *   /barberService?id=590829388e6a4812ece58e75:  
+ *     get:
+ *       tags:
+ *       - "barber"
+ *       summary: "Show all services of barbers"
+ *       description: "Show all services of barbers"
+ *       operationId: "getbarberservices"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5901e07846c94a225018d5cc"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"      
  * definitions:
  *    User:
  *     type: "object"
@@ -453,6 +628,21 @@ module.exports = function (app, express) {
  *         default: "160071"  
  *       image:
  *         type: "file"
+ *    addChair:
+ *      type: "object"
+ *      properties:
+ *       id:
+ *         type: "string"
+ *         default: "5901e07846c94a225018d5cc"  
+ *    deleteChair:
+ *      type: "object"
+ *      properties:
+ *       chair_id:
+ *         type: "string"
+ *         default: "5901f19c42207d26eaefb764" 
+ *       shop_id:
+ *         type: "string"
+ *         default: "5901e07846c94a225018d5cc"
  *    appointment:
  *      type: "object"
  *      properties:

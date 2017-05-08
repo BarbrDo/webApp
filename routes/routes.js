@@ -30,7 +30,7 @@ module.exports = function(app, express) {
     // Controllers
     let userController = require('./../controllers/user');
     let contactController = require('./../controllers/contact');
-    let customerController = require('./../controllers/customer');
+    // let customerController = require('./../controllers/customer');
     let shopController = require('./../controllers/shop');
     let chairRequestController = require('./../controllers/chair_request');
     let appointmentController = require('./../controllers/appointment');
@@ -49,26 +49,32 @@ module.exports = function(app, express) {
     //
     app.post('/reset/:token', userController.resetPost);
     //Shops
-    app.get('/api/v1/shops', customerController.allShops);
+    app.get('/api/v1/shops', shopController.allShops);
+
     app.put('/api/v1/shops', upload.any(), shopController.editShop);
     app.post('/api/v1/addChair', userController.addChair)
     app.post('/api/v1/removeChair', userController.removeChair);
+    app.get('/api/v1/barber/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
+
     //Customer
     app.post('/api/v1/appointment', appointmentController.takeAppointment); //Book Appointment
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
 
     //Barber
-    app.post('/api/v1/barber/:id', chairRequestController.requestChair);
-    app.post('/api/v1/requestChair', chairRequestController.requestChair);
-    app.post('/api/v1/bookChair', chairRequestController.bookChair);
-    
-    app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
-    app.post('/api/v1/contact', contactController.contactPost);
+    app.get('/api/v1/barbers', shopController.allBarbers);
+   app.post('/api/v1/requestChair', chairRequestController.requestChair);
+   app.post('/api/v1/bookChair', chairRequestController.bookChair);
+   // app.get('/api/v1/barber',barberServices,getAllBarbers); //Get all barbers - radius search
+   
+   app.post('/api/v1/barberService', barberServices.addBarberServices); //Add new service in barber
+   app.get('/api/v1/barberService/:id',barberServices.viewAllServiesOfBarber); // Get barber's services
+   app.get('/api/v1/barber/:id',barberServices.viewBarberProfile);//Get specific barber's detail
+   
 
-    app.post('/api/v1/shopContainsBarber', customerController.shopContainsBarber);
-    app.post('/api/v1/addBarberServices', barberServices.addBarberServices);
-    app.post('/api/v1/viewBarberProfile',barberServices.viewBarberProfile);
-    app.post('/api/v1/viewAllServiesOfBarber',barberServices.viewAllServiesOfBarber);
+   //Others
+   app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
+   app.post('/api/v1/contact', contactController.contactPost);
+
 }
 /**
  * @swagger

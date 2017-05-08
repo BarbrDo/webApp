@@ -9,6 +9,39 @@ exports.getBarber = function(req, res) {
         var long = parseFloat(req.headers.device_longitude);
         var lati = parseFloat(req.headers.device_latitude);
         var maxDistanceToFind = 500000;
+
+           // User.aggregate([{
+        //  $geoNear: {
+        //      near: {
+        //          type: "Point",
+        //          coordinates: [long, lati]
+        //      },
+        //      distanceField: "dist.calculated",
+        //      maxDistance: maxDistanceToFind,
+        //      query: {
+        //          user_type: "shop"
+        //      },
+        //      includeLocs: "dist.location",
+        //      spherical: true
+        //  }
+        // }, {
+        //  $lookup: {
+        //      from: "shops",
+        //      localField: "_id",
+        //      foreignField: "user_id",
+        //      as: "shop"
+        //  }
+        // }]).exec(function(err, data) {
+        //  if (err) {
+        //      console.log(err);
+        //  } else {
+        //      res.status(200).send({
+        //          "msg": constantObj.messages.successRetreivingData,
+        //          "data": data
+        //      })
+        //  }
+        // })
+
         res.status(200).send({
             "msg": "in progress",
             "data": "in progress"
@@ -90,6 +123,10 @@ exports.addBarberServices = function(req, res) {
 }
 
 exports.viewBarberProfile = function(req, res) {
+    console.log("return");
+    console.log("params",req.params);
+    console.log("query",req.query);
+    return false;
     req.assert("barber_id", "barber_id is required").notEmpty();
     var errors = req.validationErrors();
     if (errors) {

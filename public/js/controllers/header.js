@@ -3,7 +3,7 @@ angular.module('BarbrDoApp')
     $scope.isActive = function (viewLocation) {
       return viewLocation === $location.path();
     };
-    
+   
     $scope.isAuthenticated = function() {
       return $auth.isAuthenticated();
     };

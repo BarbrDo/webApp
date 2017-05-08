@@ -140,6 +140,9 @@ exports.customerAppointments = function(req, res) {
 	})
 }
 
+//Delete this function and use customerAppointments function only for both future and completed booking
+
+/*
 exports.customerCompletedAppointments = function(req, res) {
 	req.assert("customer_id", "Customer id cannot be blank").notEmpty();
 	var errors = req.validationErrors();
@@ -169,4 +172,4 @@ exports.customerCompletedAppointments = function(req, res) {
 			});
 		}
 	})
-}
+}*/

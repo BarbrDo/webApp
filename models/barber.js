@@ -23,6 +23,7 @@ var barberSchema = new mongoose.Schema({
             
         }
     ],
+    short_description:String,
     payment_methods: [
         {
             method: String,
@@ -57,6 +58,6 @@ var barberSchema = new mongoose.Schema({
 });
 
 
-var Barber = mongoose.model('barber', barberSchema);
+var Barber = mongoose.model('barbers', barberSchema);
 
 module.exports = Barber;

@@ -48,15 +48,24 @@ var userSchema = new mongoose.Schema({
         type: [Number], // longitude first and latitude after
         index: '2dsphere'
     },
-    payment_methods: [
-        {
-            method: String,
-            card_type: String,
-            is_primary: Boolean,
-            card_id: String,
-            first_name: String,
-            last_name: String,
-        }],
+    // payment_methods: [
+    //     {
+    //         method: String,
+    //         card_type: String,
+    //         is_primary: Boolean,
+    //         card_id: String,
+    //         first_name: String,
+    //         last_name: String,
+    //     }],
+    ratings:[{
+        "rated_by":String,
+        "rated_id":{
+            type: Schema.Types.ObjectId,
+            ref: 'users'
+        },
+        "score":Number,
+        "comments":String
+    }],
     created_date: {
         type: Date,
         default: Date.now()

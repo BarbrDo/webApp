@@ -1,9 +1,9 @@
-module.exports = function (app, express) {
+module.exports = function(app, express) {
     let router = express.Router();
     let User = require('../models/User');
     let jwt = require('jsonwebtoken');
-    app.use(function (req, res, next) {
-        req.isAuthenticated = function () {
+    app.use(function(req, res, next) {
+        req.isAuthenticated = function() {
             var token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
             try {
                 console.log("token", token);
@@ -16,10 +16,10 @@ module.exports = function (app, express) {
     });
     var multer = require('multer');
     var storage = multer.diskStorage({
-        destination: function (req, file, cb) {
+        destination: function(req, file, cb) {
             cb(null, './public/uploadedFiles/')
         },
-        filename: function (req, file, cb) {
+        filename: function(req, file, cb) {
             cb(null, Date.now() + file.originalname.substr(file.originalname.lastIndexOf("."), file.originalname.length))
         }
     })
@@ -34,7 +34,8 @@ module.exports = function (app, express) {
     let shopController = require('./../controllers/shop');
     let chairRequestController = require('./../controllers/chair_request');
     let appointmentController = require('./../controllers/appointment');
-//Users
+    let barberServices = require('./../controllers/barber');
+    //Users
     app.post('/api/v1/signup', userController.signupPost);
     app.post('/api/v1/login', userController.loginPost);
     app.post('/api/v1/forgot', userController.forgotPost);
@@ -45,27 +46,29 @@ module.exports = function (app, express) {
     app.get('/auth/facebook/callback', userController.authFacebookCallback);
     app.post('/auth/google', userController.authGoogle);
     app.get('/auth/google/callback', userController.authGoogleCallback);
-//
+    //
     app.post('/reset/:token', userController.resetPost);
-//Shops
+    //Shops
     app.get('/api/v1/shops', customerController.allShops);
     app.put('/api/v1/shops', upload.any(), shopController.editShop);
     app.post('/api/v1/addChair', userController.addChair)
     app.post('/api/v1/removeChair', userController.removeChair);
-//Customer
+    //Customer
     app.post('/api/v1/appointment', appointmentController.takeAppointment); //Book Appointment
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
 
-//Barber
+    //Barber
     app.post('/api/v1/requestChair', chairRequestController.requestChair);
     app.post('/api/v1/bookChair', chairRequestController.bookChair);
-//
+    //
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
     app.post('/api/v1/contact', contactController.contactPost);
 
-    app.post('/api/v1/shopContainsBarber',customerController.shopContainsBarber);
+    app.post('/api/v1/shopContainsBarber', customerController.shopContainsBarber);
+    app.post('/api/v1/addBarberServices', barberServices.addBarberServices);
+    app.post('/api/v1/viewBarberProfile',barberServices.viewBarberProfile);
+    app.post('/api/v1/viewAllServiesOfBarber',barberServices.viewAllServiesOfBarber);
 }
-
 /**
  * @swagger
  * info:
@@ -123,7 +126,7 @@ module.exports = function (app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid username/password supplied"
-  *   /forgot:
+ *   /forgot:
  *     post:
  *       tags:
  *       - "user"

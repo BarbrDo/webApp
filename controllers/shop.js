@@ -60,14 +60,14 @@ exports.shopContainsBarber = function(req, res) {
             // add ratings of a barber in result.chairs[i].barber_id.ratings
             // add ratings of a barber in result.chairs[i].barber_id.gallery
             for (var i = 0; i < result.chairs.length; i++) {
-                if(result.chairs[i].barber_id){
+                if (result.chairs[i].barber_id) {
                     var obj = {
-                        first_name:result.chairs[i].barber_id.first_name,
-                        last_name:result.chairs[i].barber_id.last_name,
-                        _id:result.chairs[i].barber_id._id,
-                        created_date:result.chairs[i].barber_id.created_date,
-                        ratings:[],
-                        gallery:[]
+                        first_name: result.chairs[i].barber_id.first_name,
+                        last_name: result.chairs[i].barber_id.last_name,
+                        _id: result.chairs[i].barber_id._id,
+                        created_date: result.chairs[i].barber_id.created_date,
+                        ratings: [],
+                        gallery: []
                     }
                     resultTantArray.push(obj)
                 }
@@ -123,7 +123,10 @@ exports.allShops = function(req, res) {
                         obj.shopName = data[i].name;
                         obj.gallery = data[i].gallery;
                         obj.latLong = data[i].latLong;
-                        obj.distance = data[i].dist.calculated+" "+"kms";
+                        var distt = parseFloat(data[i].dist.calculated)
+                        distt = Math.round(distt * 100) / 100
+                        obj.distance = distt;
+                        obj.units = "miles";
                         obj.barbers = totalbarbers
 
                         resultTantArray.push(obj);
@@ -180,7 +183,10 @@ exports.allBarbers = function(req, res) {
                             obj._id = data[i].barberInformation[0]._id;
                             obj.first_name = data[i].barberInformation[0].first_name;
                             obj.last_name = data[i].barberInformation[0].last_name;
-                            obj.distance = data[i].dist.calculated+" "+"kms";
+                            var distt = parseFloat(data[i].dist.calculated)
+                            distt = Math.round(distt * 100) / 100
+                            obj.distance = distt;
+                            obj.units = "miles";
                             obj.createdAt = data[i].barberInformation[0].created_date;
                             obj.rating = data[i].barberInformation[0].ratings;
                             obj.location = data[i].name

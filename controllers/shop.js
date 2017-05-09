@@ -209,7 +209,8 @@ exports.allBarbers = function(req, res) {
                             obj.units = "miles";
                             obj.created_date = data[i].barberInformation[0].created_date;
                             obj.rating = data[i].barberInformation[0].ratings;
-                            obj.location = data[i].name
+                            obj.location = data[i].name;
+                            obj.shop_id = data[i]._id;
                             resultTantArray.push(obj);
                         }
                     }

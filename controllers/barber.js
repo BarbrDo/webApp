@@ -123,11 +123,7 @@ exports.addBarberServices = function(req, res) {
 }
 
 exports.viewBarberProfile = function(req, res) {
-    console.log("return");
-    console.log("params",req.params);
-    console.log("query",req.query);
-    return false;
-    req.assert("barber_id", "barber_id is required").notEmpty();
+    req.checkParams("barber_id", "barber ID is required").notEmpty();
     var errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -136,7 +132,7 @@ exports.viewBarberProfile = function(req, res) {
         });
     }
     barber.find({
-        _id: req.body.barber_id
+        _id: req.params.barber_id
     }).populate('user_id').exec(function(err, data) {
         if (err) {
             res.status(400).send({
@@ -153,7 +149,7 @@ exports.viewBarberProfile = function(req, res) {
 }
 
 exports.viewAllServiesOfBarber = function(req, res) {
-    req.assert("barber_id", "barber_id is required").notEmpty();
+    req.checkParams("barber_id", "barber_id is required").notEmpty();
     var errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -162,7 +158,7 @@ exports.viewAllServiesOfBarber = function(req, res) {
         });
     }
     barber_service.find({
-        "barber_id": req.body.barber_id
+        "barber_id": req.params.barber_id
     }, function(err, data) {
         if (err) {
             res.status(400).send({

@@ -39,10 +39,7 @@ exports.editShop = function(req, res) {
     })
 }
 exports.shopContainsBarber = function(req, res) {
-    console.log("params", req.params);
-    console.log("query", req.query);
-    return false;
-    req.assert('shop_id', 'Shop id is required').notEmpty();
+    req.checkParams('shop_id', 'Shop id is required').notEmpty();
     var errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -51,7 +48,7 @@ exports.shopContainsBarber = function(req, res) {
         });
     }
     shop.find({
-        _id: req.body.shop_id
+        _id: req.params.shop_id
     }).populate('chairs.barber_id').exec(function(err, result) {
         if (err) {
             return res.status(400).send({
@@ -160,6 +157,7 @@ exports.allBarbers = function(req, res) {
                     for (var i = 0; i < data.length; i++) {
                         var obj = {};
                         if (data[i].barberInformation.length > 0) {
+                            obj._id = data[i].barberInformation[0]._id;
                             obj.first_name = data[i].barberInformation[0].first_name;
                             obj.last_name = data[i].barberInformation[0].last_name;
                             obj.createdAt = data[i].barberInformation[0].created_date;

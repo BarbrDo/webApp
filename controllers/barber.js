@@ -2,6 +2,8 @@ let barber = require('../models/barber');
 let constantObj = require('./../constants.js');
 let barber_service = require('../models/barber_service.js');
 let objectID = require('mongodb').ObjectID;
+let user = require('../models/User');
+var mongoose = require('mongoose');
 
 exports.getBarber = function(req, res) {
     var maxDistanceToFind = constantObj.ParamValues.radiusSearch;
@@ -131,9 +133,22 @@ exports.viewBarberProfile = function(req, res) {
             err: errors
         });
     }
-    barber.find({
-        _id: req.params.barber_id
-    }).populate('user_id').exec(function(err, data) {
+    console.log("req.params.barber_id",req.params.barber_id);
+    var id = mongoose.Types.ObjectId(req.params.barber_id);
+    user.aggregate([
+    {
+            $match: {
+                _id: id
+            }
+        }, {
+            $lookup: {
+                from: "barbers",
+                localField: "_id",
+                foreignField: "user_id",
+                as: "barber"
+            }
+        }
+    ]).exec(function(err, data) {
         if (err) {
             res.status(400).send({
                 msg: constantObj.messages.errorRetreivingData,

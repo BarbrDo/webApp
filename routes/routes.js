@@ -36,10 +36,10 @@ module.exports = function(app, express) {
     let appointmentController = require('./../controllers/appointment');
     let barberServices = require('./../controllers/barber');
     //Users
-    app.post('/api/v1/signup', userController.signupPost);
-    app.post('/api/v1/login', userController.loginPost);
-    app.post('/api/v1/forgot', userController.forgotPost);
-    app.put('/api/v1/account', userController.ensureAuthenticated, userController.accountPut);
+    app.post('/api/v1/signup', userController.signupPost); //Signup
+    app.post('/api/v1/login', userController.loginPost); // Login
+    app.post('/api/v1/forgot', userController.forgotPost); //Forgot Password
+    app.put('/api/v1/account', userController.ensureAuthenticated, userController.accountPut); // Account update
     app.delete('/api/v1/account', userController.ensureAuthenticated, userController.accountDelete);
     app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);
     app.post('/auth/facebook', userController.authFacebook);
@@ -49,13 +49,12 @@ module.exports = function(app, express) {
     app.post('/reset/:token', userController.resetPost);
     
     //Shops
-    app.get('/api/v1/shops', shopController.allShops);
+    app.get('/api/v1/shops', shopController.allShops); // List all shops
     app.put('/api/v1/shops', upload.any(), shopController.editShop);
     app.post('/api/v1/shops/chair', userController.addChair)
     app.delete('/api/v1/shops/chair', userController.removeChair);
-    
-    
-    app.get('/api/v1/barber/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
+    app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
+    app.post('/api/v1/bookChair', chairRequestController.bookChair);
 
     //Customer
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
@@ -63,15 +62,12 @@ module.exports = function(app, express) {
     
     //Barber
     app.get('/api/v1/barbers', shopController.allBarbers); //Get all barbers
-    app.get('/api/v1/barber/:id',barberServices.viewBarberProfile);//Get specific barber's detail
-    
-    app.get('/api/v1/barberService/:id',barberServices.viewAllServiesOfBarber); // Get barber's services
-    
-    app.post('/api/v1/requestChair', chairRequestController.requestChair);
-    app.post('/api/v1/bookChair', chairRequestController.bookChair);
-    // app.get('/api/v1/barber',barberServices,getAllBarbers); //Get all barbers - radius search
+    app.get('/api/v1/barbers/:barber_id',barberServices.viewBarberProfile);//Get specific barber's detail
+    app.post('/api/v1/barberServices', barberServices.addBarberServices); //Add new service in barber
+    app.get('/api/v1/barberServices/:barber_id',barberServices.viewAllServiesOfBarber); // Get barber's services
+    app.post('/api/v1/requestChair', chairRequestController.requestChair); //Barber requesting chair to shop
 
-    app.post('/api/v1/barberService', barberServices.addBarberServices); //Add new service in barber
+
     
     
 
@@ -343,6 +339,49 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
+ *   /shops/barbers/{shop_id}:
+ *     get:
+ *       tags:
+ *       - "shop"
+ *       summary: "Show all barbers related to shop"
+ *       description: "Show all barber related to shop"
+ *       operationId: "getshopbarber"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5901e07846c94a225018d5cc"
+ *       - in: "path"
+ *         name: "shop_id"
+ *         description: "Shop ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5901e07846c94a225018d5cc"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"      
  *   /appointment:
  *     post:
  *       tags:
@@ -420,7 +459,7 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
- *   /barber:
+ *   /barbers:
  *     get:
  *       tags:
  *       - "barber"
@@ -456,7 +495,7 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
- *   /barber?id=590829388e6a4812ece58e75:  
+ *   /barbers/{barber_id}:
  *     get:
  *       tags:
  *       - "barber"
@@ -487,19 +526,25 @@ module.exports = function(app, express) {
  *         type: string
  *         format: string
  *         default: "5909d7bca8af707ab3c1396c"
+ *       - in: "path"
+ *         name: "barber_id"
+ *         description: "Barber ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "590829388e6a4812ece58e75"
  *       responses:
  *         200:
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
- *           
- *   /barber?shop_id=590829388e6a4812ece58e75:  
- *     get:
+ *   /barberServices:  
+ *     post:
  *       tags:
  *       - "barber"
- *       summary: "Show all barbers related to shop"
- *       description: "Show all barber related to shop"
- *       operationId: "getshopbarber"
+ *       summary: "Add new service"
+ *       description: "Add new service"
+ *       operationId: "addbarberservices"
  *       produces:
  *       - "application/json"
  *       parameters:
@@ -523,13 +568,20 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5901e07846c94a225018d5cc"
+ *         default: "590829388e6a4812ece58e75"
+ *       - in: "body"
+ *         name: "barber_id"
+ *         description: "Barber ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "590829388e6a4812ece58e75"
  *       responses:
  *         200:
  *           description: "successful operation"
  *         400:
- *           description: "Invalid request"      
- *   /barberService?id=590829388e6a4812ece58e75:  
+ *           description: "Invalid request"           
+ *   /barberServices/{barber_id}:  
  *     get:
  *       tags:
  *       - "barber"
@@ -560,6 +612,13 @@ module.exports = function(app, express) {
  *         type: string
  *         format: string
  *         default: "5901e07846c94a225018d5cc"
+ *       - in: "path"
+ *         name: "barber_id"
+ *         description: "Barber ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "590829388e6a4812ece58e75"
  *       responses:
  *         200:
  *           description: "successful operation"

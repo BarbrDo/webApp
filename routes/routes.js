@@ -161,7 +161,7 @@ module.exports = function(app, express) {
  *       - "user"
  *       summary: "Create user"
  *       description: "This can only be done by the logged in user."
- *       operationId: "createUser"
+ *       operationId: "updateUser"
  *       produces:
  *       - "application/json"
  *       parameters:
@@ -246,11 +246,6 @@ module.exports = function(app, express) {
  *         required: true
  *         schema:
  *           $ref: "#/definitions/Shop"
- *       - in: "body"
- *         name: "image"
- *         description: "Upload shop image"
- *         required: false
- *         type: file
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -569,13 +564,6 @@ module.exports = function(app, express) {
  *         type: string
  *         format: string
  *         default: "590829388e6a4812ece58e75"
- *       - in: "body"
- *         name: "barber_id"
- *         description: "Barber ID"
- *         required: true
- *         type: string
- *         format: string
- *         default: "590829388e6a4812ece58e75"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -684,9 +672,7 @@ module.exports = function(app, express) {
  *         default: "Mohali"
  *       zip:
  *         type: "string"
- *         default: "160071"  
- *       image:
- *         type: "file"
+ *         default: "160071"
  *    addChair:
  *      type: "object"
  *      properties:
@@ -723,7 +709,7 @@ module.exports = function(app, express) {
  *                type: "string"
  *                default: "590bfe409e74bc91bc044a66"
  *        appointment_date:
- *          type: "date"
+ *          type: "string"
  *          default: "2017-07-10 10:00:00"
  *            
  */

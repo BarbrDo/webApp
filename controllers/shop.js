@@ -202,7 +202,7 @@ exports.allBarbers = function(req, res) {
                             distt = Math.round(distt * 100) / 100
                             obj.distance = distt;
                             obj.units = "miles";
-                            obj.createdAt = data[i].barberInformation[0].created_date;
+                            obj.created_date = data[i].barberInformation[0].created_date;
                             obj.rating = data[i].barberInformation[0].ratings;
                             obj.location = data[i].name
                             resultTantArray.push(obj);

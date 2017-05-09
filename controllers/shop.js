@@ -31,10 +31,18 @@ exports.editShop = function(req, res) {
                 "err": err
             });
         } else {
-            res.status(200).send({
-                msg: 'Successfully updated fieldssss.',
-                "data": data
-            });
+            if (data.length > 0) {
+                var response = {
+                    "message": "Successfully updated fieldssss.",
+                    "data": data
+                };
+                res.status(200).send(response);
+            } else {
+                var response = {
+                    "message": "No record found."
+                };
+                res.status(400).send(response);
+            }
         }
     })
 }
@@ -74,7 +82,14 @@ exports.shopContainsBarber = function(req, res) {
             }
             res.status(200).send({
                 "msg": constantObj.messages.successRetreivingData,
-                "data": resultTantArray
+                "data": {
+                    name:result.name,
+                    _id:result._id,
+                    latLong:result.latLong,
+                    address:result.address,
+                    gallery:result.gallery,
+                    barber:resultTantArray
+                }
             })
         }
     })

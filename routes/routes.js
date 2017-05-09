@@ -104,6 +104,20 @@ module.exports = function(app, express) {
  *       produces:
  *       - "application/json"
  *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
  *       - in: "body"
  *         name: "body"
  *         description: "Created user object"

@@ -1,5 +1,6 @@
 angular.module('BarbrDoApp')
   .controller('LoginCtrl', function($scope, $rootScope, $location, $window, $auth) {
+    $scope.user = {};
     $scope.login = function() {
       $auth.login($scope.user)
         .then(function(response) {
@@ -22,8 +23,12 @@ angular.module('BarbrDoApp')
       $('#login').modal('hide');
       $('#signup').modal('show');
     }
+    $("#login").on("hide.bs.modal", function () {
+        $scope.user.email = "";
+        $scope.user.password = "";
+        $scope.messages = {};
+    });
     
-
     $scope.authenticate = function(provider) {
       $auth.authenticate(provider)
         .then(function(response) {

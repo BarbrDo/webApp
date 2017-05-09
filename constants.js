@@ -24,5 +24,9 @@ const messages = {
 	"requiredFields":"Please pass the required fields."
 }
 
-var obj = {messages:messages};
+const distance = {
+	"shopDistance" : 500000 // in miles in km 0.001 
+}
+
+var obj = {messages:messages,distance:distance};
 module.exports = obj; 

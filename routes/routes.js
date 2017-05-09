@@ -155,6 +155,25 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid username/password supplied"
+ *   /checkFaceBook:
+ *     post:
+ *       tags:
+ *       - "user"
+ *       summary: "Check Facebook user in DB"
+ *       description: "Check if fb user exists in DB or not"
+ *       operationId: "checkFBUser"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Send FB ID"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/facebookUser"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
  *   /account:
  *     put:
  *       tags:
@@ -634,6 +653,12 @@ module.exports = function(app, express) {
  *           - "customer"
  *           - "barber"
  *           - "shop"
+ *    facebookUser:
+ *     type: "object"
+ *     properties:
+ *       facebook_id:
+ *         type: "string"
+ *         default: "9845455251214545"
  *    Userlogin:
  *     type: "object"
  *     properties:

@@ -85,6 +85,8 @@ exports.shopContainsBarber = function(req, res) {
                 "data": {
                     name:result.name,
                     _id:result._id,
+                    state:result.state,
+                    city :result.city,
                     latLong:result.latLong,
                     address:result.address,
                     gallery:result.gallery,
@@ -136,6 +138,9 @@ exports.allShops = function(req, res) {
                     if (totalbarbers > 0) {
                         obj._id = data[i]._id;
                         obj.shopName = data[i].name;
+                        obj.state = data[i].state;
+                        obj.city = date[i].city;
+                        obj.address = data[i].address;
                         obj.gallery = data[i].gallery;
                         obj.latLong = data[i].latLong;
                         var distt = parseFloat(data[i].dist.calculated)

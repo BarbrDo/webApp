@@ -28,6 +28,7 @@ var userSchema = new mongoose.Schema({
     },
     user_type: {
         type: String,
+        enum:["customer","barber","shop"],
         require: true,
     },
     passwordResetToken: String,

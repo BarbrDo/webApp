@@ -122,6 +122,7 @@ exports.allShops = function(req, res) {
                         obj._id = data[i]._id;
                         obj.shopName = data[i].name;
                         obj.gallery = data[i].gallery;
+                        obj.latLong = data[i].latLong;
                         obj.distance = data[i].dist.calculated+" "+"kms";
                         obj.barbers = totalbarbers
 

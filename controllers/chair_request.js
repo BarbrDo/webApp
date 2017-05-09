@@ -95,7 +95,8 @@ exports.bookChair = function(req, res) {
 				"chairs.$.booking_end": bookingEndDate,
 				"chairs.$.amount": req.body.amount,
 				"chairs.$.barber_id": req.body.barber_id,
-				"chairs.$.barber_name": req.body.barber_name
+				"chairs.$.barber_name": req.body.barber_name,
+				"chairs.$.availability":"booked"
 			}
 		};
 	}
@@ -127,7 +128,8 @@ exports.bookChair = function(req, res) {
 				"chairs.$.amount": req.body.amount,
 				"chairs.$.barber_percentage": req.body.barber_percentage,
 				"chairs.$.barber_id": req.body.barber_id,
-				"chairs.$.barber_name": req.body.barber_name
+				"chairs.$.barber_name": req.body.barber_name,
+				"chairs.$.availability":"booked"
 			}
 		}
 	}
@@ -147,7 +149,8 @@ exports.bookChair = function(req, res) {
 				"chairs.$.booking_end": futureMonth,
 				"chairs.$.amount": req.body.amount,
 				"chairs.$.barber_id": req.body.barber_id,
-				"chairs.$.barber_name": req.body.barber_name
+				"chairs.$.barber_name": req.body.barber_name,
+				"chairs.$.availability":"booked"
 			}
 		};
 	}

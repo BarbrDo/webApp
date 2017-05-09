@@ -144,7 +144,8 @@ exports.signupPost = function(req, res, next) {
     User(saveData).save(function(err, data) {
       if (err) {
         return res.status(400).send({
-          msg: constantObj.messages.errorInSave
+          msg: constantObj.messages.errorInSave,
+          "err":err
         })
       } else {
         var resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;

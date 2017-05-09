@@ -162,7 +162,7 @@ exports.signupPost = function(req, res, next) {
                 msg: "Activate your account on the given link.",
                 link: resetUrl,
                 token: generateToken(shopData),
-                user: shopData
+                user: data
               });
             }
           })
@@ -180,7 +180,7 @@ exports.signupPost = function(req, res, next) {
                 msg: "Activate your account on the given link.",
                 link: resetUrl,
                 token: generateToken(barberData),
-                user: barberData
+                user: data
               });
             }
           })
@@ -643,6 +643,14 @@ exports.authGoogleCallback = function(req, res) {
 
 exports.addChair = function(req, res) {
   req.assert("id", "id is required")
+  var errors = req.validationErrors();
+
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
   var validateId = objectID.isValid(req.body.id)
   if (validateId) {
     Shop.findOne({
@@ -699,6 +707,14 @@ exports.addChair = function(req, res) {
 exports.removeChair = function(req, res) {
   req.assert("shop_id", "Shop ID is required")
   req.assert("chair_id", "Chair ID is required");
+  var errors = req.validationErrors();
+
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
   var validateId = objectID.isValid(req.body.shop_id);
   var validateChairId = objectID.isValid(req.body.chair_id)
   if (validateId && validateChairId) {
@@ -742,6 +758,39 @@ exports.getUserType = function(req, res) {
         msg: constantObj.messages.successRetreivingData,
         data: data
       });
+    }
+  })
+}
+
+exports.checkFaceBook = function(req,res){
+  req.assert('facebook_id', 'facebook_id is required').notEmpty();
+  var errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+  User.find({"facebook":req.body.facebook_id},function(err,response){
+    if(err)
+    {
+      res.status(400).send({
+        msg: constantObj.messages.errorRetreivingData
+      });
+    }
+    else{
+      if(response.length>0){
+        res.status(200).send({
+        msg: constantObj.messages.successRetreivingData,
+        token: generateToken(response),
+        data: response
+      });
+      }
+      else {
+        res.status(400).send({
+          msg: "This user not found in database"
+        });
+      }
     }
   })
 }

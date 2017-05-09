@@ -47,7 +47,7 @@ module.exports = function(app, express) {
     app.post('/auth/google', userController.authGoogle);
     app.get('/auth/google/callback', userController.authGoogleCallback);
     app.post('/reset/:token', userController.resetPost);
-    
+    app.post('/api/v1/checkFaceBook', userController.checkFaceBook);
     //Shops
     app.get('/api/v1/shops', shopController.allShops);
     app.put('/api/v1/shops', upload.any(), shopController.editShop);

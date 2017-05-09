@@ -70,7 +70,7 @@ exports.allShops = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
         var long = parseFloat(req.headers.device_longitude);
         var lati = parseFloat(req.headers.device_latitude);
-        var maxDistanceToFind = 500000;
+        var maxDistanceToFind = constantObj.distance.shopDistance;
         shop.aggregate([{
             $geoNear: {
                 near: {
@@ -78,6 +78,7 @@ exports.allShops = function(req, res) {
                     coordinates: [long, lati]
                 },
                 distanceField: "dist.calculated",
+                distanceMultiplier: 0.000621371,// in miles in km 0.001
                 maxDistance: maxDistanceToFind,
                 includeLocs: "dist.location",
                 spherical: true
@@ -105,6 +106,7 @@ exports.allShops = function(req, res) {
                         }
                     }
                     if (totalbarbers > 0) {
+                        obj._id = data[i]._id;
                         obj.shopName = data[i].name;
                         obj.gallery = data[i].gallery;
                         obj.distance = data[i].dist.calculated;
@@ -131,7 +133,7 @@ exports.allBarbers = function(req, res) {
         if (req.headers.device_latitude && req.headers.device_longitude) {
             var long = parseFloat(req.headers.device_longitude);
             var lati = parseFloat(req.headers.device_latitude);
-            var maxDistanceToFind = 500000;
+            var maxDistanceToFind = constantObj.distance.shopDistance;// in miles in km 0.001
             shop.aggregate([{
                 $geoNear: {
                     near: {
@@ -139,6 +141,7 @@ exports.allBarbers = function(req, res) {
                         coordinates: [long, lati]
                     },
                     distanceField: "dist.calculated",
+                    distanceMultiplier: 0.000621371, // it returns distance in kilometers
                     maxDistance: maxDistanceToFind,
                     includeLocs: "dist.location",
                     spherical: true
@@ -160,8 +163,10 @@ exports.allBarbers = function(req, res) {
                     for (var i = 0; i < data.length; i++) {
                         var obj = {};
                         if (data[i].barberInformation.length > 0) {
+                            obj._id = data[i].barberInformation[0]._id;
                             obj.first_name = data[i].barberInformation[0].first_name;
                             obj.last_name = data[i].barberInformation[0].last_name;
+                            obj.distance = data[i].dist.calculated;
                             obj.createdAt = data[i].barberInformation[0].created_date;
                             obj.rating = data[i].barberInformation[0].ratings;
                             obj.location = data[i].name

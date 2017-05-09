@@ -1,5 +1,6 @@
 angular.module('BarbrDoApp')
   .controller('SignupCtrl', function($scope, $rootScope, $location, $window, $auth) {
+    $scope.messages = {};
     $scope.signup = function() {
       $auth.signup($scope.user)
         .then(function(response) {
@@ -16,6 +17,13 @@ angular.module('BarbrDoApp')
           };
         });
     };
+
+    $("#signup").on("hide.bs.modal", function () {
+      console.log("this works");
+      setTimeout(function(){$scope.$apply()},1)
+        $scope.user = {};
+        $scope.messages = {};
+    });
 
     $scope.authenticate = function(provider) {
       $auth.authenticate(provider)

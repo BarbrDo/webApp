@@ -74,8 +74,8 @@ exports.shopContainsBarber = function(req, res) {
                         last_name: result.chairs[i].barber_id.last_name,
                         _id: result.chairs[i].barber_id._id,
                         created_date: result.chairs[i].barber_id.created_date,
-                        ratings: [],
-                        gallery: []
+                        ratings: result.chairs[i].barber_id.ratings,
+                        gallery: result.chairs[i].barber_id.gallery
                     }
                     resultTantArray.push(obj)
                 }

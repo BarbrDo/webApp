@@ -31,18 +31,18 @@ exports.editShop = function(req, res) {
                 "err": err
             });
         } else {
-            if (data.length > 0) {
+            if (data.nModified == 1) {
                 var response = {
                     "message": "Successfully updated fieldssss.",
                     "data": data
                 };
-                res.status(200).send(response);
             } else {
                 var response = {
-                    "message": "No record found."
+                    "message": "No record updated.",
+                    "data": data
                 };
-                res.status(400).send(response);
             }
+            res.status(200).json(response);
         }
     })
 }
@@ -83,14 +83,14 @@ exports.shopContainsBarber = function(req, res) {
             res.status(200).send({
                 "msg": constantObj.messages.successRetreivingData,
                 "data": {
-                    name:result.name,
-                    _id:result._id,
-                    state:result.state,
-                    city :result.city,
-                    latLong:result.latLong,
-                    address:result.address,
-                    gallery:result.gallery,
-                    barber:resultTantArray
+                    name: result.name,
+                    _id: result._id,
+                    state: result.state,
+                    city: result.city,
+                    latLong: result.latLong,
+                    address: result.address,
+                    gallery: result.gallery,
+                    barber: resultTantArray
                 }
             })
         }

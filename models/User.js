@@ -2,12 +2,7 @@ var crypto = require('crypto');
 var bcrypt = require('bcrypt-nodejs');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var schemaOptions = {
-    timestamps: true,
-    toJSON: {
-        virtuals: true
-    }
-};
+
 var userSchema = new mongoose.Schema({
     salutation: String,
     first_name: {
@@ -89,7 +84,7 @@ var userSchema = new mongoose.Schema({
     },
     is_email_marketing: Boolean,
     info_source: String,
-}, schemaOptions);
+});
 
 userSchema.pre('save', function (next) {
     var user = this;

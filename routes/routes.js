@@ -683,7 +683,7 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
- *   /timeSlots:
+ *   /timeslots:
  *     get:
  *       tags:
  *       - "common"

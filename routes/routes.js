@@ -562,6 +562,42 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
+ *   /barbers/appointments:
+ *     get:
+ *       tags:
+ *       - "barber"
+ *       summary: "As a barber show me customer's requests "
+ *       description: "As a barber show me customer's requests"
+ *       operationId: "barberAppointment"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "590829938e6a4812ece58e76"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"  
  *   /barberServices:  
  *     post:
  *       tags:
@@ -646,7 +682,7 @@ module.exports = function(app, express) {
  *         200:
  *           description: "successful operation"
  *         400:
- *           description: "Invalid request"      
+ *           description: "Invalid request"
  *   /timeSlots:
  *     get:
  *       tags:

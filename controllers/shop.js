@@ -108,7 +108,7 @@ exports.allShops = function(req, res) {
                     coordinates: [long, lati]
                 },
                 distanceField: "dist.calculated",
-                distanceMultiplier: 0.000621371, // in miles in km 0.001
+                distanceMultiplier: constantObj.distance.distanceMultiplierInMiles, // in miles in km 0.001
                 maxDistance: maxDistanceToFind,
                 includeLocs: "dist.location",
                 spherical: true
@@ -178,7 +178,7 @@ exports.allBarbers = function(req, res) {
                         coordinates: [long, lati]
                     },
                     distanceField: "dist.calculated",
-                    distanceMultiplier: 0.000621371, // it returns distance in kilometers
+                    distanceMultiplier: constantObj.distance.distanceMultiplierInMiles, // it returns distance in kilometers
                     maxDistance: maxDistanceToFind,
                     includeLocs: "dist.location",
                     spherical: true

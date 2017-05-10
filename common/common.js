@@ -1,10 +1,10 @@
-
 // var userObj = require('./../app/models/users/users.js');
 // var gcm = require('android-gcm');
 // var apn = require("apn");
 // var path = require('path');
 // var gcmObject = new gcm.AndroidGcm('API_KEY');
 // var geocoder = require('geocoder');
+let constantObj = require('./../constants.js');
 var crypto = require('crypto'),
     algorithm = 'aes-256-ctr',
     password = 'd6F3Efeq';
@@ -55,7 +55,7 @@ var crypto = require('crypto'),
 //                 pushSendToAndroid(userDetail.device_token);
 //                 cb(null,"Notification send.");
 //             }
-           
+
 //         }
 //     });
 
@@ -152,4 +152,11 @@ exports.makeid = function() {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
 
     return text;
+}
+
+exports.viewTimeSlots = function(req, res) {
+    res.status(200).send({
+        msg: constantObj.messages.successRetreivingData,
+        data: constantObj.timeSlots
+    });
 }

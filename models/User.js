@@ -19,8 +19,7 @@ var userSchema = new mongoose.Schema({
         require: true,
     },
     password: {
-        type: String,
-        require: true,
+        type: String
     },
     mobile_number: {
         type: String,

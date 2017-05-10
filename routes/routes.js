@@ -71,7 +71,7 @@ module.exports = function(app, express) {
     //Others
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
     app.post('/api/v1/contact', contactController.contactPost);
-    app.get('/api/v1/timeSlots',commonObj.viewTimeSlots)
+    app.get('/api/v1/timeslots',commonObj.viewTimeSlots)
 }
 /**
  * @swagger
@@ -562,6 +562,42 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
+ *   /barbers/appointments:
+ *     get:
+ *       tags:
+ *       - "barber"
+ *       summary: "As a barber show me customer's requests "
+ *       description: "As a barber show me customer's requests"
+ *       operationId: "barberAppointment"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "590829938e6a4812ece58e76"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"  
  *   /barberServices:  
  *     post:
  *       tags:
@@ -592,7 +628,13 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829388e6a4812ece58e75"
+ *         default: "590829938e6a4812ece58e76"
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Add new barber service"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/barberService"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -640,7 +682,21 @@ module.exports = function(app, express) {
  *         200:
  *           description: "successful operation"
  *         400:
- *           description: "Invalid request"      
+ *           description: "Invalid request"
+ *   /timeSlots:
+ *     get:
+ *       tags:
+ *       - "common"
+ *       summary: "Time slot to book an appointment"
+ *       description: "Time slot to book an appointment"
+ *       operationId: "timeSlot"
+ *       produces:
+ *       - "application/json"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid username/password supplied"
  * definitions:
  *    User:
  *     type: "object"
@@ -746,5 +802,14 @@ module.exports = function(app, express) {
  *        appointment_date:
  *          type: "string"
  *          default: "2017-07-10 10:00:00"
- *            
+ *    barberService:
+ *      type: "object"
+ *      properties:
+ *        name:
+ *          type: "string"
+ *          default: "Hair Color"
+ *        price:
+ *          type: "number"
+ *          default: 75
+ *                      
  */

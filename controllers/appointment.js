@@ -12,7 +12,7 @@ exports.takeAppointment = function(req, res) {
 	// req.assert("barber_name", "barber_name cannot be blank").notEmpty();
 	req.checkHeaders("user_id", "user_id cannot be blank").notEmpty();
 	// req.assert("customer_name", "customer_name cannot be blank").notEmpty();
-	// req.assert("services", "servies cannot be blank").notEmpty();
+	req.assert("services", "servies cannot be blank").notEmpty();
 	req.assert("appointment_date", "appointment_date cannot be blank").notEmpty();
 	// req.assert("tax_amount", "tax_amount cannot be blank").notEmpty();
 	// req.assert("tax_percent", "tax_percent cannot be blank").notEmpty();

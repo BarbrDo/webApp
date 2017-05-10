@@ -25,7 +25,9 @@ const messages = {
 }
 
 const distance = {
-	"shopDistance" : 500000 // in miles in km 0.001 
+	"shopDistance" : 500000 ,
+	"distanceMultiplierInMiles":0.000621371,
+	"distanceMultiplierInkm":0.001
 }
 
 var obj = {messages:messages,distance:distance};

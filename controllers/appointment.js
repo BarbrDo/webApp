@@ -39,33 +39,50 @@ exports.takeAppointment = function(req, res) {
 		shopName = result;
 		findUserId(req.headers.user_id, function(result) {
 			customerName = result
-			console.log("customerName",customerName)
-		
-		findUserId(req.body.barber_id, function(result) {
-			barberName = result;
-			console.log("barberName,customerName,shopName", barberName, customerName, shopName);
+			console.log("customerName", customerName)
 
-			var saveData = req.body;
-			saveData.customer_name= customerName;
-			saveData.shop_name= shopName;
-			saveData.barber_name =  barberName;
-			saveData.customer_id= req.headers.user_id;
-			
-			console.log(saveData);
+			findUserId(req.body.barber_id, function(result) {
+				barberName = result;
+				console.log("barberName,customerName,shopName", barberName, customerName, shopName);
 
-			appointment(saveData).save(function(err, data) {
-				if (err) {
-					return res.status(400).send({
-						msg: constantObj.messages.errorInSave
-					});
-				} else {
-					return res.status(200).send({
-						msg: constantObj.messages.saveSuccessfully,
-						data: data
-					});
-				}
-			})
-		});
+				var saveData = req.body;
+				saveData.customer_name = customerName;
+				saveData.shop_name = shopName;
+				saveData.barber_name = barberName;
+				saveData.customer_id = req.headers.user_id;
+
+				console.log(saveData);
+
+				appointment(saveData).save(function(err, data) {
+					if (err) {
+						return res.status(400).send({
+							msg: constantObj.messages.errorInSave
+						});
+					} else {
+						// return res.status(200).send({
+						// 	msg: constantObj.messages.saveSuccessfully,
+						// 	data: data
+						// });
+						appointment.find({
+							"_id": data._id
+						}).populate('barber_id', 'first_name last_name ratings picture').populate('shop_id', 'name address city state gallery').exec(function(err, result) {
+							if (err) {
+								return res.status(400).send({
+									msg: constantObj.messages.errorRetreivingData
+								});
+							} else {
+								return res.status(200).send({
+									msg: constantObj.messages.successRetreivingData,
+									data: result
+								});
+							}
+						})
+
+
+
+					}
+				})
+			});
 		});
 	});
 }

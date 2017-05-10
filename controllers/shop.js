@@ -240,7 +240,7 @@ exports.allShopsHavingChairs = function(req, res) {
         shop.geoNear(point, {
             maxDistance: maxDistanceToFind,
             spherical: true,
-            query :{"chairs.availability":"available"}
+            query: { "chairs.availability": "booked" }
         },function(err, data) {
             if (err) {
                 console.log(err);

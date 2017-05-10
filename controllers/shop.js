@@ -167,108 +167,93 @@ exports.allShops = function(req, res) {
 }
 
 exports.allBarbers = function(req, res) {
-        if (req.headers.device_latitude && req.headers.device_longitude) {
-            var long = parseFloat(req.headers.device_longitude);
-            var lati = parseFloat(req.headers.device_latitude);
-            var maxDistanceToFind = constantObj.distance.shopDistance; // in miles in km 0.001
-            shop.aggregate([{
-                $geoNear: {
-                    near: {
-                        type: "Point",
-                        coordinates: [long, lati]
-                    },
-                    distanceField: "dist.calculated",
-                    distanceMultiplier: constantObj.distance.distanceMultiplierInMiles, // it returns distance in kilometers
-                    maxDistance: maxDistanceToFind,
-                    includeLocs: "dist.location",
-                    spherical: true
-                }
-            }, {
-                $unwind: "$chairs"
-            }, {
-                $lookup: {
-                    from: "users",
-                    localField: "chairs.barber_id",
-                    foreignField: "_id",
-                    as: "barberInformation"
-                }
-            }]).exec(function(err, data) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    let resultTantArray = [];
-                    for (var i = 0; i < data.length; i++) {
-                        var obj = {};
-                        if (data[i].barberInformation.length > 0) {
-                            obj._id = data[i].barberInformation[0]._id;
-                            obj.first_name = data[i].barberInformation[0].first_name;
-                            obj.last_name = data[i].barberInformation[0].last_name;
-                            var distt = parseFloat(data[i].dist.calculated)
-                            distt = Math.round(distt * 100) / 100
-                            obj.distance = distt;
-                            obj.units = "miles";
-                            obj.created_date = data[i].barberInformation[0].created_date;
-                            obj.rating = data[i].barberInformation[0].ratings;
-                            obj.location = data[i].name;
-                            obj.shop_id = data[i]._id;
-                            resultTantArray.push(obj);
-                        }
+    if (req.headers.device_latitude && req.headers.device_longitude) {
+        var long = parseFloat(req.headers.device_longitude);
+        var lati = parseFloat(req.headers.device_latitude);
+        var maxDistanceToFind = constantObj.distance.shopDistance; // in miles in km 0.001
+        shop.aggregate([{
+            $geoNear: {
+                near: {
+                    type: "Point",
+                    coordinates: [long, lati]
+                },
+                distanceField: "dist.calculated",
+                distanceMultiplier: constantObj.distance.distanceMultiplierInMiles, // it returns distance in kilometers
+                maxDistance: maxDistanceToFind,
+                includeLocs: "dist.location",
+                spherical: true
+            }
+        }, {
+            $unwind: "$chairs"
+        }, {
+            $lookup: {
+                from: "users",
+                localField: "chairs.barber_id",
+                foreignField: "_id",
+                as: "barberInformation"
+            }
+        }]).exec(function(err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+                let resultTantArray = [];
+                for (var i = 0; i < data.length; i++) {
+                    var obj = {};
+                    if (data[i].barberInformation.length > 0) {
+                        obj._id = data[i].barberInformation[0]._id;
+                        obj.first_name = data[i].barberInformation[0].first_name;
+                        obj.last_name = data[i].barberInformation[0].last_name;
+                        var distt = parseFloat(data[i].dist.calculated)
+                        distt = Math.round(distt * 100) / 100
+                        obj.distance = distt;
+                        obj.units = "miles";
+                        obj.created_date = data[i].barberInformation[0].created_date;
+                        obj.rating = data[i].barberInformation[0].ratings;
+                        obj.location = data[i].name;
+                        obj.shop_id = data[i]._id;
+                        resultTantArray.push(obj);
                     }
-                    res.status(200).send({
-                        "msg": constantObj.messages.successRetreivingData,
-                        "data": resultTantArray
-                    })
                 }
-            })
+                res.status(200).send({
+                    "msg": constantObj.messages.successRetreivingData,
+                    "data": resultTantArray
+                })
+            }
+        })
 
-        } else {
-            res.status(400).send({
-                "msg": constantObj.messages.requiredFields
-            })
-        }
+    } else {
+        res.status(400).send({
+            "msg": constantObj.messages.requiredFields
+        })
     }
-    // var refineDataForShop = function(req,res,data) {
-    //     let resultTantArray = [];
-    //     for (var i = 0; i < data.length; i++) {
-    //         var obj = {};
-    //         var totalbarbers = 0;
-    //         for (var j = 0; j < data.length; j++) {
-    //             if (data[i]._id == data[j]._id && data[j].barberInformation.length > 0) {
-    //                 ++totalbarbers
-    //             }
-    //         }
-    //         if (totalbarbers > 0) {
-    //             obj.shopName = data[i].name;
-    //             obj.gallery = data[i].gallery;
-    //             obj.distance = data[i].dist.calculated;
-    //             obj.barbers = totalbarbers
+}
 
-//             resultTantArray.push(obj);
-//         }
-//     }
-//     res.status(200).send({
-//         "msg": constantObj.messages.successRetreivingData,
-//         "data": resultTantArray
-//     })
-
-// }
-
-// var refineDataForBarbers = function(req, res, data) {
-//     console.log("data", data.length);
-//     let resultTantArray = [];
-//     for (var i = 0; i < data.length; i++) {
-//         var obj = {};
-//         if (data[i].barberInformation.length > 0) {
-//             obj.first_name = data[i].barberInformation[0].first_name;
-//             obj.last_name = data[i].barberInformation[0].last_name;
-//             obj.createdAt = data[i].barberInformation[0].created_date;
-//             obj.rating = data[i].barberInformation[0].ratings;
-//             obj.location = data[i].name
-//             resultTantArray.push(obj);
-//         }
-//     }
-//     res.status(200).send({
-//         "msg": constantObj.messages.successRetreivingData,
-//         "data": resultTantArray
-//     })
-// }
+exports.allShopsHavingChairs = function(req, res) {
+    if (req.headers.device_latitude && req.headers.device_longitude) {
+        var long = parseFloat(req.headers.device_longitude);
+        var lati = parseFloat(req.headers.device_latitude);
+        var maxDistanceToFind = constantObj.distance.shopDistance;
+        var point = {
+            type: "Point",
+            coordinates: [long, lati]
+        };
+        shop.geoNear(point, {
+            maxDistance: maxDistanceToFind,
+            spherical: true,
+            query :{"chairs.availability":"available"}
+        },function(err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+               res.status(200).send({
+                    "msg": constantObj.messages.successRetreivingData,
+                    "data": data
+                })
+            }
+        })
+    } else {
+        res.status(400).send({
+            "msg": constantObj.messages.requiredFields
+        })
+    }
+}

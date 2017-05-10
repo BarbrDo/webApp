@@ -56,6 +56,7 @@ module.exports = function(app, express) {
     app.delete('/api/v1/shops/chair', userController.removeChair);
     app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
     app.post('/api/v1/bookChair', chairRequestController.bookChair);
+    app.get('/api/v1/allShopsHavingChairs',shopController.allShopsHavingChairs);
 
     //Customer
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
@@ -67,6 +68,7 @@ module.exports = function(app, express) {
     app.post('/api/v1/barberServices', barberServices.addBarberServices); //Add new service in barber
     app.get('/api/v1/barberServices/:barber_id',barberServices.viewAllServiesOfBarber); // Get barber's services
     app.post('/api/v1/requestChair', chairRequestController.requestChair); //Barber requesting chair to shop
+    app.post('/api/v1/pendingRequestOfbarber',barberServices.pendingRequestOfbarber);
 
     //Others
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);

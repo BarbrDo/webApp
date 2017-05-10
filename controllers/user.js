@@ -98,7 +98,9 @@ exports.signupPost = function(req, res, next) {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('mobile_number', 'Mobile number cannot be blank').notEmpty();
-  req.assert('password', 'Password must be at least 6 characters long').len(6);
+  if(!req.body.facebook){
+    req.assert('password', 'Password must be at least 6 characters long').len(6);
+  }
   req.assert('user_type', 'User type cannot be blank').notEmpty();
   if (req.body.user_type == 'shop' || req.body.user_type == 'barber') {
       req.assert('license_number', 'License number cannot be blank').notEmpty();

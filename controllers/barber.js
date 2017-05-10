@@ -1,9 +1,11 @@
 let barber = require('../models/barber');
 let constantObj = require('./../constants.js');
 let barber_service = require('../models/barber_service.js');
+let appointment = require('../models/appointment');
 let objectID = require('mongodb').ObjectID;
 let user = require('../models/User');
 var mongoose = require('mongoose');
+var moment = require('moment');
 
 exports.getBarber = function(req, res) {
     var maxDistanceToFind = constantObj.ParamValues.radiusSearch;
@@ -39,7 +41,7 @@ exports.editBarber = function(req, res) {
         }
         updateData.gallery = userimg;
     }
-    
+
     barber.update({
         _id: req.body._id
     }, updateData, function(err, data) {
@@ -101,22 +103,20 @@ exports.viewBarberProfile = function(req, res) {
             err: errors
         });
     }
-    console.log("req.params.barber_id",req.params.barber_id);
+    console.log("req.params.barber_id", req.params.barber_id);
     var id = mongoose.Types.ObjectId(req.params.barber_id);
-    user.aggregate([
-    {
-            $match: {
-                _id: id
-            }
-        }, {
-            $lookup: {
-                from: "barbers",
-                localField: "_id",
-                foreignField: "user_id",
-                as: "barber"
-            }
+    user.aggregate([{
+        $match: {
+            _id: id
         }
-    ]).exec(function(err, data) {
+    }, {
+        $lookup: {
+            from: "barbers",
+            localField: "_id",
+            foreignField: "user_id",
+            as: "barber"
+        }
+    }]).exec(function(err, data) {
         if (err) {
             res.status(400).send({
                 msg: constantObj.messages.errorRetreivingData,
@@ -152,6 +152,53 @@ exports.viewAllServiesOfBarber = function(req, res) {
             res.status(200).send({
                 msg: constantObj.messages.successRetreivingData,
                 "data": data
+            });
+        }
+    })
+}
+exports.pendingRequestOfbarber = function(req, res) {
+    req.assert('user_id', 'user_id is required');
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    var currentDate = moment().format("YYYY-MM-DD");
+    appointment.find({
+        "barber_id": {
+            $exists: true,
+            $eq: req.body.user_id
+        },
+        "appointment_date": {
+            $gte: currentDate
+        }
+    }).sort({
+        'created_date': -1
+    }).populate('barber_id', 'first_name last_name ratings picture').populate('shop_id', 'name address city state gallery').exec(function(err, result) {
+        if (err) {
+            return res.status(400).send({
+                msg: constantObj.messages.errorRetreivingData
+            });
+        } else {
+            let pendingAppointments = [];
+            let bookedAppointments = [];
+            for (var i = 0; i < result.length; i++) {
+                if (result[i].appointment_status == 'pending') {
+                    pendingAppointments.push(result[i])
+                }
+                if (result[i].appointment_status == 'confirm') {
+                    bookedAppointments.push(result[i])
+                }
+            }
+
+            return res.status(200).send({
+                msg: constantObj.messages.successRetreivingData,
+                data: {
+                    pending: pendingAppointments,
+                    booked: bookedAppointments
+                }
             });
         }
     })

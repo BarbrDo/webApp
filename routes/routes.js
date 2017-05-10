@@ -35,6 +35,7 @@ module.exports = function(app, express) {
     let chairRequestController = require('./../controllers/chair_request');
     let appointmentController = require('./../controllers/appointment');
     let barberServices = require('./../controllers/barber');
+    let commonObj = require('./../common/common');
     //Users
     app.post('/api/v1/signup', userController.signupPost); //Signup
     app.post('/api/v1/login', userController.loginPost); // Login
@@ -67,15 +68,10 @@ module.exports = function(app, express) {
     app.get('/api/v1/barberServices/:barber_id',barberServices.viewAllServiesOfBarber); // Get barber's services
     app.post('/api/v1/requestChair', chairRequestController.requestChair); //Barber requesting chair to shop
 
-
-    
-    
-
-
     //Others
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
     app.post('/api/v1/contact', contactController.contactPost);
-
+    app.get('/api/v1/timeSlots',commonObj.viewTimeSlots)
 }
 /**
  * @swagger

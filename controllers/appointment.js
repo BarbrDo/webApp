@@ -59,11 +59,7 @@ exports.takeAppointment = function(req, res) {
 							msg: constantObj.messages.errorInSave
 						});
 					} else {
-						// return res.status(200).send({
-						// 	msg: constantObj.messages.saveSuccessfully,
-						// 	data: data
-						// });
-						appointment.find({
+						appointment.findOne({
 							"_id": data._id
 						}).populate('barber_id', 'first_name last_name ratings picture').populate('shop_id', 'name address city state gallery').exec(function(err, result) {
 							if (err) {

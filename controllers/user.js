@@ -786,7 +786,7 @@ exports.checkFaceBook = function(req,res){
         res.status(200).send({
         msg: constantObj.messages.successRetreivingData,
         token: generateToken(response),
-        data: response
+        user: response[0]
       });
       }
       else {

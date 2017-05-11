@@ -61,16 +61,17 @@ module.exports = function(app, express) {
     //Customer
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
     app.post('/api/v1/appointment', appointmentController.takeAppointment); //Book Appointment
-    app.post('/api/v1/confirmRequestByBarber',appointmentController.confirmRequestByBarber);
-    app.post('/api/v1/rescheduleAppointment',appointmentController.rescheduleAppointment);
-    app.post('/api/v1/confirmedRequestMarkAsComplete',appointmentController.confirmedRequestMarkAsComplete)
+    
     //Barber
     app.get('/api/v1/barbers', shopController.allBarbers); //Get all barbers
     app.get('/api/v1/barbers/:barber_id',barberServices.viewBarberProfile);//Get specific barber's detail
     app.post('/api/v1/barberServices', barberServices.addBarberServices); //Add new service in barber
     app.get('/api/v1/barberServices/:barber_id',barberServices.viewAllServiesOfBarber); // Get barber's services
     app.post('/api/v1/requestChair', chairRequestController.requestChair); //Barber requesting chair to shop
-    app.post('/api/v1/pendingRequestOfbarber',barberServices.pendingRequestOfbarber);
+    app.get('/api/v1/barber/appointments',barberServices.appointments);
+    app.put('/api/v1/barber/confirmappointment/:appointment_id',barberServices.confirmAppointment);
+    app.put('/api/v1/barber/rescheduleappointment/:appointment_id',barberServices.rescheduleAppointment);
+    app.put('/api/v1/barber/completeappointment/:appointment_id',barberServices.completeAppointment)
 
     //Others
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
@@ -192,12 +193,26 @@ module.exports = function(app, express) {
  *     put:
  *       tags:
  *       - "user"
- *       summary: "Create user"
- *       description: "This can only be done by the logged in user."
+ *       summary: "Update user profile and change password"
+ *       description: "Update user profile and change password."
  *       operationId: "updateUser"
  *       produces:
  *       - "application/json"
  *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
  *       - in: "header"
  *         name: "user_id"
  *         description: "Logged in user's id"
@@ -566,7 +581,7 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
- *   /barbers/appointments:
+ *   /barber/appointments:
  *     get:
  *       tags:
  *       - "barber"
@@ -713,6 +728,8 @@ module.exports = function(app, express) {
  *         type: "string"
  *         default: "ankushs@smartdatainc.net"
  *       password:
+ *         type: "string" 
+ *       confirm:
  *         type: "string"
  *       mobile_number:
  *         type: "string"

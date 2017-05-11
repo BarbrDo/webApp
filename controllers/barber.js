@@ -4,8 +4,9 @@ let barber_service = require('../models/barber_service.js');
 let appointment = require('../models/appointment');
 let objectID = require('mongodb').ObjectID;
 let user = require('../models/User');
-var mongoose = require('mongoose');
-var moment = require('moment');
+let mongoose = require('mongoose');
+let moment = require('moment');
+let async = require('async');
 let nodemailer = require('nodemailer');
 let mg = require('nodemailer-mailgun-transport');
 
@@ -158,8 +159,10 @@ exports.viewAllServiesOfBarber = function(req, res) {
         }
     })
 }
-exports.pendingRequestOfbarber = function(req, res) {
-    req.assert('user_id', 'user_id is required');
+
+//Get pending/confirmed appointments of barber
+exports.appointments = function(req, res) {
+    req.checkHeaders('user_id', 'user_id is required').notEmpty();
     var errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -171,7 +174,7 @@ exports.pendingRequestOfbarber = function(req, res) {
     appointment.find({
         "barber_id": {
             $exists: true,
-            $eq: req.body.user_id
+            $eq: req.headers.user_id
         },
         "appointment_date": {
             $gte: currentDate
@@ -207,7 +210,7 @@ exports.pendingRequestOfbarber = function(req, res) {
 }
 
 exports.inviteCustomer = function(req, res) {
-    req.assert('email', "Email id is required.");
+    req.assert('email', "Email id is required.").notEmpty();
     var errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -237,4 +240,123 @@ exports.inviteCustomer = function(req, res) {
         });
         done(err);
     });
+}
+
+//Mark Appointment as confirmed
+exports.confirmAppointment = function(req, res) {
+	req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
+	let errors = req.validationErrors();
+	if (errors) {
+		return res.status(400).send({
+			msg: "error in your request",
+			err: errors
+		});
+	}
+	appointment.update({
+		_id: req.params.appointment_id
+	}, {
+		$set: {
+			"appointment_status": "confirm"
+		}
+	}, function(err, result) {
+		if (err) {
+			return res.status(400).send({
+				msg: constantObj.messages.userStatusUpdateFailure
+			});
+		} else {
+			return res.status(200).send({
+				msg: constantObj.messages.userStatusUpdateSuccess
+			});
+		}
+	})
+}
+
+//Reschedule Appointment
+exports.rescheduleAppointment = function(req, res) {
+	req.assert("minutes", "Time is required.").notEmpty();
+	req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
+	req.assert("appointment_date", "appointment_date is required").notEmpty();
+	let errors = req.validationErrors();
+	if (errors) {
+		return res.status(400).send({
+			msg: "error in your request",
+			err: errors
+		});
+	}
+	var newDateObj = new Date(req.body.appointment_date);
+	console.log(newDateObj);
+	var newDateObj = newDateObj.setMinutes(newDateObj.getMinutes() + req.body.minutes);
+	appointment.update({
+		_id: req.params.appointment_id
+	}, {
+		$set: {
+			"appointment_status": "reschedule",
+			"appointment_date": newDateObj
+		}
+	}, function(err, result) {
+		if (err) {
+			return res.status(400).send({
+				msg: constantObj.messages.userStatusUpdateFailure
+			});
+		} else {
+			return res.status(200).send({
+				msg: constantObj.messages.userStatusUpdateSuccess
+			});
+		}
+	})
+}
+
+//Mark Appointment as complete
+exports.completeAppointment = function(req, res) {
+	req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
+	req.assert("customer_id", "customer id is required.").notEmpty();
+	req.checkHeaders("user_id","barber_id is required.").notEmpty();
+	req.assert("score", "score is required.").notEmpty();
+	let errors = req.validationErrors();
+	if (errors) {
+		return res.status(400).send({
+			msg: "error in your request",
+			err: errors
+		});
+	}
+	let updateData = {
+		"$push":{
+			"ratings":{
+				"rated_by":req.headers.user_id,
+				"score":parseInt(req.body.score),
+                                "comments":req.body.comments
+			}
+		}
+	}
+	async.waterfall([
+		function(done) {
+			appointment.update({
+				_id: req.params.appointment_id
+			}, {
+				$set: {
+					"appointment_status": "completed"
+				}
+			}, function(err, result) {
+				if (err) {
+					done("some error",err)
+				} else {
+					done(err, result)
+				}
+			})
+		},
+		function(status,done){
+			user.update({_id:req.body.customer_id},updateData,function(err,result){
+				if (err) {
+					return res.status(400).send({
+						msg: constantObj.messages.userStatusUpdateFailure
+					});
+				} else {
+					return res.status(200).send({
+						msg: constantObj.messages.userStatusUpdateSuccess
+					});
+					done(err);
+				}
+			})
+		}
+	])
 }

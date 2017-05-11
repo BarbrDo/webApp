@@ -53,8 +53,7 @@ var userSchema = new mongoose.Schema({
     //         last_name: String,
     //     }],
     ratings:[{
-        "rated_by":String,
-        "rated_id":{
+        "rated_by":{
             type: Schema.Types.ObjectId,
             ref: 'users'
         },

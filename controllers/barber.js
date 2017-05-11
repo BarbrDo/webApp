@@ -6,6 +6,8 @@ let objectID = require('mongodb').ObjectID;
 let user = require('../models/User');
 var mongoose = require('mongoose');
 var moment = require('moment');
+let nodemailer = require('nodemailer');
+let mg = require('nodemailer-mailgun-transport');
 
 exports.getBarber = function(req, res) {
     var maxDistanceToFind = constantObj.ParamValues.radiusSearch;
@@ -125,7 +127,7 @@ exports.viewBarberProfile = function(req, res) {
         } else {
             res.status(200).send({
                 msg: constantObj.messages.successRetreivingData,
-                "data": data
+                "data": data[0]
             });
         }
     })
@@ -202,4 +204,37 @@ exports.pendingRequestOfbarber = function(req, res) {
             });
         }
     })
+}
+
+exports.inviteCustomer = function(req, res) {
+    req.assert('email', "Email id is required.");
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let auth = {
+        auth: {
+            api_key: process.env.MAILGUN_APIKEY,
+            domain: process.env.MAILGUN_DOMAIN
+        }
+    }
+    let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+    let mailOptions = {
+        to: user.email,
+        from: 'support@barbrdo.com',
+        subject: '✔ Reset your password on BarbrDo',
+        text: 'You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n' +
+            'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+            'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+            'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+    };
+    nodemailerMailgun.sendMail(mailOptions, function(err, info) {
+        res.send({
+            msg: 'An email has been sent to ' + user.email + ' with further instructions.'
+        });
+        done(err);
+    });
 }

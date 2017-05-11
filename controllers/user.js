@@ -1,21 +1,21 @@
-var async = require('async');
-var crypto = require('crypto');
-var nodemailer = require('nodemailer');
-var jwt = require('jsonwebtoken');
-var moment = require('moment');
-var request = require('request');
-var qs = require('querystring');
-var User = require('../models/User');
-var Shop = require('../models/shop');
-var Barber = require('../models/barber');
-var objectID = require('mongodb').ObjectID;
-var constantObj = require('./../constants.js');
+let async = require('async');
+let crypto = require('crypto');
+let nodemailer = require('nodemailer');
+let jwt = require('jsonwebtoken');
+let moment = require('moment');
+let request = require('request');
+let qs = require('querystring');
+let User = require('../models/User');
+let Shop = require('../models/shop');
+let Barber = require('../models/barber');
+let objectID = require('mongodb').ObjectID;
+let constantObj = require('./../constants.js');
 let userTypes = require('../models/user_type');
 let commonObj = require('../common/common');
-var mg = require('nodemailer-mailgun-transport');
+let mg = require('nodemailer-mailgun-transport');
 
 function generateToken(user) {
-  var payload = {
+  let payload = {
     iss: 'my.domain.com',
     sub: user._id,
     iat: moment().unix(),
@@ -48,7 +48,7 @@ exports.loginPost = function(req, res, next) {
     remove_dots: false
   });
 
-  var errors = req.validationErrors();
+  let errors = req.validationErrors();
 
   if (errors) {
     return res.status(400).send({
@@ -110,7 +110,7 @@ exports.signupPost = function(req, res, next) {
     remove_dots: false
   });
 
-  var errors = req.validationErrors();
+  let errors = req.validationErrors();
 
   if (errors) {
     return res.status(400).send({
@@ -127,7 +127,7 @@ exports.signupPost = function(req, res, next) {
         err:[{msg:"The email address you have entered is already associated with another account."}]
       });
     }
-    var saveData = req.body;
+    let saveData = req.body;
 
     if (req.headers.device_type) {
       saveData.device_type = req.headers.device_type;
@@ -150,9 +150,9 @@ exports.signupPost = function(req, res, next) {
           "err":err
         })
       } else {
-        var resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
+        let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
         if (req.body.user_type == 'shop') {
-          var saveDataForShop = {};
+          let saveDataForShop = {};
           saveDataForShop.user_id = data._id
           saveDataForShop.license_number = req.body.license_number;
           Shop(saveDataForShop).save(function(errSaveShop, shopData) {
@@ -162,7 +162,7 @@ exports.signupPost = function(req, res, next) {
               })
             } else {
               res.status(200).send({
-                msg: "Activate your account on the given link.",
+                msg: "please check your email to verify your account.",
                 link: resetUrl,
                 token: generateToken(shopData),
                 user: data
@@ -170,7 +170,7 @@ exports.signupPost = function(req, res, next) {
             }
           })
         } else if(req.body.user_type == 'barber') {
-          var saveDataForBarber = {};
+          let saveDataForBarber = {};
           saveDataForBarber.user_id = data._id
           saveDataForBarber.license_number = req.body.license_number;
           Barber(saveDataForBarber).save(function(errSaveBarber, barberData) {
@@ -180,7 +180,7 @@ exports.signupPost = function(req, res, next) {
               })
             } else {
               res.status(200).send({
-                msg: "Activate your account on the given link.",
+                msg: "please check your email to verify your account.",
                 link: resetUrl,
                 token: generateToken(barberData),
                 user: data
@@ -189,7 +189,7 @@ exports.signupPost = function(req, res, next) {
           })
         } else {
           res.send({
-            msg: "Activate your account on the given link.",
+            msg: "please check your email to verify your account.",
             link: resetUrl,
             token: generateToken(data),
             user: data.toJSON()
@@ -211,7 +211,7 @@ exports.accountPut = function(req, res, next) {
     req.assert('confirm', 'Passwords must match').equals(req.body.password);
   } 
 
-  var errors = req.validationErrors();
+  let errors = req.validationErrors();
 
   if (errors) {
     return res.status(400).send({
@@ -224,7 +224,7 @@ exports.accountPut = function(req, res, next) {
     if ('password' in req.body) {
       user.password = req.body.password;
     } else {
-      // var saveObject = 
+      // let saveObject = 
       // user.email = req.body.email;
 
       if(req.body.first_name){
@@ -322,7 +322,7 @@ exports.forgotPost = function(req, res, next) {
     remove_dots: false
   });
 
-  var errors = req.validationErrors();
+  let errors = req.validationErrors();
 
   if (errors) {
     return res.status(400).send({
@@ -331,7 +331,7 @@ exports.forgotPost = function(req, res, next) {
     });
   }
 
-  var auth = {
+  let auth = {
     auth: {
       api_key: process.env.MAILGUN_APIKEY,
       domain: process.env.MAILGUN_DOMAIN
@@ -341,7 +341,7 @@ exports.forgotPost = function(req, res, next) {
   async.waterfall([
     function(done) {
       crypto.randomBytes(16, function(err, buf) {
-        var token = buf.toString('hex');
+        let token = buf.toString('hex');
         done(err, token);
       });
     },
@@ -362,8 +362,8 @@ exports.forgotPost = function(req, res, next) {
       });
     },
     function(token, user, done) {
-      var nodemailerMailgun = nodemailer.createTransport(mg(auth));
-      var mailOptions = {
+      let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+      let mailOptions = {
         to: user.email,
         from: 'support@barbrdo.com',
         subject: '✔ Reset your password on BarbrDo',
@@ -389,7 +389,7 @@ exports.resetPost = function(req, res, next) {
   req.assert('password', 'Password must be at least 4 characters long').len(4);
   req.assert('confirm', 'Passwords must match').equals(req.body.password);
 
-  var errors = req.validationErrors();
+  let errors = req.validationErrors();
 
   if (errors) {
     return res.status(400).send({
@@ -419,14 +419,14 @@ exports.resetPost = function(req, res, next) {
         });
     },
     function(user, done) {
-      var transporter = nodemailer.createTransport({
+      let transporter = nodemailer.createTransport({
         service: 'Mailgun',
         auth: {
           user: process.env.MAILGUN_USERNAME,
           pass: process.env.MAILGUN_PASSWORD
         }
       });
-      var mailOptions = {
+      let mailOptions = {
         from: 'support@yourdomain.com',
         to: user.email,
         subject: 'Your Mega Boilerplate password has been changed',
@@ -447,11 +447,11 @@ exports.resetPost = function(req, res, next) {
  * Sign in with Facebook
  */
 exports.authFacebook = function(req, res) {
-  var profileFields = ['id', 'name', 'email', 'gender', 'location'];
-  var accessTokenUrl = 'https://graph.facebook.com/v2.5/oauth/access_token';
-  var graphApiUrl = 'https://graph.facebook.com/v2.5/me?fields=' + profileFields.join(',');
+  let profileFields = ['id', 'name', 'email', 'gender', 'location'];
+  let accessTokenUrl = 'https://graph.facebook.com/v2.5/oauth/access_token';
+  let graphApiUrl = 'https://graph.facebook.com/v2.5/me?fields=' + profileFields.join(',');
 
-  var params = {
+  let params = {
     code: req.body.code,
     client_id: process.env.FACEBOOK_CLIENTID,
     client_secret: process.env.FACEBOOK_SECRET,
@@ -554,10 +554,10 @@ exports.authFacebookCallback = function(req, res) {
  * Sign in with Google
  */
 exports.authGoogle = function(req, res) {
-  var accessTokenUrl = 'https://accounts.google.com/o/oauth2/token';
-  var peopleApiUrl = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect';
+  let accessTokenUrl = 'https://accounts.google.com/o/oauth2/token';
+  let peopleApiUrl = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect';
 
-  var params = {
+  let params = {
     code: req.body.code,
     client_id: req.body.clientId,
     client_secret: process.env.GOOGLE_SECRET,
@@ -570,8 +570,8 @@ exports.authGoogle = function(req, res) {
     json: true,
     form: params
   }, function(err, response, token) {
-    var accessToken = token.access_token;
-    var headers = {
+    let accessToken = token.access_token;
+    let headers = {
       Authorization: 'Bearer ' + accessToken
     };
 
@@ -646,7 +646,7 @@ exports.authGoogleCallback = function(req, res) {
 
 exports.addChair = function(req, res) {
   req.assert("id", "id is required")
-  var errors = req.validationErrors();
+  let errors = req.validationErrors();
 
   if (errors) {
     return res.status(400).send({
@@ -654,7 +654,7 @@ exports.addChair = function(req, res) {
       err: errors
     });
   }
-  var validateId = objectID.isValid(req.body.id)
+  let validateId = objectID.isValid(req.body.id)
   if (validateId) {
     Shop.findOne({
       _id: req.body.id
@@ -665,14 +665,14 @@ exports.addChair = function(req, res) {
         });
       } else {
         if (data) {
-          var totalNumberOfChairs = data.chairs.length;
+          let totalNumberOfChairs = data.chairs.length;
           totalNumberOfChairs = totalNumberOfChairs + 1;
-          var obj = {};
-          var saveChair = [];
+          let obj = {};
+          let saveChair = [];
           obj.name = 'Chair' + " " + totalNumberOfChairs
           obj.availability = "available";
           saveChair.push(obj);
-          var saveChairData = {};
+          let saveChairData = {};
           saveChairData.chairs = saveChair;
           Shop.update({
             _id: req.body.id
@@ -710,7 +710,7 @@ exports.addChair = function(req, res) {
 exports.removeChair = function(req, res) {
   req.assert("shop_id", "Shop ID is required")
   req.assert("chair_id", "Chair ID is required");
-  var errors = req.validationErrors();
+  let errors = req.validationErrors();
 
   if (errors) {
     return res.status(400).send({
@@ -718,8 +718,8 @@ exports.removeChair = function(req, res) {
       err: errors
     });
   }
-  var validateId = objectID.isValid(req.body.shop_id);
-  var validateChairId = objectID.isValid(req.body.chair_id)
+  let validateId = objectID.isValid(req.body.shop_id);
+  let validateChairId = objectID.isValid(req.body.chair_id)
   if (validateId && validateChairId) {
     Shop.update({
       _id: req.body.shop_id,
@@ -767,7 +767,7 @@ exports.getUserType = function(req, res) {
 
 exports.checkFaceBook = function(req,res){
   req.assert('facebook_id', 'facebook_id is required').notEmpty();
-  var errors = req.validationErrors();
+  let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",

@@ -61,7 +61,9 @@ module.exports = function(app, express) {
     //Customer
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
     app.post('/api/v1/appointment', appointmentController.takeAppointment); //Book Appointment
-    
+    app.post('/api/v1/confirmRequestByBarber',appointmentController.confirmRequestByBarber);
+    app.post('/api/v1/rescheduleAppointment',appointmentController.rescheduleAppointment);
+    app.post('/api/v1/confirmedRequestMarkAsComplete',appointmentController.confirmedRequestMarkAsComplete)
     //Barber
     app.get('/api/v1/barbers', shopController.allBarbers); //Get all barbers
     app.get('/api/v1/barbers/:barber_id',barberServices.viewBarberProfile);//Get specific barber's detail

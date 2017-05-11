@@ -11,7 +11,7 @@ const messages = {
 	//user message
 	"userSuccess": "User saved successfully",
 	"userStatusUpdateFailure": "Error occured while updating Status",
-	"userStatusUpdateSuccess": "User update successfully",
+	"userStatusUpdateSuccess": "Update successfully",
 	"userDeleteFailure": "Error occured while deleting the user",
 	"userDeleteSuccess": "User(s) deleted successfully",
 	"userUpdateSuccess": "User updated successfully",

@@ -225,7 +225,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "59072e9a2fe2cb0f2cafa060"
+ *         default: "5909d7bca8af707ab3c1396c"
  *       - in: "body"
  *         name: "body"
  *         description: "Created user object"

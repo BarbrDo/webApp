@@ -75,8 +75,10 @@ module.exports = function(app, express) {
     app.put('/api/v1/barber/rescheduleappointment/:appointment_id',barberServices.rescheduleAppointment);
     app.put('/api/v1/barber/completeappointment/:appointment_id',barberServices.completeAppointment);
     app.delete('/api/v1/cancelAppointment', barberServices.cancelAppointment);
+    app.post('/api/v1/barber/barberGallery',upload.any(), barberServices.uploadBarberGallery);
 
     //Others
+    app.get('/api/v1/getProfile', userController.getProfiles);
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
     app.post('/api/v1/contact', contactController.contactPost);
     app.get('/api/v1/timeslots',commonObj.viewTimeSlots)

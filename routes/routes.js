@@ -54,11 +54,11 @@ module.exports = function(app, express) {
     app.get('/api/v1/shops', shopController.allShops); // List all shops and search shop
     app.put('/api/v1/shops', upload.any(), shopController.editShop); //Edit shop
     app.post('/api/v1/shops/chair', userController.addChair) //Add chair in shop
+    app.get('/api/v1/shops/chair',shopController.allShopsHavingChairs);// It will show all shops having number of chairs
     app.delete('/api/v1/shops/chair', userController.removeChair); // Remove chair from shop
+    app.post('/api/v1/shops/confirmchair', chairRequestController.bookChair);
     app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
-    app.post('/api/v1/bookChair', chairRequestController.bookChair);
-    app.get('/api/v1/allShopsHavingChairs',shopController.allShopsHavingChairs);// It will show all shops having number of chairs
-
+    
     //Customer
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
     app.post('/api/v1/appointment', appointmentController.takeAppointment); //Book Appointment
@@ -70,7 +70,7 @@ module.exports = function(app, express) {
     app.get('/api/v1/barbers/:barber_id',barberServices.viewBarberProfile);//Get specific barber's detail
     app.post('/api/v1/barberServices', barberServices.addBarberServices); //Add new service in barber
     app.get('/api/v1/barberServices/:barber_id',barberServices.viewAllServiesOfBarber); // Get barber's services
-    app.post('/api/v1/requestChair', chairRequestController.requestChair); //Barber requesting chair to shop
+    app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber requesting chair to shop
     app.get('/api/v1/barber/appointments',barberServices.appointments);
     app.put('/api/v1/barber/confirmappointment/:appointment_id',barberServices.confirmAppointment);
     app.put('/api/v1/barber/rescheduleappointment/:appointment_id',barberServices.rescheduleAppointment);
@@ -380,13 +380,54 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "59072e9a2fe2cb0f2cafa060"
+ *         default: "590829938e6a4812ece58e76"
  *       - in: "body"
  *         name: "body"
  *         description: "Send shop id and chair id"
  *         required: true
  *         schema:
  *           $ref: "#/definitions/deleteChair"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *     get:
+ *       tags:
+ *       - "shop"
+ *       summary: "Barber can see shops having chairs"
+ *       description: "Barber can see shops having chairs"
+ *       operationId: "showShops"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "590829938e6a4812ece58e76"
+ *       - in: "query"
+ *         name: "search"
+ *         description: "Search by Shop name"
+ *         required: false
+ *         type: string
+ *         format: string
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -477,6 +518,41 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
+ *     get:
+ *       tags:
+ *       - "customer"
+ *       summary: "Show my all booked future appointments"
+ *       description: "Show my all booked future appointments"
+ *       operationId: "getappointment"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5909d7bca8af707ab3c1396c"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
  *   /customer/gallery:
  *     post:
  *       tags:
@@ -557,41 +633,6 @@ module.exports = function(app, express) {
  *         required: true
  *         type: "string"
  *         default: "32326sfsdf632312w32s25"
- *       responses:
- *         200:
- *           description: "successful operation"
- *         400:
- *           description: "Invalid request"
- *     get:
- *       tags:
- *       - "customer"
- *       summary: "Show my all booked future appointments"
- *       description: "Show my all booked future appointments"
- *       operationId: "getappointment"
- *       produces:
- *       - "application/json"
- *       parameters:
- *       - in: "header"
- *         name: "device_latitude"
- *         description: "Device latitude"
- *         required: true
- *         type: string
- *         format: string
- *         default: "30.538994"
- *       - in: "header"
- *         name: "device_longitude"
- *         description: "Device Longitude"
- *         required: true
- *         type: string
- *         format: string
- *         default: "75.955033"
- *       - in: "header"
- *         name: "user_id"
- *         description: "Logged in user's id"
- *         required: true
- *         type: string
- *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
  *       responses:
  *         200:
  *           description: "successful operation"

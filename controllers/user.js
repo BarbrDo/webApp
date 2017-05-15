@@ -169,7 +169,8 @@ exports.signupPost = function (req, res, next) {
                 msg: "please check your email to verify your account.",
                 link: resetUrl,
                 token: generateToken(shopData),
-                user: data
+                user: data,
+                "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
               });
             }
           })
@@ -187,7 +188,8 @@ exports.signupPost = function (req, res, next) {
                 msg: "please check your email to verify your account.",
                 link: resetUrl,
                 token: generateToken(barberData),
-                user: data
+                user: data,
+                "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
               });
             }
           })
@@ -196,7 +198,8 @@ exports.signupPost = function (req, res, next) {
             msg: "please check your email to verify your account.",
             link: resetUrl,
             token: generateToken(data),
-            user: data.toJSON()
+            user: data.toJSON(),
+            "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
           });
         }
       }
@@ -215,7 +218,6 @@ exports.accountPut = function (req, res, next) {
     req.assert('password', 'Password must be at least 6 characters long').len(6);
     req.assert('confirm', 'Passwords must match').equals(req.body.password);
   }
-  console.log(req.body);
 
   let errors = req.validationErrors();
 
@@ -260,7 +262,8 @@ exports.accountPut = function (req, res, next) {
       } else {
         res.send({
           user: user,
-          msg: 'Your profile information has been updated.'
+          msg: 'Your profile information has been updated.',
+          "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
         });
       }
     });

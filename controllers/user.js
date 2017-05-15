@@ -84,7 +84,8 @@ exports.loginPost = function (req, res, next) {
       }
       res.send({
         token: generateToken(user),
-        user: user.toJSON()
+        user: user.toJSON(),
+        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
       });
     });
   });
@@ -210,9 +211,11 @@ exports.signupPost = function (req, res, next) {
  */
 exports.accountPut = function (req, res, next) {
   if ('password' in req.body) {
+    req.checkHeaders('user_id', 'User ID is missing').notEmpty();
     req.assert('password', 'Password must be at least 6 characters long').len(6);
     req.assert('confirm', 'Passwords must match').equals(req.body.password);
   }
+  console.log(req.body);
 
   let errors = req.validationErrors();
 
@@ -223,13 +226,10 @@ exports.accountPut = function (req, res, next) {
     });
   }
 
-  User.findById(req.body._id, function (err, user) {
+  User.findById(req.headers.user_id, function (err, user) {
     if ('password' in req.body) {
       user.password = req.body.password;
     } else {
-      // let saveObject = 
-      // user.email = req.body.email;
-
       if (req.body.first_name) {
         user.first_name = req.body.first_name;
       }
@@ -243,13 +243,10 @@ exports.accountPut = function (req, res, next) {
       if ((req.files) && (req.files.length > 0)) {
             user.picture = req.files[0].filename;
       }
-      console.log(req.body.gender);
       user.gender = req.body.gender;
       user.location = req.body.location;
       user.website = req.body.website;
     }
-
-    console.log("user information", user);
 
     user.save(function (err) {
       if ('password' in req.body) {
@@ -803,6 +800,7 @@ exports.checkFaceBook = function (req, res) {
     }
   })
 }
+
 exports.uploadCustomerGallery = function (req, res) {
   req.checkHeaders("user_id", "_id is required").notEmpty();
   let errors = req.validationErrors();
@@ -825,7 +823,6 @@ exports.uploadCustomerGallery = function (req, res) {
     }
     updateData.gallery = userimg;
   }
-  console.log("updateData.gallery", updateData.gallery);
   if (updateData.gallery.length > 0) {
     User.update({
       _id: req.headers.user_id
@@ -889,10 +886,11 @@ exports.uploadCustomerGallery = function (req, res) {
     })
   }
 }
+
 exports.deleteImages = function (req, res) {
   req.checkHeaders("user_id", "").notEmpty();
-  req.assert("image_id", "Image _id is required").notEmpty();
-  req.assert("image_name", "Image name is required.").notEmpty();
+  req.checkParams("image_id", "Image _id is required").notEmpty();
+  //req.assert("image_name", "Image name is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -900,14 +898,14 @@ exports.deleteImages = function (req, res) {
       err: errors
     });
   }
-  let filePath = "/home/hussainm/Desktop/projects/barbrdo/public/uploadedFiles/" + req.body.image_name;
-  fs.unlinkSync(filePath);
+  let filePath = "../public/uploadedFiles/" + req.body.image_name;
+  //fs.unlinkSync(filePath);
   User.update({
     "_id": req.headers.user_id
   }, {
       $pull: {
         "gallery": {
-          "_id": req.body.image_id
+          "_id": req.params.image_id
         }
       }
     }, function (error, result) {

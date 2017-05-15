@@ -63,7 +63,7 @@ module.exports = function(app, express) {
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
     app.post('/api/v1/appointment', appointmentController.takeAppointment); //Book Appointment
     app.post('/api/v1/customer/gallery', upload.any(), userController.uploadCustomerGallery); //Upload image in gallery
-    app.delete('/api/v1/customer/gallery',userController.deleteImages); //Delete image from gallery
+    app.delete('/api/v1/customer/gallery/:image_id',userController.deleteImages); //Delete image from gallery
     
     //Barber
     app.get('/api/v1/barbers', shopController.allBarbers); //Get all barbers
@@ -472,6 +472,91 @@ module.exports = function(app, express) {
  *         required: true
  *         schema:
  *           $ref: "#/definitions/appointment"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *   /customer/gallery:
+ *     post:
+ *       tags:
+ *       - "customer"
+ *       summary: "Upload single or multiple images in Gallery"
+ *       description: "Upload single or multiple images in Gallery"
+ *       operationId: "customerGallery"
+ *       consumes:
+ *       - "multipart/form-data"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5909d7bca8af707ab3c1396c"
+ *       - in: "formData"
+ *         name: "file"
+ *         description: "file to upload"
+ *         required: false
+ *         type: "file"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *   /customer/gallery/{image_id}:
+ *     delete:
+ *       tags:
+ *       - "customer"
+ *       summary: "Delete image from Gallery"
+ *       description: "Delete image from Gallery"
+ *       operationId: "customerGalleryDelete"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5909d7bca8af707ab3c1396c"
+ *       - in: "path"
+ *         name: "image_id"
+ *         description: "image ID"
+ *         required: true
+ *         type: "string"
+ *         default: "32326sfsdf632312w32s25"
  *       responses:
  *         200:
  *           description: "successful operation"

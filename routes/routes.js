@@ -78,8 +78,8 @@ module.exports = function(app, express) {
     app.delete('/api/v1/cancelAppointment', barberServices.cancelAppointment);
     app.post('/api/v1/barber/barberGallery',upload.any(), barberServices.uploadBarberGallery);
 
-    //Others
-    app.get('/api/v1/getProfile', userController.getProfiles);
+    //Common
+    app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of customer / barber / shop
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
     app.post('/api/v1/contact', contactController.contactPost);
     app.get('/api/v1/timeslots',commonObj.viewTimeSlots)
@@ -846,6 +846,49 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
+ *   /userprofile/{id}:
+ *     get:
+ *       tags:
+ *       - "common"
+ *       summary: "Get profile of any customer/barber/shop"
+ *       description: "Get profile of any customer/barber/shop"
+ *       operationId: "userProfile"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5901e07846c94a225018d5cc"
+ *       - in: "path"
+ *         name: "id"
+ *         description: "Customer Id / Barber Id / Shop Id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5909d7bca8af707ab3c1396c"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid username/password supplied"
  *   /timeslots:
  *     get:
  *       tags:

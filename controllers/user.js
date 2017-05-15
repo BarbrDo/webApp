@@ -13,6 +13,7 @@ let constantObj = require('./../constants.js');
 let userTypes = require('../models/user_type');
 let commonObj = require('../common/common');
 let mg = require('nodemailer-mailgun-transport');
+let fs = require('fs');
 
 function generateToken(user) {
   let payload = {
@@ -27,7 +28,7 @@ function generateToken(user) {
 /**
  * Login required middleware
  */
-exports.ensureAuthenticated = function(req, res, next) {
+exports.ensureAuthenticated = function (req, res, next) {
   if (req.isAuthenticated()) {
     next();
   } else {
@@ -40,7 +41,7 @@ exports.ensureAuthenticated = function(req, res, next) {
  * POST /login
  * Sign in with email and password
  */
-exports.loginPost = function(req, res, next) {
+exports.loginPost = function (req, res, next) {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('password', 'Password cannot be blank').notEmpty();
@@ -59,12 +60,12 @@ exports.loginPost = function(req, res, next) {
 
   User.findOne({
     email: req.body.email
-  }).exec(function(err, user) {
+  }).exec(function (err, user) {
 
     if (!user) {
       return res.status(401).send({
         msg: 'The email address ' + req.body.email + ' is not associated with any account. ' +
-          'Double-check your email address and try again.'
+        'Double-check your email address and try again.'
       });
     }
 
@@ -75,7 +76,7 @@ exports.loginPost = function(req, res, next) {
     //   });
     // }
 
-    user.comparePassword(req.body.password, function(err, isMatch) {
+    user.comparePassword(req.body.password, function (err, isMatch) {
       if (!isMatch) {
         return res.status(401).send({
           msg: 'Invalid email or password'
@@ -83,7 +84,8 @@ exports.loginPost = function(req, res, next) {
       }
       res.send({
         token: generateToken(user),
-        user: user.toJSON()
+        user: user.toJSON(),
+        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
       });
     });
   });
@@ -92,18 +94,18 @@ exports.loginPost = function(req, res, next) {
 /**
  * POST /signup
  */
-exports.signupPost = function(req, res, next) {
+exports.signupPost = function (req, res, next) {
   // req.assert('first_name', 'First name cannot be blank.').notEmpty();
   // req.assert('last_name', 'Last name cannot be blank.').notEmpty();
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('mobile_number', 'Mobile number cannot be blank').notEmpty();
-  if(!req.body.facebook){
+  if (!req.body.facebook) {
     req.assert('password', 'Password must be at least 6 characters long').len(6);
   }
   req.assert('user_type', 'User type cannot be blank').notEmpty();
   if (req.body.user_type == 'shop' || req.body.user_type == 'barber') {
-      req.assert('license_number', 'License number cannot be blank').notEmpty();
+    req.assert('license_number', 'License number cannot be blank').notEmpty();
   }
 
   req.sanitize('email').normalizeEmail({
@@ -120,11 +122,13 @@ exports.signupPost = function(req, res, next) {
   }
   User.findOne({
     email: req.body.email
-  }, function(err, user) {
+  }, function (err, user) {
     if (user) {
       return res.status(400).send({
         msg: 'The email address you have entered is already associated with another account.',
-        err:[{msg:"The email address you have entered is already associated with another account."}]
+        err: [{
+          msg: "The email address you have entered is already associated with another account."
+        }]
       });
     }
     let saveData = req.body;
@@ -141,13 +145,13 @@ exports.signupPost = function(req, res, next) {
 
     let email_encrypt = commonObj.encrypt(req.body.email);
     let generatedText = commonObj.makeid();
-    
+
     saveData.randomString = generatedText;
-    User(saveData).save(function(err, data) {
+    User(saveData).save(function (err, data) {
       if (err) {
         return res.status(400).send({
           msg: constantObj.messages.errorInSave,
-          "err":err
+          "err": err
         })
       } else {
         let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
@@ -155,7 +159,7 @@ exports.signupPost = function(req, res, next) {
           let saveDataForShop = {};
           saveDataForShop.user_id = data._id
           saveDataForShop.license_number = req.body.license_number;
-          Shop(saveDataForShop).save(function(errSaveShop, shopData) {
+          Shop(saveDataForShop).save(function (errSaveShop, shopData) {
             if (errSaveShop) {
               return res.status(400).send({
                 msg: constantObj.messages.errorInSave
@@ -169,11 +173,11 @@ exports.signupPost = function(req, res, next) {
               });
             }
           })
-        } else if(req.body.user_type == 'barber') {
+        } else if (req.body.user_type == 'barber') {
           let saveDataForBarber = {};
           saveDataForBarber.user_id = data._id
           saveDataForBarber.license_number = req.body.license_number;
-          Barber(saveDataForBarber).save(function(errSaveBarber, barberData) {
+          Barber(saveDataForBarber).save(function (errSaveBarber, barberData) {
             if (errSaveBarber) {
               return res.status(400).send({
                 msg: constantObj.messages.errorInSave
@@ -205,11 +209,13 @@ exports.signupPost = function(req, res, next) {
  * PUT /account
  * Update profile information OR change password.
  */
-exports.accountPut = function(req, res, next) {
+exports.accountPut = function (req, res, next) {
   if ('password' in req.body) {
-    req.assert('password', 'Password must be at least 4 characters long').len(6);
+    req.checkHeaders('user_id', 'User ID is missing').notEmpty();
+    req.assert('password', 'Password must be at least 6 characters long').len(6);
     req.assert('confirm', 'Passwords must match').equals(req.body.password);
-  } 
+  }
+  console.log(req.body);
 
   let errors = req.validationErrors();
 
@@ -220,31 +226,29 @@ exports.accountPut = function(req, res, next) {
     });
   }
 
-  User.findById(req.body._id, function(err, user) {
+  User.findById(req.headers.user_id, function (err, user) {
     if ('password' in req.body) {
       user.password = req.body.password;
     } else {
-      // let saveObject = 
-      // user.email = req.body.email;
+      if (req.body.first_name) {
+        user.first_name = req.body.first_name;
+      }
+      if (req.body.last_name) {
+        user.last_name = req.body.last_name;
+      }
+      if (req.body.mobile_number) {
+        user.mobile_number = req.body.mobile_number;
+      }
 
-      if(req.body.first_name){
-        user.first_name = req.body.first_name;  
+      if ((req.files) && (req.files.length > 0)) {
+            user.picture = req.files[0].filename;
       }
-      if(req.body.last_name){
-        user.last_name = req.body.last_name;  
-      }
-      if(req.body.mobile_number){
-       user.mobile_number = req.body.mobile_number; 
-      }
-      console.log(req.body.gender);
       user.gender = req.body.gender;
       user.location = req.body.location;
       user.website = req.body.website;
     }
 
-    console.log("user information",user);
-
-    user.save(function(err) {
+    user.save(function (err) {
       if ('password' in req.body) {
         res.send({
           msg: 'Your password has been changed.'
@@ -266,10 +270,10 @@ exports.accountPut = function(req, res, next) {
 /**
  * DELETE /account
  */
-exports.accountDelete = function(req, res, next) {
+exports.accountDelete = function (req, res, next) {
   User.remove({
     _id: req.user.id
-  }, function(err) {
+  }, function (err) {
     res.send({
       msg: 'Your account has been permanently deleted.'
     });
@@ -279,8 +283,8 @@ exports.accountDelete = function(req, res, next) {
 /**
  * GET /unlink/:provider
  */
-exports.unlink = function(req, res, next) {
-  User.findById(req.user.id, function(err, user) {
+exports.unlink = function (req, res, next) {
+  User.findById(req.user.id, function (err, user) {
     switch (req.params.provider) {
       case 'facebook':
         user.facebook = undefined;
@@ -302,7 +306,7 @@ exports.unlink = function(req, res, next) {
           msg: 'Invalid OAuth Provider'
         });
     }
-    user.save(function(err) {
+    user.save(function (err) {
       res.send({
         msg: 'Your account has been unlinked.'
       });
@@ -315,7 +319,7 @@ exports.unlink = function(req, res, next) {
  */
 
 
-exports.forgotPost = function(req, res, next) {
+exports.forgotPost = function (req, res, next) {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.sanitize('email').normalizeEmail({
@@ -339,16 +343,16 @@ exports.forgotPost = function(req, res, next) {
   }
 
   async.waterfall([
-    function(done) {
-      crypto.randomBytes(16, function(err, buf) {
+    function (done) {
+      crypto.randomBytes(16, function (err, buf) {
         let token = buf.toString('hex');
         done(err, token);
       });
     },
-    function(token, done) {
+    function (token, done) {
       User.findOne({
         email: req.body.email
-      }, function(err, user) {
+      }, function (err, user) {
         if (!user) {
           return res.status(400).send({
             msg: 'The email address ' + req.body.email + ' is not associated with any account.'
@@ -356,23 +360,23 @@ exports.forgotPost = function(req, res, next) {
         }
         user.passwordResetToken = token;
         user.passwordResetExpires = Date.now() + 3600000; // expire in 1 hour
-        user.save(function(err) {
+        user.save(function (err) {
           done(err, token, user);
         });
       });
     },
-    function(token, user, done) {
+    function (token, user, done) {
       let nodemailerMailgun = nodemailer.createTransport(mg(auth));
       let mailOptions = {
         to: user.email,
         from: 'support@barbrdo.com',
         subject: '✔ Reset your password on BarbrDo',
         text: 'You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n' +
-          'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-          'http://' + req.headers.host + '/reset/' + token + '\n\n' +
-          'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+        'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+        'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+        'If you did not request this, please ignore this email and your password will remain unchanged.\n'
       };
-      nodemailerMailgun.sendMail(mailOptions, function(err, info) {
+      nodemailerMailgun.sendMail(mailOptions, function (err, info) {
         res.send({
           msg: 'An email has been sent to ' + user.email + ' with further instructions.'
         });
@@ -385,7 +389,7 @@ exports.forgotPost = function(req, res, next) {
 /**
  * POST /reset
  */
-exports.resetPost = function(req, res, next) {
+exports.resetPost = function (req, res, next) {
   req.assert('password', 'Password must be at least 4 characters long').len(4);
   req.assert('confirm', 'Passwords must match').equals(req.body.password);
 
@@ -399,12 +403,12 @@ exports.resetPost = function(req, res, next) {
   }
 
   async.waterfall([
-    function(done) {
+    function (done) {
       User.findOne({
-          passwordResetToken: req.params.token
-        })
+        passwordResetToken: req.params.token
+      })
         .where('passwordResetExpires').gt(Date.now())
-        .exec(function(err, user) {
+        .exec(function (err, user) {
           if (!user) {
             return res.status(400).send({
               msg: 'Password reset token is invalid or has expired.'
@@ -413,12 +417,12 @@ exports.resetPost = function(req, res, next) {
           user.password = req.body.password;
           user.passwordResetToken = undefined;
           user.passwordResetExpires = undefined;
-          user.save(function(err) {
+          user.save(function (err) {
             done(err, user);
           });
         });
     },
-    function(user, done) {
+    function (user, done) {
       let transporter = nodemailer.createTransport({
         service: 'Mailgun',
         auth: {
@@ -431,9 +435,9 @@ exports.resetPost = function(req, res, next) {
         to: user.email,
         subject: 'Your Mega Boilerplate password has been changed',
         text: 'Hello,\n\n' +
-          'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
+        'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
       };
-      transporter.sendMail(mailOptions, function(err) {
+      transporter.sendMail(mailOptions, function (err) {
         res.send({
           msg: 'Your password has been changed successfully.'
         });
@@ -446,7 +450,7 @@ exports.resetPost = function(req, res, next) {
  * POST /auth/facebook
  * Sign in with Facebook
  */
-exports.authFacebook = function(req, res) {
+exports.authFacebook = function (req, res) {
   let profileFields = ['id', 'name', 'email', 'gender', 'location'];
   let accessTokenUrl = 'https://graph.facebook.com/v2.5/oauth/access_token';
   let graphApiUrl = 'https://graph.facebook.com/v2.5/me?fields=' + profileFields.join(',');
@@ -463,7 +467,7 @@ exports.authFacebook = function(req, res) {
     url: accessTokenUrl,
     qs: params,
     json: true
-  }, function(err, response, accessToken) {
+  }, function (err, response, accessToken) {
     if (accessToken.error) {
       return res.status(500).send({
         msg: accessToken.error.message
@@ -474,7 +478,7 @@ exports.authFacebook = function(req, res) {
       url: graphApiUrl,
       qs: accessToken,
       json: true
-    }, function(err, response, profile) {
+    }, function (err, response, profile) {
       if (profile.error) {
         return res.status(500).send({
           msg: profile.error.message
@@ -486,7 +490,7 @@ exports.authFacebook = function(req, res) {
       if (req.isAuthenticated()) {
         User.findOne({
           facebook: profile.id
-        }, function(err, user) {
+        }, function (err, user) {
           if (user) {
             return res.status(409).send({
               msg: 'There is already an existing account linked with Facebook that belongs to you.'
@@ -498,7 +502,7 @@ exports.authFacebook = function(req, res) {
           user.gender = user.gender || profile.gender;
           user.picture = user.picture || 'https://graph.facebook.com/' + profile.id + '/picture?type=large';
           user.facebook = profile.id;
-          user.save(function() {
+          user.save(function () {
             res.send({
               token: generateToken(user),
               user: user
@@ -509,7 +513,7 @@ exports.authFacebook = function(req, res) {
         // Step 3b. Create a new user account or return an existing one.
         User.findOne({
           facebook: profile.id
-        }, function(err, user) {
+        }, function (err, user) {
           if (user) {
             return res.send({
               token: generateToken(user),
@@ -518,7 +522,7 @@ exports.authFacebook = function(req, res) {
           }
           User.findOne({
             email: profile.email
-          }, function(err, user) {
+          }, function (err, user) {
             if (user) {
               return res.status(400).send({
                 msg: user.email + ' is already associated with another account.'
@@ -533,7 +537,7 @@ exports.authFacebook = function(req, res) {
               picture: 'https://graph.facebook.com/' + profile.id + '/picture?type=large',
               facebook: profile.id
             });
-            user.save(function(err) {
+            user.save(function (err) {
               return res.send({
                 token: generateToken(user),
                 user: user
@@ -546,14 +550,14 @@ exports.authFacebook = function(req, res) {
   });
 };
 
-exports.authFacebookCallback = function(req, res) {
+exports.authFacebookCallback = function (req, res) {
   res.send('Loading...');
 };
 /**
  * POST /auth/google
  * Sign in with Google
  */
-exports.authGoogle = function(req, res) {
+exports.authGoogle = function (req, res) {
   let accessTokenUrl = 'https://accounts.google.com/o/oauth2/token';
   let peopleApiUrl = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect';
 
@@ -569,7 +573,7 @@ exports.authGoogle = function(req, res) {
   request.post(accessTokenUrl, {
     json: true,
     form: params
-  }, function(err, response, token) {
+  }, function (err, response, token) {
     let accessToken = token.access_token;
     let headers = {
       Authorization: 'Bearer ' + accessToken
@@ -580,7 +584,7 @@ exports.authGoogle = function(req, res) {
       url: peopleApiUrl,
       headers: headers,
       json: true
-    }, function(err, response, profile) {
+    }, function (err, response, profile) {
       if (profile.error) {
         return res.status(500).send({
           message: profile.error.message
@@ -590,7 +594,7 @@ exports.authGoogle = function(req, res) {
       if (req.isAuthenticated()) {
         User.findOne({
           google: profile.sub
-        }, function(err, user) {
+        }, function (err, user) {
           if (user) {
             return res.status(409).send({
               msg: 'There is already an existing account linked with Google that belongs to you.'
@@ -602,7 +606,7 @@ exports.authGoogle = function(req, res) {
           user.picture = user.picture || profile.picture.replace('sz=50', 'sz=200');
           user.location = user.location || profile.location;
           user.google = profile.sub;
-          user.save(function() {
+          user.save(function () {
             res.send({
               token: generateToken(user),
               user: user
@@ -613,7 +617,7 @@ exports.authGoogle = function(req, res) {
         // Step 3b. Create a new user account or return an existing one.
         User.findOne({
           google: profile.sub
-        }, function(err, user) {
+        }, function (err, user) {
           if (user) {
             return res.send({
               token: generateToken(user),
@@ -628,7 +632,7 @@ exports.authGoogle = function(req, res) {
             location: profile.location,
             google: profile.sub
           });
-          user.save(function(err) {
+          user.save(function (err) {
             res.send({
               token: generateToken(user),
               user: user
@@ -640,11 +644,11 @@ exports.authGoogle = function(req, res) {
   });
 };
 
-exports.authGoogleCallback = function(req, res) {
+exports.authGoogleCallback = function (req, res) {
   res.send('Loading...');
 };
 
-exports.addChair = function(req, res) {
+exports.addChair = function (req, res) {
   req.assert("id", "id is required")
   let errors = req.validationErrors();
 
@@ -658,7 +662,7 @@ exports.addChair = function(req, res) {
   if (validateId) {
     Shop.findOne({
       _id: req.body.id
-    }, function(err, data) {
+    }, function (err, data) {
       if (err) {
         res.status(400).send({
           msg: 'Error in finding shop.'
@@ -677,22 +681,22 @@ exports.addChair = function(req, res) {
           Shop.update({
             _id: req.body.id
           }, {
-            $push: {
-              chairs: {
-                $each: saveChairData.chairs
+              $push: {
+                chairs: {
+                  $each: saveChairData.chairs
+                }
               }
-            }
-          }, function(errorInSaveChair, success) {
-            if (errorInSaveChair) {
-              res.status(400).send({
-                msg: 'Error in finding shop.'
-              });
-            } else {
-              res.status(200).send({
-                msg: 'Chair successfully added.'
-              });
-            }
-          })
+            }, function (errorInSaveChair, success) {
+              if (errorInSaveChair) {
+                res.status(400).send({
+                  msg: 'Error in finding shop.'
+                });
+              } else {
+                res.status(200).send({
+                  msg: 'Chair successfully added.'
+                });
+              }
+            })
         } else {
           res.status(400).send({
             msg: 'This shop is not present.'
@@ -707,7 +711,7 @@ exports.addChair = function(req, res) {
   }
 }
 
-exports.removeChair = function(req, res) {
+exports.removeChair = function (req, res) {
   req.assert("shop_id", "Shop ID is required")
   req.assert("chair_id", "Chair ID is required");
   let errors = req.validationErrors();
@@ -725,20 +729,20 @@ exports.removeChair = function(req, res) {
       _id: req.body.shop_id,
       "chairs._id": req.body.chair_id
     }, {
-      $set: {
-        "chairs.$.isActive": false
-      }
-    }).exec(function(errInDelete, resultInDelete) {
-      if (errInDelete) {
-        res.status(400).send({
-          msg: 'Error in deleting chair.'
-        });
-      } else {
-        res.status(200).send({
-          msg: 'Chair successfully deleted.'
-        });
-      }
-    })
+        $set: {
+          "chairs.$.isActive": false
+        }
+      }).exec(function (errInDelete, resultInDelete) {
+        if (errInDelete) {
+          res.status(400).send({
+            msg: 'Error in deleting chair.'
+          });
+        } else {
+          res.status(200).send({
+            msg: 'Chair successfully deleted.'
+          });
+        }
+      })
   } else {
     res.status(400).send({
       msg: 'Please pass correct fields.'
@@ -746,26 +750,26 @@ exports.removeChair = function(req, res) {
   }
 }
 
-exports.getUserType = function(req, res) {
+exports.getUserType = function (req, res) {
   userTypes.find({
     isDeleted: false
   }, {
-    isDeleted: 0
-  }, function(err, data) {
-    if (err) {
-      res.status(400).send({
-        msg: constantObj.messages.errorRetreivingData
-      });
-    } else {
-      res.status(200).send({
-        msg: constantObj.messages.successRetreivingData,
-        data: data
-      });
-    }
-  })
+      isDeleted: 0
+    }, function (err, data) {
+      if (err) {
+        res.status(400).send({
+          msg: constantObj.messages.errorRetreivingData
+        });
+      } else {
+        res.status(200).send({
+          msg: constantObj.messages.successRetreivingData,
+          data: data
+        });
+      }
+    })
 }
 
-exports.checkFaceBook = function(req,res){
+exports.checkFaceBook = function (req, res) {
   req.assert('facebook_id', 'facebook_id is required').notEmpty();
   let errors = req.validationErrors();
   if (errors) {
@@ -774,26 +778,160 @@ exports.checkFaceBook = function(req,res){
       err: errors
     });
   }
-  User.find({"facebook":req.body.facebook_id},function(err,response){
-    if(err)
-    {
+  User.find({
+    "facebook": req.body.facebook_id
+  }, function (err, response) {
+    if (err) {
       res.status(400).send({
         msg: constantObj.messages.errorRetreivingData
       });
-    }
-    else{
-      if(response.length>0){
+    } else {
+      if (response.length > 0) {
         res.status(200).send({
-        msg: constantObj.messages.successRetreivingData,
-        token: generateToken(response),
-        user: response[0]
-      });
-      }
-      else {
+          msg: constantObj.messages.successRetreivingData,
+          token: generateToken(response),
+          user: response[0]
+        });
+      } else {
         res.status(400).send({
           msg: "This user not found in database"
         });
       }
     }
   })
+}
+
+exports.uploadCustomerGallery = function (req, res) {
+  req.checkHeaders("user_id", "_id is required").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+  let updateData = {};
+  updateData.modified_date = new Date();
+  delete updateData._id;
+  if ((req.files) && (req.files.length > 0)) {
+    let userimg = [];
+    for (let i = 0; i < req.files.length; i++) {
+      let obj = {};
+      obj.name = req.files[i].filename;
+      userimg.push(obj);
+
+    }
+    updateData.gallery = userimg;
+  }
+  if (updateData.gallery.length > 0) {
+    User.update({
+      _id: req.headers.user_id
+    }, {
+        $push: {
+          gallery: {
+            $each: updateData.gallery
+          }
+        }
+      }, function (errorInSaveChair, success) {
+        if (errorInSaveChair) {
+          res.status(400).send({
+            msg: 'Error in finding shop.'
+          });
+        } else {
+          User.findOne({
+            _id: req.headers.user_id
+          }, function (err, response) {
+            if (err) {
+              res.status(400).send({
+                msg: constantObj.messages.errorRetreivingData,
+                "err": err
+              });
+            } else {
+              res.status(200).send({
+                msg: 'Successfully updated fields.',
+                "user": response,
+                "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+              });
+            }
+          })
+        }
+      })
+  } else {
+    User.update({
+      _id: req.headers.user_id
+    }, updateData, function (err, data) {
+      if (err) {
+        res.status(400).send({
+          msg: 'Error in updating data.',
+          "err": err
+        });
+      } else {
+        User.findOne({
+          _id: req.headers.user_id
+        }, function (err, response) {
+          if (err) {
+            res.status(400).send({
+              msg: constantObj.messages.errorRetreivingData,
+              "err": err
+            });
+          } else {
+            res.status(200).send({
+              msg: 'Successfully updated fields.',
+              "user": response,
+              "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+            });
+          }
+        })
+      }
+    })
+  }
+}
+
+exports.deleteImages = function (req, res) {
+  req.checkHeaders("user_id", "").notEmpty();
+  req.checkParams("image_id", "Image _id is required").notEmpty();
+  //req.assert("image_name", "Image name is required.").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+  let filePath = "../public/uploadedFiles/" + req.body.image_name;
+  //fs.unlinkSync(filePath);
+  User.update({
+    "_id": req.headers.user_id
+  }, {
+      $pull: {
+        "gallery": {
+          "_id": req.params.image_id
+        }
+      }
+    }, function (error, result) {
+      if (error) {
+        res.status(400).send({
+          msg: constantObj.messages.errorRetreivingData,
+          "err": err
+        });
+      } else {
+        User.findOne({
+          _id: req.headers.user_id
+        }, function (err, response) {
+          if (err) {
+            res.status(400).send({
+              msg: constantObj.messages.errorRetreivingData,
+              "err": err
+            });
+          } else {
+            res.status(200).send({
+              msg: 'Successfully updated fields.',
+              "user": response,
+              "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+            });
+          }
+        })
+      }
+    })
+
 }

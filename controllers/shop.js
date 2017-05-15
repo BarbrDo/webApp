@@ -1,17 +1,17 @@
-var shop = require('../models/shop');
-var constantObj = require('./../constants.js');
+let shop = require('../models/shop');
+let constantObj = require('./../constants.js');
 
 exports.editShop = function(req, res) {
-    var updateData = JSON.parse(JSON.stringify(req.body));
+    let updateData = JSON.parse(JSON.stringify(req.body));
     updateData.modified_date = new Date();
     delete updateData._id;
     if ((req.files) && (req.files.length > 0)) {
-        var userimg = [];
-        for (var i = 0; i < req.files.length; i++) {
+        let userimg = [];
+        for (let i = 0; i < req.files.length; i++) {
             if (req.files[i].fieldname == 'image') {
                 updateData.image = req.files[i].filename;
             } else {
-                var obj = {};
+                let obj = {};
                 obj.name = req.files[i].filename;
                 userimg.push(obj);
             }
@@ -21,7 +21,6 @@ exports.editShop = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
         updateData.latLong = [req.headers.device_longitude, req.headers.device_latitude]
     }
-    console.log("updateData", updateData);
     shop.update({
         _id: req.body._id
     }, updateData, function(err, data) {
@@ -32,12 +31,12 @@ exports.editShop = function(req, res) {
             });
         } else {
             if (data.nModified == 1) {
-                var response = {
+                let response = {
                     "message": "Successfully updated fieldssss.",
                     "data": data
                 };
             } else {
-                var response = {
+                let response = {
                     "message": "No record updated.",
                     "data": data
                 };
@@ -48,7 +47,7 @@ exports.editShop = function(req, res) {
 }
 exports.shopContainsBarber = function(req, res) {
     req.checkParams('shop_id', 'Shop id is required').notEmpty();
-    var errors = req.validationErrors();
+    let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
             msg: "error in your request",
@@ -64,12 +63,12 @@ exports.shopContainsBarber = function(req, res) {
                 err: errors
             });
         } else {
-            var resultTantArray = [];
+            let resultTantArray = [];
             // add ratings of a barber in result.chairs[i].barber_id.ratings
             // add ratings of a barber in result.chairs[i].barber_id.gallery
-            for (var i = 0; i < result.chairs.length; i++) {
+            for (let i = 0; i < result.chairs.length; i++) {
                 if (result.chairs[i].barber_id) {
-                    var obj = {
+                    let obj = {
                         first_name: result.chairs[i].barber_id.first_name,
                         last_name: result.chairs[i].barber_id.last_name,
                         _id: result.chairs[i].barber_id._id,
@@ -98,11 +97,15 @@ exports.shopContainsBarber = function(req, res) {
 }
 exports.allShops = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
-        var long = parseFloat(req.headers.device_longitude);
-        var lati = parseFloat(req.headers.device_latitude);
-        var maxDistanceToFind = constantObj.distance.shopDistance;
+        let long = parseFloat(req.headers.device_longitude);
+        let lati = parseFloat(req.headers.device_latitude);
+        let maxDistanceToFind = constantObj.distance.shopDistance;
+        let search = ""
+        if(req.query.search){
+         search = req.query.search;
+        }
         shop.aggregate([{
-            $geoNear: {
+                $geoNear: {
                 near: {
                     type: "Point",
                     coordinates: [long, lati]
@@ -113,6 +116,8 @@ exports.allShops = function(req, res) {
                 includeLocs: "dist.location",
                 spherical: true
             }
+        },{
+            $match:{"name":{$regex:search, $options: 'i'}}
         }, {
             $unwind: "$chairs"
         }, {
@@ -127,10 +132,10 @@ exports.allShops = function(req, res) {
                 console.log(err);
             } else {
                 let resultTantArray = [];
-                for (var i = 0; i < data.length; i++) {
-                    var obj = {};
-                    var totalbarbers = 0;
-                    for (var j = 0; j < data.length; j++) {
+                for (let i = 0; i < data.length; i++) {
+                    let obj = {};
+                    let totalbarbers = 0;
+                    for (let j = 0; j < data.length; j++) {
                         if (data[i]._id == data[j]._id && data[j].barberInformation.length > 0) {
                             ++totalbarbers
                         }
@@ -143,12 +148,11 @@ exports.allShops = function(req, res) {
                         obj.address = data[i].address;
                         obj.gallery = data[i].gallery;
                         obj.latLong = data[i].latLong;
-                        var distt = parseFloat(data[i].dist.calculated)
+                        let distt = parseFloat(data[i].dist.calculated)
                         distt = Math.round(distt * 100) / 100
                         obj.distance = distt;
                         obj.units = "miles";
                         obj.barbers = totalbarbers
-
                         resultTantArray.push(obj);
                     }
                 }
@@ -168,9 +172,13 @@ exports.allShops = function(req, res) {
 
 exports.allBarbers = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
-        var long = parseFloat(req.headers.device_longitude);
-        var lati = parseFloat(req.headers.device_latitude);
-        var maxDistanceToFind = constantObj.distance.shopDistance; // in miles in km 0.001
+        let long = parseFloat(req.headers.device_longitude);
+        let lati = parseFloat(req.headers.device_latitude);
+        let maxDistanceToFind = constantObj.distance.shopDistance; // in miles in km 0.001
+        let search = ""
+        if(req.query.search){
+         search = req.query.search;
+        }
         shop.aggregate([{
             $geoNear: {
                 near: {
@@ -192,23 +200,33 @@ exports.allBarbers = function(req, res) {
                 foreignField: "_id",
                 as: "barberInformation"
             }
+        },
+        {
+            $unwind: "$barberInformation"
+        },{
+            $match:{$or:[
+                {"barberInformation.first_name":{$regex:search, $options: 'i'}},
+                {"barberInformation.last_name":{$regex:search, $options: 'i'}}
+            ]
+            }
         }]).exec(function(err, data) {
             if (err) {
                 console.log(err);
             } else {
+ 
                 let resultTantArray = [];
-                for (var i = 0; i < data.length; i++) {
-                    var obj = {};
-                    if (data[i].barberInformation.length > 0) {
-                        obj._id = data[i].barberInformation[0]._id;
-                        obj.first_name = data[i].barberInformation[0].first_name;
-                        obj.last_name = data[i].barberInformation[0].last_name;
-                        var distt = parseFloat(data[i].dist.calculated)
+                for (let i = 0; i < data.length; i++) {
+                    let obj = {};
+                    if (data[i].barberInformation) {
+                        obj._id = data[i].barberInformation._id;
+                        obj.first_name = data[i].barberInformation.first_name;
+                        obj.last_name = data[i].barberInformation.last_name;
+                        let distt = parseFloat(data[i].dist.calculated)
                         distt = Math.round(distt * 100) / 100
                         obj.distance = distt;
                         obj.units = "miles";
-                        obj.created_date = data[i].barberInformation[0].created_date;
-                        obj.rating = data[i].barberInformation[0].ratings;
+                        obj.created_date = data[i].barberInformation.created_date;
+                        obj.rating = data[i].barberInformation.ratings;
                         obj.location = data[i].name;
                         obj.shop_id = data[i]._id;
                         resultTantArray.push(obj);
@@ -230,27 +248,55 @@ exports.allBarbers = function(req, res) {
 
 exports.allShopsHavingChairs = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
-        var long = parseFloat(req.headers.device_longitude);
-        var lati = parseFloat(req.headers.device_latitude);
-        var maxDistanceToFind = constantObj.distance.shopDistance;
-        var point = {
+        let long = parseFloat(req.headers.device_longitude);
+        let lati = parseFloat(req.headers.device_latitude);
+        let maxDistanceToFind = constantObj.distance.shopDistance;
+        let point = {
             type: "Point",
             coordinates: [long, lati]
         };
-        shop.geoNear(point, {
-            maxDistance: maxDistanceToFind,
-            spherical: true,
-            query: { "chairs.availability": "booked" }
-        },function(err, data) {
-            if (err) {
+        let search = ""
+        if(req.query.search){
+         search = req.query.search;
+        }
+         shop.aggregate([{
+                $geoNear: {
+                near: {
+                    type: "Point",
+                    coordinates: [long, lati]
+                },
+                distanceField: "dist.calculated",
+                distanceMultiplier: constantObj.distance.distanceMultiplierInMiles, // in miles in km 0.001
+                maxDistance: maxDistanceToFind,
+                includeLocs: "dist.location",
+                spherical: true
+            }
+        },{
+            $match:{"name":{$regex:search, $options: 'i'}}
+        }]).exec(function(err,result){
+             if (err) {
                 console.log(err);
             } else {
                res.status(200).send({
                     "msg": constantObj.messages.successRetreivingData,
-                    "data": data
+                    "data": result
                 })
             }
         })
+        // shop.geoNear(point, {
+        //     maxDistance: maxDistanceToFind,
+        //     spherical: true,
+        //     query: { "chairs.availability": "booked" }
+        // },function(err, data) {
+        //     if (err) {
+        //         console.log(err);
+        //     } else {
+        //        res.status(200).send({
+        //             "msg": constantObj.messages.successRetreivingData,
+        //             "data": data
+        //         })
+        //     }
+        // })
     } else {
         res.status(400).send({
             "msg": constantObj.messages.requiredFields

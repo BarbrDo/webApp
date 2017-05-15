@@ -40,7 +40,7 @@ module.exports = function(app, express) {
     app.post('/api/v1/signup', userController.signupPost); //Signup
     app.post('/api/v1/login', userController.loginPost); // Login
     app.post('/api/v1/forgot', userController.forgotPost); //Forgot Password
-    app.put('/api/v1/account', userController.ensureAuthenticated, userController.accountPut); // Account update
+    app.put('/api/v1/account',upload.any(), userController.accountPut); // Account update
     app.delete('/api/v1/account', userController.ensureAuthenticated, userController.accountDelete);
     app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);
     app.post('/auth/facebook', userController.authFacebook);
@@ -49,18 +49,21 @@ module.exports = function(app, express) {
     app.get('/auth/google/callback', userController.authGoogleCallback);
     app.post('/reset/:token', userController.resetPost);
     app.post('/api/v1/checkFaceBook', userController.checkFaceBook);
+
     //Shops
-    app.get('/api/v1/shops', shopController.allShops); // List all shops
-    app.put('/api/v1/shops', upload.any(), shopController.editShop);
-    app.post('/api/v1/shops/chair', userController.addChair)
-    app.delete('/api/v1/shops/chair', userController.removeChair);
+    app.get('/api/v1/shops', shopController.allShops); // List all shops and search shop
+    app.put('/api/v1/shops', upload.any(), shopController.editShop); //Edit shop
+    app.post('/api/v1/shops/chair', userController.addChair) //Add chair in shop
+    app.delete('/api/v1/shops/chair', userController.removeChair); // Remove chair from shop
     app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
     app.post('/api/v1/bookChair', chairRequestController.bookChair);
-    app.get('/api/v1/allShopsHavingChairs',shopController.allShopsHavingChairs);
+    app.get('/api/v1/allShopsHavingChairs',shopController.allShopsHavingChairs);// It will show all shops having number of chairs
 
     //Customer
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
     app.post('/api/v1/appointment', appointmentController.takeAppointment); //Book Appointment
+    app.post('/api/v1/customer/gallery', upload.any(), userController.uploadCustomerGallery); //Upload image in gallery
+    app.delete('/api/v1/customer/gallery/:image_id',userController.deleteImages); //Delete image from gallery
     
     //Barber
     app.get('/api/v1/barbers', shopController.allBarbers); //Get all barbers
@@ -71,7 +74,8 @@ module.exports = function(app, express) {
     app.get('/api/v1/barber/appointments',barberServices.appointments);
     app.put('/api/v1/barber/confirmappointment/:appointment_id',barberServices.confirmAppointment);
     app.put('/api/v1/barber/rescheduleappointment/:appointment_id',barberServices.rescheduleAppointment);
-    app.put('/api/v1/barber/completeappointment/:appointment_id',barberServices.completeAppointment)
+    app.put('/api/v1/barber/completeappointment/:appointment_id',barberServices.completeAppointment);
+    app.delete('/api/v1/cancelAppointment', barberServices.cancelAppointment);
 
     //Others
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
@@ -253,6 +257,12 @@ module.exports = function(app, express) {
  *         type: string
  *         format: string
  *         default: "75.955033"
+ *       - in: "query"
+ *         name: "search"
+ *         description: "Search by Shop name"
+ *         required: false
+ *         type: string
+ *         format: string
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -467,6 +477,91 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
+ *   /customer/gallery:
+ *     post:
+ *       tags:
+ *       - "customer"
+ *       summary: "Upload single or multiple images in Gallery"
+ *       description: "Upload single or multiple images in Gallery"
+ *       operationId: "customerGallery"
+ *       consumes:
+ *       - "multipart/form-data"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5909d7bca8af707ab3c1396c"
+ *       - in: "formData"
+ *         name: "file"
+ *         description: "file to upload"
+ *         required: false
+ *         type: "file"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *   /customer/gallery/{image_id}:
+ *     delete:
+ *       tags:
+ *       - "customer"
+ *       summary: "Delete image from Gallery"
+ *       description: "Delete image from Gallery"
+ *       operationId: "customerGalleryDelete"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5909d7bca8af707ab3c1396c"
+ *       - in: "path"
+ *         name: "image_id"
+ *         description: "image ID"
+ *         required: true
+ *         type: "string"
+ *         default: "32326sfsdf632312w32s25"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
  *     get:
  *       tags:
  *       - "customer"
@@ -533,6 +628,12 @@ module.exports = function(app, express) {
  *         type: string
  *         format: string
  *         default: "5909d7bca8af707ab3c1396c"
+ *       - in: "query"
+ *         name: "search"
+ *         description: "Search by First/last name"
+ *         required: false
+ *         type: string
+ *         format: string
  *       responses:
  *         200:
  *           description: "successful operation"

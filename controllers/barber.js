@@ -360,3 +360,26 @@ exports.completeAppointment = function(req, res) {
 		}
 	])
 }
+exports.cancelAppointment = function(req,res){
+    req.assert("_id","Appointment id is required.").notEmpty();
+    let errors = req.validationErrors();
+	if (errors) {
+		return res.status(400).send({
+			msg: "error in your request",
+			err: errors
+		});
+	}
+    appointment.update({
+				_id: req.body._id
+			}, {
+				$set: {
+					"appointment_status": "cancel"
+				}
+			}, function(err, result) {
+				if (err) {
+					done("some error",err)
+				} else {
+					done(err, result)
+				}
+			})
+}

@@ -49,13 +49,12 @@ module.exports = function(app, express) {
     app.get('/auth/google/callback', userController.authGoogleCallback);
     app.post('/reset/:token', userController.resetPost);
     app.post('/api/v1/checkFaceBook', userController.checkFaceBook);
-    app.post('/api/v1/uploadCustomerGallery', upload.any(), userController.uploadCustomerGallery)
-    app.post('/api/v1/deleteImages',userController.deleteImages);
+
     //Shops
-    app.get('/api/v1/shops', shopController.allShops); // List all shops
-    app.put('/api/v1/shops', upload.any(), shopController.editShop);
-    app.post('/api/v1/shops/chair', userController.addChair)
-    app.delete('/api/v1/shops/chair', userController.removeChair);
+    app.get('/api/v1/shops', shopController.allShops); // List all shops and search shop
+    app.put('/api/v1/shops', upload.any(), shopController.editShop); //Edit shop
+    app.post('/api/v1/shops/chair', userController.addChair) //Add chair in shop
+    app.delete('/api/v1/shops/chair', userController.removeChair); // Remove chair from shop
     app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
     app.post('/api/v1/bookChair', chairRequestController.bookChair);
     app.get('/api/v1/allShopsHavingChairs',shopController.allShopsHavingChairs);// It will show all shops having number of chairs
@@ -63,6 +62,8 @@ module.exports = function(app, express) {
     //Customer
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
     app.post('/api/v1/appointment', appointmentController.takeAppointment); //Book Appointment
+    app.post('/api/v1/customer/gallery', upload.any(), userController.uploadCustomerGallery); //Upload image in gallery
+    app.delete('/api/v1/customer/gallery',userController.deleteImages); //Delete image from gallery
     
     //Barber
     app.get('/api/v1/barbers', shopController.allBarbers); //Get all barbers
@@ -256,6 +257,12 @@ module.exports = function(app, express) {
  *         type: string
  *         format: string
  *         default: "75.955033"
+ *       - in: "query"
+ *         name: "search"
+ *         description: "Search by Shop name"
+ *         required: false
+ *         type: string
+ *         format: string
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -536,6 +543,12 @@ module.exports = function(app, express) {
  *         type: string
  *         format: string
  *         default: "5909d7bca8af707ab3c1396c"
+ *       - in: "query"
+ *         name: "search"
+ *         description: "Search by First/last name"
+ *         required: false
+ *         type: string
+ *         format: string
  *       responses:
  *         200:
  *           description: "successful operation"

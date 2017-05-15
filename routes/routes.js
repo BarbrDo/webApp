@@ -49,6 +49,8 @@ module.exports = function(app, express) {
     app.get('/auth/google/callback', userController.authGoogleCallback);
     app.post('/reset/:token', userController.resetPost);
     app.post('/api/v1/checkFaceBook', userController.checkFaceBook);
+    app.post('/api/v1/uploadCustomerGallery', upload.any(), userController.uploadCustomerGallery)
+    app.post('/api/v1/deleteImages',userController.deleteImages);
     //Shops
     app.get('/api/v1/shops', shopController.allShops); // List all shops
     app.put('/api/v1/shops', upload.any(), shopController.editShop);
@@ -56,7 +58,7 @@ module.exports = function(app, express) {
     app.delete('/api/v1/shops/chair', userController.removeChair);
     app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
     app.post('/api/v1/bookChair', chairRequestController.bookChair);
-    app.get('/api/v1/allShopsHavingChairs',shopController.allShopsHavingChairs);
+    app.get('/api/v1/allShopsHavingChairs',shopController.allShopsHavingChairs);// It will show all shops having number of chairs
 
     //Customer
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
@@ -71,7 +73,8 @@ module.exports = function(app, express) {
     app.get('/api/v1/barber/appointments',barberServices.appointments);
     app.put('/api/v1/barber/confirmappointment/:appointment_id',barberServices.confirmAppointment);
     app.put('/api/v1/barber/rescheduleappointment/:appointment_id',barberServices.rescheduleAppointment);
-    app.put('/api/v1/barber/completeappointment/:appointment_id',barberServices.completeAppointment)
+    app.put('/api/v1/barber/completeappointment/:appointment_id',barberServices.completeAppointment);
+    app.delete('/api/v1/cancelAppointment', barberServices.cancelAppointment);
 
     //Others
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);

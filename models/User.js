@@ -60,6 +60,17 @@ var userSchema = new mongoose.Schema({
         "score":Number,
         "comments":String
     }],
+     gallery: [
+        {
+            name: {
+                type: String
+            },
+            created_date: {
+                type: Date,
+                default: Date.now()
+            }
+        }
+    ],
     created_date: {
         type: Date,
         default: Date.now()

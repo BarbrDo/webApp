@@ -23,7 +23,7 @@ var appointmentSchema = new mongoose.Schema({
     appointment_date: Date,
     appointment_status: {
         type: String,
-        enum: ["pending", "confirm", "completed", "reschedule"],
+        enum: ["pending", "confirm", "completed", "reschedule","cancel"],
         default: "pending"
     },
     tax_amount: Number,

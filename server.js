@@ -1,22 +1,22 @@
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var compression = require('compression');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var expressValidator = require('express-validator');
-var dotenv = require('dotenv');
-var db = require('./db.js');
-var jwt = require('jsonwebtoken');
-var moment = require('moment');
-var request = require('request');
+let express = require('express');
+let path = require('path');
+let logger = require('morgan');
+let compression = require('compression');
+let cookieParser = require('cookie-parser');
+let bodyParser = require('body-parser');
+let expressValidator = require('express-validator');
+let dotenv = require('dotenv');
+let db = require('./db.js');
+let jwt = require('jsonwebtoken');
+let moment = require('moment');
+let request = require('request');
 
-var objectID = require('mongodb').ObjectID
+let objectID = require('mongodb').ObjectID
 
-// Load environment variables from .env file
+// Load environment vaiables from .env file
 dotenv.load();
 
-var app = express();
+let app = express();
 app.set('port', process.env.PORT || 3000);
 app.use(compression());
 app.use(logger('dev'));
@@ -27,13 +27,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* Swagger Configuration */
-var swaggerUi = require('swagger-ui-express');
-var swaggerJSDoc = require('swagger-jsdoc');
-var defaultUrl = process.env.HOST + ':' + process.env.PORT;
+let swaggerUi = require('swagger-ui-express');
+let swaggerJSDoc = require('swagger-jsdoc');
+let defaultUrl = process.env.HOST + ':' + process.env.PORT;
 console.log(defaultUrl);
 
 // Swagger
-var swaggerDefinition = {
+let swaggerDefinition = {
     info: {
         title: 'BarbrDo API Documentation',
         version: '1.0.0',
@@ -43,11 +43,11 @@ var swaggerDefinition = {
     basePath: '/api/v1',
 };
 
-var options = {
+let options = {
     swaggerDefinition: swaggerDefinition,
     apis: ['./routes/*.js'],
 };
-var swaggerSpec = swaggerJSDoc(options);
+let swaggerSpec = swaggerJSDoc(options);
 app.get('/swagger.json', function (req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);

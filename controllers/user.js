@@ -13,6 +13,7 @@ let constantObj = require('./../constants.js');
 let userTypes = require('../models/user_type');
 let commonObj = require('../common/common');
 let mg = require('nodemailer-mailgun-transport');
+let fs = require('fs');
 
 function generateToken(user) {
   let payload = {
@@ -98,12 +99,12 @@ exports.signupPost = function(req, res, next) {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('mobile_number', 'Mobile number cannot be blank').notEmpty();
-  if(!req.body.facebook){
+  if (!req.body.facebook) {
     req.assert('password', 'Password must be at least 6 characters long').len(6);
   }
   req.assert('user_type', 'User type cannot be blank').notEmpty();
   if (req.body.user_type == 'shop' || req.body.user_type == 'barber') {
-      req.assert('license_number', 'License number cannot be blank').notEmpty();
+    req.assert('license_number', 'License number cannot be blank').notEmpty();
   }
 
   req.sanitize('email').normalizeEmail({
@@ -124,7 +125,9 @@ exports.signupPost = function(req, res, next) {
     if (user) {
       return res.status(400).send({
         msg: 'The email address you have entered is already associated with another account.',
-        err:[{msg:"The email address you have entered is already associated with another account."}]
+        err: [{
+          msg: "The email address you have entered is already associated with another account."
+        }]
       });
     }
     let saveData = req.body;
@@ -141,13 +144,13 @@ exports.signupPost = function(req, res, next) {
 
     let email_encrypt = commonObj.encrypt(req.body.email);
     let generatedText = commonObj.makeid();
-    
+
     saveData.randomString = generatedText;
     User(saveData).save(function(err, data) {
       if (err) {
         return res.status(400).send({
           msg: constantObj.messages.errorInSave,
-          "err":err
+          "err": err
         })
       } else {
         let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
@@ -169,7 +172,7 @@ exports.signupPost = function(req, res, next) {
               });
             }
           })
-        } else if(req.body.user_type == 'barber') {
+        } else if (req.body.user_type == 'barber') {
           let saveDataForBarber = {};
           saveDataForBarber.user_id = data._id
           saveDataForBarber.license_number = req.body.license_number;
@@ -209,7 +212,7 @@ exports.accountPut = function(req, res, next) {
   if ('password' in req.body) {
     req.assert('password', 'Password must be at least 4 characters long').len(6);
     req.assert('confirm', 'Passwords must match').equals(req.body.password);
-  } 
+  }
 
   let errors = req.validationErrors();
 
@@ -227,14 +230,14 @@ exports.accountPut = function(req, res, next) {
       // let saveObject = 
       // user.email = req.body.email;
 
-      if(req.body.first_name){
-        user.first_name = req.body.first_name;  
+      if (req.body.first_name) {
+        user.first_name = req.body.first_name;
       }
-      if(req.body.last_name){
-        user.last_name = req.body.last_name;  
+      if (req.body.last_name) {
+        user.last_name = req.body.last_name;
       }
-      if(req.body.mobile_number){
-       user.mobile_number = req.body.mobile_number; 
+      if (req.body.mobile_number) {
+        user.mobile_number = req.body.mobile_number;
       }
       console.log(req.body.gender);
       user.gender = req.body.gender;
@@ -242,7 +245,7 @@ exports.accountPut = function(req, res, next) {
       user.website = req.body.website;
     }
 
-    console.log("user information",user);
+    console.log("user information", user);
 
     user.save(function(err) {
       if ('password' in req.body) {
@@ -765,7 +768,7 @@ exports.getUserType = function(req, res) {
   })
 }
 
-exports.checkFaceBook = function(req,res){
+exports.checkFaceBook = function(req, res) {
   req.assert('facebook_id', 'facebook_id is required').notEmpty();
   let errors = req.validationErrors();
   if (errors) {
@@ -774,26 +777,162 @@ exports.checkFaceBook = function(req,res){
       err: errors
     });
   }
-  User.find({"facebook":req.body.facebook_id},function(err,response){
-    if(err)
-    {
+  User.find({
+    "facebook": req.body.facebook_id
+  }, function(err, response) {
+    if (err) {
       res.status(400).send({
         msg: constantObj.messages.errorRetreivingData
       });
-    }
-    else{
-      if(response.length>0){
+    } else {
+      if (response.length > 0) {
         res.status(200).send({
-        msg: constantObj.messages.successRetreivingData,
-        token: generateToken(response),
-        user: response[0]
-      });
-      }
-      else {
+          msg: constantObj.messages.successRetreivingData,
+          token: generateToken(response),
+          user: response[0]
+        });
+      } else {
         res.status(400).send({
           msg: "This user not found in database"
         });
       }
     }
   })
+}
+exports.uploadCustomerGallery = function(req, res) {
+  req.checkHeaders("user_id", "_id is required").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+  let updateData = {};
+  updateData.modified_date = new Date();
+  delete updateData._id;
+  if ((req.files) && (req.files.length > 0)) {
+    let userimg = [];
+    for (let i = 0; i < req.files.length; i++) {
+      if (req.files[i].fieldname == 'picture') {
+        updateData.picture = req.files[i].filename;
+      } else {
+        let obj = {};
+        obj.name = req.files[i].filename;
+        userimg.push(obj);
+      }
+    }
+    updateData.gallery = userimg;
+  }
+  console.log("updateData.gallery", updateData.gallery);
+  if (updateData.gallery.length > 0) {
+    User.update({
+      _id: req.headers.user_id
+    }, {
+      $push: {
+        gallery: {
+          $each: updateData.gallery
+        }
+      }
+    }, function(errorInSaveChair, success) {
+      if (errorInSaveChair) {
+        res.status(400).send({
+          msg: 'Error in finding shop.'
+        });
+      } else {
+        User.findOne({
+          _id: req.headers.user_id
+        }, function(err, response) {
+          if (err) {
+            res.status(400).send({
+              msg: constantObj.messages.errorRetreivingData,
+              "err": err
+            });
+          } else {
+            res.status(200).send({
+              msg: 'Successfully updated fields.',
+              "user": response,
+              "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+            });
+          }
+        })
+      }
+    })
+  } else {
+    User.update({
+      _id: req.headers.user_id
+    }, updateData, function(err, data) {
+      if (err) {
+        res.status(400).send({
+          msg: 'Error in updating data.',
+          "err": err
+        });
+      } else {
+        User.findOne({
+          _id: req.headers.user_id
+        }, function(err, response) {
+          if (err) {
+            res.status(400).send({
+              msg: constantObj.messages.errorRetreivingData,
+              "err": err
+            });
+          } else {
+            res.status(200).send({
+              msg: 'Successfully updated fields.',
+              "user": response,
+              "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+            });
+          }
+        })
+      }
+    })
+  }
+}
+exports.deleteImages = function(req, res) {
+  req.checkHeaders("user_id", "").notEmpty();
+  req.assert("image_id", "Image _id is required").notEmpty();
+  req.assert("image_name", "Image name is required.").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+  let filePath = "/home/hussainm/Desktop/projects/barbrdo/public/uploadedFiles/" + req.body.image_name;
+  fs.unlinkSync(filePath);
+  User.update({
+    "_id": req.headers.user_id
+  }, {
+    $pull: {
+      "gallery": {
+        "_id": req.body.image_id
+      }
+    }
+  }, function(error, result) {
+    if (error) {
+      res.status(400).send({
+        msg: constantObj.messages.errorRetreivingData,
+        "err": err
+      });
+    } else {
+      User.findOne({
+        _id: req.headers.user_id
+      }, function(err, response) {
+        if (err) {
+          res.status(400).send({
+            msg: constantObj.messages.errorRetreivingData,
+            "err": err
+          });
+        } else {
+          res.status(200).send({
+            msg: 'Successfully updated fields.',
+            "user": response,
+            "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+          });
+        }
+      })
+    }
+  })
+
 }

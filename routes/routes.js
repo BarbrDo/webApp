@@ -40,7 +40,7 @@ module.exports = function(app, express) {
     app.post('/api/v1/signup', userController.signupPost); //Signup
     app.post('/api/v1/login', userController.loginPost); // Login
     app.post('/api/v1/forgot', userController.forgotPost); //Forgot Password
-    app.put('/api/v1/account', userController.ensureAuthenticated, userController.accountPut); // Account update
+    app.put('/api/v1/account',upload.any(), userController.accountPut); // Account update
     app.delete('/api/v1/account', userController.ensureAuthenticated, userController.accountDelete);
     app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);
     app.post('/auth/facebook', userController.authFacebook);

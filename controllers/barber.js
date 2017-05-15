@@ -10,7 +10,7 @@ let async = require('async');
 let nodemailer = require('nodemailer');
 let mg = require('nodemailer-mailgun-transport');
 
-exports.getBarber = function(req, res) {
+exports.getBarber = function (req, res) {
     var maxDistanceToFind = constantObj.ParamValues.radiusSearch;
     if (req.headers.device_latitude && req.headers.device_longitude) {
         var long = parseFloat(req.headers.device_longitude);
@@ -27,7 +27,7 @@ exports.getBarber = function(req, res) {
     }
 }
 
-exports.editBarber = function(req, res) {
+exports.editBarber = function (req, res) {
     var updateData = JSON.parse(JSON.stringify(req.body));
     updateData.modified_date = new Date();
     delete updateData._id;
@@ -47,7 +47,7 @@ exports.editBarber = function(req, res) {
 
     barber.update({
         _id: req.body._id
-    }, updateData, function(err, data) {
+    }, updateData, function (err, data) {
         if (err) {
             res.status(400).send({
                 msg: 'Error in updating data.',
@@ -62,7 +62,7 @@ exports.editBarber = function(req, res) {
     })
 }
 
-exports.addBarberServices = function(req, res) {
+exports.addBarberServices = function (req, res) {
     req.checkHeaders("user_id", "user_id is required").notEmpty();
     req.assert("name", "name is required").notEmpty();
     req.assert("price", "price is required").notEmpty();
@@ -77,7 +77,7 @@ exports.addBarberServices = function(req, res) {
     saveData.barber_id = req.headers.user_id;
     var barber_id = objectID.isValid(req.headers.user_id)
     if (barber_id) {
-        barber_service(saveData).save(function(err, data) {
+        barber_service(saveData).save(function (err, data) {
             if (err) {
                 res.status(400).send({
                     msg: constantObj.messages.errorInSave,
@@ -97,7 +97,7 @@ exports.addBarberServices = function(req, res) {
     }
 }
 
-exports.viewBarberProfile = function(req, res) {
+exports.viewBarberProfile = function (req, res) {
     req.checkParams("barber_id", "barber ID is required").notEmpty();
     var errors = req.validationErrors();
     if (errors) {
@@ -119,7 +119,7 @@ exports.viewBarberProfile = function(req, res) {
             foreignField: "user_id",
             as: "barber"
         }
-    }]).exec(function(err, data) {
+    }]).exec(function (err, data) {
         if (err) {
             res.status(400).send({
                 msg: constantObj.messages.errorRetreivingData,
@@ -134,7 +134,7 @@ exports.viewBarberProfile = function(req, res) {
     })
 }
 
-exports.viewAllServiesOfBarber = function(req, res) {
+exports.viewAllServiesOfBarber = function (req, res) {
     req.checkParams("barber_id", "barber_id is required").notEmpty();
     var errors = req.validationErrors();
     if (errors) {
@@ -145,7 +145,7 @@ exports.viewAllServiesOfBarber = function(req, res) {
     }
     barber_service.find({
         "barber_id": req.params.barber_id
-    }, function(err, data) {
+    }, function (err, data) {
         if (err) {
             res.status(400).send({
                 msg: constantObj.messages.errorRetreivingData,
@@ -161,7 +161,7 @@ exports.viewAllServiesOfBarber = function(req, res) {
 }
 
 //Get pending/confirmed appointments of barber
-exports.appointments = function(req, res) {
+exports.appointments = function (req, res) {
     req.checkHeaders('user_id', 'user_id is required').notEmpty();
     var errors = req.validationErrors();
     if (errors) {
@@ -181,7 +181,7 @@ exports.appointments = function(req, res) {
         }
     }).sort({
         'created_date': -1
-    }).populate('barber_id', 'first_name last_name ratings picture').populate('shop_id', 'name address city state gallery').exec(function(err, result) {
+    }).populate('barber_id', 'first_name last_name ratings picture').populate('shop_id', 'name address city state gallery').exec(function (err, result) {
         if (err) {
             return res.status(400).send({
                 msg: constantObj.messages.errorRetreivingData
@@ -209,7 +209,7 @@ exports.appointments = function(req, res) {
     })
 }
 
-exports.inviteCustomer = function(req, res) {
+exports.inviteCustomer = function (req, res) {
     req.assert('email', "Email id is required.").notEmpty();
     var errors = req.validationErrors();
     if (errors) {
@@ -230,11 +230,11 @@ exports.inviteCustomer = function(req, res) {
         from: 'support@barbrdo.com',
         subject: '✔ Reset your password on BarbrDo',
         text: 'You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n' +
-            'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-            'http://' + req.headers.host + '/reset/' + token + '\n\n' +
-            'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+        'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+        'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+        'If you did not request this, please ignore this email and your password will remain unchanged.\n'
     };
-    nodemailerMailgun.sendMail(mailOptions, function(err, info) {
+    nodemailerMailgun.sendMail(mailOptions, function (err, info) {
         res.send({
             msg: 'An email has been sent to ' + user.email + ' with further instructions.'
         });
@@ -243,143 +243,199 @@ exports.inviteCustomer = function(req, res) {
 }
 
 //Mark Appointment as confirmed
-exports.confirmAppointment = function(req, res) {
-	req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
-	let errors = req.validationErrors();
-	if (errors) {
-		return res.status(400).send({
-			msg: "error in your request",
-			err: errors
-		});
-	}
-	appointment.update({
-		_id: req.params.appointment_id
-	}, {
-		$set: {
-			"appointment_status": "confirm"
-		}
-	}, function(err, result) {
-		if (err) {
-			return res.status(400).send({
-				msg: constantObj.messages.userStatusUpdateFailure
-			});
-		} else {
-			return res.status(200).send({
-				msg: constantObj.messages.userStatusUpdateSuccess
-			});
-		}
-	})
+exports.confirmAppointment = function (req, res) {
+    req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    appointment.update({
+        _id: req.params.appointment_id
+    }, {
+            $set: {
+                "appointment_status": "confirm"
+            }
+        }, function (err, result) {
+            if (err) {
+                return res.status(400).send({
+                    msg: constantObj.messages.userStatusUpdateFailure
+                });
+            } else {
+                return res.status(200).send({
+                    msg: constantObj.messages.userStatusUpdateSuccess
+                });
+            }
+        })
 }
 
 //Reschedule Appointment
-exports.rescheduleAppointment = function(req, res) {
-	req.assert("minutes", "Time is required.").notEmpty();
-	req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
-	req.assert("appointment_date", "appointment_date is required").notEmpty();
-	let errors = req.validationErrors();
-	if (errors) {
-		return res.status(400).send({
-			msg: "error in your request",
-			err: errors
-		});
-	}
-	var newDateObj = new Date(req.body.appointment_date);
-	console.log(newDateObj);
-	var newDateObj = newDateObj.setMinutes(newDateObj.getMinutes() + req.body.minutes);
-	appointment.update({
-		_id: req.params.appointment_id
-	}, {
-		$set: {
-			"appointment_status": "reschedule",
-			"appointment_date": newDateObj
-		}
-	}, function(err, result) {
-		if (err) {
-			return res.status(400).send({
-				msg: constantObj.messages.userStatusUpdateFailure
-			});
-		} else {
-			return res.status(200).send({
-				msg: constantObj.messages.userStatusUpdateSuccess
-			});
-		}
-	})
+exports.rescheduleAppointment = function (req, res) {
+    req.assert("minutes", "Time is required.").notEmpty();
+    req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
+    req.assert("appointment_date", "appointment_date is required").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    var newDateObj = new Date(req.body.appointment_date);
+    console.log(newDateObj);
+    var newDateObj = newDateObj.setMinutes(newDateObj.getMinutes() + req.body.minutes);
+    appointment.update({
+        _id: req.params.appointment_id
+    }, {
+            $set: {
+                "appointment_status": "reschedule",
+                "appointment_date": newDateObj
+            }
+        }, function (err, result) {
+            if (err) {
+                return res.status(400).send({
+                    msg: constantObj.messages.userStatusUpdateFailure
+                });
+            } else {
+                return res.status(200).send({
+                    msg: constantObj.messages.userStatusUpdateSuccess
+                });
+            }
+        })
 }
 
 //Mark Appointment as complete
-exports.completeAppointment = function(req, res) {
-	req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
-	req.assert("customer_id", "customer id is required.").notEmpty();
-	req.checkHeaders("user_id","barber_id is required.").notEmpty();
-	req.assert("score", "score is required.").notEmpty();
-	let errors = req.validationErrors();
-	if (errors) {
-		return res.status(400).send({
-			msg: "error in your request",
-			err: errors
-		});
-	}
-	let updateData = {
-		"$push":{
-			"ratings":{
-				"rated_by":req.headers.user_id,
-				"score":parseInt(req.body.score),
-                                "comments":req.body.comments
-			}
-		}
-	}
-	async.waterfall([
-		function(done) {
-			appointment.update({
-				_id: req.params.appointment_id
-			}, {
-				$set: {
-					"appointment_status": "completed"
-				}
-			}, function(err, result) {
-				if (err) {
-					done("some error",err)
-				} else {
-					done(err, result)
-				}
-			})
-		},
-		function(status,done){
-			user.update({_id:req.body.customer_id},updateData,function(err,result){
-				if (err) {
-					return res.status(400).send({
-						msg: constantObj.messages.userStatusUpdateFailure
-					});
-				} else {
-					return res.status(200).send({
-						msg: constantObj.messages.userStatusUpdateSuccess
-					});
-					done(err);
-				}
-			})
-		}
-	])
-}
-exports.cancelAppointment = function(req,res){
-    req.assert("_id","Appointment id is required.").notEmpty();
+exports.completeAppointment = function (req, res) {
+    req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
+    req.assert("customer_id", "customer id is required.").notEmpty();
+    req.checkHeaders("user_id", "barber_id is required.").notEmpty();
+    req.assert("score", "score is required.").notEmpty();
     let errors = req.validationErrors();
-	if (errors) {
-		return res.status(400).send({
-			msg: "error in your request",
-			err: errors
-		});
-	}
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let updateData = {
+        "$push": {
+            "ratings": {
+                "rated_by": req.headers.user_id,
+                "score": parseInt(req.body.score),
+                "comments": req.body.comments
+            }
+        }
+    }
+    async.waterfall([
+        function (done) {
+            appointment.update({
+                _id: req.params.appointment_id
+            }, {
+                    $set: {
+                        "appointment_status": "completed"
+                    }
+                }, function (err, result) {
+                    if (err) {
+                        done("some error", err)
+                    } else {
+                        done(err, result)
+                    }
+                })
+        },
+        function (status, done) {
+            user.update({ _id: req.body.customer_id }, updateData, function (err, result) {
+                if (err) {
+                    return res.status(400).send({
+                        msg: constantObj.messages.userStatusUpdateFailure
+                    });
+                } else {
+                    return res.status(200).send({
+                        msg: constantObj.messages.userStatusUpdateSuccess
+                    });
+                    done(err);
+                }
+            })
+        }
+    ])
+}
+exports.cancelAppointment = function (req, res) {
+    req.assert("_id", "Appointment id is required.").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
     appointment.update({
-				_id: req.body._id
-			}, {
-				$set: {
-					"appointment_status": "cancel"
-				}
-			}, function(err, result) {
-				if (err) {
-					done("some error",err)
-				} else {
-					done(err, result)
-				}
-			})
+        _id: req.body._id
+    }, {
+            $set: {
+                "appointment_status": "cancel"
+            }
+        }, function (err, result) {
+            if (err) {
+                done("some error", err)
+            } else {
+                done(err, result)
+            }
+        })
+}
+exports.uploadBarberGallery = function (req, res) {
+    req.checkHeaders("user_id", "_id is required").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let updateData = {};
+    updateData.modified_date = new Date()
+    delete updateData._id;
+    if ((req.files) && (req.files.length > 0)) {
+        let userimg = [];
+        for (let i = 0; i < req.files.length; i++) {
+            let obj = {};
+            obj.name = req.files[i].filename;
+            userimg.push(obj);
+
+        }
+        updateData.gallery = userimg;
+    }
+    console.log("updateData.gallery", updateData.gallery);
+    barber.update({
+        user_id: req.headers.user_id
+    }, {
+            $push: {
+                gallery: {
+                    $each: updateData.gallery
+                }
+            }
+        }, function (errorInSaveChair, success) {
+            if (errorInSaveChair) {
+                res.status(400).send({
+                    msg: 'Error in finding shop.'
+                });
+            } else {
+                barber.findOne({
+                    user_id: req.headers.user_id
+                }, function (err, response) {
+                    if (err) {
+                        res.status(400).send({
+                            msg: constantObj.messages.errorRetreivingData,
+                            "err": err
+                        });
+                    } else {
+                        res.status(200).send({
+                            msg: 'Successfully updated fields.',
+                            "user": response,
+                            "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+                        });
+                    }
+                })
+            }
+        })
 }

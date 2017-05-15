@@ -283,20 +283,6 @@ exports.allShopsHavingChairs = function(req, res) {
                 })
             }
         })
-        // shop.geoNear(point, {
-        //     maxDistance: maxDistanceToFind,
-        //     spherical: true,
-        //     query: { "chairs.availability": "booked" }
-        // },function(err, data) {
-        //     if (err) {
-        //         console.log(err);
-        //     } else {
-        //        res.status(200).send({
-        //             "msg": constantObj.messages.successRetreivingData,
-        //             "data": data
-        //         })
-        //     }
-        // })
     } else {
         res.status(400).send({
             "msg": constantObj.messages.requiredFields

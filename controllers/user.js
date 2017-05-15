@@ -4,6 +4,7 @@ let nodemailer = require('nodemailer');
 let jwt = require('jsonwebtoken');
 let moment = require('moment');
 let request = require('request');
+let mongoose = require('mongoose');
 let qs = require('querystring');
 let User = require('../models/User');
 let Shop = require('../models/shop');
@@ -243,7 +244,7 @@ exports.accountPut = function (req, res, next) {
       }
 
       if ((req.files) && (req.files.length > 0)) {
-            user.picture = req.files[0].filename;
+        user.picture = req.files[0].filename;
       }
       user.gender = req.body.gender;
       user.location = req.body.location;
@@ -826,47 +827,18 @@ exports.uploadCustomerGallery = function (req, res) {
     }
     updateData.gallery = userimg;
   }
-  if (updateData.gallery.length > 0) {
-    User.update({
-      _id: req.headers.user_id
-    }, {
-        $push: {
-          gallery: {
-            $each: updateData.gallery
-          }
+  User.update({
+    _id: req.headers.user_id
+  }, {
+      $push: {
+        gallery: {
+          $each: updateData.gallery
         }
-      }, function (errorInSaveChair, success) {
-        if (errorInSaveChair) {
-          res.status(400).send({
-            msg: 'Error in finding shop.'
-          });
-        } else {
-          User.findOne({
-            _id: req.headers.user_id
-          }, function (err, response) {
-            if (err) {
-              res.status(400).send({
-                msg: constantObj.messages.errorRetreivingData,
-                "err": err
-              });
-            } else {
-              res.status(200).send({
-                msg: 'Successfully updated fields.',
-                "user": response,
-                "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-              });
-            }
-          })
-        }
-      })
-  } else {
-    User.update({
-      _id: req.headers.user_id
-    }, updateData, function (err, data) {
-      if (err) {
+      }
+    }, function (errorInSaveChair, success) {
+      if (errorInSaveChair) {
         res.status(400).send({
-          msg: 'Error in updating data.',
-          "err": err
+          msg: 'Error in finding shop.'
         });
       } else {
         User.findOne({
@@ -887,7 +859,6 @@ exports.uploadCustomerGallery = function (req, res) {
         })
       }
     })
-  }
 }
 
 exports.deleteImages = function (req, res) {
@@ -936,5 +907,100 @@ exports.deleteImages = function (req, res) {
         })
       }
     })
-
+}
+exports.getProfiles = function (req, res) {
+  // req.assert("user_type", "user_type can not be blank").notEmpty();
+  req.checkHeaders("user_id", "user_id can not be blank").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+  var id = mongoose.Types.ObjectId(req.headers.user_id);
+  User.findOne({ _id: req.headers.user_id }, function (err, result) {
+    if (result.user_type) {
+      switch (result.user_type) {
+        case 'shop':
+          User.aggregate([{
+            $match: {
+              _id: id
+            }
+          }, {
+            $lookup: {
+              from: "shops",
+              localField: "_id",
+              foreignField: "user_id",
+              as: "shop"
+            }
+          }]).exec(function (err, data) {
+            if (err) {
+              res.status(400).send({
+                msg: constantObj.messages.errorRetreivingData,
+                "err": err
+              });
+            }
+            else {
+              console.log("data",data);
+              res.status(200).send({
+                msg: constantObj.messages.successRetreivingData,
+                user: data
+              });
+            }
+          })
+          break;
+        case 'barber':
+          User.aggregate([{
+            $match: {
+              _id: id
+            }
+          }, {
+            $lookup: {
+              from: "barbers",
+              localField: "_id",
+              foreignField: "user_id",
+              as: "barber"
+            }
+          }]).exec(function (err, data) {
+            if (err) {
+              res.status(400).send({
+                msg: constantObj.messages.errorRetreivingData,
+                "err": err
+              });
+            }
+            else {
+              res.status(200).send({
+                msg: constantObj.messages.successRetreivingData,
+                user: data[0]
+              });
+            }
+          })
+          break;
+        case 'customer':
+          User.findOne({
+            _id: id
+          }).exec(function (err, data) {
+            if (err) {
+              res.status(400).send({
+                msg: constantObj.messages.errorRetreivingData,
+                "err": err
+              });
+            }
+            else {
+              res.status(200).send({
+                msg: constantObj.messages.successRetreivingData,
+                user: data
+              });
+            }
+          })
+          break;
+      }
+    }
+    else{
+      res.status(400).send({
+         msg: "Please pass correct user_id"
+      })
+    }
+  })
 }

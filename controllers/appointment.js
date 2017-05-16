@@ -61,7 +61,10 @@ exports.takeAppointment = function(req, res) {
 					} else {
 						appointment.findOne({
 							"_id": data._id
-						}).populate('barber_id', 'first_name last_name ratings picture').populate('shop_id', 'name address city state gallery').exec(function(err, result) {
+						})
+                                                        .populate('barber_id', 'first_name last_name ratings picture')
+                                                        .populate('customer_id', 'first_name last_name ratings picture')
+                                                        .populate('shop_id', 'name address city state gallery').exec(function(err, result) {
 							if (err) {
 								return res.status(400).send({
 									msg: constantObj.messages.errorRetreivingData

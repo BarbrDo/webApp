@@ -364,7 +364,7 @@ exports.completeAppointment = function (req, res) {
     ])
 }
 exports.cancelAppointment = function (req, res) {
-    req.assert("_id", "Appointment id is required.").notEmpty();
+    req.checkHeaders("appointment_id", "Appointment id is required.").notEmpty();
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({

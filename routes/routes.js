@@ -726,6 +726,49 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
+ *   /barber/gallery:
+ *     post:
+ *       tags:
+ *       - "barber"
+ *       summary: "Upload single or multiple images in Gallery"
+ *       description: "Upload single or multiple images in Gallery"
+ *       operationId: "barberGallery"
+ *       consumes:
+ *       - "multipart/form-data"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "590829938e6a4812ece58e76"
+ *       - in: "formData"
+ *         name: "file"
+ *         description: "file to upload"
+ *         required: false
+ *         type: "file"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
  *   /barber/appointments:
  *     get:
  *       tags:
@@ -843,12 +886,18 @@ module.exports = function(app, express) {
  *         type: string
  *         format: string
  *         default: ""
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Confirm appointment object"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/confirmAppointment"
  *       responses:
  *         200:
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"  
- *   /barber/cancelAppointment/{appointment_id}:
+ *   /barber/cancelappointment/{appointment_id}:
  *     put:
  *       tags:
  *       - "barber"
@@ -895,8 +944,8 @@ module.exports = function(app, express) {
  *     put:
  *       tags:
  *       - "barber"
- *       summary: "Barber rescheduleappointment an appointment"
- *       description: "Barber rescheduleappointment an appointment"
+ *       summary: "Barber reschedule an appointment"
+ *       description: "Barber reschedule an appointment"
  *       operationId: "rescheduleAppointment"
  *       produces:
  *       - "application/json"
@@ -929,6 +978,12 @@ module.exports = function(app, express) {
  *         type: string
  *         format: string
  *         default: ""
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Reschedule appointment object"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/rescheduleAppointment"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -1192,5 +1247,22 @@ module.exports = function(app, express) {
  *        price:
  *          type: "number"
  *          default: 75
- *                      
+ *    confirmAppointment:
+ *      type: "object"
+ *      properties:
+ *       customer_id:
+ *         type: "string"
+ *         default: "" 
+ *       score:
+ *         type: "number"
+ *         default: 4
+ *    rescheduleAppointment:
+ *      type: "object"
+ *      properties:
+ *       minutes:
+ *         type: "number"
+ *         default: 15 
+ *       appointment_date:
+ *         type: "number"
+ *         default: ""
  */

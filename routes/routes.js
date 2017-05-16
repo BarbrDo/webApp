@@ -26,7 +26,7 @@ module.exports = function(app, express) {
     var upload = multer({
         storage: storage
     })
-
+    let path = require('path');
     // Controllers
     let userController = require('./../controllers/user');
     let contactController = require('./../controllers/contact');
@@ -39,6 +39,19 @@ module.exports = function(app, express) {
     //Users
     app.post('/api/v1/signup', userController.signupPost); //Signup
     app.post('/api/v1/login', userController.loginPost); // Login
+    // app.post('/api/v1/login', function(req, res){
+    //     console.log("this works");
+    //     res.redirect('/api/v1/render');
+    // })
+    app.get('/customer',function(req,res){
+        res.render('two.html');
+    })
+    app.get('/barber',function(req,res){
+        res.render('two.html');
+    })
+    app.get('/shop',function(req,res){
+        res.render('two.html');
+    })
     app.post('/api/v1/forgot', userController.forgotPost); //Forgot Password
     app.put('/api/v1/account',upload.any(), userController.accountPut); // Account update
     app.delete('/api/v1/account', userController.ensureAuthenticated, userController.accountDelete);

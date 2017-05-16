@@ -17,100 +17,30 @@
                         </ul>
                     </div>
 
-                    <font color="green">
-                    <h2 align="center"><font color="orange">SHOPS</h2></font>
-                    <br><br> 
-                    </font>    
-                    <div  class="row list-group">
-                        <div class="item  col-xs-4 col-lg-3" ng-repeat="shop in shops">
-                            <div class="thumbnail">
-                                <img class="group list-group-image" src="/images/shop.jpg"  />
-                                <div class="caption">
-                                    <h4 class="group inner list-group-item-heading" align="center"><b>
-                                    <font color="red"> {{shop.shopName}} </font></b></h4>
-                                    <hr/>
-                                    <table>
-                                    <tr>
-                                        <td><h5>NO. OF BARBERS </h5></td>
-                                        <td>&nbsp;&nbsp;&nbsp;  {{shop.barbers}}</td>
-                                    </tr>
-                                     <tr>
-                                        <td><h5>DISTANCE</h5></td>
-                                        <td>{{shop.distance}}</td>
-                                    </tr>
-                                    </table>
-                                         
-                                    <div class="row">
-                                        <div class="col-xs-12 col-md-6" align="right">
-                                            <button class="btn btn-success" ng-click="shopdetails(shop)" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Details</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <table ng-repeat="barber in allbarbers" ng-hide="!barber.first_name" align="center">
+                    <tr >
+                    <td> <a ng-click="barberprof(barber)"><img  src="/images/people.jpeg"  ></a></td>
+                    <td>
+                        <table >
+                            <tr>
+                          <td> <h4 ><a ng-click="barberprof(barber)"><font color="red">
+                                     {{barber.first_name}} &nbsp; {{barber.last_name}}</h4></a> 
+                           </td>
+                        </tr>
+                        <tr><td><font size="2px"> MEMBER SINCE : {{barber.created_date}} </font> </td></tr>
+                        <tr><td><font size="2px"> RATINGS :  {{barber.ratings[0].score}}</font> </td></tr>
+                            <tr><td><font size="2px"> LOCATION : {{barber.location}} </font> </td></tr>
+                        </table>
+                    </td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><BUTTON ng-click="appointment(barber)" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Book</BUTTON></td>
+                    </font>
+                    </tr>
+
+                    </table>
                 </div>
             </div>
         </div>
-       <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" class="disabled">Barber's List</a>
-                </h4>
-            </div>
-            <div id="collapseTwo" class="panel-collapse collapse">
-                <div class="panel-body">
-                   <font color="green">
-                   <h2 align="center"><font color="orange">SHOP DETAILS</h2></font>
-                   <br><br> 
-                   </font>    
-                   <div  class="row list-group">
-                        <div class="item  col-xs-8 col-lg-8" style="margin-left: 250px;">
-                            <div class="thumbnail">
-                                <img class="group list-group-image" src="/images/shop.jpg"  height="500px" />
-                                    <div class="caption" >
-                                         <h3 class="group inner list-group-item-heading">
-                                         <table>
-                                         <tr>
-                                         <td>
-                                         <img   src="/images/maps.png" height="80px" ></td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                                         <b><td >
-                                        <font color="blue" > {{shopname.shopName}} <br></h3>
-                                         <h4>{{shopname.address}}<br>
-                                        {{shopname.city}}<br>
-                                        {{shopname.state}} </font></b></h4>
-                                        </td>
-                                        </tr>
-                                        </table>
-                                        <hr size="2" width="100%" noshade style="color:#000000"/>
-                                        <table ng-repeat="barber in barbers" ng-hide="!barber.first_name">
-                                        <tr >
-                                        <td> <a ng-click="barberprof(barber)"><img  src="/images/people.jpeg"  ></a></td>
-                                        <td>
-                                        <table >
-                                            <tr>
-                                          <td> <h4 ><a ng-click="barberprof(barber)"><font color="red">
-                                                     {{barber.first_name}} &nbsp; {{barber.last_name}}</h4></a> 
-                                           </td>
-                                        </tr>
-                                        <tr><td><font size="2px"> MEMBER SINCE : {{barber.created_date}} </font> </td></tr>
-                                        <tr><td><font size="2px"> RATINGS :  {{barber.ratings[0].score}}</font> </td></tr>
-                                            <tr><td><font size="2px"> LOCATION : {{shopname.shopName}} </font> </td></tr>
-                                        </table>
-                                        </td>
-                                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                                        <td><BUTTON ng-click="appointment(barber)"  data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Book</BUTTON></td>
-                                        </font>
-                                        </tr>
-                                        </table>
-                                    </div>
-                            </div>
-                        </div>  
-                    </div>
-                </div>
-            </div>
-        </div>
-      
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
@@ -119,13 +49,10 @@
             </div>
             <div id="collapseThree" class="panel-collapse collapse">
                 <div class="panel-body">
-                   
-
-<table style="margin-left: 30px;">
-    <tr>
-        <td ><img src="/images/people.jpeg"></td>
-        
-        <td >
+                   <table style="margin-left: 30px;">
+                     <tr>
+                     <td ><img src="/images/people.jpeg"></td>
+            <td >
         <table>
         <tr><td>
         <h3 style="margin-left: 100px;"><font color="red">{{barber.first_name}} &nbsp; {{barber.last_name}}
@@ -303,4 +230,3 @@
     </div>
     
 </div>
-

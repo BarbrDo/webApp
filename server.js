@@ -11,13 +11,16 @@ let jwt = require('jsonwebtoken');
 let moment = require('moment');
 let request = require('request');
 
+
 let objectID = require('mongodb').ObjectID
 
 // Load environment vaiables from .env file
 dotenv.load();
 
 let app = express();
-app.set('port', process.env.PORT || 3000);
+let engines = require('consolidate');
+app.set('views', __dirname + '/public');
+app.engine('html', engines.mustache);
 app.use(compression());
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -25,6 +28,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(expressValidator());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.set('port', process.env.PORT || 3000);
+app.set('view engine', 'html');
 
 /* Swagger Configuration */
 let swaggerUi = require('swagger-ui-express');

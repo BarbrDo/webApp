@@ -8,7 +8,8 @@ angular.module('BarbrDoApp')
           $window.localStorage.user = JSON.stringify(response.data.user);
           $('#login').modal('hide');
           $scope.user = {};
-          $location.path('/');
+          console.log(response.data.url);
+          $window.location = response.data.url;
         })
         .catch(function(response) {
           $scope.messages = {

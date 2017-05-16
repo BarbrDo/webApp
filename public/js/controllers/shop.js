@@ -1,33 +1,90 @@
 angular.module('BarbrDoApp')
   .controller('ShopCtrl', function($scope, $rootScope, $location, Account, $routeParams) {
+    $scope.dollarAmmount = 0.00;
+    $scope.annualCost = "$" + $scope.dollarAmmount;
 
+    $rootScope.currentId = $routeParams.id;
+
+    var obj = {
+      'latitude': "30.708225",
+      'longitude': "76.7029445"
+    }
+    Account.shopList(obj)
+      .then(function(data) {
+        $scope.shops = data.data.data;
+      });
 
 
     $scope.shopdetails = function(shop) {
-      $location.path('/shopdetails/' + shop._id);
-      $rootScope.shopdetail = shop;
-      $rootScope.barbersData = shop.barbers;
-      console.log("Selected Shop :", $rootScope.shopdetail);
-      console.log("barbers :", $rootScope.barbersData);
-      $scope.id = $routeParams._id;
+      Account.barberList(shop)
+        .then(function(response) {
+          $rootScope.shopname = shop;
+          $rootScope.barbers = response.data.data.barber;
 
+
+        });
     };
-    if (!$rootScope.shopdetail && !$rootScope.barbersData) {
-      // console.log("$scope.shops",$scope.shops);
-      var obj = {
-        'latitude': "30.708225",
-        'longitude': "76.7029445"
-      }
-      Account.shopList(obj)
-        .then(function(data) {
-          $scope.shops = data.data;
-          console.log(data);
-          for (var i = 0; i < data.data.length; i++) {
-            if ($routeParams._id == data.data[i]._id) {
-              $rootScope.shopdetail = data.data[i]
-              $rootScope.barbersData = data.data[i].barbers;
-            }
-          }
-        })
+
+    Account.barberAll(obj)
+      .then(function(response) {
+        $rootScope.allbarbers = response.data.data;
+
+      });
+
+
+    $scope.appointment = function(barber) {
+      Account.timeSlots(barber)
+        .then(function(response) {
+          $rootScope.time = response.data.data;
+          $rootScope.barber = barber;
+          
+        });
+
+      Account.barberService(barber)
+        .then(function(response) {
+          $rootScope.barberservice = response.data.data;
+          $rootScope.barberdetail = barber;
+        });
+    };
+    
+   
+       $scope.selected = [
+    {
+     
     }
+  ];
+    $scope.cost = function(amt, e , value) {
+
+      if (e.target.checked)
+      {
+        $scope.names = e.target.value;
+       
+        $scope.dollarAmmount = $scope.dollarAmmount + amt;
+        $scope.selected.push(value) ; 
+        
+      }
+      else
+      {
+        $scope.dollarAmmount = $scope.dollarAmmount - amt;
+      
+      for(var i=0 ; i < $scope.selected.length; i++) {
+        if($scope.selected[i]._id == value._id){
+          $scope.selected.splice(i,1);
+        }
+      }     
+      } 
+      $scope.annualCost = "$" + $scope.dollarAmmount;
+      
+    };
+
+    $scope.timeslot = function(time) {
+      $rootScope.selectedtime = time ;
+      console.log("selectedtime",time);
+    };
+
+    $scope.toggle = function (first, second) {
+        $('#'+first).collapse ('hide');
+        $('#'+second).collapse ('show');
+    }
+
   });

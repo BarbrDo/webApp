@@ -4,43 +4,52 @@
 
 </style>
 
-<nav ng-controller="HeaderCtrl" class="navbar navbar-default navbar-static-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" data-toggle="collapse" data-target="#navbar" class="navbar-toggle collapsed">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="/" class="navbar-brand">BarbrDo</a>
+
+       <header >
+        <!--top-header-->
+        <div class="top-header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="text-right">
+                            <a href="javascript:void(0)">Location</a>
+                            <a href="" data-toggle="modal" data-target="#login" ng-click="loginEmptyScope()">Login/Signup</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li ng-class="{ active: isActive('/')}"><a href="/">Customers</a></li>
-                <li ng-class="{ active: isActive('/barbers')}"><a href="/barbers">Barbers</a></li>
-                <li ng-class="{ active: isActive('/barbershops')}"><a href="/barbershops">Barber Shops</a></li>
-                <li ng-class="{ active: isActive('/contact')}"><a href="/contact">Contact</a></li>
-            </ul>
-            <ul ng-if="isAuthenticated()" class="nav navbar-nav navbar-right">
-                <li class="dropdown">
-                    <a href="#" data-toggle="dropdown" class="navbar-avatar dropdown-toggle">
-                        <img ng-src="{{currentUser.picture|| currentUser.gravatar}}"> {{currentUser.first_name|| currentUser.email || currentUser.id}} <i class="caret"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/account">My Account</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#" ng-click="logout()"}>Logout</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <ul ng-if="!isAuthenticated()" class="nav navbar-nav navbar-right">
-                <li ><a href="" data-toggle="modal" data-target="#login" ng-click="loginEmptyScope()">Log in</a></li>
-                <li ><a href="" data-toggle="modal" data-target="#signup">Sign up</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
+        <!--top-header-->
+        <!--main-menu-->
+        <nav class="navbar navbar-inverse" id="nav-bar">
+          <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="navbar-header">
+                      <a class="navbar-brand" href="/"><img src="images/logo.png" alt=""/></a>
+                      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                      </button>
+                    </div>
+                 </div>
+                 <div class="col-sm-8 right-menu">
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav text-right">
+                          <li class="active"><a href="javascript:void(0)">Customers</a></li>
+                          <li><a href="/barbers">Barbers</a></li>
+                          <li><a href="/barbershops">Barber Shops</a></li>
+                        </ul>
+                    </div>
+                </div>
+             </div>
+          </div>
+        </nav>
+         <!--main-menu-->
+    </header>
+   
 
 
 <!-- this modal is for Login page -->

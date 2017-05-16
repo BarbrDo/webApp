@@ -75,8 +75,9 @@ module.exports = function(app, express) {
     app.put('/api/v1/barber/confirmappointment/:appointment_id',barberServices.confirmAppointment);
     app.put('/api/v1/barber/rescheduleappointment/:appointment_id',barberServices.rescheduleAppointment);
     app.put('/api/v1/barber/completeappointment/:appointment_id',barberServices.completeAppointment);
-    app.delete('/api/v1/cancelAppointment', barberServices.cancelAppointment);
-    app.post('/api/v1/barber/barberGallery',upload.any(), barberServices.uploadBarberGallery);
+    app.put('/api/v1/barber/cancelAppointment/:appointment_id', barberServices.cancelAppointment);
+    app.post('/api/v1/barber/gallery',upload.any(), barberServices.uploadBarberGallery);//upload image in barber gallery
+    //app.delete('/api/v1/barber/gallery/:image_id',barberServices.deleteImages); //Delete image from gallery
 
     //Common
     app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of customer / barber / shop
@@ -756,6 +757,178 @@ module.exports = function(app, express) {
  *         type: string
  *         format: string
  *         default: "590829938e6a4812ece58e76"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"  
+ *   /barber/confirmappointment/{appointment_id}:
+ *     put:
+ *       tags:
+ *       - "barber"
+ *       summary: "Barber accepting/confirming customer's request"
+ *       description: "Barber accepting/confirming customer's request"
+ *       operationId: "confirmAppointment"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "590829938e6a4812ece58e76"
+ *       - in: "query"
+ *         name: "appointment_id"
+ *         description: "Appointment id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: ""
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"  
+ *   /barber/completeappointment/{appointment_id}:
+ *     put:
+ *       tags:
+ *       - "barber"
+ *       summary: "Barber mark appointment as completed"
+ *       description: "Barber mark appointment as completed"
+ *       operationId: "completedAppointment"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "590829938e6a4812ece58e76"
+ *       - in: "query"
+ *         name: "appointment_id"
+ *         description: "Appointment id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: ""
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"  
+ *   /barber/cancelAppointment/{appointment_id}:
+ *     put:
+ *       tags:
+ *       - "barber"
+ *       summary: "Barber cancelling an appointment"
+ *       description: "Barber cancelling an appointment"
+ *       operationId: "cancelAppointment"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "590829938e6a4812ece58e76"
+ *       - in: "query"
+ *         name: "appointment_id"
+ *         description: "Appointment id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: ""
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"  
+ *   /barber/rescheduleappointment/{appointment_id}:
+ *     put:
+ *       tags:
+ *       - "barber"
+ *       summary: "Barber rescheduleappointment an appointment"
+ *       description: "Barber rescheduleappointment an appointment"
+ *       operationId: "rescheduleAppointment"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "590829938e6a4812ece58e76"
+ *       - in: "query"
+ *         name: "appointment_id"
+ *         description: "Appointment id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: ""
  *       responses:
  *         200:
  *           description: "successful operation"

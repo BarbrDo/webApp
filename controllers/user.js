@@ -167,7 +167,7 @@ exports.signupPost = function (req, res, next) {
               })
             } else {
               res.status(200).send({
-                msg: "please check your email to verify your account.",
+                msg: "Please check your email to verify your account.",
                 link: resetUrl,
                 token: generateToken(shopData),
                 user: data,

@@ -1,10 +1,7 @@
 <style type="text/css">
     #login { overflow-y:scroll }
     #signup { overflow-y:scroll }
-
 </style>
-
-
        <header >
         <!--top-header-->
         <div class="top-header">
@@ -12,7 +9,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="text-right">
-                            <a href="javascript:void(0)">Location</a>
+                            <a href="javascript:void(0)"></a>
                             <a href="" data-toggle="modal" data-target="#login" ng-click="loginEmptyScope()">Login/Signup</a>
                         </div>
                     </div>
@@ -39,8 +36,8 @@
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav text-right">
                           <li class="active"><a href="javascript:void(0)">Customers</a></li>
-                          <li><a href="/barbers">Barbers</a></li>
-                          <li><a href="/barbershops">Barber Shops</a></li>
+                          <li><a ui-sref="barbers">Barbers</a></li>
+                          <li><a ui-sref="barberShops">Barber Shops</a></li>
                         </ul>
                     </div>
                 </div>

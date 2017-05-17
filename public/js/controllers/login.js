@@ -1,5 +1,5 @@
 angular.module('BarbrDoApp')
-  .controller('LoginCtrl', function($scope, $rootScope, $location, $window, $auth) {
+  .controller('LoginCtrl', function($scope, $rootScope, $location, $window, $auth,$state) {
     $scope.user = {};
     $scope.login = function() {
       $auth.login($scope.user)
@@ -8,8 +8,7 @@ angular.module('BarbrDoApp')
           $window.localStorage.user = JSON.stringify(response.data.user);
           $('#login').modal('hide');
           $scope.user = {};
-          console.log(response.data.url);
-          $window.location = response.data.url;
+          $state.go('welcome');
         })
         .catch(function(response) {
           $scope.messages = {

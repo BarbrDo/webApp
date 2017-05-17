@@ -77,18 +77,6 @@ exports.loginPost = function(req, res, next) {
     //     msg: 'Your account is not activated yet.'
     //   });
     // }
-    let url = "";
-    console.log(user.user_type);
-    if(user.user_type == 'shop'){
-      url = "http://" + req.headers.host + "/" + "shop" ; 
-    }
-    if(user.user_type == 'barber'){
-      url = "http://" + req.headers.host + "/" + "barber" ;
-    }
-    if(user.user_type == 'customer'){
-      url = "http://" + req.headers.host + "/" + "customer" ;
-    }
-
     user.comparePassword(req.body.password, function(err, isMatch) {
       if (!isMatch) {
         return res.status(401).send({
@@ -108,7 +96,6 @@ exports.loginPost = function(req, res, next) {
       res.send({
         token: generateToken(user),
         user: user.toJSON(),
-        url:url,
         "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
       });
     });

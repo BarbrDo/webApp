@@ -31,12 +31,12 @@ exports.editShop = function(req, res) {
             });
         } else {
             if (data.nModified == 1) {
-                let response = {
-                    "message": "Successfully updated fieldssss.",
+                var response = {
+                    "message": "Successfully updated.",
                     "data": data
                 };
             } else {
-                let response = {
+                var response = {
                     "message": "No record updated.",
                     "data": data
                 };

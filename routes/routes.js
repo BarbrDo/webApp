@@ -203,6 +203,8 @@ module.exports = function(app, express) {
  *       summary: "Update user profile and change password"
  *       description: "Update user profile and change password."
  *       operationId: "updateUser"
+ *       consumes:
+ *       - "multipart/form-data"
  *       produces:
  *       - "application/json"
  *       parameters:
@@ -226,13 +228,18 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "body"
  *         name: "body"
  *         description: "Created user object"
- *         required: true
+ *         required: false
  *         schema:
  *           $ref: "#/definitions/User"
+ *       - in: "formData"
+ *         name: "picture"
+ *         description: "file to upload"
+ *         required: false
+ *         type: "file"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -300,7 +307,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "59072e9a2fe2cb0f2cafa060"
+ *         default: "591be657b902f60fcc14a9d5"
  *       - in: "body"
  *         name: "body"
  *         description: "Created shop object"
@@ -342,10 +349,10 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "59072e9a2fe2cb0f2cafa060"
+ *         default: "591be657b902f60fcc14a9d5"
  *       - in: "body"
  *         name: "body"
- *         description: "Send shop id"
+ *         description: "Send shop Id"
  *         required: true
  *         schema:
  *           $ref: "#/definitions/addChair"
@@ -383,7 +390,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829938e6a4812ece58e76"
+ *         default: ""
  *       - in: "body"
  *         name: "body"
  *         description: "Send shop id and chair id"
@@ -424,7 +431,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829938e6a4812ece58e76"
+ *         default: "591be608b902f60fcc14a9d3"
  *       - in: "query"
  *         name: "search"
  *         description: "Search by Shop name"
@@ -466,14 +473,14 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5901e07846c94a225018d5cc"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "path"
  *         name: "shop_id"
  *         description: "Shop ID"
  *         required: true
  *         type: string
  *         format: string
- *         default: "5901e07846c94a225018d5cc"
+ *         default: "591be658b902f60fcc14a9d6"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -509,7 +516,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "body"
  *         name: "body"
  *         description: "Created appointment object"
@@ -550,7 +557,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -588,7 +595,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "formData"
  *         name: "file"
  *         description: "file to upload"
@@ -629,7 +636,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "path"
  *         name: "image_id"
  *         description: "image ID"
@@ -671,7 +678,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "query"
  *         name: "search"
  *         description: "Search by First/last name"
@@ -713,14 +720,14 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "path"
  *         name: "barber_id"
  *         description: "Barber ID"
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829388e6a4812ece58e75"
+ *         default: "591be608b902f60fcc14a9d3"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -758,7 +765,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829938e6a4812ece58e76"
+ *         default: "591be608b902f60fcc14a9d3"
  *       - in: "formData"
  *         name: "file"
  *         description: "file to upload"
@@ -799,7 +806,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829938e6a4812ece58e76"
+ *         default: "591be608b902f60fcc14a9d3"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -835,8 +842,8 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829938e6a4812ece58e76"
- *       - in: "query"
+ *         default: "591be608b902f60fcc14a9d3"
+ *       - in: "path"
  *         name: "appointment_id"
  *         description: "Appointment id"
  *         required: true
@@ -878,8 +885,8 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829938e6a4812ece58e76"
- *       - in: "query"
+ *         default: "591be608b902f60fcc14a9d3"
+ *       - in: "path"
  *         name: "appointment_id"
  *         description: "Appointment id"
  *         required: true
@@ -927,8 +934,8 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829938e6a4812ece58e76"
- *       - in: "query"
+ *         default: "591be608b902f60fcc14a9d3"
+ *       - in: "path"
  *         name: "appointment_id"
  *         description: "Appointment id"
  *         required: true
@@ -970,8 +977,8 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829938e6a4812ece58e76"
- *       - in: "query"
+ *         default: "591be608b902f60fcc14a9d3"
+ *       - in: "path"
  *         name: "appointment_id"
  *         description: "Appointment id"
  *         required: true
@@ -1019,7 +1026,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829938e6a4812ece58e76"
+ *         default: "591be608b902f60fcc14a9d3"
  *       - in: "body"
  *         name: "body"
  *         description: "Add new barber service"
@@ -1061,14 +1068,14 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5901e07846c94a225018d5cc"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "path"
  *         name: "barber_id"
  *         description: "Barber ID"
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829388e6a4812ece58e75"
+ *         default: "591be608b902f60fcc14a9d3"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -1104,14 +1111,14 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5901e07846c94a225018d5cc"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "path"
  *         name: "id"
  *         description: "Customer Id / Barber Id / Shop Id"
  *         required: true
  *         type: string
  *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -1137,20 +1144,28 @@ module.exports = function(app, express) {
  *     properties:
  *       first_name:
  *         type: "string"
+ *         default: "Customer"
  *       last_name:
  *         type: "string"
+ *         default: "One"
  *       email:
  *         type: "string"
- *         default: "ankushs@smartdatainc.net"
+ *         default: "customer@email.com"
+ *         required: true
  *       password:
- *         type: "string" 
+ *         type: "string"
+ *         default: "123456"
+ *         required: true
  *       confirm:
  *         type: "string"
+ *         default: "123456"
  *       mobile_number:
  *         type: "string"
  *         default: "9876543210"
+ *         required: true
  *       user_type:
  *         type: "string"
+ *         required: true
  *         enum:
  *           - "customer"
  *           - "barber"
@@ -1166,7 +1181,7 @@ module.exports = function(app, express) {
  *     properties:
  *       email:
  *         type: "string"
- *         default: "ankushs@smartdatainc.net"
+ *         default: "customer@email.com"
  *       password:
  *         type: "string"
  *         default: "123456"
@@ -1175,13 +1190,13 @@ module.exports = function(app, express) {
  *      properties:
  *       email:
  *         type: "string"
- *         default: "barbrdoapp@gmail.com"     
+ *         default: "ankushs@smartdatainc.net"     
  *    Shop:
  *     type: "object"
  *     properties:
  *       _id:
  *         type: "string"
- *         default: "5901e07846c94a225018d5cc"
+ *         default: "591be658b902f60fcc14a9d6"
  *       name:
  *         type: "string"
  *         default: "Pop's Barber Shop"
@@ -1205,7 +1220,7 @@ module.exports = function(app, express) {
  *      properties:
  *       id:
  *         type: "string"
- *         default: "5901e07846c94a225018d5cc"  
+ *         default: "591be658b902f60fcc14a9d6"  
  *    deleteChair:
  *      type: "object"
  *      properties:
@@ -1214,16 +1229,16 @@ module.exports = function(app, express) {
  *         default: "5901f19c42207d26eaefb764" 
  *       shop_id:
  *         type: "string"
- *         default: "5901e07846c94a225018d5cc"
+ *         default: "591be658b902f60fcc14a9d6"
  *    appointment:
  *      type: "object"
  *      properties:
  *        shop_id:
  *          type: "string"
- *          default: "5901e07846c94a225018d5cc"
+ *          default: "591be658b902f60fcc14a9d6"
  *        barber_id:
  *          type: "string"
- *          default: "590829388e6a4812ece58e75"
+ *          default: "591be608b902f60fcc14a9d3"
  *        payment_method:
  *          type: "string"
  *          default: "cash"
@@ -1234,7 +1249,7 @@ module.exports = function(app, express) {
  *            properties:
  *              id:
  *                type: "string"
- *                default: "590bfe409e74bc91bc044a66"
+ *                default: "591bf1d39f3ee312abea7e95"
  *        appointment_date:
  *          type: "string"
  *          default: "2017-07-10 10:00:00"

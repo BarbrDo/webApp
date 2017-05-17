@@ -19,15 +19,15 @@ var chairRequestSchema = new mongoose.Schema({
     type:Schema.Types.ObjectId,
     ref:'users'
    },
+   barber_name:{
+    type:String
+   },
    status:{
     type:String,
     enum: ['pending', 'confirmed', 'declinedte']
    },
    booking_date:{
     type:Date
-   },
-   request_by:{
-    type:String
    },
    created_date:{
     type:Date,

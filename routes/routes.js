@@ -39,19 +39,6 @@ module.exports = function(app, express) {
     //Users
     app.post('/api/v1/signup', userController.signupPost); //Signup
     app.post('/api/v1/login', userController.loginPost); // Login
-    // app.post('/api/v1/login', function(req, res){
-    //     console.log("this works");
-    //     res.redirect('/api/v1/render');
-    // })
-    app.get('/customer',function(req,res){
-        res.render('two.html');
-    })
-    app.get('/barber',function(req,res){
-        res.render('two.html');
-    })
-    app.get('/shop',function(req,res){
-        res.render('two.html');
-    })
     app.post('/api/v1/forgot', userController.forgotPost); //Forgot Password
     app.put('/api/v1/account',upload.any(), userController.accountPut); // Account update
     app.delete('/api/v1/account', userController.ensureAuthenticated, userController.accountDelete);
@@ -71,6 +58,9 @@ module.exports = function(app, express) {
     app.delete('/api/v1/shops/chair', userController.removeChair); // Remove chair from shop
     app.post('/api/v1/shops/confirmchair', chairRequestController.bookChair);
     app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
+    app.put('/api/v1/shops/chairPercentage',shopController.setChairPercentage);
+    app.put('/api/v1/shops/weeklyMonthlyChair',shopController.weeklyMonthlyChair);
+    app.post('/api/v1/shops/postChairToAllBarbers',shopController.postChairToAllBarbers);
     
     //Customer
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment

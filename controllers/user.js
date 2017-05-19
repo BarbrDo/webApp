@@ -1,12 +1,12 @@
 let async = require('async');
 let crypto = require('crypto');
+let User = require('../models/User');
 let nodemailer = require('nodemailer');
 let jwt = require('jsonwebtoken');
 let moment = require('moment');
 let request = require('request');
 let mongoose = require('mongoose');
 let qs = require('querystring');
-let User = require('../models/User');
 let Shop = require('../models/shop');
 let Barber = require('../models/barber');
 let objectID = require('mongodb').ObjectID;
@@ -833,7 +833,6 @@ exports.uploadCustomerGallery = function(req, res) {
       let obj = {};
       obj.name = req.files[i].filename;
       userimg.push(obj);
-
     }
     updateData.gallery = userimg;
   }

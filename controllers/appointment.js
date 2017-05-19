@@ -5,7 +5,7 @@ let user = require('../models/User');
 let shop = require('../models/shop');
 let moment = require('moment');
 
-exports.takeAppointment = function(req, res) {
+exports.takeAppointment = function (req, res) {
 	req.assert("shop_id", "shop_id cannot be blank").notEmpty();
 	// req.assert("shop_name", "shop_name cannot be blank").notEmpty();
 	req.assert("barber_id", "barber_id cannot be blank").notEmpty();
@@ -37,12 +37,12 @@ exports.takeAppointment = function(req, res) {
 	let shopName = "";
 	let customerName = "";
 	let barberName = ""
-	findShopData(req.body.shop_id, function(result) {
+	findShopData(req.body.shop_id, function (result) {
 		shopName = result;
-		findUserId(req.headers.user_id, function(result) {
+		findUserId(req.headers.user_id, function (result) {
 			customerName = result
 			console.log("customerName", customerName)
-			findUserId(req.body.barber_id, function(result) {
+			findUserId(req.body.barber_id, function (result) {
 				barberName = result;
 				console.log("barberName,customerName,shopName", barberName, customerName, shopName);
 				let saveData = req.body;
@@ -53,7 +53,7 @@ exports.takeAppointment = function(req, res) {
 				saveData.appointment_date = new Date(appointmentdate);
 				console.log(saveData);
 
-				appointment(saveData).save(function(err, data) {
+				appointment(saveData).save(function (err, data) {
 					if (err) {
 						return res.status(400).send({
 							msg: constantObj.messages.errorInSave
@@ -61,7 +61,7 @@ exports.takeAppointment = function(req, res) {
 					} else {
 						appointment.findOne({
 							"_id": data._id
-						}).populate('barber_id', 'first_name last_name ratings picture').populate('shop_id', 'name address city state gallery').exec(function(err, result) {
+						}).populate('barber_id', 'first_name last_name ratings picture').populate('shop_id', 'name address city state gallery').exec(function (err, result) {
 							if (err) {
 								return res.status(400).send({
 									msg: constantObj.messages.errorRetreivingData
@@ -80,7 +80,7 @@ exports.takeAppointment = function(req, res) {
 	});
 }
 
-let removeOffset = function(dobFormat) {
+let removeOffset = function (dobFormat) {
 	let userOffset = new Date(dobFormat).getTimezoneOffset();
 	let userOffsetMilli = userOffset * 60 * 1000;
 	let dateInMilli = moment(dobFormat).unix() * 1000;
@@ -89,10 +89,10 @@ let removeOffset = function(dobFormat) {
 }
 
 
-let findUserId = function(id, cb) {
+let findUserId = function (id, cb) {
 	user.findOne({
 		_id: id
-	}, function(err, result) {
+	}, function (err, result) {
 		if (err) {
 			console.log("err in FindUserId", err);
 		} else {
@@ -102,15 +102,15 @@ let findUserId = function(id, cb) {
 			} else {
 				let allResult = ""
 				cb(allResult)
-					// return allResult;
+				// return allResult;
 			}
 		}
 	})
 }
-let findShopData = function(shopp, cb) {
+let findShopData = function (shopp, cb) {
 	shop.findOne({
 		_id: shopp
-	}, function(err, result) {
+	}, function (err, result) {
 		if (err) {
 			console.log("err in FindUserId", err);
 		} else {
@@ -127,7 +127,7 @@ let findShopData = function(shopp, cb) {
 
 
 
-exports.customerAppointments = function(req, res) {
+exports.customerAppointments = function (req, res) {
 	req.checkHeaders("user_id", "user_id cannot be blank").notEmpty();
 	let errors = req.validationErrors();
 	if (errors) {
@@ -137,26 +137,55 @@ exports.customerAppointments = function(req, res) {
 		});
 	}
 	let currentDate = moment().format("YYYY-MM-DD");
+	// below query will give us all those appointments who are pending and rescheduled
 	appointment.find({
 		"customer_id": {
 			$exists: true,
 			$eq: req.headers.user_id
 		},
+		"appointment_status": {
+			$in: ['pending', 'reschedule','confirm']
+		},
 		"appointment_date": {
 			$gte: currentDate
 		}
-	}).populate('barber_id', 'first_name last_name ratings picture').populate('shop_id', 'name address city state gallery latLong').exec(function(err, result) {
-		if (err) {
-			return res.status(400).send({
-				msg: constantObj.messages.errorRetreivingData
-			});
-		} else {
-			return res.status(200).send({
-				msg: constantObj.messages.successRetreivingData,
-				data: result
-			});
-		}
-	})
+	}).populate('barber_id', 'first_name last_name ratings picture')
+		.populate('shop_id', 'name address city state gallery latLong')
+		.exec(function (err, result) {
+			if (err) {
+				return res.status(400).send({
+					msg: constantObj.messages.errorRetreivingData
+				});
+			} else {
+				// This will give all appointments who are completed
+				appointment.find({
+					"customer_id": {
+						$exists: true,
+						$eq: req.headers.user_id
+					},
+					"appointment_status": {
+						$in: ['completed']
+					}
+				}).populate('barber_id', 'first_name last_name ratings picture')
+					.populate('shop_id', 'name address city state gallery latLong')
+					.exec(function (err, data) {
+						if (err) {
+							return res.status(400).send({
+								msg: constantObj.messages.errorRetreivingData
+							});
+						}
+						else {
+							return res.status(200).send({
+								msg: constantObj.messages.successRetreivingData,
+								data: {
+									upcoming: result,
+									complete: data
+								}
+							});
+						}
+					})
+			}
+		})
 }
 
 //Delete this function and use customerAppointments function only for both future and completed booking

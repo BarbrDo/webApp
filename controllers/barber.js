@@ -406,8 +406,8 @@ exports.uploadBarberGallery = function (req, res) {
         updateData.gallery = userimg;
     }
     console.log("updateData.gallery", updateData.gallery);
-    barber.update({
-        user_id: req.headers.user_id
+    user.update({
+        _id: req.headers.user_id
     }, {
             $push: {
                 gallery: {
@@ -420,8 +420,8 @@ exports.uploadBarberGallery = function (req, res) {
                     msg: 'Error in finding shop.'
                 });
             } else {
-                barber.findOne({
-                    user_id: req.headers.user_id
+                user.findOne({
+                    _id: req.headers.user_id
                 }, function (err, response) {
                     if (err) {
                         res.status(400).send({

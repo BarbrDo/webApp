@@ -1,7 +1,9 @@
-angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad'])
-  .config(function ($stateProvider, $urlRouterProvider
-    , $locationProvider, $authProvider) {
-    $locationProvider.html5Mode(true);
+angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad','ngMask'])
+  .config(function($stateProvider, $urlRouterProvider, $locationProvider, $authProvider) {
+    $locationProvider.html5Mode({
+      enabled: true,
+      requireBase: false
+    });
 
     $stateProvider
       .state('home', {
@@ -10,22 +12,32 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad']
           "home": {
             templateUrl: 'partials/home.html',
           },
-          "footer":{
+          "footer": {
             templateUrl: 'partials/footer.html'
           },
-          "header":{
-            templateUrl: 'partials/header.html'
+          "header": {
+            templateUrl: 'partials/header.html',
+            controller:'HeaderCtrl'
           }
         }
-        })
-      .state('welcome', {
-        url: '/welomce',
+       
+      })
+      .state('barberHome', {
+        url: '/barber',
+
         views: {
-          "landingPage": {
-            templateUrl: 'partials/landing.html',
+          "home": {
+            templateUrl: 'partials/barbersHome.html',
+          },
+          "footer": {
+            templateUrl: 'partials/footer.html'
+          },
+          "header": {
+            templateUrl: 'partials/header.html',
+            controller:'HeaderCtrl'
           }
         }
-        })
+      })
       .state('contact', {
         url: '/contact',
         templateUrl: 'partials/contact.html',
@@ -87,26 +99,26 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad']
         url: '/partials',
         templateUrl: 'partials/404.html'
       })
-    // .when('/shopdetails/:id', {
-    //   templateUrl: 'partials/shopdetails.html',
-    //   controller: 'ShopCtrl'
-    // })
-    // .when('/appointment/:id', {
-    //   templateUrl: 'partials/appointment.html',
-    //    controller: 'AppointCtrl'
-    // })
-    // .when('/pay/:id', {
-    //   templateUrl: 'partials/pay.html',
-    //    controller: 'AppointCtrl'
-    // })
-    // .when('/confirm', {
-    //   templateUrl: 'partials/confirm.html',
-    //    controller: 'AppointCtrl'
-    // })
-    //  .when('/barberprofile/:id', {
-    //   templateUrl: 'partials/barberprofile.html',
-    //    controller: 'BarbrCtrl'
-    // })
+      // .when('/shopdetails/:id', {
+      //   templateUrl: 'partials/shopdetails.html',
+      //   controller: 'ShopCtrl'
+      // })
+      // .when('/appointment/:id', {
+      //   templateUrl: 'partials/appointment.html',
+      //    controller: 'AppointCtrl'
+      // })
+      // .when('/pay/:id', {
+      //   templateUrl: 'partials/pay.html',
+      //    controller: 'AppointCtrl'
+      // })
+      // .when('/confirm', {
+      //   templateUrl: 'partials/confirm.html',
+      //    controller: 'AppointCtrl'
+      // })
+      //  .when('/barberprofile/:id', {
+      //   templateUrl: 'partials/barberprofile.html',
+      //    controller: 'BarbrCtrl'
+      // })
     $urlRouterProvider.otherwise('pageNotFound');
 
 
@@ -139,4 +151,3 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad']
   //     $rootScope.currentUser = JSON.parse($window.localStorage.user);
   //   }
   // });
-

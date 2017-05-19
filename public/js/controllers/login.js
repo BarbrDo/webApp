@@ -2,6 +2,7 @@ angular.module('BarbrDoApp')
   .controller('LoginCtrl', function($scope, $rootScope, $location, $window, $auth,$state) {
     $scope.user = {};
     $scope.login = function() {
+      console.log($scope.user);
       $auth.login($scope.user)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;

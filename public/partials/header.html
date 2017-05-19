@@ -1,176 +1,151 @@
-<style type="text/css">
-    #login { overflow-y:scroll }
-    #signup { overflow-y:scroll }
-</style>
-       <header >
-        <!--top-header-->
-        <div class="top-header">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="text-right">
-                            <a href="javascript:void(0)"></a>
-                            <a href="" data-toggle="modal" data-target="#login" ng-click="loginEmptyScope()">Login/Signup</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--top-header-->
-        <!--main-menu-->
-        <nav class="navbar navbar-inverse" id="nav-bar">
-          <div class="container">
+<header ng-controller="HeaderCtrl">
+    <!--top-header-->
+    <div class="top-header">
+        <div class="container">
             <div class="row">
-                <div class="col-sm-4">
-                    <div class="navbar-header">
-                      <a class="navbar-brand" href="/"><img src="images/logo.png" alt=""/></a>
-                      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                      </button>
-                    </div>
-                 </div>
-                 <div class="col-sm-8 right-menu">
-                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                        <ul class="nav navbar-nav text-right">
-                          <li class="active"><a href="javascript:void(0)">Customers</a></li>
-                          <li><a ui-sref="barbers">Barbers</a></li>
-                          <li><a ui-sref="barberShops">Barber Shops</a></li>
-                        </ul>
+                <div class="col-sm-12">
+                    <div class="text-right">
+                        <!-- <a href="">Location</a> -->
+                         <a href="" data-toggle="modal" data-target=".bs-example-modal-lg" >Login/Signup</a>
                     </div>
                 </div>
-             </div>
-          </div>
-        </nav>
-         <!--main-menu-->
-    </header>
-   
-
-
-<!-- this modal is for Login page -->
-<div class="modal fade" id="login" role="dialog" ng-controller="LoginCtrl">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Login</h4>
-            </div>
-            <div class="modal-body">
-                <div class="container login-container">
-                    <div class="panel">
-                        <div class="panel-body">
-                            <div ng-if="messages.error" role="alert" class="alert alert-danger">
-                                <div ng-repeat="error in messages.error">{{error.msg}}</div>
-                            </div>
-                            <form ng-submit="login()">
-                                <legend>Log In</legend>
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="email" name="email" id="email" placeholder="Email" class="form-control" ng-model="user.email" autofocus>
-                                </div>
-                                <div class="form-group">
-                                    <label for="password">Password</label>
-                                    <input type="password" name="password" id="password" placeholder="Password" class="form-control" ng-model="user.password">
-                                </div>
-                                <div class="form-group"><a href="/forgot" ng-click="modalDismiss()"><strong>Forgot your password?</strong></a></div>
-                                <button type="submit" class="btn btn-success">Log in</button>
-                            </form>
-                            <div class="hr-title"><span>or</span></div>
-                            <div class="btn-toolbar text-center">
-                                <button class="btn btn-facebook" ng-click="authenticate('facebook')">Sign in with Facebook</button>
-                                <!-- <button class="btn btn-google" ng-click="authenticate('google')">Sign in with Google</button> -->
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-center">
-                        Don't have an account? <a href="" ng-click="signUpClick()"><strong>Sign up</strong></a>
-                    </p>
-                </div>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">x</button>
             </div>
         </div>
     </div>
-</div>
-<!-- __________________ end modal is for Login page ____________-->
-<!-- this modal is for Signup page -->
-
-<div class="modal fade" id="signup" role="dialog" ng-controller="SignupCtrl">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Signup</h4>
-            </div>
-            <div class="modal-body">
-
-                <div class="container login-container">
-                    <div class="panel">
-                        <div class="panel-body">
-                            <div ng-if="messages.error" role="alert" class="alert alert-danger">
-                                <div ng-repeat="error in messages.error.err">{{error.msg}}</div>
-                            </div>
-                            <form ng-submit="signup()">
-                                <legend>Create an account</legend>
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="email" name="email" id="email" placeholder="Email" class="form-control" ng-model="user.email">
-                                </div>
-                                <div class="form-group">
-                                    <label for="password">Password</label>
-                                    <input type="password" name="password" id="password" placeholder="Password" class="form-control" ng-model="user.password">
-                                </div>
-                                <div class="form-group">
-                                    <label for="mobilenumber">Mobile Number</label>
-                                    <input type="text" name="mobile_number" id="mobile_number" placeholder="Mobile Number" class="form-control" ng-model="user.mobile_number">
-                                </div>
-                                <label>
-                                    <input type="radio" ng-model="user.user_type" value="customer" ng-init="user.user_type = 'customer'">
-                                    Customer
-                                </label>
-                                <label>
-                                    <input type="radio" ng-model="user.user_type" value="barber">
-                                    Barber
-                                </label>
-                                <label>
-                                    <input type="radio" ng-model="user.user_type" value="shop">
-                                    Barber Shop
-                                </label>
-                                <div ng-if="user.user_type == 'shop' || user.user_type == 'barber'" class="form-group">
-                                    <label for="mobilenumber">LICENSE NUMBER</label>
-                                    <input type="text" name="license_number" id="license_number" placeholder="License number" class="form-control" ng-model="user.license_number">
-
-
-                                </div>
-                                <div class="form-group">
-                                    <small class="text-muted">By signing up, you agree to the <a href="/" ng-click="hideModal()">Terms of Service</a>.</small>
-                                </div>
-                                <button type="submit" class="btn btn-success">Create an account</button>
-                            </form>
-                            <div class="hr-title"><span>or</span></div>
-                            <div class="btn-toolbar text-center">
-                                <button class="btn btn-facebook" ng-click="authenticate('facebook')">Sign in with Facebook</button>
-                                <!-- <button class="btn btn-google" ng-click="authenticate('google')">Sign in with Google</button> -->
-                            </div>
-                        </div>
+    <!--top-header-->
+    <!--main-menu-->
+    <nav class="navbar navbar-inverse" id="nav-bar">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="#"><img src="images/logo.png" alt="" /></a>
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
                     </div>
-                    <p class="text-center">
-                        Already have an account? <a href="" ng-click="loginModal()"><strong>Please Log in</strong></a>
-                    </p>
                 </div>
-
-
-
-
+                <div class="col-sm-8 right-menu">
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav text-right">
+                            <li ng-class="{'active':checkState('home')}"><a ui-sref="home">Customers</a></li>
+                            <li ng-class="{'active':checkState('barberHome')}"><a ui-sref="barberHome">Barbers</a></li>
+                            <li ng-class="{'active':checkState('shopHome')}"><a href="javascript:void(0)">Barber Shops</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">x</button>
+        </div>
+    </nav>
+    <!--main-menu-->
+</header>
+<div class="modal fade bs-example-modal-lg lrp" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="holder">
+        <div class="half left">
+            <img src="images/b_chair.png" class="chair">
+            <ul>
+                <li><span><i class="fa fa-check"></i></span> Easy and Convenient Scheduling</li>
+                <li><span><i class="fa fa-check"></i></span> Real-time Communications</li>
+                <li><span><i class="fa fa-check"></i></span> On Demand Services</li>
+                <li><span><i class="fa fa-check"></i></span> Supported on Multiple Platforms</li>
+            </ul>
+        </div>
+        <div class="half right">
+            <div class="ctabs">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#login" aria-controls="home" role="tab" data-toggle="tab">Login</a></li>
+                    <li role="presentation"><a href="#signup" aria-controls="profile" role="tab" data-toggle="tab">SignUp</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content contact-us">
+                    <div role="tabpanel" class="tab-pane active " id="login" ng-controller="LoginCtrl">
+                        <div class="text-center">
+                            <a href="#"><img src="images/fbb.png"></a>
+                        </div>
+                        <form name="loginForm">
+                            <div class="form-group">
+                                <input type="email" name="email" id="email" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" class="form-control" required/>
+                                <div class="form-control-placeholder">Email Address</div>
+                            </div>
+                            <div class="form-group mbzero">
+                                <input type="password" name="password" id="password" ng-model="user.password" class="form-control" required />
+                                <div class="form-control-placeholder">Password</div>
+                                <a href="#" class="eye"><i class="fa fa-eye"></i></a>
+                            </div>
+                            <a href="#" class="forgot">Forgot Password ?</a>
+                            <button type="submit" class="sb_button" ng-click="login()" ng-disabled="loginForm.$invalid">Login</button>
+                            <p class="msg">New User? <a href="#">SignUp</a></p>
+                        </form>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="signup" ng-controller="SignupCtrl">
+                        <form name="signUpForm">
+                            <div class="type_selection">
+                                <label>
+                                    <input type="radio" name="type" ng-model="user.user_type" value="customer" ng-init="user.user_type = 'customer'"> <span>Customer</span> </label>
+                                <label>
+                                    <input type="radio" name="type" ng-model="user.user_type" value="barber"> <span>Barber</span> </label>
+                                <label>
+                                    <input type="radio" name="type" ng-model="user.user_type" value="shop"> <span>Barber Shop</span> </label>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" name="email" id="email" class="form-control" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" required/>
+                                <div class="form-control-placeholder">Email Address</div>
+                                <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="
+                                                    signUpForm.email.$touched &&signUpForm.email.$invalid && (!signUpForm.email.$pristine || signUpForm.$submitted)" role="alert">
+                                    <span style="color:red" ng-message="pattern" class="error-message">Email is not valid</span>
+                                </div>
+                                <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="signUpForm.email.$error.required &&
+                                                    signUpForm.email.$touched && signUpForm.email.$invalid" role="alert">
+                                    <span style="color:red" ng-message="required" class="error-message">Email is required</span>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <input type="password" name="password" id="password" class="form-control" ng-model="user.password" ng-minlength="5" ng-maxlength="20" maxlength="21" required />
+                                <div class="form-control-placeholder">Password</div>
+                                <a href="#" class="eye"><i class="fa fa-eye"></i></a>
+                                <div class="validationError" ng-messages="signUpForm.password.$error" ng-show="
+                                                           signUpForm.password.$error.required &&
+                                                           signUpForm.password.$touched && signUpForm.password.$invalid" role="alert">
+                                    <span style="color:red" ng-message="required">password is required</span>
+                                </div>
+                                <div class="validationError" ng-if="!updateButton" ng-show="signUpForm.password.$error.maxlength && signUpForm.password.$dirty" ">
+
+                                                             <span style="color:red ">password maximum length exceeds</span>
+                                                             </div>
+                            </div>
+                            <div class="form-group ">
+                                <input type="text " class="form-control " name="confirmPassword " id="confirmPassword " ng-model="user.confirmPassword " required ng-pattern="user.password " />
+                                <div class="form-control-placeholder ">Confirm Password</div>
+                                <a href="# " class="eye "><i class="fa fa-eye "></i></a>
+
+                                <div class="validationError" ng-messages="signUpForm.confirmPassword.$error " ng-show=" signUpForm.confirmPassword.$error.pattern && (!signUpForm.confirmPassword.$pristine || signUpForm.$submitted) " role="alert ">
+                                                                <span style="color:red " ng-if="!updateButton " ng-message="pattern ">password do not match</span>
+                                                            </div>
+                                                    <div ng-if="!updateButton " class="validationError " ng-messages="signUpForm.confirmPassword.$error " ng-show=" signUpForm.confirmPassword.$error.required && signUpForm.confirmPassword.$touched && signUpForm.confirmPassword.$invalid " role="alert ">
+                                                            <span ng-if="!updateButton " style="color:red " ng-message="required " class="error-message ">Confirm password is required</span>
+                                                        </div>
+                            </div>
+                            <div class="form-group ">
+                                <input type="text " class="form-control " name="mobile_number " id="mobile_number " ng-model="user.mobile_number " mask="(999) 999-9999 " mask-clean='true' mask-restrict='reject' ng-minlength="14 " ng-maxlength="14 " maxlength="14 " required />
+                                <div class="form-control-placeholder ">Phone No.</div>
+                                <p class="help-block">
+                                                      <span ng-show="signUpForm.mobile_number.$touched && signUpForm.mobile_number.$invalid && signUpForm.mobile_number.$error.required">Mobile number is required.</span>
+                                                        <span ng-show="signUpForm.mobile_number.$error.minlength">Phone have 10-digits minimum.</span>
+                                                      </p>
+                            </div>
+                            <div ng-if="user.user_type=='shop' || user.user_type=='barber' " class="form-group ">
+                                <input type="text " class="form-control " name="license_number " id="license_number " ng-model="user.license_number " required />
+                                <div class="form-control-placeholder ">License No.</div>
+                            </div>
+                            <button type="submit " class="sb_button " ng-submit="signup() ">Sign Up</button>
+                            <p class="msg ">Already have an account?<a href="# "> Login</a></p>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

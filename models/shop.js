@@ -92,18 +92,6 @@ var shopSchema = new mongoose.Schema({
                 default: Date.now()
             }
         }
-    ],
-    image: String,
-    gallery: [
-        {
-            name: {
-                type: String
-            },
-            created_date: {
-                type: Date,
-                default: Date.now()
-            }
-        }
     ]
 });
 

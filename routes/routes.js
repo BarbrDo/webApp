@@ -69,23 +69,24 @@ module.exports = function(app, express) {
     app.delete('/api/v1/customer/gallery/:image_id',userController.deleteImages); //Delete image from gallery
     
     //Barber
-    app.get('/api/v1/barbers', shopController.allBarbers); //Get all barbers
-    app.get('/api/v1/barbers/:barber_id',barberServices.viewBarberProfile);//Get specific barber's detail
-    app.post('/api/v1/barberServices', barberServices.addBarberServices); //Add new service in barber
-    app.get('/api/v1/barberServices/:barber_id',barberServices.viewAllServiesOfBarber); // Get barber's services
+    app.get('/api/v1/barbers', shopController.allBarbers); //List all barbers
+    app.get('/api/v1/barbers/:barber_id',barberServices.viewBarberProfile);//Get barber details like info, rating & comments, galleries
+    app.post('/api/v1/barber/gallery',upload.any(), barberServices.uploadBarberGallery);//Upload single or multiple images in Gallery
+    //app.delete('/api/v1/barber/gallery/:image_id',barberServices.deleteImages); //Delete image from gallery
+    app.get('/api/v1/barber/appointments',barberServices.appointments);//As a barber show me customer's requests
+    app.put('/api/v1/barber/confirmappointment/:appointment_id',barberServices.confirmAppointment);//Barber accepting/confirming customer's request
+    app.put('/api/v1/barber/completeappointment/:appointment_id',barberServices.completeAppointment);//Barber mark appointment as completed
+    app.put('/api/v1/barber/cancelAppointment/:appointment_id', barberServices.cancelAppointment);//Barber cancelling an appointment
+    app.put('/api/v1/barber/rescheduleappointment/:appointment_id',barberServices.rescheduleAppointment);//Barber reschedule an appointment
     app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber requesting chair to shop
-    app.get('/api/v1/barber/appointments',barberServices.appointments);
-    app.put('/api/v1/barber/confirmappointment/:appointment_id',barberServices.confirmAppointment);
-    app.put('/api/v1/barber/rescheduleappointment/:appointment_id',barberServices.rescheduleAppointment);
-    app.put('/api/v1/barber/completeappointment/:appointment_id',barberServices.completeAppointment);
-    app.delete('/api/v1/cancelAppointment', barberServices.cancelAppointment);
-    app.post('/api/v1/barber/barberGallery',upload.any(), barberServices.uploadBarberGallery);
-
-    //Others
-    app.get('/api/v1/getProfile', userController.getProfiles);
+    app.post('/api/v1/barberServices', barberServices.addBarberServices); //Add new service
+    app.get('/api/v1/barberServices/:barber_id',barberServices.viewAllServiesOfBarber); // Show all services of barbers
+    
+    //Common
+    app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of any customer/barber/shop
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
     app.post('/api/v1/contact', contactController.contactPost);
-    app.get('/api/v1/timeslots',commonObj.viewTimeSlots)
+    app.get('/api/v1/timeslots',commonObj.viewTimeSlots); //Time slot to book an appointment
 }
 /**
  * @swagger
@@ -205,6 +206,8 @@ module.exports = function(app, express) {
  *       summary: "Update user profile and change password"
  *       description: "Update user profile and change password."
  *       operationId: "updateUser"
+ *       consumes:
+ *       - "multipart/form-data"
  *       produces:
  *       - "application/json"
  *       parameters:
@@ -228,13 +231,18 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "body"
  *         name: "body"
  *         description: "Created user object"
- *         required: true
+ *         required: false
  *         schema:
  *           $ref: "#/definitions/User"
+ *       - in: "formData"
+ *         name: "picture"
+ *         description: "file to upload"
+ *         required: false
+ *         type: "file"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -302,7 +310,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "59072e9a2fe2cb0f2cafa060"
+ *         default: "591be657b902f60fcc14a9d5"
  *       - in: "body"
  *         name: "body"
  *         description: "Created shop object"
@@ -344,10 +352,10 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "59072e9a2fe2cb0f2cafa060"
+ *         default: "591be657b902f60fcc14a9d5"
  *       - in: "body"
  *         name: "body"
- *         description: "Send shop id"
+ *         description: "Send shop Id"
  *         required: true
  *         schema:
  *           $ref: "#/definitions/addChair"
@@ -385,7 +393,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829938e6a4812ece58e76"
+ *         default: ""
  *       - in: "body"
  *         name: "body"
  *         description: "Send shop id and chair id"
@@ -426,7 +434,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829938e6a4812ece58e76"
+ *         default: "591be608b902f60fcc14a9d3"
  *       - in: "query"
  *         name: "search"
  *         description: "Search by Shop name"
@@ -468,14 +476,14 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5901e07846c94a225018d5cc"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "path"
  *         name: "shop_id"
  *         description: "Shop ID"
  *         required: true
  *         type: string
  *         format: string
- *         default: "5901e07846c94a225018d5cc"
+ *         default: "591be658b902f60fcc14a9d6"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -511,7 +519,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "body"
  *         name: "body"
  *         description: "Created appointment object"
@@ -552,7 +560,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -590,7 +598,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "formData"
  *         name: "file"
  *         description: "file to upload"
@@ -631,7 +639,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "path"
  *         name: "image_id"
  *         description: "image ID"
@@ -673,7 +681,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "query"
  *         name: "search"
  *         description: "Search by First/last name"
@@ -715,14 +723,57 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5909d7bca8af707ab3c1396c"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "path"
  *         name: "barber_id"
  *         description: "Barber ID"
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829388e6a4812ece58e75"
+ *         default: "591be608b902f60fcc14a9d3"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *   /barber/gallery:
+ *     post:
+ *       tags:
+ *       - "barber"
+ *       summary: "Upload single or multiple images in Gallery"
+ *       description: "Upload single or multiple images in Gallery"
+ *       operationId: "barberGallery"
+ *       consumes:
+ *       - "multipart/form-data"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be608b902f60fcc14a9d3"
+ *       - in: "formData"
+ *         name: "file"
+ *         description: "file to upload"
+ *         required: false
+ *         type: "file"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -758,7 +809,233 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829938e6a4812ece58e76"
+ *         default: "591be608b902f60fcc14a9d3"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"  
+ *   /barber/confirmappointment/{appointment_id}:
+ *     put:
+ *       tags:
+ *       - "barber"
+ *       summary: "Barber accepting/confirming customer's request"
+ *       description: "Barber accepting/confirming customer's request"
+ *       operationId: "confirmAppointment"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be608b902f60fcc14a9d3"
+ *       - in: "path"
+ *         name: "appointment_id"
+ *         description: "Appointment id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: ""
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"  
+ *   /barber/completeappointment/{appointment_id}:
+ *     put:
+ *       tags:
+ *       - "barber"
+ *       summary: "Barber mark appointment as completed"
+ *       description: "Barber mark appointment as completed"
+ *       operationId: "completedAppointment"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be608b902f60fcc14a9d3"
+ *       - in: "path"
+ *         name: "appointment_id"
+ *         description: "Appointment id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: ""
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Confirm appointment object"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/confirmAppointment"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"  
+ *   /barber/cancelappointment/{appointment_id}:
+ *     put:
+ *       tags:
+ *       - "barber"
+ *       summary: "Barber cancelling an appointment"
+ *       description: "Barber cancelling an appointment"
+ *       operationId: "cancelAppointment"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be608b902f60fcc14a9d3"
+ *       - in: "path"
+ *         name: "appointment_id"
+ *         description: "Appointment id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: ""
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"  
+ *   /barber/rescheduleappointment/{appointment_id}:
+ *     put:
+ *       tags:
+ *       - "barber"
+ *       summary: "Barber reschedule an appointment"
+ *       description: "Barber reschedule an appointment"
+ *       operationId: "rescheduleAppointment"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be608b902f60fcc14a9d3"
+ *       - in: "path"
+ *         name: "appointment_id"
+ *         description: "Appointment id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: ""
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Reschedule appointment object"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/rescheduleAppointment"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"  
+ *   /barber/requestchair:
+ *     post:
+ *       tags:
+ *       - "barber"
+ *       summary: "Barber requesting for a chair to shop"
+ *       description: "Barber requesting for a chair to shop"
+ *       operationId: "requestChair"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be608b902f60fcc14a9d3"
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Requesting a chair object"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/requestChair"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -794,7 +1071,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829938e6a4812ece58e76"
+ *         default: "591be608b902f60fcc14a9d3"
  *       - in: "body"
  *         name: "body"
  *         description: "Add new barber service"
@@ -836,19 +1113,62 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "5901e07846c94a225018d5cc"
+ *         default: "591be53fb902f60fcc14a9d1"
  *       - in: "path"
  *         name: "barber_id"
  *         description: "Barber ID"
  *         required: true
  *         type: string
  *         format: string
- *         default: "590829388e6a4812ece58e75"
+ *         default: "591be608b902f60fcc14a9d3"
  *       responses:
  *         200:
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
+ *   /userprofile/{id}:
+ *     get:
+ *       tags:
+ *       - "common"
+ *       summary: "Get profile of any customer/barber/shop"
+ *       description: "Get profile of any customer/barber/shop"
+ *       operationId: "userProfile"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be53fb902f60fcc14a9d1"
+ *       - in: "path"
+ *         name: "id"
+ *         description: "Customer Id / Barber Id / Shop Id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be53fb902f60fcc14a9d1"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid username/password supplied"
  *   /timeslots:
  *     get:
  *       tags:
@@ -869,20 +1189,28 @@ module.exports = function(app, express) {
  *     properties:
  *       first_name:
  *         type: "string"
+ *         default: "Customer"
  *       last_name:
  *         type: "string"
+ *         default: "One"
  *       email:
  *         type: "string"
- *         default: "ankushs@smartdatainc.net"
+ *         default: "customer@email.com"
+ *         required: true
  *       password:
- *         type: "string" 
+ *         type: "string"
+ *         default: "123456"
+ *         required: true
  *       confirm:
  *         type: "string"
+ *         default: "123456"
  *       mobile_number:
  *         type: "string"
  *         default: "9876543210"
+ *         required: true
  *       user_type:
  *         type: "string"
+ *         required: true
  *         enum:
  *           - "customer"
  *           - "barber"
@@ -898,7 +1226,7 @@ module.exports = function(app, express) {
  *     properties:
  *       email:
  *         type: "string"
- *         default: "ankushs@smartdatainc.net"
+ *         default: "customer@email.com"
  *       password:
  *         type: "string"
  *         default: "123456"
@@ -907,13 +1235,13 @@ module.exports = function(app, express) {
  *      properties:
  *       email:
  *         type: "string"
- *         default: "barbrdoapp@gmail.com"     
+ *         default: "ankushs@smartdatainc.net"     
  *    Shop:
  *     type: "object"
  *     properties:
  *       _id:
  *         type: "string"
- *         default: "5901e07846c94a225018d5cc"
+ *         default: "591be658b902f60fcc14a9d6"
  *       name:
  *         type: "string"
  *         default: "Pop's Barber Shop"
@@ -937,7 +1265,7 @@ module.exports = function(app, express) {
  *      properties:
  *       id:
  *         type: "string"
- *         default: "5901e07846c94a225018d5cc"  
+ *         default: "591be658b902f60fcc14a9d6"  
  *    deleteChair:
  *      type: "object"
  *      properties:
@@ -946,16 +1274,16 @@ module.exports = function(app, express) {
  *         default: "5901f19c42207d26eaefb764" 
  *       shop_id:
  *         type: "string"
- *         default: "5901e07846c94a225018d5cc"
+ *         default: "591be658b902f60fcc14a9d6"
  *    appointment:
  *      type: "object"
  *      properties:
  *        shop_id:
  *          type: "string"
- *          default: "5901e07846c94a225018d5cc"
+ *          default: "591be658b902f60fcc14a9d6"
  *        barber_id:
  *          type: "string"
- *          default: "590829388e6a4812ece58e75"
+ *          default: "591be608b902f60fcc14a9d3"
  *        payment_method:
  *          type: "string"
  *          default: "cash"
@@ -966,10 +1294,28 @@ module.exports = function(app, express) {
  *            properties:
  *              id:
  *                type: "string"
- *                default: "590bfe409e74bc91bc044a66"
+ *                default: "591bf1d39f3ee312abea7e95"
  *        appointment_date:
  *          type: "string"
  *          default: "2017-07-10 10:00:00"
+ *    requestChair:
+ *      type: "object"
+ *      properties:
+ *        shop_id:
+ *          type: "string"
+ *          default: "591be658b902f60fcc14a9d6"
+ *        chair_id:
+ *          type: "string"
+ *          default: "591bef92ae46f6126981f8c3"
+ *        barber_id:
+ *          type: "string"
+ *          default: "591be608b902f60fcc14a9d3"
+ *        barber_name:
+ *          type: "string"
+ *          default: "Barber One"
+ *        booking_date:
+ *          type: "string"
+ *          default: "2017-07-20"  
  *    barberService:
  *      type: "object"
  *      properties:
@@ -979,5 +1325,22 @@ module.exports = function(app, express) {
  *        price:
  *          type: "number"
  *          default: 75
- *                      
+ *    confirmAppointment:
+ *      type: "object"
+ *      properties:
+ *       customer_id:
+ *         type: "string"
+ *         default: "" 
+ *       score:
+ *         type: "number"
+ *         default: 4
+ *    rescheduleAppointment:
+ *      type: "object"
+ *      properties:
+ *       minutes:
+ *         type: "number"
+ *         default: 15 
+ *       appointment_date:
+ *         type: "number"
+ *         default: ""
  */

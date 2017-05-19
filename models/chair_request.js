@@ -11,28 +11,28 @@ let chairRequestSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: 'users'
   },
-  chair_id: {
-    type: Schema.Types.ObjectId,
-    ref: 'users'
-  },
-  barber_id: {
-    type: Schema.Types.ObjectId,
-    ref: 'users'
-  },
-  status: {
-    type: String,
+  chair_id:{
+    type:Schema.Types.ObjectId,
+     ref:'users'
+   },
+   barber_id:{
+    type:Schema.Types.ObjectId,
+    ref:'users'
+   },
+   barber_name:{
+    type:String
+   },
+   status:{
+    type:String,
     enum: ['pending', 'confirmed', 'declinedte']
-  },
-  booking_date: {
-    type: Date
-  },
-  request_by: {
-    type: String
-  },
-  created_date: {
-    type: Date,
-    default: Date.now()
-  }
+   },
+   booking_date:{
+    type:Date
+   },
+   created_date:{
+    type:Date,
+    default:Date.now()
+   }
 }, schemaOptions);
 
 let chairRequest = mongoose.model('chair_requests', chairRequestSchema);

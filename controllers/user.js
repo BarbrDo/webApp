@@ -177,7 +177,7 @@ exports.signupPost = function(req, res, next) {
               })
             } else {
               res.status(200).send({
-                msg: "please check your email to verify your account.",
+                msg: "Please check your email to verify your account.",
                 link: resetUrl,
                 token: generateToken(shopData),
                 user: data,
@@ -917,9 +917,8 @@ exports.deleteImages = function(req, res) {
     }
   })
 }
-exports.getProfiles = function(req, res) {
-  // req.assert("user_type", "user_type can not be blank").notEmpty();
-  req.checkHeaders("user_id", "user_id can not be blank").notEmpty();
+exports.getProfiles = function (req, res) {
+  req.checkParams("id", "customer_id can not be blank").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -927,10 +926,8 @@ exports.getProfiles = function(req, res) {
       err: errors
     });
   }
-  var id = mongoose.Types.ObjectId(req.headers.user_id);
-  User.findOne({
-    _id: req.headers.user_id
-  }, function(err, result) {
+  var id = mongoose.Types.ObjectId(req.params.id);
+  User.findOne({ _id: req.params.id }, function (err, result) {
     if (result.user_type) {
       switch (result.user_type) {
         case 'shop':
@@ -1006,7 +1003,7 @@ exports.getProfiles = function(req, res) {
       }
     } else {
       res.status(400).send({
-        msg: "Please pass correct user_id"
+         msg: "Please pass correct id"
       })
     }
   })

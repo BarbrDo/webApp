@@ -6,10 +6,10 @@ var shop = require('../models/shop');
 var async = require('async');
 var moment = require('moment');
 exports.requestChair = function(req, res) {
-	req.assert("shop_id", "_id is required.").notEmpty();
-	req.assert("chair_id", "Chair id is required.").notEmpty();
-	req.assert("barber_id", "Barber id is required.").notEmpty();
-	req.assert("request_by", "Request by is required.").notEmpty();
+	req.assert("shop_id", "Shop Id is required.").notEmpty();
+	req.assert("chair_id", "Chair Id is required.").notEmpty();
+	req.assert("barber_id", "Barber Id is required.").notEmpty();
+	req.assert("barber_name", "Barbar Name is  required.").notEmpty();
 	req.assert("booking_date", "Booking Date is required.").notEmpty();
 
 	var errors = req.validationErrors();

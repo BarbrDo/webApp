@@ -3,9 +3,9 @@ angular.module('BarbrDoApp')
     $scope.user = {};
     $scope.messages = {};
     $scope.login = function() {
-      $('#bs-example-modal-lg').modal('hide');
       $auth.login($scope.user)
         .then(function(response) {
+          $('.modal-backdrop').remove();
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
           $scope.user = {};

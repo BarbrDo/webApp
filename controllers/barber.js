@@ -1,6 +1,7 @@
 let barber = require('../models/barber');
 let constantObj = require('./../constants.js');
-let barber_service = require('../models/barber_service.js');
+let service = require('../models/service');
+let barber_service = require('../models/barber_service');
 let appointment = require('../models/appointment');
 let objectID = require('mongodb').ObjectID;
 let user = require('../models/User');
@@ -10,6 +11,7 @@ let async = require('async');
 let nodemailer = require('nodemailer');
 let mg = require('nodemailer-mailgun-transport');
 
+/*
 exports.getBarber = function (req, res) {
     var maxDistanceToFind = constantObj.ParamValues.radiusSearch;
     if (req.headers.device_latitude && req.headers.device_longitude) {
@@ -26,7 +28,7 @@ exports.getBarber = function (req, res) {
         })
     }
 }
-
+*/
 exports.editBarber = function (req, res) {
     var updateData = JSON.parse(JSON.stringify(req.body));
     updateData.modified_date = new Date();
@@ -58,6 +60,22 @@ exports.editBarber = function (req, res) {
                 msg: 'Successfully updated fields.',
                 "data": data
             });
+        }
+    })
+}
+
+exports.getAllServices = function (req, res){
+    service.find({"status":true },function(err,data){
+        if(err){
+            res.status(400).send({
+                msg: constantObj.messages.errorRetreivingData,
+                err: err
+            })
+        } else {
+            res.status(200).send({
+                msg: constantObj.messages.successRetreivingData,
+                "data": data
+            })
         }
     })
 }
@@ -97,6 +115,64 @@ exports.addBarberServices = function (req, res) {
     }
 }
 
+exports.editBarberServices = function(req, res){
+    req.checkHeaders("user_id", "User Id is required").notEmpty();
+    req.checkParams("barber_service_id", "Barber Service Id is required"). notEmpty();
+    req.assert("price", "Service Price is required"). notEmpty();
+    
+    if(req.validationErrors()){
+        return res.status(400).send({
+            msg:"error in request",
+            err: req.validationErrors()
+        })
+    }
+    
+    barber_service.update(
+            {
+                _id: req.params.barber_service_id
+            },{
+                $set: {
+                    "price": req.body.price
+                }
+            },function (err, result){
+                if(err){
+                    res.status(400).send({
+                        msg: constantObj.messages.userStatusUpdateFailure
+                    })
+                } else {
+                    res.status(200).send({
+                        msg: constantObj.messages.userStatusUpdateSuccess
+                    })
+                }
+            })
+}
+
+exports.viewAllServiesOfBarber = function (req, res) {
+    req.checkParams("barber_id", "barber_id is required").notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    barber_service.find({
+        "barber_id": req.params.barber_id
+    }, function (err, data) {
+        if (err) {
+            res.status(400).send({
+                msg: constantObj.messages.errorRetreivingData,
+                err: err
+            });
+        } else {
+            res.status(200).send({
+                msg: constantObj.messages.successRetreivingData,
+                "data": data
+            });
+        }
+    })
+}
+
 exports.viewBarberProfile = function (req, res) {
     req.checkParams("barber_id", "barber ID is required").notEmpty();
     var errors = req.validationErrors();
@@ -129,32 +205,6 @@ exports.viewBarberProfile = function (req, res) {
             res.status(200).send({
                 msg: constantObj.messages.successRetreivingData,
                 "data": data[0]
-            });
-        }
-    })
-}
-
-exports.viewAllServiesOfBarber = function (req, res) {
-    req.checkParams("barber_id", "barber_id is required").notEmpty();
-    var errors = req.validationErrors();
-    if (errors) {
-        return res.status(400).send({
-            msg: "error in your request",
-            err: errors
-        });
-    }
-    barber_service.find({
-        "barber_id": req.params.barber_id
-    }, function (err, data) {
-        if (err) {
-            res.status(400).send({
-                msg: constantObj.messages.errorRetreivingData,
-                err: err
-            });
-        } else {
-            res.status(200).send({
-                msg: constantObj.messages.successRetreivingData,
-                "data": data
             });
         }
     })
@@ -363,8 +413,9 @@ exports.completeAppointment = function (req, res) {
         }
     ])
 }
+
 exports.cancelAppointment = function (req, res) {
-    req.checkHeaders("appointment_id", "Appointment id is required.").notEmpty();
+    req.checkParams("appointment_id", "Appointment id is required.").notEmpty();
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -386,6 +437,7 @@ exports.cancelAppointment = function (req, res) {
             }
         })
 }
+
 exports.uploadBarberGallery = function (req, res) {
     req.checkHeaders("user_id", "_id is required").notEmpty();
     let errors = req.validationErrors();

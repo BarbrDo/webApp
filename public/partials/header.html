@@ -66,7 +66,7 @@
                         <div class="text-center">
                             <a href="#"><img src="images/fbb.png"></a>
                         </div>
-                        <form name="loginForm" ng-submit="login()">
+                        <form name="loginForm">
                             <div class="form-group">
                                 <input type="email" name="email" id="email" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" class="form-control" required/>
                                 <div class="form-control-placeholder">Email Address</div>
@@ -82,7 +82,7 @@
                         </form>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="signup" ng-controller="SignupCtrl">
-                        <form name="signUpForm"ng-submit="signup()">
+                        <form name="signUpForm">
                             <div class="type_selection">
                                 <label>
                                     <input type="radio" name="type" ng-model="user.user_type" value="customer" ng-init="user.user_type = 'customer'"> <span>Customer</span> </label>
@@ -140,7 +140,7 @@
                                 <input type="text " class="form-control " name="license_number " id="license_number " ng-model="user.license_number " required />
                                 <div class="form-control-placeholder ">License No.</div>
                             </div>
-                            <button type="submit " class="sb_button " ng-submit="signup() ">Sign Up</button>
+                            <button type="submit " class="sb_button " ng-click="signup() ">Sign Up</button>
                             <p class="msg ">Already have an account?<a href="#login" aria-controls="home" role="tab" data-toggle="tab"> Login</a></p>
                         </form>
                     </div>

@@ -1405,6 +1405,9 @@ module.exports = function(app, express) {
  *    barberService:
  *      type: "object"
  *      properties:
+ *        service_id:
+ *          type: "string"
+ *          default: "5923bcf1e824f016145999b5"
  *        name:
  *          type: "string"
  *          default: "Hair Color"

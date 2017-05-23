@@ -1181,6 +1181,30 @@ ul.csdwon li a {
 	width: 100%;
 }
 
+.shop { float: left; width: 100%; margin:30px 0 10px; background: #000; height: 175px; overflow: hidden; position: relative;}
+
+.shop .shopimage { width:100%; opacity: 0.4; }
+
+
+.above{ left:0; top:0; position:absolute; width: 100%; height: 100%; }
+
+
+.above a { float: left; width:100%;  background:rgba(39,73,158,0.8); color: #fff; font-size: 16px; padding: 10px; position: absolute; bottom: 0; font-weight: 600;  }
+
+.above a i{ font-size: 20px; float: right; margin-right:10px; }
+
+.above a:hover{ background: rgba(206,32,41,0.8)  }
+
+
+
+.dtll { width:50%;  position: absolute; left:0;  }
+
+
+.dtlr { width:50%;  position: absolute; right:0;  }
+
+.shpdtl { font-size:19px; color: #fff; text-align: center; top:30px;}
+
+
 
 
 

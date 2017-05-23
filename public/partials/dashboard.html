@@ -1,41 +1,15 @@
-
-<!-- <div class="afheader">
-  <div class="head">
-    <div class="log "> <a href="#"><img src="images/logo.png" alt=""> </a> </div>
-    <a href="#" class="bkap">Book Appointment</a>
-    <div class="right_links">
-      <ul>
-        <li> <a href="#" class="noti"> <img src="images/noti.png" alt="" > <span>8</span> </a> </li>
-        <li class="userimage dropdown"> <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="uimg"><img src="images/platform-bg.png" alt=""></span> <span class="name">Johan Smith</span> <span class="caret"></span> </a>
-          <ul class="dropdown-menu csdwon" aria-labelledby="dLabel">
-            <li><a href="#">My Profile</a></li>
-            <li><a href="#">Logout</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-  </div>
-  <div class="nav_header"> <a href="#" class="bkap">Book Appointment</a> <a href="#" class="right_menu"><img src="images/hamburger.png" alt="" ></a> </div>
-</div> -->
 <div class="out_wrapper">
-  <!-- <div class="sidebar">
-    <ul>
-      <li><a class="active" href="#">Dashboard</a></li>
-      <li><a href="#">Gallery</a></li>
-    </ul>
-  </div> -->
   <div class="crumb"> <span>Book Appointment</span> </div>
   <div class="wrapper">
     <div class="block">
       <h2>Book Appointment</h2>
-      
       <!-- Sorting -->
       <div class="sorting mbft">
         <div class="view">
           <label> View by </label>
-          <select>
-            <option>Shop</option>
-            <option>Barber</option>
+          <select name="singleSelect" id="singleSelect" ng-model="valueOfSelect" ng-click="valueSelect()" ng-init="valueOfSelect='shop'">
+            <option value="shop">Shop</option>
+            <option value="barber">Barber</option>
           </select>
         </div>
         <div class="search">
@@ -44,10 +18,8 @@
         </div>
       </div>
       <!-- Sorting -->
-      
-      <div class="org_content">
+      <div class="org_content" ng-if="valueOfSelect=='shop'">
         <div class="row">
-         
           <div class="col-md-4 col-sm-4 col-xs-6 fullb">
             <div class="barber">
               <div class="cont">
@@ -119,19 +91,112 @@
                 <div class="rating"> <img src="images/rating.png" alt="" > </div>
               </div>
               <a href="#" class="book_nw" > Book Now <i class="fa  fa-angle-right"></i> </a> </div>
-          </div>
-         
-          
-         
-          
-          
+          </div> 
         </div>
       </div>
     </div>
+    <!-- shop data -->
+    <div ng-if="valueOfSelect=='barber'">
+    <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+            <div class="shop">
+             <img class="shopimage" src="images/shop.png" alt="" >
+              <div class="above">
+                <div class="dtll shpdtl">
+                  <div class="icon"><img src="images/barbr_icon.png" alt="" ></div>
+                  <p>6 Barbers</p>
+                </div>
+                <div class="dtlr shpdtl">
+                  <div class="icon"><img src="images/miles.png" alt="" ></div>
+                  <p>46.03 miles</p>
+                </div>
+                 <a href="#" class="byshop" > Aidan Gill for Men <i class="fa  fa-angle-right"></i> </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+            <div class="shop">
+             <img class="shopimage" src="images/shop.png" alt="" >
+              <div class="above">
+                <div class="dtll shpdtl">
+                  <div class="icon"><img src="images/barbr_icon.png" alt="" ></div>
+                  <p>6 Barbers</p>
+                </div>
+                <div class="dtlr shpdtl">
+                  <div class="icon"><img src="images/miles.png" alt="" ></div>
+                  <p>46.03 miles</p>
+                </div>
+                 <a href="#" class="byshop" > Aidan Gill for Men <i class="fa  fa-angle-right"></i> </a>
+              </div>
+              </div>
+          </div>
+          <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+            <div class="shop">
+             <img class="shopimage" src="images/shop.png" alt="" >
+              <div class="above">
+                <div class="dtll shpdtl">
+                  <div class="icon"><img src="images/barbr_icon.png" alt="" ></div>
+                  <p>6 Barbers</p>
+                </div>
+                <div class="dtlr shpdtl">
+                  <div class="icon"><img src="images/miles.png" alt="" ></div>
+                  <p>46.03 miles</p>
+                </div>
+                 <a href="#" class="byshop" > Aidan Gill for Men <i class="fa  fa-angle-right"></i> </a>
+              </div>
+              </div>
+          </div>
+          <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+            <div class="shop">
+             <img class="shopimage" src="images/shop.png" alt="" >
+              <div class="above">
+                <div class="dtll shpdtl">
+                  <div class="icon"><img src="images/barbr_icon.png" alt="" ></div>
+                  <p>6 Barbers</p>
+                </div>
+                <div class="dtlr shpdtl">
+                  <div class="icon"><img src="images/miles.png" alt="" ></div>
+                  <p>46.03 miles</p>
+                </div>
+                 <a href="#" class="byshop" > Aidan Gill for Men <i class="fa  fa-angle-right"></i> </a>
+              </div>
+              </div>
+          </div>
+            <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+            <div class="shop">
+             <img class="shopimage" src="images/shop.png" alt="" >
+              <div class="above">
+                <div class="dtll shpdtl">
+                  <div class="icon"><img src="images/barbr_icon.png" alt="" ></div>
+                  <p>6 Barbers</p>
+                </div>
+                <div class="dtlr shpdtl">
+                  <div class="icon"><img src="images/miles.png" alt="" ></div>
+                  <p>46.03 miles</p>
+                </div>
+                 <a href="#" class="byshop" > Aidan Gill for Men <i class="fa  fa-angle-right"></i> </a>
+              </div>
+              </div>
+          </div>
+            <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+            <div class="shop">
+             <img class="shopimage" src="images/shop.png" alt="" >
+              <div class="above">
+                <div class="dtll shpdtl">
+                  <div class="icon"><img src="images/barbr_icon.png" alt="" ></div>
+                  <p>6 Barbers</p>  
+                </div>
+                <div class="dtlr shpdtl">
+                  <div class="icon"><img src="images/miles.png" alt="" ></div>
+                  <p>46.03 miles</p>
+                </div>
+                 <a href="#" class="byshop" > Aidan Gill for Men <i class="fa  fa-angle-right"></i> </a>
+              </div>
+              </div>
+          </div>
+        </div>
   </div>
 </div>
-</div>
-<script>
+<!-- <script>
 $(document).ready(function(){
 	
   $('input').iCheck({
@@ -143,4 +208,4 @@ $(document).ready(function(){
 		$('.sidebar').toggleClass('active');
 	})
 });
-</script>
+</script> -->

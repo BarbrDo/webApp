@@ -3,12 +3,11 @@ angular.module('BarbrDoApp')
     $scope.user = {};
     $scope.messages = {};
     $scope.login = function() {
-      console.log("this worki",$scope.user);
+      $('#bs-example-modal-lg').modal('hide');
       $auth.login($scope.user)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          $('#login').modal('hide');
           $scope.user = {};
           $state.go('dashboard');
         })

@@ -1,20 +1,23 @@
 angular.module('BarbrDoApp')
   .controller('LoginCtrl', function($scope, $rootScope, $location, $window, $auth,$state) {
     $scope.user = {};
+    $scope.messages = {};
     $scope.login = function() {
-      console.log($scope.user);
+      console.log("this worki",$scope.user);
       $auth.login($scope.user)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
           $('#login').modal('hide');
           $scope.user = {};
-          $state.go('welcome');
+          $state.go('dashboard');
         })
         .catch(function(response) {
           $scope.messages = {
             error: Array.isArray(response.data) ? response.data : [response.data]
           };
+          setTimeout(function(){$scope.$apply()},1)
+          console.log("sdfsdfsd",$scope.messages);
         });
     };
     $scope.modalDismiss = function(){

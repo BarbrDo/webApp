@@ -1,4 +1,4 @@
-angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad','ngMask'])
+angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad','ngMask','ui.bootstrap'])
   .config(function($stateProvider, $urlRouterProvider, $locationProvider, $authProvider) {
     $locationProvider.html5Mode({
       enabled: true,
@@ -24,7 +24,6 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
       })
       .state('barberHome', {
         url: '/barber',
-
         views: {
           "home": {
             templateUrl: 'partials/barbersHome.html',
@@ -38,6 +37,24 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
           }
         }
       })
+
+      $stateProvider
+      .state('dashboard', {
+        url: '/dashboard',
+        views: {
+          "home": {
+            templateUrl: 'partials/dashboard.html',
+          },
+          "header": {
+            templateUrl: 'partials/headerAfterLogin.html',
+            controller:'HeaderCtrl'
+          },
+          "sideBar":{
+            templateUrl:'partials/afterLoginSideBar.html'
+          }
+        }  
+      })
+
       .state('contact', {
         url: '/contact',
         templateUrl: 'partials/contact.html',

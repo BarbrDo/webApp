@@ -42,7 +42,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
       .state('dashboard', {
         url: '/dashboard',
         views: {
-          "home": {
+          "homeDash": {
             templateUrl: 'partials/dashboard.html',
             controller:"dashboardCtrl"
           },

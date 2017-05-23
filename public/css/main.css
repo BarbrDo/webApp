@@ -105,6 +105,13 @@ footer {
   background-color: transparent;
   color: #262626;
 }
+.row:not(:last-child) {
+  border-bottom: 0px solid #3c8ed8;
+}
+
+.col-xs-3:not(:last-child) {
+  border-right: 5px solid #3c8ed8;
+}
 
 /* Panels
 /* ------------------------- */
@@ -280,4 +287,9 @@ textarea {
   border-radius: 2px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
+}
+
+.disabled {
+   pointer-events: none;
+   cursor: default;
 }

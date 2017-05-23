@@ -1,12 +1,45 @@
-angular.module('BarbrDoApp', ['ngRoute', 'satellizer'])
-  .config(function($routeProvider, $locationProvider, $authProvider) {
-    $locationProvider.html5Mode(true);
+angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad','ngMask'])
+  .config(function($stateProvider, $urlRouterProvider, $locationProvider, $authProvider) {
+    $locationProvider.html5Mode({
+      enabled: true,
+      requireBase: false
+    });
 
-    $routeProvider
-      .when('/', {
-        templateUrl: 'partials/home.html'
+    $stateProvider
+      .state('home', {
+        url: '/',
+        views: {
+          "home": {
+            templateUrl: 'partials/home.html',
+          },
+          "footer": {
+            templateUrl: 'partials/footer.html'
+          },
+          "header": {
+            templateUrl: 'partials/header.html',
+            controller:'HeaderCtrl'
+          }
+        }
+       
       })
-      .when('/contact', {
+      .state('barberHome', {
+        url: '/barber',
+
+        views: {
+          "home": {
+            templateUrl: 'partials/barbersHome.html',
+          },
+          "footer": {
+            templateUrl: 'partials/footer.html'
+          },
+          "header": {
+            templateUrl: 'partials/header.html',
+            controller:'HeaderCtrl'
+          }
+        }
+      })
+      .state('contact', {
+        url: '/contact',
         templateUrl: 'partials/contact.html',
         controller: 'ContactCtrl'
       })
@@ -20,40 +53,75 @@ angular.module('BarbrDoApp', ['ngRoute', 'satellizer'])
       //   controller: 'SignupCtrl',
       //   resolve: { skipIfAuthenticated: skipIfAuthenticated }
       // })
-      .when('/account', {
+      .state('account', {
+        url: '/account',
         templateUrl: 'partials/profile.html',
         controller: 'ProfileCtrl',
         resolve: {
           loginRequired: loginRequired
         }
       })
-      .when('/forgot', {
+      .state('shop', {
+        url: '/shop',
+        templateUrl: './../profile.html',
+        controller: 'shopCtrl',
+        resolve: {
+          loginRequired: loginRequired
+        }
+      })
+      .state('forgot', {
+        url: '/forgot',
         templateUrl: 'partials/forgot.html',
         controller: 'ForgotCtrl',
         resolve: {
           skipIfAuthenticated: skipIfAuthenticated
         }
       })
-      .when('/reset/:token', {
+      .state('resetToken', {
+        url: '/reset/:token',
         templateUrl: 'partials/reset.html',
         controller: 'ResetCtrl',
         resolve: {
           skipIfAuthenticated: skipIfAuthenticated
         }
       })
-
-    .when('/barbershops', {
+      .state('barberShops', {
+        url: '/barbershops',
         templateUrl: 'partials/barbershops.html',
         controller: 'ShopCtrl'
       })
-      .when('/shopdetails/:_id', {
-        templateUrl: 'partials/shopdetails.html',
+      .state('barbers', {
+        url: '/barbers',
+        templateUrl: 'partials/barbers.html',
         controller: 'ShopCtrl'
       })
+      .state('pageNotFound', {
+        url: '/partials',
+        templateUrl: 'partials/404.html'
+      })
+      // .when('/shopdetails/:id', {
+      //   templateUrl: 'partials/shopdetails.html',
+      //   controller: 'ShopCtrl'
+      // })
+      // .when('/appointment/:id', {
+      //   templateUrl: 'partials/appointment.html',
+      //    controller: 'AppointCtrl'
+      // })
+      // .when('/pay/:id', {
+      //   templateUrl: 'partials/pay.html',
+      //    controller: 'AppointCtrl'
+      // })
+      // .when('/confirm', {
+      //   templateUrl: 'partials/confirm.html',
+      //    controller: 'AppointCtrl'
+      // })
+      //  .when('/barberprofile/:id', {
+      //   templateUrl: 'partials/barberprofile.html',
+      //    controller: 'BarbrCtrl'
+      // })
+    $urlRouterProvider.otherwise('pageNotFound');
 
-    .otherwise({
-      templateUrl: 'partials/404.html'
-    });
+
 
     $authProvider.loginUrl = '/api/v1/login';
     $authProvider.signupUrl = '/api/v1/signup';
@@ -77,10 +145,9 @@ angular.module('BarbrDoApp', ['ngRoute', 'satellizer'])
         $location.path('/login');
       }
     }
-
   })
-  .run(function($rootScope, $window) {
-    if ($window.localStorage.user) {
-      $rootScope.currentUser = JSON.parse($window.localStorage.user);
-    }
-  });
+  // .run(function($rootScope, $window) {
+  //   if ($window.localStorage.user) {
+  //     $rootScope.currentUser = JSON.parse($window.localStorage.user);
+  //   }
+  // });

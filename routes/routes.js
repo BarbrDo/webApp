@@ -26,7 +26,7 @@ module.exports = function(app, express) {
     var upload = multer({
         storage: storage
     })
-
+    let path = require('path');
     // Controllers
     let userController = require('./../controllers/user');
     let contactController = require('./../controllers/contact');
@@ -58,6 +58,9 @@ module.exports = function(app, express) {
     app.delete('/api/v1/shops/chair', userController.removeChair); // Remove chair from shop
     app.post('/api/v1/shops/confirmchair', chairRequestController.bookChair);
     app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
+    app.put('/api/v1/shops/chairPercentage',shopController.setChairPercentage);
+    app.put('/api/v1/shops/weeklyMonthlyChair',shopController.weeklyMonthlyChair);
+    app.post('/api/v1/shops/postChairToAllBarbers',shopController.postChairToAllBarbers);
     
     //Customer
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
@@ -76,8 +79,10 @@ module.exports = function(app, express) {
     app.put('/api/v1/barber/cancelAppointment/:appointment_id', barberServices.cancelAppointment);//Barber cancelling an appointment
     app.put('/api/v1/barber/rescheduleappointment/:appointment_id',barberServices.rescheduleAppointment);//Barber reschedule an appointment
     app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber requesting chair to shop
-    app.post('/api/v1/barberServices', barberServices.addBarberServices); //Add new service
-    app.get('/api/v1/barberServices/:barber_id',barberServices.viewAllServiesOfBarber); // Show all services of barbers
+    app.get('/api/v1/barber/services', barberServices.getAllServices); //Get all services
+    app.post('/api/v1/barber/services', barberServices.addBarberServices); //Add new service
+    app.put('/api/v1/barber/services/:barber_service_id',barberServices.editBarberServices); //Edit Barber services
+    app.get('/api/v1/barber/services/:barber_id',barberServices.viewAllServiesOfBarber); // Show all services of barbers
     
     //Common
     app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of any customer/barber/shop
@@ -1038,7 +1043,42 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"  
- *   /barberServices:  
+ *   /barber/services:  
+ *     get:
+ *       tags:
+ *       - "barber"
+ *       summary: "Get all active services"
+ *       description: "Get all active services"
+ *       operationId: "getAllServices"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be608b902f60fcc14a9d3"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"           
  *     post:
  *       tags:
  *       - "barber"
@@ -1080,7 +1120,56 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"           
- *   /barberServices/{barber_id}:  
+ *   /barber/services/{barber_service_id}: 
+ *     put:
+ *       tags:
+ *       - "barber"
+ *       summary: "Barber edit his service"
+ *       description: "Barber edit his service"
+ *       operationId: "editBarberService"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be608b902f60fcc14a9d3"
+ *       - in: "path"
+ *         name: "barber_service_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591bf1d39f3ee312abea7e95"
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Edit service parameters"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/editBarberService"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"           
+ *   /barber/services/{barber_id}:  
  *     get:
  *       tags:
  *       - "barber"
@@ -1319,6 +1408,12 @@ module.exports = function(app, express) {
  *        name:
  *          type: "string"
  *          default: "Hair Color"
+ *        price:
+ *          type: "number"
+ *          default: 75
+ *    editBarberService:
+ *      type: "object"
+ *      properties:
  *        price:
  *          type: "number"
  *          default: 75

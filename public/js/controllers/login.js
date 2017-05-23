@@ -1,14 +1,15 @@
 angular.module('BarbrDoApp')
-  .controller('LoginCtrl', function($scope, $rootScope, $location, $window, $auth) {
+  .controller('LoginCtrl', function($scope, $rootScope, $location, $window, $auth,$state) {
     $scope.user = {};
     $scope.login = function() {
+      console.log($scope.user);
       $auth.login($scope.user)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
           $('#login').modal('hide');
           $scope.user = {};
-          $location.path('/');
+          $state.go('welcome');
         })
         .catch(function(response) {
           $scope.messages = {

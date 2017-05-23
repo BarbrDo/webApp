@@ -43,17 +43,6 @@ var barberSchema = new mongoose.Schema({
                 default: Date.now()
             }
         }
-    ],
-    gallery: [
-        {
-            name: {
-                type: String
-            },
-            created_date: {
-                type: Date,
-                default: Date.now()
-            }
-        }
     ]
 });
 

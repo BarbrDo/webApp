@@ -233,7 +233,7 @@ exports.appointments = function (req, res) {
         'created_date': -1
     }).populate('barber_id', 'first_name last_name ratings picture')
     .populate('customer_id', 'first_name last_name ratings picture')
-    .populate('shop_id', 'name address city state gallery')
+    .populate('shop_id', 'name address city state gallery latLong')
     .exec(function (err, result) {
         if (err) {
             return res.status(400).send({

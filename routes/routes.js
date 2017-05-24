@@ -76,7 +76,7 @@ module.exports = function(app, express) {
     app.get('/api/v1/barber/appointments',barberServices.appointments);//As a barber show me customer's requests
     app.put('/api/v1/barber/confirmappointment/:appointment_id',barberServices.confirmAppointment);//Barber accepting/confirming customer's request
     app.put('/api/v1/barber/completeappointment/:appointment_id',barberServices.completeAppointment);//Barber mark appointment as completed
-    app.put('/api/v1/barber/cancelAppointment/:appointment_id', barberServices.cancelAppointment);//Barber cancelling an appointment
+    app.put('/api/v1/barber/cancelappointment/:appointment_id', barberServices.cancelAppointment);//Barber cancelling an appointment
     app.put('/api/v1/barber/rescheduleappointment/:appointment_id',barberServices.rescheduleAppointment);//Barber reschedule an appointment
     app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber requesting chair to shop
     app.get('/api/v1/barber/services', barberServices.getAllServices); //Get all services
@@ -1425,10 +1425,16 @@ module.exports = function(app, express) {
  *      properties:
  *       customer_id:
  *         type: "string"
- *         default: "" 
+ *         default: "591be53fb902f60fcc14a9d1"
  *       score:
  *         type: "number"
  *         default: 4
+ *       rated_by_name:
+ *         type: "string"
+ *         default: "Customer One"
+ *       appointment_date:
+ *         type: "string"
+ *         default: "2017-05-25"
  *    rescheduleAppointment:
  *      type: "object"
  *      properties:

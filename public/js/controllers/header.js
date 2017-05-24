@@ -18,6 +18,6 @@ angular.module('BarbrDoApp')
     $scope.logout = function() {
       $auth.logout();
       delete $window.localStorage.user;
-      $location.path('/');
+      $state.go('home');
     };
   });

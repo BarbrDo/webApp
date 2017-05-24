@@ -6,10 +6,6 @@ angular.module('BarbrDoApp')
       $('#bs-example-modal-lg').modal('hide');
       $auth.login($scope.user)
         .then(function(response) {
-
-         
-          // $('body').removeClass('modal-open');
-          // $('.modal-backdrop').remove();
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
           $scope.user = {};

@@ -372,15 +372,20 @@ exports.completeAppointment = function (req, res) {
             err: errors
         });
     }
+    console.log(req.body);
+    console.log(req.headers);
     let updateData = {
         "$push": {
             "ratings": {
                 "rated_by": req.headers.user_id,
+                "rated_by_name":req.body.rated_by_name,
                 "score": parseInt(req.body.score),
-                "comments": req.body.comments
+                "comments": req.body.comments,
+                "appointment_date":req.body.appointment_date
             }
         }
     }
+    console.log(updateData);
     async.waterfall([
         function (done) {
             appointment.update({
@@ -401,7 +406,8 @@ exports.completeAppointment = function (req, res) {
             user.update({ _id: req.body.customer_id }, updateData, function (err, result) {
                 if (err) {
                     return res.status(400).send({
-                        msg: constantObj.messages.userStatusUpdateFailure
+                        msg: constantObj.messages.userStatusUpdateFailure,
+                        err: err
                     });
                 } else {
                     return res.status(200).send({
@@ -424,16 +430,22 @@ exports.cancelAppointment = function (req, res) {
         });
     }
     appointment.update({
-        _id: req.body._id
+        _id: req.params.appointment_id
     }, {
             $set: {
                 "appointment_status": "cancel"
             }
         }, function (err, result) {
             if (err) {
-                done("some error", err)
+                res.status(400).send({
+                    msg: constantObj.messages.errorRetreivingData,
+                    "err": err
+                });
             } else {
-                done(err, result)
+                res.status(200).send({
+                    msg: 'Successfully updated fields.',
+                    "data": result
+                });
             }
         })
 }

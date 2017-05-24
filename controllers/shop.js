@@ -77,9 +77,10 @@ exports.shopContainsBarber = function (req, res) {
             for (let i = 0; i < result.chairs.length; i++) {
                 if (result.chairs[i].barber_id) {
                     let obj = {
+                        _id: result.chairs[i].barber_id._id,
                         first_name: result.chairs[i].barber_id.first_name,
                         last_name: result.chairs[i].barber_id.last_name,
-                        _id: result.chairs[i].barber_id._id,
+                        picture: result.chairs[i].barber_id.picture,
                         created_date: result.chairs[i].barber_id.created_date,
                         ratings: result.chairs[i].barber_id.ratings,
                         gallery: result.chairs[i].barber_id.gallery
@@ -97,7 +98,8 @@ exports.shopContainsBarber = function (req, res) {
                     latLong: result.latLong,
                     address: result.address,
                     gallery: result.gallery,
-                    barber: resultTantArray
+                    barber: resultTantArray,
+                    imagesPath: 'http://' + req.headers.host + '/' + 'uploadedFiles/'
                 }
             })
         }

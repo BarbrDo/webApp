@@ -53,12 +53,16 @@ var userSchema = new mongoose.Schema({
     //         last_name: String,
     //     }],
     ratings:[{
-        "rated_by":{
+        rated_by:{
             type: Schema.Types.ObjectId,
             ref: 'users'
         },
-        "score":Number,
-        "comments":String
+        score:Number,
+        comments:String,
+        rated_by_name: String,
+        appointment_date: {
+            type: Date
+        }
     }],
      gallery: [
         {

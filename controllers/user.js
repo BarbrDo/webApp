@@ -984,9 +984,18 @@ exports.getProfiles = function (req, res) {
           })
           break;
         case 'customer':
-          User.findOne({
-            _id: id
-          }).exec(function(err, data) {
+          User.aggregate([{
+            $match: {
+              _id: id
+            }
+          }, {
+            $lookup: {
+              from: "appointments",
+              localField: "_id",
+              foreignField: "customer_id",
+              as: "appointments"
+            }
+          }]).exec(function(err, data) {
             if (err) {
               res.status(400).send({
                 msg: constantObj.messages.errorRetreivingData,

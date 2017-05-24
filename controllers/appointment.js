@@ -61,9 +61,10 @@ exports.takeAppointment = function(req, res) {
 					} else {
 						appointment.findOne({
 							"_id": data._id
-						}).populate('barber_id', 'first_name last_name ratings picture')
-						.populate('customer_id', 'first_name last_name ratings picture')
-						.populate('shop_id', 'name address city state gallery').exec(function(err, result) {
+						}).populate('barber_id', 'first_name last_name ratings picture created_date')
+						.populate('customer_id', 'first_name last_name ratings picture created_date')
+						.populate('shop_id', 'name address city state gallery created_date')
+                                                .exec(function(err, result) {
 							if (err) {
 								return res.status(400).send({
 									msg: constantObj.messages.errorRetreivingData
@@ -151,9 +152,9 @@ exports.customerAppointments = function(req, res) {
 			"appointment_date": {
 				$gte: currentDate
 			}
-		}).populate('barber_id', 'first_name last_name ratings picture')
-		.populate('customer_id', 'first_name last_name ratings picture')
-		.populate('shop_id', 'name address city state gallery latLong')
+		}).populate('barber_id', 'first_name last_name ratings picture created_date')
+		.populate('customer_id', 'first_name last_name ratings picture created_date')
+		.populate('shop_id', 'name address city state gallery latLong created_date')
 		.exec(function(err, result) {
 			if (err) {
 				return res.status(400).send({
@@ -169,9 +170,9 @@ exports.customerAppointments = function(req, res) {
 						"appointment_status": {
 							$in: ['completed']
 						}
-					}).populate('barber_id', 'first_name last_name ratings picture')
-					.populate('customer_id', 'first_name last_name ratings picture')
-					.populate('shop_id', 'name address city state gallery latLong')
+					}).populate('barber_id', 'first_name last_name ratings picture created_date')
+					.populate('customer_id', 'first_name last_name ratings picture created_date')
+					.populate('shop_id', 'name address city state gallery latLong created_date')
 					.exec(function(err, data) {
 						if (err) {
 							return res.status(400).send({

@@ -424,16 +424,22 @@ exports.cancelAppointment = function (req, res) {
         });
     }
     appointment.update({
-        _id: req.body._id
+        _id: req.params.appointment_id
     }, {
             $set: {
                 "appointment_status": "cancel"
             }
         }, function (err, result) {
             if (err) {
-                done("some error", err)
+                res.status(400).send({
+                    msg: constantObj.messages.errorRetreivingData,
+                    "err": err
+                });
             } else {
-                done(err, result)
+                res.status(200).send({
+                    msg: 'Successfully updated fields.',
+                    "data": result
+                });
             }
         })
 }

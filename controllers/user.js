@@ -264,7 +264,8 @@ exports.accountPut = function(req, res, next) {
     user.save(function(err) {
       if ('password' in req.body) {
         res.send({
-          msg: 'Your password has been changed.'
+          msg: 'Your password has been changed.',
+          user: user
         });
       } else if (err && err.code === 11000) {
         res.status(409).send({

@@ -1005,7 +1005,7 @@ exports.getProfiles = function (req, res) {
             } else {
               res.status(200).send({
                 msg: constantObj.messages.successRetreivingData,
-                user: data
+                user: data[0]
               });
             }
           })

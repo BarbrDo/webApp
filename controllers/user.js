@@ -882,8 +882,8 @@ exports.deleteImages = function(req, res) {
       err: errors
     });
   }
-  let filePath = "../public/uploadedFiles/" + req.body.image_name;
-  //fs.unlinkSync(filePath);
+  // let filePath = "../public/uploadedFiles/" + req.body.image_name;
+  // fs.unlinkSync(filePath);
   User.update({
     "_id": req.headers.user_id
   }, {

@@ -72,7 +72,7 @@ module.exports = function(app, express) {
     app.get('/api/v1/barbers', shopController.allBarbers); //List all barbers
     app.get('/api/v1/barbers/:barber_id',barberServices.viewBarberProfile);//Get barber details like info, rating & comments, galleries
     app.post('/api/v1/barber/gallery',upload.any(), barberServices.uploadBarberGallery);//Upload single or multiple images in Gallery
-    //app.delete('/api/v1/barber/gallery/:image_id',barberServices.deleteImages); //Delete image from gallery
+    app.delete('/api/v1/barber/gallery/:image_id',barberServices.deleteImages); //Delete image from gallery
     app.get('/api/v1/barber/appointments',barberServices.appointments);//As a barber show me customer's requests
     app.put('/api/v1/barber/confirmappointment/:appointment_id',barberServices.confirmAppointment);//Barber accepting/confirming customer's request
     app.put('/api/v1/barber/completeappointment/:appointment_id',barberServices.completeAppointment);//Barber mark appointment as completed
@@ -776,6 +776,48 @@ module.exports = function(app, express) {
  *         description: "file to upload"
  *         required: false
  *         type: "file"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *   /barber/gallery/{image_id}:
+ *     delete:
+ *       tags:
+ *       - "barber"
+ *       summary: "Delete image from Gallery"
+ *       description: "Delete image from Gallery"
+ *       operationId: "barberGalleryDelete"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be608b902f60fcc14a9d3"
+ *       - in: "path"
+ *         name: "image_id"
+ *         description: "image ID"
+ *         required: true
+ *         type: "string"
+ *         default: ""
  *       responses:
  *         200:
  *           description: "successful operation"

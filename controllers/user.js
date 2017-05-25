@@ -953,7 +953,7 @@ exports.getProfiles = function (req, res) {
               console.log("data", data);
               res.status(200).send({
                 msg: constantObj.messages.successRetreivingData,
-                user: data
+                user: data[0]
               });
             }
           })

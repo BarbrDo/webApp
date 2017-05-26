@@ -3,6 +3,15 @@ angular.module('BarbrDoApp')
     $scope.isActive = function(viewLocation) {
       return viewLocation === $location.path();
     };
+  
+    $scope.mainClass = function(){
+      if ($auth.isAuthenticated()) {
+        return "bg_grey";
+      }
+      else{
+        return
+      }
+    }
 
     $scope.isAuthenticated = function() {
       return $auth.isAuthenticated();

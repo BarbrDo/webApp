@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app="BarbrDoApp">
+<html ng-app="BarbrDoApp" ng-controller="HeaderCtrl">
 
 <head>
     <meta charset="utf-8">
@@ -41,13 +41,13 @@
    
 </head>
 
-<body>
+<body ng-class="mainClass()">
     <div ui-view="header">
     
     </div>
    
     
-    <div class="out_wrapper bg_grey">
+    <div class="out_wrapper">
     <div ui-view="sideBar">
 
     </div>
@@ -68,6 +68,7 @@
             radioClass: 'iradio_flat-red'
         });
     });
+    </script>
     </script>
 </body>
 

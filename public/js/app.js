@@ -11,6 +11,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
         views: {
           "home": {
             templateUrl: 'partials/home.html',
+            controller:'HeaderCtrl'
           },
           "footer": {
             templateUrl: 'partials/footer.html'

@@ -147,6 +147,37 @@ exports.editBarberServices = function(req, res){
             })
 }
 
+exports.deleteBarberService = function(req, res){
+    req.checkHeaders("user_id", "User Id is required").notEmpty();
+    req.checkParams("barber_service_id", "Barber Service Id is required"). notEmpty();
+    
+    if(req.validationErrors()){
+        return res.status(400).send({
+            msg:"error in request",
+            err: req.validationErrors()
+        })
+    }
+    
+    barber_service.update(
+            {
+                _id: req.params.barber_service_id
+            },{
+                $set: {
+                    "isDeleted": true
+                }
+            },function (err, result){
+                if(err){
+                    res.status(400).send({
+                        msg: constantObj.messages.userStatusUpdateFailure
+                    })
+                } else {
+                    res.status(200).send({
+                        msg: constantObj.messages.userDeleteSuccess
+                    })
+                }
+            })
+}
+
 exports.viewAllServiesOfBarber = function (req, res) {
     req.checkParams("barber_id", "barber_id is required").notEmpty();
     var errors = req.validationErrors();
@@ -157,7 +188,8 @@ exports.viewAllServiesOfBarber = function (req, res) {
         });
     }
     barber_service.find({
-        "barber_id": req.params.barber_id
+        "barber_id": req.params.barber_id,
+        "isDeleted": false
     }, function (err, data) {
         if (err) {
             res.status(400).send({
@@ -233,7 +265,7 @@ exports.appointments = function (req, res) {
         'created_date': -1
     }).populate('barber_id', 'first_name last_name ratings picture')
     .populate('customer_id', 'first_name last_name ratings picture')
-    .populate('shop_id', 'name address city state gallery')
+    .populate('shop_id', 'name address city state gallery latLong')
     .exec(function (err, result) {
         if (err) {
             return res.status(400).send({
@@ -420,6 +452,7 @@ exports.completeAppointment = function (req, res) {
     ])
 }
 
+//Mark Appointment as cancel
 exports.cancelAppointment = function (req, res) {
     req.checkParams("appointment_id", "Appointment id is required.").notEmpty();
     let errors = req.validationErrors();
@@ -505,4 +538,51 @@ exports.uploadBarberGallery = function (req, res) {
                 })
             }
         })
+}
+
+exports.deleteImages = function(req, res) {
+  req.checkHeaders("user_id", "").notEmpty();
+  req.checkParams("image_id", "Image _id is required").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+  // let filePath = "../public/uploadedFiles/" + req.body.image_name;
+  // fs.unlinkSync(filePath);
+  user.update({
+    "_id": req.headers.user_id
+  }, {
+    $pull: {
+      "gallery": {
+        "_id": req.params.image_id
+      }
+    }
+  }, function(error, result) {
+    if (error) {
+      res.status(400).send({
+        msg: constantObj.messages.errorRetreivingData,
+        "err": err
+      });
+    } else {
+      user.findOne({
+        _id: req.headers.user_id
+      }, function(err, response) {
+        if (err) {
+          res.status(400).send({
+            msg: constantObj.messages.errorRetreivingData,
+            "err": err
+          });
+        } else {
+          res.status(200).send({
+            msg: 'Successfully updated fields.',
+            "user": response,
+            "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+          });
+        }
+      })
+    }
+  })
 }

@@ -22,6 +22,10 @@ var barberServicesSchema = new mongoose.Schema({
     modified_date: {
         type: Date,
         default: Date.now()
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
 });
 

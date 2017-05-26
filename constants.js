@@ -13,7 +13,7 @@ const messages = {
 	"userStatusUpdateFailure": "Error occured while updating Status",
 	"userStatusUpdateSuccess": "Update successfully",
 	"userDeleteFailure": "Error occured while deleting the user",
-	"userDeleteSuccess": "User(s) deleted successfully",
+	"userDeleteSuccess": "Deleted successfully",
 	"userUpdateSuccess": "User updated successfully",
 
 	// Error Messages for shop

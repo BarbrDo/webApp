@@ -264,7 +264,8 @@ exports.accountPut = function(req, res, next) {
     user.save(function(err) {
       if ('password' in req.body) {
         res.send({
-          msg: 'Your password has been changed.'
+          msg: 'Your password has been changed.',
+          user: user
         });
       } else if (err && err.code === 11000) {
         res.status(409).send({
@@ -881,8 +882,8 @@ exports.deleteImages = function(req, res) {
       err: errors
     });
   }
-  let filePath = "../public/uploadedFiles/" + req.body.image_name;
-  //fs.unlinkSync(filePath);
+  // let filePath = "../public/uploadedFiles/" + req.body.image_name;
+  // fs.unlinkSync(filePath);
   User.update({
     "_id": req.headers.user_id
   }, {
@@ -952,7 +953,7 @@ exports.getProfiles = function (req, res) {
               console.log("data", data);
               res.status(200).send({
                 msg: constantObj.messages.successRetreivingData,
-                user: data
+                user: data[0]
               });
             }
           })
@@ -1004,7 +1005,7 @@ exports.getProfiles = function (req, res) {
             } else {
               res.status(200).send({
                 msg: constantObj.messages.successRetreivingData,
-                user: data
+                user: data[0]
               });
             }
           })

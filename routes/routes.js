@@ -72,7 +72,7 @@ module.exports = function(app, express) {
     app.get('/api/v1/barbers', shopController.allBarbers); //List all barbers
     app.get('/api/v1/barbers/:barber_id',barberServices.viewBarberProfile);//Get barber details like info, rating & comments, galleries
     app.post('/api/v1/barber/gallery',upload.any(), barberServices.uploadBarberGallery);//Upload single or multiple images in Gallery
-    //app.delete('/api/v1/barber/gallery/:image_id',barberServices.deleteImages); //Delete image from gallery
+    app.delete('/api/v1/barber/gallery/:image_id',barberServices.deleteImages); //Delete image from gallery
     app.get('/api/v1/barber/appointments',barberServices.appointments);//As a barber show me customer's requests
     app.put('/api/v1/barber/confirmappointment/:appointment_id',barberServices.confirmAppointment);//Barber accepting/confirming customer's request
     app.put('/api/v1/barber/completeappointment/:appointment_id',barberServices.completeAppointment);//Barber mark appointment as completed
@@ -83,6 +83,7 @@ module.exports = function(app, express) {
     app.post('/api/v1/barber/services', barberServices.addBarberServices); //Add new service
     app.put('/api/v1/barber/services/:barber_service_id',barberServices.editBarberServices); //Edit Barber services
     app.get('/api/v1/barber/services/:barber_id',barberServices.viewAllServiesOfBarber); // Show all services of barbers
+    app.delete('/api/v1/barber/services/:barber_service_id',barberServices.deleteBarberService);// Delete barber service
     
     //Common
     app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of any customer/barber/shop
@@ -785,6 +786,48 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
+ *   /barber/gallery/{image_id}:
+ *     delete:
+ *       tags:
+ *       - "barber"
+ *       summary: "Delete image from Gallery"
+ *       description: "Delete image from Gallery"
+ *       operationId: "barberGalleryDelete"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be608b902f60fcc14a9d3"
+ *       - in: "path"
+ *         name: "image_id"
+ *         description: "image ID"
+ *         required: true
+ *         type: "string"
+ *         default: ""
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
  *   /barber/appointments:
  *     get:
  *       tags:
@@ -1157,7 +1200,7 @@ module.exports = function(app, express) {
  *         default: "591be608b902f60fcc14a9d3"
  *       - in: "path"
  *         name: "barber_service_id"
- *         description: "Logged in user's id"
+ *         description: "Barber-Service_ID"
  *         required: true
  *         type: string
  *         format: string
@@ -1168,6 +1211,48 @@ module.exports = function(app, express) {
  *         required: true
  *         schema:
  *           $ref: "#/definitions/editBarberService"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"           
+ *     delete:
+ *       tags:
+ *       - "barber"
+ *       summary: "Barber deleting his service"
+ *       description: "Barber deleting his service"
+ *       operationId: "deleteBarberService"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be608b902f60fcc14a9d3"
+ *       - in: "path"
+ *         name: "barber_service_id"
+ *         description: "Barber-Service-ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591bf1d39f3ee312abea7e95"
  *       responses:
  *         200:
  *           description: "successful operation"

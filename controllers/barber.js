@@ -147,6 +147,37 @@ exports.editBarberServices = function(req, res){
             })
 }
 
+exports.deleteBarberService = function(req, res){
+    req.checkHeaders("user_id", "User Id is required").notEmpty();
+    req.checkParams("barber_service_id", "Barber Service Id is required"). notEmpty();
+    
+    if(req.validationErrors()){
+        return res.status(400).send({
+            msg:"error in request",
+            err: req.validationErrors()
+        })
+    }
+    
+    barber_service.update(
+            {
+                _id: req.params.barber_service_id
+            },{
+                $set: {
+                    "isDeleted": true
+                }
+            },function (err, result){
+                if(err){
+                    res.status(400).send({
+                        msg: constantObj.messages.userStatusUpdateFailure
+                    })
+                } else {
+                    res.status(200).send({
+                        msg: constantObj.messages.userDeleteSuccess
+                    })
+                }
+            })
+}
+
 exports.viewAllServiesOfBarber = function (req, res) {
     req.checkParams("barber_id", "barber_id is required").notEmpty();
     var errors = req.validationErrors();
@@ -157,7 +188,8 @@ exports.viewAllServiesOfBarber = function (req, res) {
         });
     }
     barber_service.find({
-        "barber_id": req.params.barber_id
+        "barber_id": req.params.barber_id,
+        "isDeleted": false
     }, function (err, data) {
         if (err) {
             res.status(400).send({

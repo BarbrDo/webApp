@@ -135,26 +135,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
         url: '/partials',
         templateUrl: 'partials/404.html'
       })
-      // .when('/shopdetails/:id', {
-      //   templateUrl: 'partials/shopdetails.html',
-      //   controller: 'ShopCtrl'
-      // })
-      // .when('/appointment/:id', {
-      //   templateUrl: 'partials/appointment.html',
-      //    controller: 'AppointCtrl'
-      // })
-      // .when('/pay/:id', {
-      //   templateUrl: 'partials/pay.html',
-      //    controller: 'AppointCtrl'
-      // })
-      // .when('/confirm', {
-      //   templateUrl: 'partials/confirm.html',
-      //    controller: 'AppointCtrl'
-      // })
-      //  .when('/barberprofile/:id', {
-      //   templateUrl: 'partials/barberprofile.html',
-      //    controller: 'BarbrCtrl'
-      // })
+
     $urlRouterProvider.otherwise('pageNotFound');
 
 

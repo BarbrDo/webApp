@@ -460,3 +460,242 @@ var chairRequsett = function (data, userId, chairId, obj, shop_name) {
         })
     }
 }
+exports.updateshop = function(req, res) {
+    shop.findById(req.params.id, function(err, shops){
+         shops = new shop(req.body);
+        shops.update(req.body, function(err, count){
+            console.log("count",count);
+            shop.find(function(err, shopss){
+                res.json(shopss);
+            });
+        });
+    });
+};
+exports.listshops = function(req, res) {
+var page = req.body.page || 1,
+        count = req.body.count || 10;
+    var skipNo = (page - 1) * count;
+    console.log("page", page);
+    console.log("count", count);
+    var query = {};
+    var searchStr = req.body.search;
+
+    if (req.body.search) {
+        query.$or = [{
+            name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            city: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            state: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            chairs: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            address: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }]
+    }
+
+    shop.aggregate([{
+        $project: {
+            _id: "$_id",
+            name: "$name",
+            city: "$city",
+            state: "$state",
+            chairs: "$chairs",
+            address: "$address"
+        }
+    }, {
+        $match: query
+    }]).exec(function(err, data) {
+        if (err) {
+            console.log(err)
+        } else {
+            var length = data.length;
+            shop.aggregate([{
+                $project: {
+                    _id: "$_id",
+                    name: "$name",
+                    city: "$city",
+                    state: "$state",
+                    chairs: "$chairs",
+                    address: "$address"
+                }
+            }, {
+                $match: query
+            }, {
+                "$skip": skipNo
+            }, {
+                "$limit": count
+            }]).exec(function(err, result) {
+                if (err) {
+                    outputJSON = {
+                        'status': 'failure',
+                        'messageId': 203,
+                        'message': 'data not retrieved '
+                    };
+                } else {
+                    outputJSON = {
+                        'status': 'success',
+                        'messageId': 200,
+                        'message': 'data retrieve from shop',
+                        'data': result,
+                        'count': length
+                    }
+                }
+                res.status(200).jsonp(outputJSON);
+            })
+        }
+    })
+};
+exports.barberList = function(req, res) {
+ var page = req.body.page || 1,
+        count = req.body.count || 10;
+    var skipNo = (page - 1) * count;
+    console.log("page", page);
+    console.log("count", count);
+    console.log("asdfasdjklfasdkfj");
+    var query = {};
+    query.isDeleted = false,
+    query.user_type = "barber"
+    var searchStr = req.body.search;
+
+
+    if (req.body.search) {
+        query.$or = [{
+            first_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            last_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            email: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            ratings: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            created_date: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            mobile_number: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }]
+    }
+    console.log("query",query);
+    user.aggregate([{
+        $project: {
+            _id: "$_id",
+            first_name: "$first_name",
+            last_name: "$last_name",
+            email: "$email",
+            mobile_number: "$mobile_number",
+            ratings:"$ratings",
+            created_date: "$created_date",
+            isDeleted: "$isDeleted",
+            user_type: "$user_type"
+        }
+    }, {
+        $match: query
+    }]).exec(function(err, data) {
+        if (err) {
+            console.log(err)
+        } else {
+            var length = data.length;
+            user.aggregate([{
+                 $lookup:{
+                        from:"shops",
+                         "localField": "_id",
+                         "foreignField": "chairs.barber_id",
+                       "as": "shopdetails"
+                         }
+            },{
+                 $project: {
+                    _id: "$_id",
+                    first_name: "$first_name",
+                    last_name: "$last_name",
+                    email: "$email",
+                    mobile_number: "$mobile_number",
+                    created_date: "$created_date",
+                    ratings:"$ratings",
+                    isDeleted: "$isDeleted",
+                    user_type: "$user_type",
+                    name:"$shopdetails.name"
+                }
+            },{
+                $match: query
+            },{
+                "$skip": skipNo
+            },{
+                "$limit": count
+            }]).exec(function(err, result) {
+                if (err) {
+                    outputJSON = {
+                        'status': 'failure',
+                        'messageId': 203,
+                        'message': 'data not retrieved '
+                    };
+                } else {
+                    outputJSON = {
+                        'status': 'success',
+                        'messageId': 200,
+                        'message': 'data retrieve from products',
+                        'data': result,
+                        'count': length
+                    }
+                }
+                res.status(200).jsonp(outputJSON);
+            })
+        }
+    })
+};
+
+
+// exports.deleteshop = function(req, res) {
+//     console.log(req.params.shop_id);
+//     shop.update({
+//         _id: req.params.shop_id
+//     }, {
+//         $set: {
+//             isDeleted: true
+//         }
+//     }, function(err, count) {
+//         console.log("count", count);
+//         shop.find({
+//             isDeleted: false
+//         }, function(err, shopss) {
+//             res.json(shopss);
+//         });
+//     });
+
+// };

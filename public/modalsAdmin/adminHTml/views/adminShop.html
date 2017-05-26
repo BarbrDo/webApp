@@ -1,0 +1,149 @@
+<div class="panel" ng-init="shoppageChanged()">
+  <div class="panel-heading">
+    All Shops
+  </div>
+  <div class="panel-body">
+                    <!-- RAHUL  CODE -->
+
+                        <!-- Page Content -->
+       <div id="page-content-wrapper" >
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-6" style="margin-left: 300px;">
+                    
+                    </div>
+                    <div>
+                    <span class="glyphicon glyphicon-search" style="color:purple" ></span>
+                    <input ng-model="myobj.search" placeholder="Search for..." ng-change="shoppageChanged()"/>          
+                    </div> 
+                </div>
+
+<table class="table">
+    <thead>
+        <tr >
+         
+            <th style="font-size: 20px;color: #ffffff;"><a ng-click="Sort('name')" class="first_name"  style="color: #ffffff;">SHOPNAME<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 20px;"><a ng-click="Sort('city')" class="email"  style="color: #ffffff;">CITY<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 20px;"><a ng-click="Sort('chairs.length')" class="mobile_number"  style="color: #ffffff;">NO. OF CHAIRS  <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 20px;">STATUS</th>
+            <th style="font-size: 20px;">ACTION</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr data-ng-repeat="shop in shops | orderBy:sort:reverse" data-ng-class="{danger:!shop.active}">
+        <td><span ng-if="!shop.name" data-ng-hide="editMode">NOT SPECIFIED</span>
+            <span data-ng-hide="editMode">{{shop.name}} </span>
+            <input type="text" data-ng-show="editMode" data-ng-model="shop.name" placeholder="name" data-ng-required />
+        </td>
+        <td><span ng-if="!shop.city" data-ng-hide="editMode">NOT ASSOCIATED TO ANY SHOP</span>
+            <span data-ng-hide="editMode">{{shop.city}}</span>
+         <input type="text" data-ng-show="editMode" data-ng-model="shop.city" placeholder="City" data-ng-required />
+        </td>
+        <td><span ng-if="!shop.chairs.length" data-ng-hide="editMode">NIL</span>
+            <span data-ng-hide="editMode">{{shop.chairs.length}} </span>
+            <input type="text"  data-ng-show="editMode" data-ng-model="shop.chairs.length" placeholder="Total Chairs" data-ng-required />
+        </td>
+         <td>
+            <span data-ng-hide="editMode"><span ng-if="shop.isActive==true">ACTIVE</span>
+            <span ng-if="shop.isActive==false">DEACTIVE</span></span>
+            <select class="form-control" name="shop.isActive" data-ng-model="shop.isActive" data-ng-show="editMode">
+                <option value="true">ACTIVATE</option>
+                <option value="false">DEACTIVATE</option>
+            </select>
+        </td>
+        <td>
+            <a data-ng-hide="editMode" data-ng-click="editMode = true" class="glyphicon glyphicon-pencil" style="font-size: 20px;" data-toggle="tooltip" title="EDIT DETAILS"></a>
+             <span data-toggle="modal" data-target="#myAnotherModal">
+             <a type="submit"  data-ng-click="deleteshop(shop)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
+              <span data-toggle="modal" data-target="#viewModal">
+             <a type="submit" ng-click="shopdetail(shop)" data-ng-hide="editMode" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a></span>
+             <span data-toggle="modal" data-target="#myModal">
+            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; updateshop(shop)" class="glyphicon glyphicon-check" style="font-size: 25px;margin-left: 20px;color: #17a109;" data-toggle="tooltip" title="SAVE DETAILS" id="btnAlert"  ></a></span>
+            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" class="glyphicon glyphicon-ban-circle" style="font-size: 25px;margin-left: 20px;color: #f94040;" data-toggle="tooltip" title="CANCEL"></a>
+        </td>
+</tr>
+</tbody>
+</table>
+ </div>
+ <div>
+<div class="col-sm-6">
+     <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="shoppageChanged()"></ul>       
+          </div>
+<br>
+<label>No. of Enteries</label>
+            <select class="" ng-init="10">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+</div>
+         
+             <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #c2f7b5;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Saved</h4>
+        </div>
+        <div class="modal-body">
+          <p>Your Changes are saved successfully</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+    <div class="modal fade" id="myAnotherModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #c2f7b5;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Deleted</h4>
+        </div>
+        <div class="modal-body">
+          <p>Record Deleted successfully</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+        
+        <div class="modal fade" id="viewModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #c2f7b5;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Details</h4>
+        </div>
+        <div class="modal-body">
+          <p>SHOPNAME : {{shopdetailview.name}} <br>
+          CITY : {{shopdetailview.city}} <br>
+          STATE : {{shopdetailview.state}}<br>
+          NO. OF CHAIRS : {{shopdetailview.chairs.length}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+                    <!-- RAHUL CODE -->
+
+                  </div>
+                </div>

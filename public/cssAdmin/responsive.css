@@ -1,0 +1,299 @@
+/* min width */
+@media(min-width: 981px) {
+.toggleleftbar .leftside {
+	left: -270px;
+}
+.toggleleftbar .midbody {
+	margin-left: 15px;
+}
+.toggleleftbar .header .header-content {
+	margin-left: 130px;
+}
+}
+
+/* max width */
+
+@media (max-width: 1322px) {
+	.beaconsite .subservice-label{
+		float: none;
+		width: auto;
+	}
+	
+	.beaconsite .task-box{
+		margin-top: 0;
+		margin-left: 0;
+		border-left: solid 1px #ccc;
+		padding-top: 20px;
+		padding-left: 15px;
+	}
+}
+
+@media (max-width: 1280px) {
+.sealy h2 {
+	font-size: 25px;
+	padding-right: 10px;
+}
+.plans-detail {
+	min-height: 191px;
+}
+.upgrade_plan button {
+	font-size: 16px;
+}
+.plain-price {
+	padding: 71px 0;
+}
+}
+ @media(max-width:1199px) {
+.sealy_logo {
+	margin: -70px auto 0;
+	position: inherit;
+}
+.sealy h2 {
+	font-size: 30px;
+	padding: 30px 0 0;
+	text-align: center;
+}
+.total_site {
+	padding-top: 30px;
+}
+/*manage sub*/
+.plans-detail {
+	min-height: 179px;
+}
+.plain-price {
+	float: left;
+	padding: 9px 0;
+	width: 65%;
+}
+.upgrade_plan p {
+	display: inline-block;
+	font-size: 35px;
+}
+.upgrade_plan button {
+	float: right;
+	font-size: 15px;
+	width: 35%;
+	padding: 20px 1px;
+}
+.action-btn > ul li {
+	margin-left: 15px;
+}
+.action-btn > ul li button {
+	padding: 8px 8px;
+}
+.about_cmpny li {
+	padding-left: 20px;
+	font-size: 13px;
+}
+.about_cmpny span {
+	font-size: 12px;
+}
+.recent li h5 {
+	font-size: 14px;
+}
+.recent p {
+	margin: 0px;
+}
+}
+
+@media(max-width: 1110px){
+	
+	.beaconsite .service-label{
+		float: none;
+		width: auto;
+	}
+	
+	.beaconsite .subservice-box{
+		padding-left: 15px;
+		padding-top: 20px;
+		margin-left: 0;
+		border-left: solid 1px #ccc;
+		margin-top: 0;
+	}
+}
+
+
+@media(max-width: 1066px) {
+.table tr td button {
+	font-size: 16px;
+	margin-right: 10px;
+}
+}
+ @media(max-width: 980px) {
+.headerlogo {
+	display: none;
+}
+.leftside {
+	left: -270px;
+}
+.midbody {
+	margin-left: 15px;
+}
+.header .header-content {
+	margin-left: 0px;
+	-webkit-transition: all 0.4s ease-in;
+	-moz-transition: all 0.4s ease-in;
+	transition: all 0.4s ease-in;
+	left: 0;
+}
+.toggleleftbar .header .header-content {
+	margin-left: 0px;
+}
+.toggleleftbar .leftside {
+	left: 0px;
+}
+.toggleleftbar .midbody {
+	left: 254px;
+}
+.toggleleftbar .header .header-content {
+	left: 230px;
+}
+.table tr td .actionbtn {
+	display: block;
+	margin: 0;
+	line-height: normal;
+}
+.table tr td .actbtn-div {
+	position: absolute;
+	right: 0;
+	top: 0px;
+	background: #fff;
+	z-index: 2;
+	right: 0px;
+	display: none;
+	text-align: right;
+	padding: 5px 5px;
+	text-overflow: visible;
+	white-space: normal;
+	width: 250px;
+	box-shadow: 0 1px 1px rgba(0,0,0,0.26);
+	border: solid 1px #ccc;
+}
+.table tr:last-child td .actbtn-div {
+	top: auto;
+	bottom: 0;
+}
+.table-action:hover .actbtn-div {
+	display: block;
+}
+.table {
+	table-layout: auto;
+}
+
+.box-left, .box-right{
+	text-align:center;
+}
+}
+ @media (max-width:767px) {
+.sealy_logo {
+	margin: 0;
+	position: absolute;
+}
+.sealy h2 {
+	font-size: 30px;
+	padding-left: 210px;
+	padding-right: 30px;
+	text-align: left;
+}
+.action-btn > ul {
+	text-align: center;
+}
+.action-btn > ul li {
+	margin: 0 10px;
+	width: 28%;
+}
+.action-btn > ul li button {
+	padding: 8px;
+	width: 100%;
+}
+.plans-detail {
+	min-height: auto;
+}
+.upgrade_plan {
+	float: left;
+	width: 100%;
+}
+.about_cmpny li {
+	font-size: 14px;
+	padding-left: 30px;
+}
+.about_cmpny span {
+	font-size: 13px;
+}
+.recent li h5 {
+	font-size: 16px;
+}
+/*modal*/
+.sub-srname {
+	padding: 0px 15px;
+}
+.modal-wrap .input-cgroup .form-addon {
+	right: 15px;
+}
+
+.beaconsite .generaldetail.fixed{
+	right: 10px;
+	z-index: 2;
+}
+}
+@media (max-width:480px) {
+.sealy_logo {
+	margin: -70px auto 0;
+	position: inherit;
+}
+.sealy h2 {
+	font-size: 30px;
+	padding: 30px 0 0;
+	text-align: center;
+}
+.total_site {
+	padding-top: 20px;
+}
+.total_site li p {
+	font-size: 14px;
+}
+.action-btn > ul li {
+	margin: 0;
+	width: 32%;
+}
+.action-btn > ul li button {
+	font-size: 12px;
+	padding: 8px 5px;
+	width: 100%;
+}
+.action-btn .btn .icon {
+	height: 18px;
+	margin-right: 3px;
+}
+.plain-price {
+	margin-bottom: 10px;
+	width: 100%;
+}
+.upgrade_plan button {
+	font-size: 18px;
+	width: 100%;
+}
+.about_cmpny span {
+	display: block;
+	float: none;
+	font-size: 13px;
+}
+.recent h5 span {
+	display: block;
+	float: none;
+}
+.viewser-list {
+	text-align: center;
+}
+.modal-wrap .tag-item {
+	display: inline-block;
+	margin: 0 auto 10px;
+	text-align: center;
+	width: 90%;
+}
+
+.beaconsite .generaldetail.fixed{
+	position: static;
+	width: 100%;
+}
+}

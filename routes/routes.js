@@ -89,6 +89,10 @@ module.exports = function(app, express) {
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
     app.post('/api/v1/contact', contactController.contactPost);
     app.get('/api/v1/timeslots',commonObj.viewTimeSlots); //Time slot to book an appointment
+
+    app.get('/admin', function(req, res) {
+        res.sendFile(path.join(__dirname + './../public/indexAdmin.html'));
+    });
 }
 /**
  * @swagger

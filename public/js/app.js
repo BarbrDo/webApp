@@ -75,6 +75,73 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
         }
       })
 
+    .state('listBarbers', {
+      url: '/shopContainsBarbers/:_id',
+      params:{
+        _id:null
+      },
+      views: {
+          "homeDash": {
+            templateUrl: 'partials/shopHavingBarbers.html',
+            controller: "dashboardCtrl"
+          },
+          "header": {
+            templateUrl: 'partials/headerAfterLogin.html',
+            controller: "HeaderCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/afterLoginSideBar.html'
+          }
+        },
+        resolve: {
+          lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+            var deferred = $q.defer();
+            $ocLazyLoad.load({
+              name: 'BarbrDoApp',
+              files: ['js/controllers/dashboard.js',
+                'js/services/customer.js'
+              ]
+            }).then(function() {
+              deferred.resolve();
+            });
+            return deferred.promise;
+          }],
+          loginRequired: loginRequired
+        }
+    })
+
+    .state('barberDashboard', {
+        url: '/designDashboardOfBarber',
+        views: {
+          "homeDash": {
+            templateUrl: 'partials/dashboard.html',
+            controller: "dashboardCtrl"
+          },
+          "header": {
+            templateUrl: 'partials/headerAfterLogin.html',
+            controller: "HeaderCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/afterLoginSideBar.html'
+          }
+        },
+        resolve: {
+          lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+            var deferred = $q.defer();
+            $ocLazyLoad.load({
+              name: 'BarbrDoApp',
+              files: ['js/controllers/dashboard.js',
+                'js/services/customer.js'
+              ]
+            }).then(function() {
+              deferred.resolve();
+            });
+            return deferred.promise;
+          }],
+          loginRequired: loginRequired
+        }
+      })
+
     .state('contact', {
         url: '/contact',
         templateUrl: 'partials/contact.html',
@@ -164,7 +231,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
     }
 
     function loginRequired($state, $auth, $q) {
-      console.log("loginRequired", $auth.isAuthenticated());
+      // console.log("loginRequired", $auth.isAuthenticated());
       var deferred = $q.defer();
       if (!$auth.isAuthenticated()) {
         setTimeout(function() {

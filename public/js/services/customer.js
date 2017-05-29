@@ -24,7 +24,7 @@ angular.module('BarbrDoApp')
       barberService: function(data) {
         return $http.get('/api/v1/barberServices/'+data._id, data);
       },
-      barberList: function(data) {
+      shopContainsBarbers: function(data) {
         return $http.get('/api/v1/shops/barbers/'+data._id, data);
       },
       barbrProfile: function(data) {

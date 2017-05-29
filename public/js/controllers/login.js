@@ -9,7 +9,13 @@ angular.module('BarbrDoApp')
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
           $scope.user = {};
-          $state.go('dashboard');
+          console.log(JSON.stringify(response.data.user));
+          if(response.data.user.user_type =='customer'){
+            $state.go('dashboard');
+          }
+          if(response.data.user.user_type =='barber'){
+            $state.go('barberDashboard');
+          }     
         })
         .catch(function(response) {
           $('#bs-example-modal-lg').modal('show');

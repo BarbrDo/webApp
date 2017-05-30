@@ -1,6 +1,6 @@
 <div class="panel" ng-init="shoppageChanged()">
   <div class="panel-heading">
-    All Shops
+    Barber Details
   </div>
   <div class="panel-body">
                     <!-- RAHUL  CODE -->
@@ -22,46 +22,36 @@
     <thead>
         <tr >
          
-            <th style="font-size: 20px;color: #ffffff;"><a ng-click="Sort('name')" class="first_name"  style="color: #ffffff;">SHOPNAME<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
-            <th style="font-size: 20px;"><a ng-click="Sort('city')" class="email"  style="color: #ffffff;">LOCATION<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
-            <th style="font-size: 20px;"><a ng-click="Sort('chairs.length')" class="mobile_number"  style="color: #ffffff;">NO. OF CHAIRS  <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
-             <th style="font-size: 20px;"><a ng-click="Sort('chairs.length')" class="mobile_number"  style="color: #ffffff;">NO. OF BARBERS  <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
-            <th style="font-size: 20px;">STATUS</th>
+            <th style="font-size: 20px;color: #ffffff;"><a ng-click="Sort('name')" class="first_name"  style="color: #ffffff;">NAME<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 20px;"><a ng-click="Sort('city')" class="email"  style="color: #ffffff;">BARBER PERCENTAGE<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 20px;"><a ng-click="Sort('chairs.length')" class="mobile_number"  style="color: #ffffff;">SHOPNAME <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+
             <th style="font-size: 20px;">ACTION</th>
         </tr>
     </thead>
-    <tbody>
-        <tr data-ng-repeat="shop in shops | orderBy:sort:reverse | limitTo:quantity" data-ng-class="{danger:!shop.active}">
-        <td><span ng-if="!shop.name" data-ng-hide="editMode">NOT SPECIFIED</span>
-            <span data-ng-hide="editMode">{{shop.name}} </span>
-            <input type="text" data-ng-show="editMode" data-ng-model="shop.name" placeholder="name" data-ng-required />
+    <tbody data-ng-repeat="shop in shops | orderBy:sort:reverse | limitTo:quantity" data-ng-class="{danger:!shop.active}">
+        <tr ng-repeat="barbers in shop.chairs" ng-hide="!barbers.barber_name">
+        <td><span ng-if="!barbers.barber_name" data-ng-hide="editMode">NOT SPECIFIED</span>
+            <span data-ng-hide="editMode">{{barbers.barber_name}} </span>
+            <input type="text" data-ng-show="editMode" data-ng-model="barbers.barber_name" placeholder="name" data-ng-required />
         </td>
-        <td><span ng-if="!shop.city" data-ng-hide="editMode">NOT ASSOCIATED TO ANY SHOP</span>
-            <span data-ng-hide="editMode">{{shop.address}},{{shop.city}}-{{shop.state}}</span>
-         <input type="text" data-ng-show="editMode" data-ng-model="shop.city" placeholder="City" data-ng-required />
+        <td><span ng-if="!barbers.barber_percentage" data-ng-hide="editMode">NOT SPECIFIED</span>
+            <span data-ng-hide="editMode">{{barbers.barber_percentage}}</span>
+         <input type="text" data-ng-show="editMode" data-ng-model="barbers.barber_percentage" placeholder="City" data-ng-required />
         </td>
-         <td><span ng-if="!shop.chairs.length" data-ng-hide="editMode">NIL</span>
-           <a data-toggle="tooltip" title="VIEW CHAIRS DETAILS" ui-sref="chairs" ng-click="shopdetail(shop)"> <span data-ng-hide="editMode" >{{shop.chairs.length}} </span></a>
-            <input type="text"  data-ng-show="editMode" data-ng-model="shop.chairs.length" placeholder="Total Chairs" data-ng-required />
+           <td><span ng-if="!shop.name" data-ng-hide="editMode">NO TYPE</span>
+           <span data-ng-hide="editMode" >{{shop.name}} </span>
+            <input type="text"  data-ng-show="editMode" data-ng-model="shop.name" placeholder="Type Of Chair" data-ng-required />
         </td>
-         <td ><span ng-if="!shop.chairs.length" data-ng-hide="editMode">NIL</span>
-           <a data-toggle="tooltip" title="VIEW BARBERS IN {{shop.name}}" ui-sref="barbdetail" ng-click="shopdetail(shop)"> <span data-ng-hide="editMode" data-toggle="modal" data-target="#chairs" >{{barberinshops.length}} </span></a>
-            <input type="text"  data-ng-show="editMode" data-ng-model="shop.chairs.length" placeholder="Total Chairs" data-ng-required />
-        </td>
-         <td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-         <span ng-hide="showme" data-toggle="modal" data-target="#deactive">
-              <a data-toggle="tooltip" title="DEACTIVATE RECORD" ng-click="showme=true"><i class="fa fa-toggle-on" style="font-size: 30px;" aria-hidden="true"></i></a></span>
-               <span ng-show="showme" data-toggle="modal" data-target="#active">
-              <a ng-click="showme=false" data-toggle="tooltip" title="ACTIVATE RECORD"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;"></i></a> </span>
-        </td>
+
         <td>
             <a data-ng-hide="editMode" data-ng-click="editMode = true" class="glyphicon glyphicon-pencil" style="font-size: 20px;" data-toggle="tooltip" title="EDIT DETAILS"></a>
-             <span data-toggle="modal" data-target="#confirm">
+             <span data-toggle="modal" data-target="#myAnotherModal">
              <a type="submit"  data-ng-click="deleteshop(shop)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
               <span data-toggle="modal" data-target="#viewModal">
              <a type="submit" ng-click="shopdetail(shop)" data-ng-hide="editMode" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a></span>
              <span data-toggle="modal" data-target="#myModal">
-            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; updateshop(shop)" class="glyphicon glyphicon-check" style="font-size: 25px;margin-left: 20px;color: #17a109;" data-toggle="tooltip" title="SAVE DETAILS" id="btnAlert"  ></a></span>
+            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; updatechair(chairs)" class="glyphicon glyphicon-check" style="font-size: 25px;margin-left: 20px;color: #17a109;" data-toggle="tooltip" title="SAVE DETAILS" id="btnAlert"  ></a></span>
             <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" class="glyphicon glyphicon-ban-circle" style="font-size: 25px;margin-left: 20px;color: #f94040;" data-toggle="tooltip" title="CANCEL"></a>
         </td>
 </tr>
@@ -148,7 +138,7 @@
     </div>
   </div>
 
-   <div class="modal fade" id="deactive" role="dialog">
+  <div class="modal fade" id="deactive" role="dialog">
     <div class="modal-dialog">
     
       <!-- Modal content-->
@@ -164,52 +154,6 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-
-
-  <div class="modal fade" id="active" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header" style="background-color: #c2f7b5;">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Acticvated</h4>
-        </div>
-        <div class="modal-body">
-          <p>
-          The Record Is Activated Successfully,
-          </p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-            
-
-
-
-    <div class="modal fade" id="confirm" role="dialog" ng-repeat="barber in barbers">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-body">
-          <p>
-          Are You Sure!!!!!! 
-          You want to Delete this Record 
-          </p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deletebarber(barber)" data-toggle="modal" data-target="#myAnotherModal">DELETE</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
         </div>
       </div>
       

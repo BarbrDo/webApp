@@ -1,12 +1,13 @@
 angular.module('BarbrDoApp')
-	.controller('dashboardCtrl', function($scope, $rootScope, $location, customer, $stateParams,$state) {
+	.controller('dashboardCtrl', function($scope, $rootScope, $location, customer, $stateParams, $state,$window) {
 		$scope.dollarAmmount = 0.00;
 		$scope.annualCost = "$" + $scope.dollarAmmount;
 		var obj = {
 			'latitude': "30.708225",
 			'longitude': "76.7029445"
 		}
-
+		// var obj = JSON.parse($window.localStorage.user);
+		// console.log("_id",obj._id);
 		$scope.callFunctions = function() {
 			$scope.shoplist();
 			$scope.barberList();
@@ -18,17 +19,60 @@ angular.module('BarbrDoApp')
 					$scope.shops = response.data.data;
 				});
 		}
-
-		$scope.allShopsHavingBarbers = function(id){
-			$state.go('listBarbers',{_id: id});
+		$scope.allShopsHavingBarbers = function(id) {
+			$state.go('shopContainsBarbers', {
+				_id: id
+			});
 		}
-
-		if($stateParams._id){
-			var obj = {_id:$stateParams._id}
-			customer.shopContainsBarbers(obj).then(function(response){
-				console.log(response.data.data);
+		if ($state.current.name == 'shopContainsBarbers') {
+			var obj = {
+				_id: $stateParams._id
+			}
+			customer.shopContainsBarbers(obj).then(function(response) {
+				$scope.shopBarbers = response.data.data;
 			})
 		}
+		if ($state.current.name == 'bookNow') {
+			var passingObj = {
+				_id: $stateParams.barber_id
+			}
+			customer.barberService(passingObj)
+				.then(function(response) {
+					$scope.barberservice = response.data.data;
+				});
+
+			var passObj = {
+				"shop_id": $stateParams.shop_id,
+				"barber_id": $stateParams.barber_id,
+				"latitude": "30.708225",
+				'longitude': "76.7029445"
+			}
+
+			customer.bookNowPageInfo(passObj)
+				.then(function(response) {
+					// alert(response.data.data[0]);
+					$scope.barberInformation = response.data.data;
+				});
+
+			var myArray = [];
+			// Below code is generating current date + 6 days more
+			var date = new Date();
+			myArray.push(date)
+			for (var i = 1; i <= 6; i++) {
+				var date = new Date();
+				date.setDate(date.getDate() + i);
+				myArray.push(date)
+			}
+			$scope.selectDate = myArray;
+			// timeSlots defines in costant file
+			$scope.timeSlots = timeSlots;
+		}
+		$scope.setSelected = function(prop) {
+			$scope.selectedDate = prop.toISOString().slice(0,10);
+		};
+		$scope.setSelectedTime = function(prop) {
+			$scope.choosedTime = prop;
+		};
 
 		$scope.barberList = function() {
 			customer.barberAll(obj)
@@ -36,46 +80,32 @@ angular.module('BarbrDoApp')
 					$scope.barbers = response.data.data;
 				});
 		}
+		$scope.selection = [];
+		$scope.toggleSelection = function toggleSelection(fruitName) {
+			var idx = $scope.selection.indexOf(fruitName);
 
-		// $scope.shopdetails = function(shop) {
-		// 	customer.barberList(shop)
-		// 		.then(function(response) {
-		// 			$rootScope.shopname = shop;
-		// 			$rootScope.barbers = response.data.data.barber;
-		// 		});
-		// };
-		
-		// $scope.appointment = function(barber) {
-		// 	customer.timeSlots(barber)
-		// 		.then(function(response) {
-		// 			$rootScope.time = response.data.data;
-		// 			$rootScope.barber = barber;
-
-		// 		});
-		// 	customer.barberService(barber)
-		// 		.then(function(response) {
-		// 			$rootScope.barberservice = response.data.data;
-		// 			$rootScope.barberdetail = barber;
-		// 		});
-		// };
-		// $scope.cost = function(amt, e, value) {
-		// 	if (e.target.checked) {
-		// 		$scope.names = e.target.value;
-		// 		$scope.dollarAmmount = $scope.dollarAmmount + amt;
-		// 		$scope.selected.push(value);
-		// 	} else {
-		// 		$scope.dollarAmmount = $scope.dollarAmmount - amt;
-
-		// 		for (var i = 0; i < $scope.selected.length; i++) {
-		// 			if ($scope.selected[i]._id == value._id) {
-		// 				$scope.selected.splice(i, 1);
-		// 			}
-		// 		}
-		// 	}
-		// 	$scope.annualCost = "$" + $scope.dollarAmmount;
-		// };
-		// $scope.timeslot = function(time) {
-		// 	$rootScope.selectedtime = time;
-		// 	console.log("selectedtime", time);
-		// };
+			// Is currently selected
+			if (idx > -1) {
+				$scope.selection.splice(idx, 1);
+			} else {
+				$scope.selection.push({
+					name: fruitName.name,
+					price: fruitName.price
+				});
+				console.log($scope.selection);
+			}
+		};
+		$scope.payLater = function(){
+			var postObj = {
+				"shop_id":$stateParams.shop_id,
+				"barber_id":$stateParams.barber_id,
+				"services":$scope.selection,
+				"appointment_date":$scope.selectedDate+" "+$scope.choosedTime,
+				"payment_method":"cash",
+			}
+			customer.takeAppointment(postObj)
+				.then(function(response) {
+					$scope.barbers = response.data.data;
+				});
+		}
 	});

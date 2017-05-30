@@ -30,7 +30,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr data-ng-repeat="customer in customers | orderBy:sort:reverse" data-ng-class="{danger:!customer.active}">
+        <tr data-ng-repeat="customer in customers | orderBy:sort:reverse | limitTo:quantity" data-ng-class="{danger:!customer.active}">
         <td><span ng-if="!customer.first_name" data-ng-hide="editMode">NOT SPECIFIED</span>
             <span data-ng-hide="editMode">{{customer.first_name}} {{customer.last_name}} </span>
             <input type="text" data-ng-show="editMode" data-ng-model="customer.first_name" placeholder="first name" data-ng-required /><input type="text" data-ng-show="editMode" placeholder="last name" data-ng-model="customer.last_name" data-ng-required />
@@ -43,18 +43,16 @@
             <span data-ng-hide="editMode">{{customer.mobile_number}} </span>
             <input type="text" pattern="[789][0-9]{9}" data-ng-show="editMode" data-ng-model="customer.mobile_number" placeholder="mobile" data-ng-required />
         </td>
-         <td>
-            <span data-ng-hide="editMode"><span ng-if="customer.isActive==true">ACTIVE</span>
-            <span ng-if="customer.isActive==false">DEACTIVE</span></span>
-            <select class="form-control" name="customer.isActive" data-ng-model="customer.isActive" data-ng-show="editMode">
-                <option value="true">ACTIVATE</option>
-                <option value="false">DEACTIVATE</option>
-            </select>
+         <td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+         <span ng-hide="showme" data-toggle="modal" data-target="#deactive">
+              <a data-toggle="tooltip" title="DEACTIVATE RECORD" ng-click="showme=true"><i class="fa fa-toggle-on" style="font-size: 30px;" aria-hidden="true"></i></a></span>
+               <span ng-show="showme" data-toggle="modal" data-target="#active">
+              <a ng-click="showme=false" data-toggle="tooltip" title="ACTIVATE RECORD"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;"></i></a> </span>
         </td>
         <td>
             <a data-ng-hide="editMode" data-ng-click="editMode = true" class="glyphicon glyphicon-pencil" style="font-size: 20px;" data-toggle="tooltip" title="EDIT DETAILS"></a>
-             <span data-toggle="modal" data-target="#myAnotherModal">
-             <a type="submit"  data-ng-click="deletecustomer(customer)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
+            <span data-toggle="modal" data-target="#confirm">
+             <a type="submit" ng-click="deleteconfirmcustomer(customer)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
              <span data-toggle="modal" data-target="#viewModal">
              <a type="submit" ng-click="custdetails(customer)" data-ng-hide="editMode" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a></span>
              <span data-toggle="modal" data-target="#myModal">
@@ -64,10 +62,22 @@
 </tr>
 </tbody>
 </table>
-<ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="custpageChanged()"></ul>
-
-
-            </div>
+</div>
+<div>
+<div class="col-sm-6">
+     <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="custpageChanged()"></ul>       
+          </div>
+<br>
+<label>No. of Enteries</label>
+            <select ng-model="quantity">
+              <option value="">All</option>
+              <option value="1">1</option>
+              <option value="3">3</option>
+              <option value="5">5</option>
+              <option value="7">7</option>
+              <option value="10">10</option>
+            </select>
+</div>
 
              <!-- Modal -->
   <div class="modal fade" id="myModal" role="dialog">
@@ -95,7 +105,7 @@
     
       <!-- Modal content-->
       <div class="modal-content">
-        <div class="modal-header" style="background-color: #c2f7b5;">
+        <div class="modal-header" style="background-color: #d6110c;">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Deleted</h4>
         </div>
@@ -116,7 +126,7 @@
     
       <!-- Modal content-->
       <div class="modal-content">
-        <div class="modal-header" style="background-color: #c2f7b5;">
+        <div class="modal-header" style="background-color: #5cfcfa;">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Details</h4>
         </div>
@@ -133,6 +143,74 @@
     </div>
   </div>
         
+
+        <div class="modal fade" id="deactive" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #f52727;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Deacticvated</h4>
+        </div>
+        <div class="modal-body">
+          <p>
+          This Record Is Deactivaed Successfully,
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="active" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #c2f7b5;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Acticvated</h4>
+        </div>
+        <div class="modal-body">
+          <p>
+          The Record Is Activated Successfully,
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+                    <!-- RAHUL CODE -->
+
+
+
+    <div class="modal fade" id="confirm" role="dialog" >
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>
+          Are You Sure!!!!!! 
+          You want to Delete this Record 
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deletecustomer(customer)" data-toggle="modal" data-target="#myAnotherModal">DELETE</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
                     <!-- RAHUL CODE -->
 
                   </div>

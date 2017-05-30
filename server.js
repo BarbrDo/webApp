@@ -62,8 +62,11 @@ app.use('/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 require('./routes/routes')(app, express);
 require('./routes/admin/routes')(app, express);
-app.get('*', function (req, res) {
+/*app.get('*', function (req, res) {
     res.redirect('/#' + req.originalUrl);
+});*/
+app.get('/*', function(req, res) {     
+    res.sendFile(path.join(__dirname + '/public/index.html'));
 });
 
 // Production error handler

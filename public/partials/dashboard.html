@@ -1,5 +1,4 @@
-
-  <div class="crumb" ng-init="callFunctions()"> <span>Book Appointment</span> </div>
+<div class="crumb" ng-init="callFunctions()"> <span>Book Appointment</span> </div>
   <div class="wrapper">
     <div class="block">
       <h2>Book Appointment</h2>
@@ -29,7 +28,7 @@
                 <p><span>Location</span> : {{data.location}}</p>
                 <div class="rating"> <img src="images/rating.png" alt="" > </div>
               </div>
-              <a href="#" class="book_nw" > Book Now <i class="fa  fa-angle-right"></i> </a> </div>
+              <a ui-sref="bookNow({shop_id:data.shop_id,barber_id:data._id})" class="book_nw" > Book Now <i class="fa  fa-angle-right"></i> </a> </div>
           </div>
         </div>
       </div>

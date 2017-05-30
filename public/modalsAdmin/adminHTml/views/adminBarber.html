@@ -24,39 +24,40 @@
         <tr >
          
             <th style="font-size: 20px;"><a ng-click="Sort('first_name')" class="first_name"  style="color: #ffffff;">NAME<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
-            <th style="font-size: 20px;"><a ng-click="Sort('email')" class="email"  style="color: #ffffff;">SHOP<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
-            <th style="font-size: 20px;"><a ng-click="Sort('mobile_number')" class="mobile_number"  style="color: #ffffff;">MEMBER SINCE <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 20px;"><a ng-click="Sort('name[0]')" class="name"  style="color: #ffffff;">SHOP<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 20px;"><a ng-click="Sort('created_date')" class="created_date"  style="color: #ffffff;">MEMBER SINCE <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
             <th style="font-size: 20px;"><a ng-click="Sort('mobile_number')" class="mobile_number"  style="color: #ffffff;">RATINGS<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
             <th style="font-size: 20px;">STATUS</th>
             <th style="font-size: 20px;">ACTION</th>
         </tr>
     </thead>
     <tbody>
-        <tr data-ng-repeat="barber in barbers | orderBy:sort:reverse" data-ng-class="{danger:!barber.active}">
+        <tr data-ng-repeat="barber in barbers | orderBy:sort:reverse  | limitTo:quantity" data-ng-class="{danger:!barber.active}">
         <td><span ng-if="!barber.first_name" data-ng-hide="editMode">NOT SPECIFIED</span>
             <span data-ng-hide="editMode" >{{barber.first_name}} {{barber.last_name}} </span>
             <input type="text" data-ng-show="editMode" data-ng-model="barber.first_name" placeholder="first name" data-ng-required /><input type="text" data-ng-show="editMode" placeholder="last name" data-ng-model="barber.last_name" data-ng-required />
         </td>
         <td><span ng-if="!barber.name[0]" data-ng-hide="editMode">NOT ASSOCIATED TO ANY SHOP</span>
             <span data-ng-hide="editMode">{{barber.name[0]}}</span>
-         <input type="text" data-ng-show="editMode" data-ng-model="barber.shopdetails[0].name" placeholder="Shop" data-ng-required />
+         <input type="text" data-ng-show="editMode" data-ng-model="barber.name[0]" placeholder="Shop" data-ng-required />
         </td>
         <td><span ng-if="!barber.created_date" data-ng-hide="editMode">NIL</span>
-            <span data-ng-hide="editMode">{{barber.created_date | date :"dd/mm/yyyy"}} </span>
+            <span data-ng-hide="editMode">{{barber.created_date | date:dd/mm/yyyy}} </span>
             <input type="text"  data-ng-show="editMode" data-ng-model="barber.created_date" placeholder="Member since" data-ng-required />
         </td>
-          <td><span ng-if="!barber.ratings[0].score" data-ng-hide="editMode">NO RATINGS</span>
+          <td><span ng-if="!barber.ratings[0].score">NO RATINGS</span>
             <span data-ng-hide="editMode">{{barber.ratings[0].score }} </span>
-            <input type="text"  data-ng-show="editMode" data-ng-model="barber.ratings[0].score" placeholder="Member since" data-ng-required />
         </td>
-         <td>
-            <button type="button" class="btn btn-success" id="active">A</button>
-            <button type="button" class="btn btn-danger" id="deactive">D</button>
+         <td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+         <span ng-hide="showme" data-toggle="modal" data-target="#deactive">
+              <a data-toggle="tooltip" title="DEACTIVATE RECORD" ng-click="showme=true"><i class="fa fa-toggle-on" style="font-size: 30px;" aria-hidden="true"></i></a></span>
+               <span ng-show="showme" data-toggle="modal" data-target="#active">
+              <a ng-click="showme=false" data-toggle="tooltip" title="ACTIVATE RECORD"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;"></i></a> </span>
         </td>
         <td>
             <a data-ng-hide="editMode" data-ng-click="editMode = true" class="glyphicon glyphicon-pencil" style="font-size: 20px;" data-toggle="tooltip" title="EDIT DETAILS"></a>
-             <span data-toggle="modal" data-target="#myAnotherModal">
-             <a type="submit"  data-ng-click="deletebarber(barber)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
+             <span data-toggle="modal" data-target="#confirm">
+             <a  type="submit"  ng-click="deleteconfirmbarber(barber)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a> </span>
               <span data-toggle="modal" data-target="#viewModal">
              <a type="submit" ng-click="barbdetail(barber)" data-ng-hide="editMode" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a></span>
              <span data-toggle="modal" data-target="#myModal">
@@ -66,10 +67,24 @@
 </tr>
 </tbody>
 </table>
-<ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="pageChanged()"></ul>
+</div>
+<div>
+<div class="col-sm-6">
+     <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="shoppageChanged()"></ul>       
+          </div>
+<br>
+<label>No. of Enteries</label>
+            <select  ng-model="quantity">
+              <option value="">All</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+            </select>
+</div>
 
-
-            </div>
 
              <!-- Modal -->
   <div class="modal fade" id="myModal" role="dialog">
@@ -97,7 +112,7 @@
     
       <!-- Modal content-->
       <div class="modal-content">
-        <div class="modal-header" style="background-color: #c2f7b5;">
+        <div class="modal-header" style="background-color: #d6110c;">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Deleted</h4>
         </div>
@@ -117,15 +132,61 @@
     
       <!-- Modal content-->
       <div class="modal-content">
-        <div class="modal-header" style="background-color: #c2f7b5;">
+        <div class="modal-header" style="background-color: #5cfcfa;">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Details</h4>
         </div>
         <div class="modal-body">
           <p>
           NAME OF THE BARBER : {{barberdetail.first_name}} {{barberdetail.last_name}} <br>
-          SHOP ACCOSIATED WITH : {{barberdetail.shopdetails[0].name}} <br>
+          SHOP ACCOSIATED WITH : {{barberdetail.name[0]}} <br>
           MEMBER SINCE : {{barberdetail.created_date | date:"dd/mm/yyyy"}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="deactive" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #f52727;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Deacticvated</h4>
+        </div>
+        <div class="modal-body">
+          <p>
+          This Record Is Deactivaed Successfully,
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="active" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #c2f7b5;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Acticvated</h4>
+        </div>
+        <div class="modal-body">
+          <p>
+          The Record Is Activated Successfully,
+          </p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
@@ -136,5 +197,30 @@
   </div>
                     <!-- RAHUL CODE -->
 
+
+
+    <div class="modal fade" id="confirm" role="dialog" ng-repeat="barber in barbers">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>
+          Are You Sure!!!!!! 
+          You want to Delete this Record 
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deletebarber(barber)" data-toggle="modal" data-target="#myAnotherModal">DELETE</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
                   </div>
                 </div>
+
+
+

@@ -11,8 +11,8 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/dashboard');
     
     $stateProvider
-	
-	// Dashboard
+    
+    // Dashboard
         .state('dashboard', {
             url: '/dashboard',
             controller: "AdminCtrl",
@@ -43,13 +43,29 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
             //  }
         })
 
+        .state('chairs', {
+            url: '/chairs',
+            controller: "AdminCtrl",
+            templateUrl: "/modalsAdmin/adminHTml/views/chairsdetails.html"
+            // resolve: {
+            //      checklogin: login
+            //  }
+        })
+
+        .state('barbdetail', {
+            url: '/barbdetail',
+            controller: "AdminCtrl",
+            templateUrl: "/modalsAdmin/adminHTml/views/barberdetails.html"
+            // resolve: {
+            //      checklogin: login
+            //  }
+        })
+
         .state('customers', {
             url: '/customers',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/adminCust.html"
-            // resolve: {
-            //      checklogin: login
-            //  }
+          
         })    
 
         .state('add_barbers', {
@@ -85,20 +101,20 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
             url: '/add-members',
             templateUrl: 'templatesAdmin/add-member.html'
         })
-		
-		// Member list
+        
+        // Member list
         .state('member_list', {
             url: '/member-list',
             templateUrl: 'templatesAdmin/member-list.html'
         })
-		
-		// All Site
+        
+        // All Site
         .state('all_site', {
             url: '/all-site',
             templateUrl: 'templatesAdmin/all-site.html'
         })
-		
-		// Beacon List
+        
+        // Beacon List
         .state('beacon_list', {
             url: '/beacon-list',
             templateUrl: 'templatesAdmin/beacon-list.html'
@@ -120,26 +136,26 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
             url: '/task_library',
             templateUrl: 'templatesAdmin/task-library.html'
         })
-		
-		 // Edit Task Library
+        
+         // Edit Task Library
         .state('edit-tasklibrary', {
             url: '/edittask_library',
             templateUrl: 'templatesAdmin/edit-tasklibrary.html'
         })
-		
-		 // Add Beacon
+        
+         // Add Beacon
         .state('add_beacon', {
             url: '/add-beacon',
             templateUrl: 'templatesAdmin/add-beacon.html'
         })
-		
-		// Edit Beacon
+        
+        // Edit Beacon
         .state('edit_beacon', {
             url: '/edit-beacon',
             templateUrl: 'templatesAdmin/edit-beacon.html'
         })
-		
-		// view-site
+        
+        // view-site
         .state('view_site', {
             url: '/view-site',
             templateUrl: 'templatesAdmin/view-site.html'

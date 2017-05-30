@@ -16,22 +16,22 @@
 		 		<input type="text" class="form-control" ng-model="last_name"/>
 		 	</div>
 		 	<div class="col-sm-4 form-group">
-		 		<label>Middle Name</label>
-		 		<input type="text" class="form-control" />
+		 		<label>Email</label>
+		 		<input type="text" name="email" id="email" class="form-control" ng-model="barbers.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" />
 		 	</div>
 		 </div>
 		 <div class="clearfix">
 		 	<div class="col-sm-4 form-group">
-		 		<label>Phone Number</label>
-		 		<input type="text" class="form-control" />
-		 	</div>
-		 	<div class="col-sm-4 form-group">
 		 		<label>Mobile Number</label>
-		 		<input type="text" class="form-control" />
+		 		<input type="text " class="form-control " name="mobile_number " id="mobile_number " ng-model="user.mobile_number " mask="(999) 999-9999 " mask-clean='true' mask-restrict='reject' ng-minlength="14 " ng-maxlength="14 " maxlength="14 " />
 		 	</div>
 		 	<div class="col-sm-4 form-group">
-		 		<label>Email</label>
-		 		<input type="email" class="form-control" />
+		 		<label>Password</label>
+		 		<input type="password" name="password" id="password" class="form-control" ng-model="user.password" ng-minlength="5" ng-maxlength="20" maxlength="21" />
+		 	</div>
+		 	<div class="col-sm-4 form-group">
+		 		<label>Confirm Password</label>
+		 		<input type="password " class="form-control " name="confirmPassword " id="confirmPassword " ng-model="user.confirmPassword " required ng-pattern="user.password " />
 		 	</div>
 		 </div>
 		 <div class="clearfix">
@@ -65,8 +65,8 @@
 
 		 <div class="clearfix">
 		 	<div class="col-sm-4 form-group">
-		 		<label>Company Name</label>
-		 		<input type="text" class="form-control" />
+		 		<label>Licence Number</label>
+		 		<input type="text " class="form-control " name="license_number " id="license_number " ng-model="user.license_number "/>
 		 	</div>
 		 	<div class="col-sm-8 form-group">
 		 		<div class="row">
@@ -106,7 +106,7 @@
 		 				<span ng-bind="item.name"></span>
 		 				<button ng-click="removesite()">
 		 					 <?xml version="1.0" encoding="iso-8859-1"?>
-								<!-- Generator: Adobe Illustrator 19.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+								Generator: Adobe Illustrator 19.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) 
 								<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 									 viewBox="0 0 475.2 475.2" style="enable-background:new 0 0 475.2 475.2;" xml:space="preserve">
 								<g>
@@ -129,7 +129,8 @@
 		 	</div>
 		 </div>
 		 <div class="clearfix text-center">
-		 	<button class="btn btn-primary" ng-click="addbarber()">
+		 <span data-toggle="modal" data-target="#insert">
+		 	<button class="btn btn-primary" ng-click="signup() ">
 		 		<i class="icon">
 		 			<?xml version="1.0" encoding="iso-8859-1"?>
 						<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
@@ -149,7 +150,7 @@
 						</svg>
 		 		</i>
 		 		<span>Save</span>
-		 	</button>
+		 	</button></span>
 		 	<button class="btn btn-grey">
 		 		<i class="icon">
 		 			 
@@ -177,3 +178,24 @@
 		 </div>
 	</div>
 </div>
+
+
+    <div class="modal fade" id="insert" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #c2f7b5;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Added</h4>
+        </div>
+        <div class="modal-body">
+          <p>Record Added successfully</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>

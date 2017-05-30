@@ -18,8 +18,19 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         .then(function(response) {
           $scope.myobj.totalItems = response.data.count;
           $rootScope.barbers = response.data.data;
+        
         });
 
+    };
+
+
+
+    $scope.signup = function() {
+       Admin.signup()
+        .then(function(response) {
+          console.log("signup",response)
+        });
+    
     };
 
 
@@ -43,6 +54,11 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
     };
 
+    var obj = {
+      'latitude': "30.708225",
+      'longitude': "76.7029445"
+    }
+
 
     $scope.shoppageChanged = function() {
       var passingObj = {
@@ -58,7 +74,12 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         .then(function(response) {
           $scope.myobj.totalItems = response.data.count;
           $rootScope.shops = response.data.data;
+        });
 
+        Admin.shopList(obj)
+        .then(function(response) {
+          $rootScope.barberinshops = response.data.data ;
+          console.log("shop",response.data.data)
         });
       $log.log('Page changed to: ' + $scope.myobj.currentPage);
 
@@ -114,13 +135,30 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
     };
 
-    $scope.deletebarber = function(barber) {
-      $scope.barber = barber;
-      Admin.deleteBarber(barber)
+     $scope.updatechair = function(chair) {
+      $scope.chair = chair;
+      Admin.updateChair(chair)
         .then(function(response) {
-          $rootScope.barbers = response.data;
+          $rootScope.shops = response.data;
+          console.log("chairs",response.data);
         });
 
+    };
+
+
+
+    $scope.deleteconfirmbarber = function(barber) {
+          $scope.barber = barber;
+          console.log("confirm",barber)
+        };
+
+    $scope.deletebarber = function(barber) {
+      Admin.deleteBarber($scope.barber)
+        .then(function(response) {
+          $rootScope.barbers = response.data;
+          console.log("deleted",response.data);
+        });
+      console.log("del",$scope.barber);
     };
 
     // $scope.deleteshop = function(shop) {
@@ -133,12 +171,25 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
     // };
 
-    $scope.deletecustomer = function(customer) {
+       $scope.deleteconfirmcustomer = function(customer) {
+        $scope.customer = customer;
+    };
 
+    $scope.deletecustomer = function(customer) {
       $scope.customer = customer;
-      Admin.deleteCustomer(customer)
+      Admin.deleteCustomer($scope.customer)
         .then(function(response) {
           $rootScope.customers = response.data;
+        });
+    };
+
+     $scope.deactivecust = function(customer) {
+
+      $scope.customer = customer;
+      Admin.deactiveCustomer(customer)
+        .then(function(response) {
+          $rootScope.deactivecustomers = response.data;
+          console.log("deactivated",response.data);
         });
 
     };
@@ -160,16 +211,19 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
       $scope.barberdetail = barber;
     };
 
-    $scope.shopdetail = function(barber) {
-      $scope.shopdetailview = barber;
+    $scope.shopdetail = function(shop) {
+      $scope.shopdetailview = shop;
+      console.log("det",shop);
     };
 
     $scope.addbarber = function()
     {
-       Admin.addBarber($scope.barber)
+       Admin.addBarber()
         .then(function(response) {
+          console.log("res",response);
         });
     };
+
 
     Admin.countBarber()
         .then(function(response) {

@@ -74,8 +74,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
           loginRequired: loginRequired
         }
       })
-
-    .state('listBarbers', {
+    .state('shopContainsBarbers', {
       url: '/shopContainsBarbers/:_id',
       params:{
         _id:null
@@ -98,8 +97,44 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             var deferred = $q.defer();
             $ocLazyLoad.load({
               name: 'BarbrDoApp',
-              files: ['js/controllers/dashboard.js',
-                'js/services/customer.js'
+              files: ['/js/controllers/dashboard.js',
+                '/js/services/customer.js'
+              ]
+            }).then(function() {
+              deferred.resolve();
+            });
+            return deferred.promise;
+          }],
+          loginRequired: loginRequired
+        }
+    })
+
+    .state('bookNow', {
+      url: '/book/:shop_id/:barber_id',
+      params:{
+        shop_id:null,
+        barber_id:null
+      },
+      views: {
+          "homeDash": {
+            templateUrl: 'partials/book_now.html',
+            controller: "dashboardCtrl"
+          },
+          "header": {
+            templateUrl: 'partials/headerAfterLogin.html',
+            controller: "HeaderCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/afterLoginSideBar.html'
+          }
+        },
+        resolve: {
+          lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+            var deferred = $q.defer();
+            $ocLazyLoad.load({
+              name: 'BarbrDoApp',
+              files: ['/js/controllers/dashboard.js',
+                '/js/services/customer.js'
               ]
             }).then(function() {
               deferred.resolve();

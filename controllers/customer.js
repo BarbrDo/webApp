@@ -62,7 +62,8 @@ exports.listcustomers = function(req, res) {
                     email: "$email",
                     mobile_number: "$mobile_number",
                     isDeleted: "$isDeleted",
-                    user_type: "$user_type"
+                    user_type: "$user_type",
+                    isActive: "$isActive"
                 }
             }, {
                 $match: query
@@ -122,19 +123,25 @@ exports.updatebarber = function(req, res) {
 
 
 exports.countbarber = function(req, res) {
-    User.find({user_type:"barber"},function(err,barber) {
+    User.find({
+        user_type: "barber"
+    }, function(err, barber) {
         res.json(barber);
     });
 };
 
 exports.countshop = function(req, res) {
-    User.find({user_type:"shop"},function(err,barber) {
+    User.find({
+        user_type: "shop"
+    }, function(err, barber) {
         res.json(barber);
     });
 };
 
 exports.countcustomer = function(req, res) {
-    User.find({user_type:"customer"},function(err,barber) {
+    User.find({
+        user_type: "customer"
+    }, function(err, barber) {
         res.json(barber);
     });
 };
@@ -148,9 +155,27 @@ exports.deletecustomer = function(req, res) {
             isDeleted: true
         }
     }, function(err, count) {
-        console.log("count", count);
         User.find({
-            isDeleted: false
+            isDeleted: false,
+            user_type: "customer"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
+exports.deactivecustomer = function(req, res) {
+    console.log("custid", req.params.cust_id);
+    User.update({
+        _id: req.params.cust_id
+    }, {
+        $set: {
+            isActive: false
+        }
+    }, function(err, count) {
+        User.find({
+            user_type: "customer"
         }, function(err, shopss) {
             res.json(shopss);
         });
@@ -170,24 +195,36 @@ exports.deletebarber = function(req, res) {
         }
     }, function(err, count) {
         console.log("count", count);
-         User.aggregate([
-    {
-        "$match":{"user_type":"barber","isDeleted" : false}
-    },
-    {
-        $lookup:{
-                from:"shops",
+        User.aggregate([{
+            "$match": {
+                "user_type": "barber",
+                "isDeleted": false
+            }
+        }, {
+            $lookup: {
+                from: "shops",
                 "localField": "_id",
                 "foreignField": "chairs.barber_id",
                 "as": "shopdetails"
-                }
-    }
-    ]).exec(function(err, data) {
+            }
+        }]).exec(function(err, data) {
             if (err) {
                 console.log(err);
             } else {
-                res.send(data);           }
+                res.send(data);
+            }
         });
     });
 
+};
+
+
+exports.addbarber = function(req, res) {
+    User({
+        first_name: req.body.first_name,
+        user_type: "barber"
+    }).save(function(err, barber) {
+        res.json(barber);
+        console.log("barber", barber);
+    });
 };

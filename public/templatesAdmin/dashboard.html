@@ -1,22 +1,22 @@
 <div class="clearfix panel">
 	<div class="col-sm-4 clearfix">
-    	<div class="panel-body dashboard-box clearfix">
+    	<a  ui-sref="barbers"><div class="panel-body dashboard-box clearfix">
         	<div class="col-md-6 box-left"><i class="icon" ng-include="'svgAdmin/user.svg'"></i></div>
         	<div class="col-md-6 box-right text-right"><label>Total Barbers</label><span>{{totalbarber.length}}</span></div>
-        </div>
+        </div></a>
     </div>
     <div class="col-sm-4 clearfix">
-    	<div class="panel-body dashboard-box clearfix">
+    	<a  ui-sref="shops"><div class="panel-body dashboard-box clearfix">
         	<div class="col-md-6 box-left"><i class="icon" ng-include="'svgAdmin/factory.svg'"></i></div>
         	<div class="col-md-6 box-right text-right"><label>Total Shops</label><span>{{totalshop.length}}</span></div>
-        </div>
+        </div></a>
     </div>
     <div class="col-sm-4 clearfix">
-    	<div class="panel-body dashboard-box clearfix">
+    	<a  ui-sref="customers"><div class="panel-body dashboard-box clearfix">
         	<div class="col-md-6 box-left"><i class="icon" ng-include="'svgAdmin/users.svg'"></i></div>
         	<div class="col-md-6 box-right text-right"><label>Total Customers</label><span>{{totalcustomer.length}}</span></div>
         </div>
-    </div>
+    </div></a>
 </div>
 <div class="clearfix panel">
 	<div class="col-lg-8">

@@ -114,15 +114,15 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
         url: '/designDashboardOfBarber',
         views: {
           "homeDash": {
-            templateUrl: 'partials/dashboard.html',
-            controller: "dashboardCtrl"
+            templateUrl: 'partials/barberDashboard.html',
+            controller: "barberCtrl"
           },
           "header": {
-            templateUrl: 'partials/headerAfterLogin.html',
-            controller: "HeaderCtrl"
+            templateUrl: 'partials/barber_header_after_login.html',
+            controller: "barberCtrl"
           },
           "sideBar": {
-            templateUrl: 'partials/afterLoginSideBar.html'
+            templateUrl: 'partials/barberSideBar.html'
           }
         },
         resolve: {
@@ -130,7 +130,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             var deferred = $q.defer();
             $ocLazyLoad.load({
               name: 'BarbrDoApp',
-              files: ['js/controllers/dashboard.js',
+              files: ['js/controllers/barberController.js',
                 'js/services/customer.js'
               ]
             }).then(function() {
@@ -141,6 +141,143 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
           loginRequired: loginRequired
         }
       })
+    
+    
+    .state('appointmentDetail', {
+        url: '/appointmentdetail',
+        views: {
+          "homeDash": {
+            templateUrl: 'partials/appointment_detail.html'
+          },
+          "header": {
+            templateUrl: 'partials/barber_header_after_login.html',
+            controller: "barberCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/barberSideBar.html'
+          }
+        }
+      })
+    
+    .state('appointmentDetailconfirm', {
+        url: '/appointmentdetailconfirm',
+        views: {
+          "homeDash": {
+            templateUrl: 'partials/appointment_detail_confirm.html'
+          },
+          "header": {
+            templateUrl: 'partials/barber_header_after_login.html',
+            controller: "barberCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/barberSideBar.html'
+          }
+        }
+      })
+    
+    .state('requestchair', {
+        url: '/requestchair',
+        views: {
+          "homeDash": {
+            templateUrl: 'partials/requestchair.html'
+          },
+          "header": {
+            templateUrl: 'partials/barber_header_after_login.html',
+            controller: "barberCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/barberSideBar.html'
+          }
+        }
+      })
+    
+    .state('sendrequestchair', {
+        url: '/sendrequestchair',
+        views: {
+          "homeDash": {
+            templateUrl: 'partials/sendrequestchair.html'
+          },
+          "header": {
+            templateUrl: 'partials/barber_header_after_login.html',
+            controller: "barberCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/barberSideBar.html'
+          }
+        }
+      })
+
+     .state('requestchairsent', {
+        url: '/requestchairsent',
+        views: {
+          "homeDash": {
+            templateUrl: 'partials/requestchairsent.html'
+          },
+          "header": {
+            templateUrl: 'partials/barber_header_after_login.html',
+            controller: "barberCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/barberSideBar.html'
+          }
+        }
+      })
+
+     .state('managerequest', {
+        url: '/managerequest',
+        views: {
+          "homeDash": {
+            templateUrl: 'partials/managerequest.html'
+          },
+          "header": {
+            templateUrl: 'partials/barber_header_after_login.html',
+            controller: "barberCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/barberSideBar.html'
+          }
+        }
+      })    
+ 
+ 
+    .state('manageservices', {
+        url: '/manageservices',
+        views: {
+          "homeDash": {
+            templateUrl: 'partials/manageservices.html'
+          },
+          "header": {
+            templateUrl: 'partials/barber_header_manage_services.html',
+            controller: "barberCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/barberSideBar.html'
+          }
+        }
+      })  
+    
+    .state('addservice', {
+        url: '/addservice',
+        views: {
+          "homeDash": {
+            templateUrl: 'partials/addservice.html'
+          },
+          "header": {
+            templateUrl: 'partials/barber_header_after_login.html',
+            controller: "barberCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/barberSideBar.html'
+          }
+        }
+      })      
+ 
+    
+    
+    
+    
+    
+    
 
     .state('contact', {
         url: '/contact',

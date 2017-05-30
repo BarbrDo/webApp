@@ -1,4 +1,4 @@
-angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad','ngMask','ui.bootstrap'])
+angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap'])
   .config(function($stateProvider, $urlRouterProvider, $locationProvider, $authProvider) {
     $locationProvider.html5Mode({
       enabled: true,
@@ -11,16 +11,19 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
         views: {
           "home": {
             templateUrl: 'partials/home.html',
+            controller:'HeaderCtrl'
           },
           "footer": {
             templateUrl: 'partials/footer.html'
           },
           "header": {
             templateUrl: 'partials/header.html',
-            controller:'HeaderCtrl'
+            controller: 'HeaderCtrl'
           }
+        },
+        resolve: {
+          skipIfAuthenticated: skipIfAuthenticated
         }
-       
       })
       .state('barberHome', {
         url: '/barber',
@@ -33,41 +36,148 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
           },
           "header": {
             templateUrl: 'partials/header.html',
-            controller:'HeaderCtrl'
+            controller: 'HeaderCtrl'
           }
+        },
+        resolve: {
+          skipIfAuthenticated: skipIfAuthenticated
         }
       })
-
-      $stateProvider
       .state('dashboard', {
         url: '/dashboard',
         views: {
           "homeDash": {
             templateUrl: 'partials/dashboard.html',
-            controller:"dashboardCtrl"
+            controller: "dashboardCtrl"
           },
           "header": {
-            templateUrl: 'partials/headerAfterLogin.html'
+            templateUrl: 'partials/headerAfterLogin.html',
+            controller: "HeaderCtrl"
           },
-          "sideBar":{
-            templateUrl:'partials/afterLoginSideBar.html'
+          "sideBar": {
+            templateUrl: 'partials/afterLoginSideBar.html'
           }
         },
         resolve: {
-        lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
-                        var deferred = $q.defer();
-                        $ocLazyLoad.load({
-                        name: 'BarbrDoApp',
-                        files: ['js/controllers/dashboard.js']
-                    }).then(function() {
-                            deferred.resolve();
-                        });
-                        return deferred.promise;
-                    }]
-            } 
+          lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+            var deferred = $q.defer();
+            $ocLazyLoad.load({
+              name: 'BarbrDoApp',
+              files: ['js/controllers/dashboard.js',
+                'js/services/customer.js'
+              ]
+            }).then(function() {
+              deferred.resolve();
+            });
+            return deferred.promise;
+          }],
+          loginRequired: loginRequired
+        }
+      })
+    .state('shopContainsBarbers', {
+      url: '/shopContainsBarbers/:_id',
+      params:{
+        _id:null
+      },
+      views: {
+          "homeDash": {
+            templateUrl: 'partials/shopHavingBarbers.html',
+            controller: "dashboardCtrl"
+          },
+          "header": {
+            templateUrl: 'partials/headerAfterLogin.html',
+            controller: "HeaderCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/afterLoginSideBar.html'
+          }
+        },
+        resolve: {
+          lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+            var deferred = $q.defer();
+            $ocLazyLoad.load({
+              name: 'BarbrDoApp',
+              files: ['/js/controllers/dashboard.js',
+                '/js/services/customer.js'
+              ]
+            }).then(function() {
+              deferred.resolve();
+            });
+            return deferred.promise;
+          }],
+          loginRequired: loginRequired
+        }
+    })
+
+    .state('bookNow', {
+      url: '/book/:shop_id/:barber_id',
+      params:{
+        shop_id:null,
+        barber_id:null
+      },
+      views: {
+          "homeDash": {
+            templateUrl: 'partials/book_now.html',
+            controller: "dashboardCtrl"
+          },
+          "header": {
+            templateUrl: 'partials/headerAfterLogin.html',
+            controller: "HeaderCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/afterLoginSideBar.html'
+          }
+        },
+        resolve: {
+          lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+            var deferred = $q.defer();
+            $ocLazyLoad.load({
+              name: 'BarbrDoApp',
+              files: ['/js/controllers/dashboard.js',
+                '/js/services/customer.js'
+              ]
+            }).then(function() {
+              deferred.resolve();
+            });
+            return deferred.promise;
+          }],
+          loginRequired: loginRequired
+        }
+    })
+
+    .state('barberDashboard', {
+        url: '/designDashboardOfBarber',
+        views: {
+          "homeDash": {
+            templateUrl: 'partials/dashboard.html',
+            controller: "dashboardCtrl"
+          },
+          "header": {
+            templateUrl: 'partials/headerAfterLogin.html',
+            controller: "HeaderCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/afterLoginSideBar.html'
+          }
+        },
+        resolve: {
+          lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+            var deferred = $q.defer();
+            $ocLazyLoad.load({
+              name: 'BarbrDoApp',
+              files: ['js/controllers/dashboard.js',
+                'js/services/customer.js'
+              ]
+            }).then(function() {
+              deferred.resolve();
+            });
+            return deferred.promise;
+          }],
+          loginRequired: loginRequired
+        }
       })
 
-      .state('contact', {
+    .state('contact', {
         url: '/contact',
         templateUrl: 'partials/contact.html',
         controller: 'ContactCtrl'
@@ -128,26 +238,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
         url: '/partials',
         templateUrl: 'partials/404.html'
       })
-      // .when('/shopdetails/:id', {
-      //   templateUrl: 'partials/shopdetails.html',
-      //   controller: 'ShopCtrl'
-      // })
-      // .when('/appointment/:id', {
-      //   templateUrl: 'partials/appointment.html',
-      //    controller: 'AppointCtrl'
-      // })
-      // .when('/pay/:id', {
-      //   templateUrl: 'partials/pay.html',
-      //    controller: 'AppointCtrl'
-      // })
-      // .when('/confirm', {
-      //   templateUrl: 'partials/confirm.html',
-      //    controller: 'AppointCtrl'
-      // })
-      //  .when('/barberprofile/:id', {
-      //   templateUrl: 'partials/barberprofile.html',
-      //    controller: 'BarbrCtrl'
-      // })
+
     $urlRouterProvider.otherwise('pageNotFound');
 
 
@@ -163,15 +254,26 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
       clientId: '73291812238-aekh50otlf7b5duqanlvo2q1p2o8e4m9.apps.googleusercontent.com'
     });
 
-    function skipIfAuthenticated($location, $auth) {
+    function skipIfAuthenticated($state, $auth, $q) {
+      var deferred = $q.defer();
       if ($auth.isAuthenticated()) {
-        $location.path('/');
+        setTimeout(function() {
+          deferred.resolve()
+          $state.go('dashboard');
+        }, 0);
+        return deferred.promise;
       }
     }
 
-    function loginRequired($location, $auth) {
+    function loginRequired($state, $auth, $q) {
+      // console.log("loginRequired", $auth.isAuthenticated());
+      var deferred = $q.defer();
       if (!$auth.isAuthenticated()) {
-        $location.path('/login');
+        setTimeout(function() {
+          deferred.resolve()
+          $state.go('home');
+        }, 0);
+        return deferred.promise;
       }
     }
   })

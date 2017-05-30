@@ -1,0 +1,82 @@
+<div class="panel">
+  <div class="panel-heading">Services</div>
+  <div class="panel-body">
+     
+    
+    <div class="clearfix search-box">
+			<div class="col-sm-7">
+            	<div class="row">
+                	<label class="col-lg-2 col-sm-3">Search</label>
+                    <div class="col-lg-6 col-sm-9">
+                        <input type="text" class="form-control" ng-model="service_search" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-5 text-right">
+            	<button class="btn btn-primary" ng-click="showmodal2()">
+                	<i class="icon" ng-include="'svg/plus-button.svg'"></i>
+                    <span>Add Service</span>
+                </button>
+            </div>
+		</div>
+        
+    <div class="col-sm-12">
+    <h3 class="panel-subtitle">Service List</h3>
+      <div class="table-responsive">
+        <table class="table table-condensed table-striped" ng-init="viewitem = '6'">
+          <thead>
+            <tr>
+              <th width="25%">Service Name</th>
+              <th width="25%">No. of Sub Service</th>
+              <th width="25%">Time</th>
+              <th width="25%">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr ng-repeat="item in service_list | limitTo: viewitem | filter: service_search">
+              <td><div class="text-overflow"  ng-bind="item.service_name"></div></td>
+              <td><div class="text-overflow"  ng-bind="item.no_service"></div></td>
+              <td><div class="text-overflow"  ng-bind="item.time"></div></td>
+              <td><div class="relative table-action">
+                  <div class="text-overflow actbtn-div" >
+                    <button tooltip-placement="top" uib-tooltip="Edit" ng-if="item.edit == 'true'"><i class="flaticon-pencil"></i></button>
+                    <button tooltip-placement="top" uib-tooltip="Cancel" ng-if="item.cancel == 'true'"><i class="flaticon-cancel"></i></button>
+                    <button tooltip-placement="top" uib-tooltip="Add Sub Services" ng-if="item.squares == 'true'"><i class="flaticon-squares"></i></button>
+                    <button ng-click="showmodal3()" tooltip-placement="top" uib-tooltip="View"><i class="flaticon-eye icon"></i></button>
+                  </div>
+                </div></td>
+            </tr>
+            <tr ng-if="!service_list.length">
+              <td colspan="5"><div class="alert alert-warning" >No List Avilable</div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="clearfix table-footer mt-">
+        <div class="col-sm-6">
+          <label>No. of Enteries</label>
+          <select class="" ng-model="viewitem">
+            <option value="6">6</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+          </select>
+        </div>
+        <div class="col-sm-6 clearfix">
+          <div class="pull-right">
+            <nav aria-label="Page navigation">
+              <ul class="pagination">
+                <li class="disabled"> <a href="#" aria-label="Previous"> <span aria-hidden="true">&laquo;</span> </a> </li>
+                <li class="active"><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li> <a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span> </a> </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

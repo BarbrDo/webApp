@@ -67,8 +67,16 @@
                                 </div>
                                 <form name="loginForm">
                                     <div class="form-group ">
-                                        <input type="email" name="email" id="email" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" class="form-control" required/>
+                                        <input type="text" name="email" id="email" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" class="form-control" required/>
                                         <div class="form-control-placeholder">Email Address</div>
+                                        <div class="validationError" ng-messages="loginForm.email.$error" ng-show="
+                                                    loginForm.email.$touched &&loginForm.email.$invalid && (!loginForm.email.$pristine || loginForm.$submitted)" role="alert">
+                                        <span style="color:red" ng-message="pattern" class="error-message">Email is not valid</span>
+                                    </div>
+                                    <div class="validationError" ng-messages="loginForm.email.$error" ng-show="loginForm.email.$error.required &&
+                                                    loginForm.email.$touched && loginForm.email.$invalid" role="alert">
+                                        <span style="color:red" ng-message="required" class="error-message">Email is required</span>
+                                    </div>
                                     </div>
                                     <div class="form-group mbzero">
                                         <input type="password" name="password" id="password" ng-model="user.password" class="form-control" required />
@@ -99,7 +107,7 @@
                                         <input type="radio" name="type" ng-model="user.user_type" value="shop"> <span>Barber Shop</span> </label>
                                 </div>
                                 <div class="form-group">
-                                    <input type="email" name="email" id="email" class="form-control" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" required/>
+                                    <input type="text" name="email" id="email" class="form-control" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" required/>
                                     <div class="form-control-placeholder">Email Address</div>
                                     <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="
                                                     signUpForm.email.$touched &&signUpForm.email.$invalid && (!signUpForm.email.$pristine || signUpForm.$submitted)" role="alert">

@@ -7,17 +7,17 @@ angular.module('BarbrDoApp')
       $scope.active.val = tab;
     }
     $scope.signup = function() {
-      console.log($scope.user)
+      $('#bs-example-modal-lg').modal('hide');
       $auth.signup($scope.user)
         .then(function(response) {
           $auth.setToken(response);
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          $('#signup').modal('hide');
           $scope.user = {};
           $location.path('/');
         })
         .catch(function(response) {
+          $('#bs-example-modal-lg').modal('show');
           $scope.messages = {
             error: Array.isArray(response.data) ? response.data : response.data
           };

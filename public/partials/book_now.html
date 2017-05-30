@@ -1,0 +1,86 @@
+<div class="crumb"> <span>Book Appointment</span> </div>
+<div class="wrapper">
+    <div class="block">
+        <h2>Your Barber</h2>
+        <div class="selected_barber">
+            <div class="selected_user"> <img src="images/brbr_pic.png" alt=""> </div>
+            <div class="namertng">
+                <h3>{{barberInformation[0].barberfname[0]}} {{barberInformation[0].barberlname[0]}}</h3>
+                <div class="rtng"><img src="images/rating.png" alt=""> </div>
+            </div>
+            <div class="locdis">
+                <p><span>Location :</span> {{barberInformation[0].shopName}}</p>
+                <p><span>Distance :</span> {{barberInformation[0].distance | number}} Miles</p>
+            </div>
+        </div>
+    </div>
+    <div class="block">
+        <h2>Select Date</h2>
+        <div class="sldt">
+            <ul>
+                <li ng-repeat = "dates in selectDate" ng-click="setSelected(dates)">
+                    <a href="">
+                        <p>{{dates | date: EEEE}}</p>
+                        <!-- <p>{{dates | date: dd}}</p> -->
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="clndrbtn"> <img src="images/clndr.png" alt=""> </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="block" ng-if="selectedDate">
+        <h2>Select Time</h2>
+        <div class="sttime">
+            <div class="slt">
+                <label>
+                    <input type="radio" name="a" value="morning" ng-model="checkTime"> Morning </label>
+                <label>
+                    <input type="radio" name="a" value="afternoon" ng-model="checkTime"> Afternoon </label>
+                <label>
+                    <input type="radio" name="a" value="evening" ng-model="checkTime"> Evening </label>
+            </div>
+            <div class="sttimes" ng-if="checkTime=='morning'">
+                <ul>
+                    <li ng-repeat = "time in timeSlots.morning" ng-click="setSelectedTime(time)">
+                    <a href="">{{time}} am</a> </li>
+                </ul>
+            </div>
+            <div class="sttimes" ng-if="checkTime=='afternoon'">
+                <ul>
+                    <li ng-repeat = "time in timeSlots.afternoon" ng-click="setSelectedTime(time)">
+                    <a href="">{{time}} pm</a> </li>
+                </ul>
+            </div>
+            <div class="sttimes" ng-if="checkTime=='evening'" >
+                <ul>
+                    <li ng-repeat = "time in timeSlots.evening" ng-click="setSelectedTime(time)">
+                    <a href="">{{time}} pm</a> </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="block" ng-if="choosedTime">
+        <h2>Select Service</h2>
+        <div class="row">
+            <div class="stsr">
+                <div class="col-md-6" ng-repeat = "services in barberservice">
+                    <!-- <a href="#" class="select">{{services.name}} <span>${{services.price}}</span></a> -->
+                    <input type="checkbox"  name="selectedServices[]" value="{{fruitName}}" ng-checked="selection.indexOf(services) > -1" ng-click="toggleSelection(services)">{{services.name}}<span>${{services.price}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="totl">
+            <p>Total <span>$13</span></p>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button class="subtn" ng-click="payLater()">Pay Later </button>
+            </div>
+            <div class="col-md-6">
+                <button class="subtn">Pay Now</button>
+            </div>
+        </div>
+    </div>
+</div>

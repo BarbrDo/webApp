@@ -1,0 +1,173 @@
+{
+  "tasklist": [
+    {
+      "task_name": "Do Cleaning in car wash company",
+      "serv": "Cleaning",
+      "sub": "Floor Cleaning",
+	    "check": "15"
+    },
+    {
+      "task_name": "Electrical Borad reparing",
+      "serv": "Electrical",
+      "sub": "Electrical Board",
+	  "check": "20"
+       
+    },
+    {
+     "task_name": "Keep maintance of store",
+      "serv": "Care",
+      "sub": "Store Keeper",
+	  "check": "0"
+      
+    },
+    {
+      "task_name": "Do Cleaning in car wash company",
+      "serv": "Cleaning",
+      "sub": "Floor Cleaning",
+	  "check": "5"
+     
+    },
+    {
+      "task_name": "Electrical Borad reparing",
+      "serv": "Electrical",
+      "sub": "Electrical Board",
+	  "check": "10"
+      
+    },
+    {
+     "task_name": "Keep maintance of store",
+      "serv": "Care",
+      "sub": "Store Keeper",
+	  "check": "15"
+       
+    },
+    {
+      "task_name": "Do Cleaning in car wash company",
+      "serv": "Cleaning",
+      "sub": "Floor Cleaning",
+      "check": "15"
+    },
+    {
+      "task_name": "Electrical Borad reparing",
+      "serv": "Electrical",
+      "sub": "Electrical Board",
+    "check": "20"
+       
+    },
+    {
+     "task_name": "Keep maintance of store",
+      "serv": "Care",
+      "sub": "Store Keeper",
+    "check": "0"
+      
+    },
+    {
+      "task_name": "Do Cleaning in car wash company",
+      "serv": "Cleaning",
+      "sub": "Floor Cleaning",
+    "check": "5"
+     
+    },
+    {
+      "task_name": "Electrical Borad reparing",
+      "serv": "Electrical",
+      "sub": "Electrical Board",
+    "check": "10"
+      
+    },
+    {
+     "task_name": "Keep maintance of store",
+      "serv": "Care",
+      "sub": "Store Keeper",
+    "check": "15"
+       
+    },
+    {
+      "task_name": "Do Cleaning in car wash company",
+      "serv": "Cleaning",
+      "sub": "Floor Cleaning",
+      "check": "15"
+    },
+    {
+      "task_name": "Electrical Borad reparing",
+      "serv": "Electrical",
+      "sub": "Electrical Board",
+    "check": "20"
+       
+    },
+    {
+     "task_name": "Keep maintance of store",
+      "serv": "Care",
+      "sub": "Store Keeper",
+    "check": "0"
+      
+    },
+    {
+      "task_name": "Do Cleaning in car wash company",
+      "serv": "Cleaning",
+      "sub": "Floor Cleaning",
+    "check": "5"
+     
+    },
+    {
+      "task_name": "Electrical Borad reparing",
+      "serv": "Electrical",
+      "sub": "Electrical Board",
+    "check": "10"
+      
+    },
+    {
+     "task_name": "Keep maintance of store",
+      "serv": "Care",
+      "sub": "Store Keeper",
+    "check": "15"
+       
+    },
+    {
+      "task_name": "Do Cleaning in car wash company",
+      "serv": "Cleaning",
+      "sub": "Floor Cleaning",
+      "check": "15"
+    },
+    {
+      "task_name": "Electrical Borad reparing",
+      "serv": "Electrical",
+      "sub": "Electrical Board",
+    "check": "20"
+       
+    },
+    {
+     "task_name": "Keep maintance of store",
+      "serv": "Care",
+      "sub": "Store Keeper",
+    "check": "0"
+      
+    },
+    {
+      "task_name": "Do Cleaning in car wash company",
+      "serv": "Cleaning",
+      "sub": "Floor Cleaning",
+    "check": "5"
+     
+    },
+    {
+      "task_name": "Electrical Borad reparing",
+      "serv": "Electrical",
+      "sub": "Electrical Board",
+    "check": "10"
+      
+    },
+    {
+     "task_name": "Keep maintance of store",
+      "serv": "Care",
+      "sub": "Store Keeper",
+    "check": "15"
+       
+    } 
+    
+   
+  
+
+
+  ]
+}

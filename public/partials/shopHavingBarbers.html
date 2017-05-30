@@ -1,0 +1,48 @@
+
+  <div class="crumb"> <span>Book Appointment</span> </div >
+  <div class="wrapper">
+    <div class="block">
+      <center><h2>{{shopBarbers.name}}</h2></center>
+      <!-- Sorting -->
+      <!-- <div class="sorting mbft">
+        <div class="view">
+          <label> View by </label>
+          <select name="singleSelect" id="singleSelect" ng-model="valueOfSelect" ng-init="valueOfSelect='shop'">
+            <option value="shop">Shop</option>
+            <option value="barber">Barber</option>
+          </select>
+        </div>
+        <div class="search">
+          <input type="text" placeholder="Search" >
+          <input type="submit" value="" name="" >
+        </div>
+      </div> -->
+      <!-- Sorting -->
+      <div class="org_content">
+      <div class="row" style="background-color: grey;margin-top: 10px;">
+        <div class="col-sm-8">
+          <div >
+        <div>{{shopBarbers.name}}</div>
+        <div>{{shopBarbers.address}}</div>
+        <div>{{shopBarbers.state}} {{shopBarbers.city}}</div>
+      </div>
+        </div>
+        <div class="col-sm-4" style="float: right;">
+          <button>View On Map</button>
+        </div>
+      </div>
+        <div class="row">
+          <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat="data in shopBarbers.barber">
+            <div class="barber">
+              <div class="cont">
+                <div class="user_pic"> <img src="/images/brbr_pic.png" alt="" ></div>
+                <h3>{{data.first_name}} {{data.last_name}}</h3>
+                <p><span>Member Since</span> : {{data.created_date | date:'yyyy-MM-dd'}}</p>
+                <div class="rating"> <img src="/images/rating.png" alt="" > </div>
+              </div>
+              <a ui-sref="bookNow({shop_id:shopBarbers._id,barber_id:data._id})" class="book_nw" > Book Now <i class="fa  fa-angle-right"></i> </a> </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -3,6 +3,15 @@ angular.module('BarbrDoApp')
     $scope.isActive = function(viewLocation) {
       return viewLocation === $location.path();
     };
+  
+    $scope.mainClass = function(){
+      if ($auth.isAuthenticated()) {
+        return "bg_grey";
+      }
+      else{
+        return
+      }
+    }
 
     $scope.isAuthenticated = function() {
       return $auth.isAuthenticated();
@@ -18,6 +27,6 @@ angular.module('BarbrDoApp')
     $scope.logout = function() {
       $auth.logout();
       delete $window.localStorage.user;
-      $location.path('/');
+      $state.go('home');
     };
   });

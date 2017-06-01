@@ -1,4 +1,10 @@
-angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap'])
+angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap','ngTable','alexjoffroy.angular-loaders','uiGmapgoogle-maps'])
+  .config(
+    ['uiGmapGoogleMapApiProvider', function(GoogleMapApiProviders) {
+        GoogleMapApiProviders.configure({
+            china: true
+        });
+    }])
   .config(function($stateProvider, $urlRouterProvider, $locationProvider, $authProvider) {
     $locationProvider.html5Mode({
       enabled: true,
@@ -74,6 +80,39 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
           loginRequired: loginRequired
         }
       })
+
+    .state('upcomingComplete', {
+        url: '/home',
+        views: {
+          "homeDash": {
+            templateUrl: 'partials/customer_upcoming_completed.html',
+            controller: "dashboardCtrl"
+          },
+          "header": {
+            templateUrl: 'partials/headerAfterLogin.html',
+            controller: "HeaderCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/afterLoginSideBar.html'
+          }
+        },
+        resolve: {
+          lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+            var deferred = $q.defer();
+            $ocLazyLoad.load({
+              name: 'BarbrDoApp',
+              files: ['js/controllers/dashboard.js',
+                'js/services/customer.js'
+              ]
+            }).then(function() {
+              deferred.resolve();
+            });
+            return deferred.promise;
+          }],
+          loginRequired: loginRequired
+        }
+      })
+
     .state('shopContainsBarbers', {
       url: '/shopContainsBarbers/:_id',
       params:{
@@ -176,8 +215,40 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
           loginRequired: loginRequired
         }
       })
-    
-    
+    .state('pending', {
+      url: '/pending-confirmation/:_id',
+      params:{
+        _id:null
+      },
+      views: {
+          "homeDash": {
+            templateUrl: 'partials/pending_confirmation.html',
+            controller: "dashboardCtrl"
+          },
+          "header": {
+            templateUrl: 'partials/headerAfterLogin.html',
+            controller: "HeaderCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/afterLoginSideBar.html'
+          }
+        },
+        resolve: {
+          lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+            var deferred = $q.defer();
+            $ocLazyLoad.load({
+              name: 'BarbrDoApp',
+              files: ['/js/controllers/dashboard.js',
+                '/js/services/customer.js'
+              ]
+            }).then(function() {
+              deferred.resolve();
+            });
+            return deferred.promise;
+          }],
+          loginRequired: loginRequired
+        }
+      })
     .state('appointmentDetail', {
         url: '/appointmentdetail',
         views: {
@@ -193,7 +264,6 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
           }
         }
       })
-    
     .state('appointmentDetailconfirm', {
         url: '/appointmentdetailconfirm',
         views: {
@@ -289,8 +359,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             templateUrl: 'partials/barberSideBar.html'
           }
         }
-      })  
-    
+      })
     .state('addservice', {
         url: '/addservice',
         views: {
@@ -305,15 +374,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             templateUrl: 'partials/barberSideBar.html'
           }
         }
-      })      
- 
-    
-    
-    
-    
-    
-    
-
+      })
     .state('contact', {
         url: '/contact',
         templateUrl: 'partials/contact.html',
@@ -414,6 +475,22 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
       }
     }
   })
+.directive('checkImage', function($http) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            attrs.$observe('ngSrc', function(ngSrc) {
+              console.log("ngSrc",ngSrc);
+                $http.get(ngSrc).success(function(response){
+                    console.log("response in appjs",response);
+                }).error(function(){
+                    // alert('image not exist');
+                    element.attr('src', 'http://dhakaprice.com/images/No-image-found.jpg'); // set default image
+                });
+            });
+        }
+    };
+});
   // .run(function($rootScope, $window) {
   //   if ($window.localStorage.user) {
   //     $rootScope.currentUser = JSON.parse($window.localStorage.user);

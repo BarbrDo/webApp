@@ -1,0 +1,47 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<div class="crumb" ng-init="appointments()"> <span>Book Appointment</span> </div>
+<div class="wrapper">
+  <div class="block">
+    <div class="tabs customtab">
+      <uib-tabset active="activeJustified" justified="true">
+        <uib-tab index="0" heading="Pending Request">
+          <div class="all_cuts">
+            <div class="table-responsive">
+              <table class="table table-bordered" ng-table="tableParams">
+                <tr ng-repeat = "user in data.data.upcoming">
+                  <td data-title="'Picture'"><span><img src="http://dhakaprice.com/images/No-image-found.jpg" height="100" width="100"></span></td>
+                  <td data-title="'barber Name'">{{user.barber_id.first_name}} {{user.barber_id.last_name}}</td>
+                  <td data-title="'When'">{{user.appointment_date | date:yyyy:mm:dd}}</td>
+                  <td data-title="'Where'">{{user.shop_name}}</td>
+                  <td class="action" data-title="'Action'">
+                      <div class="ac_btn"> <a ui-sref="appointmentDetail" class=""  tooltip-placement="top" uib-tooltip="View Detail" > <i class="fa fa-eye"></i> </a>
+                      <a href="#" class="" tooltip-placement="top" uib-tooltip="Confirmed" > <i class="fa fa-check "></i> </a> <a href="#" class="" tooltip-placement="top" uib-tooltip="Reschedule" > <i class="fa fa-repeat "></i> </a> </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </uib-tab>
+        <uib-tab index="1" heading="Confirmed">
+          <div class="all_cuts">
+            <div class="table-responsive">
+              <table class="table table-bordered" ng-table="tableParams">
+                <tr ng-repeat = "users in data.data.complete">
+                  <td data-title="'Picture'">
+                    <span><img src="http://dhakaprice.com/images/No-image-found.jpg" height="100" width="100"></span>
+                  </td>
+                  <td data-title="'barber Name'">{{users.barber_id.first_name}} {{users.barber_id.last_name}}</td>
+                  <td data-title="'When'">{{users.appointment_date | date:yyyy:mm:dd}}</td>
+                  <td data-title="'Where'">{{users.shop_name}}</td>
+                  <td class="action" data-title="'Action'">
+                      <div class="ac_btn"> <a ui-sref="bookNow({shop_id:users.shop_id._id,barber_id:users.barber_id._id})" class=""  tooltip-placement="top" uib-tooltip="Re-book" > <i class="fa fa-check-square-o"></i> </a>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </uib-tab>
+      </uib-tabset>
+    </div>
+  </div>
+</div>

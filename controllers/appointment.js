@@ -60,22 +60,22 @@ exports.takeAppointment = function(req, res) {
 						});
 					} else {
 						appointment.findOne({
-							"_id": data._id
-						}).populate('barber_id', 'first_name last_name ratings picture created_date')
-						.populate('customer_id', 'first_name last_name ratings picture created_date')
-						.populate('shop_id', 'name address city state gallery created_date')
-                                                .exec(function(err, result) {
-							if (err) {
-								return res.status(400).send({
-									msg: constantObj.messages.errorRetreivingData
-								});
-							} else {
-								return res.status(200).send({
-									msg: constantObj.messages.successRetreivingData,
-									data: result
-								});
-							}
-						})
+								"_id": data._id
+							}).populate('barber_id', 'first_name last_name ratings picture created_date')
+							.populate('customer_id', 'first_name last_name ratings picture created_date')
+							.populate('shop_id', 'name address city state gallery created_date')
+							.exec(function(err, result) {
+								if (err) {
+									return res.status(400).send({
+										msg: constantObj.messages.errorRetreivingData
+									});
+								} else {
+									return res.status(200).send({
+										msg: constantObj.messages.successRetreivingData,
+										data: result
+									});
+								}
+							})
 					}
 				})
 			});
@@ -188,6 +188,35 @@ exports.customerAppointments = function(req, res) {
 							});
 						}
 					})
+			}
+		})
+}
+exports.pendingConfiramtion = function(req, res) {
+	console.log("pending confirmation working");
+	req.checkParams("_id", "_id cannot be blank").notEmpty();
+	let errors = req.validationErrors();
+	if (errors) {
+		return res.status(400).send({
+			msg: "error in your request",
+			err: errors
+		});
+	}
+	appointment.findOne({
+			"_id": req.params._id
+		}).populate('barber_id', 'first_name last_name ratings picture created_date')
+		.populate('customer_id', 'first_name last_name ratings picture created_date')
+		.populate('shop_id', 'name address latLong city state gallery created_date')
+		.exec(function(err, result) {
+			if (err) {
+				return res.status(400).send({
+					msg: constantObj.messages.errorRetreivingData,
+					err:err
+				});
+			} else {
+				return res.status(200).send({
+					msg: constantObj.messages.successRetreivingData,
+					data: result
+				});
 			}
 		})
 }

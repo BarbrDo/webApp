@@ -577,7 +577,7 @@ exports.listshops = function(req, res) {
     })
 };
 exports.availableBarber = function(req, res) {
-    var page = req.body.page || 1,
+    var page = req.body.page || 1;
     var count = req.body.count || 10;
     var skipNo = (page - 1) * count;
     var query = {};

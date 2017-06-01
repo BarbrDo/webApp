@@ -942,10 +942,11 @@ font-size: 24px
 .userimage span.uimg {
     float: left;
     color: #000;
-    width: 60px;
-    height: 60px;
+    width:50px;
+    height:50px;
     border-radius: 50%;
     overflow: hidden;
+    margin-top: 5px;
 }
 .userimage a {
     color: #000;
@@ -1125,6 +1126,7 @@ font-size: 24px
     padding-top: 60px;
     border: 1px solid #ccc6c6;
     padding-bottom: 15px;
+    min-height:190px; 
 }
 .barber .user_pic {
     border-radius: 50%;
@@ -1176,7 +1178,7 @@ font-size: 24px
     background: #ce2029
 }
 .csdwon {
-    min-width: 221px;
+    min-width: 210px;
     right: 0;
     left: auto;
     border: none;

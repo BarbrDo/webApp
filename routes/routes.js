@@ -67,6 +67,7 @@ module.exports = function(app, express) {
     app.post('/api/v1/appointment', appointmentController.takeAppointment); //Book Appointment
     app.post('/api/v1/customer/gallery', upload.any(), userController.uploadCustomerGallery); //Upload image in gallery
     app.delete('/api/v1/customer/gallery/:image_id',userController.deleteImages); //Delete image from gallery
+     app.get('/api/v1/appointment/pending/:_id',appointmentController.pendingConfiramtion);
     
     //Barber
     app.get('/api/v1/barbers', shopController.allBarbers); //List all barbers

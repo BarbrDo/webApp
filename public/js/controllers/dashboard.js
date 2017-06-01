@@ -1,13 +1,11 @@
 angular.module('BarbrDoApp')
-	.controller('dashboardCtrl', function($scope, $rootScope, $location, customer, $stateParams, $state,$window) {
+	.controller('dashboardCtrl', function($scope, $rootScope, $location, customer, $stateParams, $state, $window, ngTableParams, $timeout) {
 		$scope.dollarAmmount = 0.00;
 		$scope.annualCost = "$" + $scope.dollarAmmount;
 		var obj = {
 			'latitude': "30.708225",
 			'longitude': "76.7029445"
 		}
-		// var obj = JSON.parse($window.localStorage.user);
-		// console.log("_id",obj._id);
 		$scope.callFunctions = function() {
 			$scope.shoplist();
 			$scope.barberList();
@@ -15,7 +13,6 @@ angular.module('BarbrDoApp')
 		$scope.shoplist = function() {
 			customer.shopList(obj)
 				.then(function(response) {
-					// alert(JSON.stringify(response.data))
 					$scope.shops = response.data.data;
 				});
 		}
@@ -50,7 +47,6 @@ angular.module('BarbrDoApp')
 
 			customer.bookNowPageInfo(passObj)
 				.then(function(response) {
-					// alert(response.data.data[0]);
 					$scope.barberInformation = response.data.data;
 				});
 
@@ -68,12 +64,11 @@ angular.module('BarbrDoApp')
 			$scope.timeSlots = timeSlots;
 		}
 		$scope.setSelected = function(prop) {
-			$scope.selectedDate = prop.toISOString().slice(0,10);
+			$scope.selectedDate = prop.toISOString().slice(0, 10);
 		};
 		$scope.setSelectedTime = function(prop) {
 			$scope.choosedTime = prop;
 		};
-
 		$scope.barberList = function() {
 			customer.barberAll(obj)
 				.then(function(response) {
@@ -83,7 +78,6 @@ angular.module('BarbrDoApp')
 		$scope.selection = [];
 		$scope.toggleSelection = function toggleSelection(fruitName) {
 			var idx = $scope.selection.indexOf(fruitName);
-
 			// Is currently selected
 			if (idx > -1) {
 				$scope.selection.splice(idx, 1);
@@ -95,17 +89,70 @@ angular.module('BarbrDoApp')
 				console.log($scope.selection);
 			}
 		};
-		$scope.payLater = function(){
+		$scope.payLater = function() {
 			var postObj = {
-				"shop_id":$stateParams.shop_id,
-				"barber_id":$stateParams.barber_id,
-				"services":$scope.selection,
-				"appointment_date":$scope.selectedDate+" "+$scope.choosedTime,
-				"payment_method":"cash",
+				"shop_id": $stateParams.shop_id,
+				"barber_id": $stateParams.barber_id,
+				"services": $scope.selection,
+				"appointment_date": $scope.selectedDate + " " + $scope.choosedTime,
+				"payment_method": "cash",
 			}
 			customer.takeAppointment(postObj)
 				.then(function(response) {
-					$scope.barbers = response.data.data;
+					$state.go('pending', {
+						_id: response.data.data._id
+					});
 				});
+		}
+		$scope.appointments = function() {
+			$scope.loaderStart = true;
+			$scope.tableParams = new ngTableParams({
+				page: 1,
+				count: 10,
+				sorting: {
+					created: "desc"
+				}
+			}, {
+				counts: [],
+				getData: function($defer, params) {
+					customer.fetchAppointments().then(function(response) {
+						$scope.loaderStart = false;
+						$scope.data = response.data;
+						$defer.resolve($scope.data);
+					})
+				}
+			})
+		}
+			$scope.markers = [];
+			$scope.map = {
+				center: {
+					latitude: 30.708225,
+					longitude: 76.7029445
+				},
+				zoom: 4
+		}
+		if ($state.current.name == 'pending') {
+			var passingObj = {
+				_id: $stateParams._id
+			}
+			customer.pendingConfirmation(passingObj)
+				.then(function(response) {
+					$scope.pendingData = response.data.data;
+					var Markers = [{
+						"id": "0",
+						"coords": {
+							"latitude": "30.708225",
+							"longitude": "76.7029445"
+						},
+						"window": {
+							"title": ""
+						}
+					}];
+					$scope.markers = Markers;
+				});
+		}
+		$scope.passMapdata = function(data) {
+			console.log(data);
+
 		}
 	});

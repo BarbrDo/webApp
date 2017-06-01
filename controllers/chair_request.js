@@ -61,6 +61,8 @@ exports.requestChair = function(req, res) {
 	}
 	/*End of booking date*/
 }
+
+
 exports.bookChair = function(req, res) {
 	req.assert("shop_id", "_id is required.").notEmpty();
 	req.assert("chair_id", "Chair id is required.").notEmpty();
@@ -223,4 +225,35 @@ exports.bookChair = function(req, res) {
 			msg: 'Your input is wrong.'
 		});
 	}
+}
+
+
+exports.barberChairReqests = function(req, res) {
+    req.checkParams("shop_id", "Shop Id is required.").notEmpty();
+    if (req.validationErrors()) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    chairRequest.find(
+            {
+                'shop_id':req.params.shop_id,
+                'status':'pending'
+            },
+            function(err,chairRequest){
+                if(err){
+                    res.status(400).send({
+                        'msg':constantObj.messages.errorRetreivingData,
+                        'err':err
+                    })
+                } else {
+                    res.status(200).send({
+                        'msg':constantObj.messages.errorRetreivingData,
+                        'result':chairRequest
+                    })
+                }
+            }
+    );
+
 }

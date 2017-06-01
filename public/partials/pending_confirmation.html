@@ -6,27 +6,44 @@
 </style>
 <div class="crumb"> <span>Pending Confirmation</span> </div>
 <div class="wrapper">
-    <div class="block">
-        <h2></h2>
-        <div class="selected_barber">
-            <!-- <div class="selected_user"> <img src="images/brbr_pic.png" alt="" > </div>
-      <div class="namertng">
-        <h3>walker Smith</h3>
-        <div class="rtng"><img src="images/rating.png" alt="" > </div>
+    
+    
+    
+      <div class="block higlght">
+    <h2>Appointment Booked</h2>
+    <div class="row">
+      <div class="col-md-4 col-sm-6">
+        <p><i class="fa fa-calendar"> </i> {{pendingData.appointment_date}} </p>
       </div>
-      <div class="locdis">
-        <p><span>Last Cut :</span> 31 March, 2017</p>
-      </div> -->
-            <div style="margin-left: 30%;">
-                <div>
-                    <h2>#Pending Confirmation</h2>
-                </div>
-                <div>
-                    <h2>{{pendingData.appointment_date}}</h2>
-                </div>
-            </div>
-        </div>
+      <div class="col-md-4 col-sm-6">
+        <p><i class="fa  fa-clock-o"> </i> 9:00 AM</p>
+      </div>
+      <div class="col-md-4"> <a href="#" class="cmbtn">Add to Calendar</a> </div>
     </div>
+  </div>
+    
+    
+    
+    
+    
+   
+    
+    
+        <div class="block higlght">
+    <h2>Barber Shop Address</h2>
+    <div class="row">
+      <div class="col-md-8 col-sm-8">
+        <p><i class="fa  fa-map-marker"> </i> {{pendingData.shop_id.name}} {{pendingData.shop_id.address}} {{pendingData.shop_id.city}} {{pendingData.shop_id.state}}</p>
+      </div>
+      <div class="col-md-4 col-sm-4"> <a href="#" class="cmbtn">View on Map</a> </div>
+    </div>
+  </div>
+    
+    
+    
+    
+    
+   
     <div class="block higlght">
         <h2></h2>
         <div class="row">
@@ -44,7 +61,7 @@
          </p>
             </div>
             <div class="col-md-6 col-sm-6">
-                <p><i class="">{{pendingData.shop_id.name}} {{pendingData.shop_id.address}} {{pendingData.shop_id.city}} {{pendingData.shop_id.state}}</i></p>
+                <p><i class=""></i></p>
             </div>
             <!-- <div class="col-md-4"> <a href="#" class="cmbtn">Pop barber Shop</a> </div> -->
         </div>

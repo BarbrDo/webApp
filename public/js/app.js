@@ -1,4 +1,10 @@
-angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap','rzModule'])
+angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap','ngTable','alexjoffroy.angular-loaders','uiGmapgoogle-maps','rzModule'])
+ .config(
+    ['uiGmapGoogleMapApiProvider', function(GoogleMapApiProviders) {
+        GoogleMapApiProviders.configure({
+            china: true
+        });
+    }])
     .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $authProvider) {
         $locationProvider.html5Mode({
             enabled: true,
@@ -209,103 +215,6 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         })
 
-        .state('requestchair', {
-            url: '/requestchair',
-            views: {
-                "homeDash": {
-                    templateUrl: 'partials/requestchair.html'
-                },
-                "header": {
-                    templateUrl: 'partials/barber_header_after_login.html',
-                    controller: "barberCtrl"
-                },
-                "sideBar": {
-                    templateUrl: 'partials/barberSideBar.html'
-                }
-            }
-        })
-
-        .state('sendrequestchair', {
-            url: '/sendrequestchair',
-            views: {
-                "homeDash": {
-                    templateUrl: 'partials/sendrequestchair.html'
-                },
-                "header": {
-                    templateUrl: 'partials/barber_header_after_login.html',
-                    controller: "barberCtrl"
-                },
-                "sideBar": {
-                    templateUrl: 'partials/barberSideBar.html'
-                }
-            }
-        })
-
-        .state('requestchairsent', {
-            url: '/requestchairsent',
-            views: {
-                "homeDash": {
-                    templateUrl: 'partials/requestchairsent.html'
-                },
-                "header": {
-                    templateUrl: 'partials/barber_header_after_login.html',
-                    controller: "barberCtrl"
-                },
-                "sideBar": {
-                    templateUrl: 'partials/barberSideBar.html'
-                }
-            }
-        })
-
-        .state('managerequest', {
-            url: '/managerequest',
-            views: {
-                "homeDash": {
-                    templateUrl: 'partials/managerequest.html'
-                },
-                "header": {
-                    templateUrl: 'partials/barber_header_after_login.html',
-                    controller: "barberCtrl"
-                },
-                "sideBar": {
-                    templateUrl: 'partials/barberSideBar.html'
-                }
-            }
-        })
-
-
-        .state('manageservices', {
-            url: '/manageservices',
-            views: {
-                "homeDash": {
-                    templateUrl: 'partials/manageservices.html'
-                },
-                "header": {
-                    templateUrl: 'partials/barber_header_manage_services.html',
-                    controller: "barberCtrl"
-                },
-                "sideBar": {
-                    templateUrl: 'partials/barberSideBar.html'
-                }
-            }
-        })
-
-        .state('addservice', {
-            url: '/addservice',
-            views: {
-                "homeDash": {
-                    templateUrl: 'partials/addservice.html'
-                },
-                "header": {
-                    templateUrl: 'partials/barber_header_after_login.html',
-                    controller: "barberCtrl"
-                },
-                "sideBar": {
-                    templateUrl: 'partials/barberSideBar.html'
-                }
-            }
-        })
-
         .state('sendinvitation', {
             url: '/sendinvitation',
             views: {
@@ -504,36 +413,6 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
           loginRequired: loginRequired
         }
       })
-    .state('appointmentDetail', {
-        url: '/appointmentdetail',
-        views: {
-          "homeDash": {
-            templateUrl: 'partials/appointment_detail.html'
-          },
-          "header": {
-            templateUrl: 'partials/barber_header_after_login.html',
-            controller: "barberCtrl"
-          },
-          "sideBar": {
-            templateUrl: 'partials/barberSideBar.html'
-          }
-        }
-      })
-    .state('appointmentDetailconfirm', {
-        url: '/appointmentdetailconfirm',
-        views: {
-          "homeDash": {
-            templateUrl: 'partials/appointment_detail_confirm.html'
-          },
-          "header": {
-            templateUrl: 'partials/barber_header_after_login.html',
-            controller: "barberCtrl"
-          },
-          "sideBar": {
-            templateUrl: 'partials/barberSideBar.html'
-          }
-        }
-      })
     
     .state('requestchair', {
         url: '/requestchair',
@@ -630,44 +509,11 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
           }
         }
       })
-      .state('shop', {
-        url: '/shop',
-        templateUrl: './../profile.html',
-        controller: 'shopCtrl',
-        resolve: {
-          loginRequired: loginRequired
-        }
-      })
-      .state('forgot', {
-        url: '/forgot',
-        templateUrl: 'partials/forgot.html',
-        controller: 'ForgotCtrl',
-        resolve: {
-          skipIfAuthenticated: skipIfAuthenticated
-        }
-      })
-      .state('resetToken', {
-        url: '/reset/:token',
-        templateUrl: 'partials/reset.html',
-        controller: 'ResetCtrl',
-        resolve: {
-          skipIfAuthenticated: skipIfAuthenticated
-        }
-      })
-      .state('barberShops', {
-        url: '/barbershops',
-        templateUrl: 'partials/barbershops.html',
-        controller: 'ShopCtrl'
-      })
-      .state('barbers', {
-        url: '/barbers',
-        templateUrl: 'partials/barbers.html',
-        controller: 'ShopCtrl'
-      })
-      .state('pageNotFound', {
-        url: '/partials',
-        templateUrl: 'partials/404.html'
-      })
+        
+        
+        
+        
+        
 
     $urlRouterProvider.otherwise('pageNotFound');
     $authProvider.loginUrl = '/api/v1/login';
@@ -703,7 +549,10 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
         return deferred.promise;
       }
     }
+    
+    
   })
+
 .directive('checkImage', function($http) {
     return {
         restrict: 'A',

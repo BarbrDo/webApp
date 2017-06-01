@@ -577,12 +577,15 @@ exports.listshops = function(req, res) {
     })
 };
 exports.availableBarber = function(req, res) {
-    var page = req.body.page || 1;
-    var count = req.body.count || 10;
+    var page = req.body.page || 1,
+        count = req.body.count || 10;
     var skipNo = (page - 1) * count;
+    console.log("page", page);
+    console.log("count", count);
+    console.log("asdfasdjklfasdkfj");
     var query = {};
     query.isDeleted = false,
-    query.user_type = "barber"
+        query.user_type = "barber"
     var searchStr = req.body.search;
 
 

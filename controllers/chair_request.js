@@ -5,6 +5,7 @@ let constantObj = require('./../constants.js');
 var shop = require('../models/shop');
 var async = require('async');
 var moment = require('moment');
+var mongoose = require('mongoose');
 exports.requestChair = function(req, res) {
 	req.assert("shop_id", "Shop Id is required.").notEmpty();
 	req.assert("chair_id", "Chair Id is required.").notEmpty();
@@ -236,24 +237,37 @@ exports.barberChairReqests = function(req, res) {
             err: errors
         });
     }
-    chairRequest.find(
-            {
-                'shop_id':req.params.shop_id,
-                'status':'pending'
-            },
-            function(err,chairRequest){
-                if(err){
-                    res.status(400).send({
-                        'msg':constantObj.messages.errorRetreivingData,
-                        'err':err
-                    })
-                } else {
-                    res.status(200).send({
-                        'msg':constantObj.messages.errorRetreivingData,
-                        'result':chairRequest
-                    })
-                }
+    
+    var shop_id = mongoose.Types.ObjectId(req.params.shop_id);
+    chairRequest.aggregate([
+        {$match:{'shop_id':shop_id}},
+        {$lookup:{from:'shops',localField: 'chair_id',foreignField:'chairs._id',as:'shopChairInfo'}},
+        {$lookup:{from:'users',localField: 'barber_id',foreignField:'_id',as:'barberInfo'}},
+        {$unwind:"$shopChairInfo"},
+        {$unwind:"$shopChairInfo.chairs"},
+        {$project:{
+                _id:1,
+                booking_date:1,
+                status:1,
+                barberInfo:{_id:1,first_name:1,last_name:1,picture:1},
+                shopChairInfo:{_id:1,name:1,chairs:1},
+                isChairMatching:{$eq:['$chair_id','$shopChairInfo.chairs._id']}
             }
-    );
-
+        },
+        {$match:{isChairMatching:true}}   
+    ]).exec(function(err,chairRequest){
+            if(err){
+                res.status(400).send({
+                    'msg':constantObj.messages.errorRetreivingData,
+                    'err':err
+                })
+            } else {
+                res.status(200).send({
+                    'msg':constantObj.messages.successRetreivingData,
+                    'imagesPath': 'http://' + req.headers.host + '/' + 'uploadedFiles/',
+                    'result':chairRequest
+                    
+                });
+            }
+        });
 }

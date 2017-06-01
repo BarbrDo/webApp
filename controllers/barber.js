@@ -189,7 +189,7 @@ exports.viewAllServiesOfBarber = function (req, res) {
     }
     barber_service.find({
         "barber_id": req.params.barber_id,
-        "isDeleted": true
+        "isDeleted": false
     }, function (err, data) {
         if (err) {
             res.status(400).send({

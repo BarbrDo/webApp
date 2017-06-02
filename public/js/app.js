@@ -500,15 +500,65 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
           "homeDash": {
             templateUrl: 'partials/addservice.html'
           },
-          "header": {
-            templateUrl: 'partials/barber_header_after_login.html',
-            controller: "barberCtrl"
-          },
+         "header": {
+                templateUrl: 'partials/barber_shop_header.html',
+                controller: "barberCtrl"
+            },
           "sideBar": {
             templateUrl: 'partials/barberSideBar.html'
           }
         }
       })
+    .state('barbershop_manage_request', {
+        url: '/barbershop_manage_request',
+        views: {
+          "homeDash": {
+            templateUrl: 'partials/barbershop_manage_request.html'
+          },
+          "header": {
+                templateUrl: 'partials/barber_shop_header.html',
+                controller: "barberCtrl"
+            },
+          "sideBar": {
+            templateUrl: 'partials/barbershopSideBar.html'
+          }
+        }
+      })
+     
+        
+    .state('financialcenter', {
+        url: '/financialcenter',
+        views: {
+          "homeDash": {
+            templateUrl: 'partials/financialcenter.html'
+          },
+          "header": {
+                templateUrl: 'partials/barber_shop_header.html',
+                controller: "barberCtrl"
+            },
+          "sideBar": {
+            templateUrl: 'partials/barbershopSideBar.html'
+          }
+        }
+      })
+        
+        
+        
+     .state('contactbarbrDO', {
+        url: '/contactbarbrDO',
+        views: {
+          "homeDash": {
+            templateUrl: 'partials/contactbarbrDO.html'
+          },
+          "header": {
+                templateUrl: 'partials/barber_shop_header.html',
+                controller: "barberCtrl"
+            },
+          "sideBar": {
+            templateUrl: 'partials/barbershopSideBar.html'
+          }
+        }
+      });
         
         
         

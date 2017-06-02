@@ -1,21 +1,20 @@
 angular.module('BarbrDoApp')
-	.controller('dashboardCtrl', function($scope, $rootScope, $location, customer, $stateParams, $state,$window) {
+	.controller('dashboardCtrl', function($scope, $rootScope, $location, customer, $stateParams, $state, $window, ngTableParams, $timeout,$http) {
 		$scope.dollarAmmount = 0.00;
 		$scope.annualCost = "$" + $scope.dollarAmmount;
 		var obj = {
 			'latitude': "30.708225",
 			'longitude': "76.7029445"
 		}
-		// var obj = JSON.parse($window.localStorage.user);
-		// console.log("_id",obj._id);
 		$scope.callFunctions = function() {
 			$scope.shoplist();
 			$scope.barberList();
 		}
 		$scope.shoplist = function() {
+			$scope.loaderStart = true;
 			customer.shopList(obj)
 				.then(function(response) {
-					// alert(JSON.stringify(response.data))
+					$scope.loaderStart = true;
 					$scope.shops = response.data.data;
 				});
 		}
@@ -25,19 +24,23 @@ angular.module('BarbrDoApp')
 			});
 		}
 		if ($state.current.name == 'shopContainsBarbers') {
+			$scope.loaderStart = true;
 			var obj = {
 				_id: $stateParams._id
 			}
 			customer.shopContainsBarbers(obj).then(function(response) {
+				$scope.loaderStart = false;
 				$scope.shopBarbers = response.data.data;
 			})
 		}
 		if ($state.current.name == 'bookNow') {
+			$scope.loaderStart = true;
 			var passingObj = {
 				_id: $stateParams.barber_id
 			}
 			customer.barberService(passingObj)
 				.then(function(response) {
+					$scope.loaderStart = false;
 					$scope.barberservice = response.data.data;
 				});
 
@@ -50,7 +53,6 @@ angular.module('BarbrDoApp')
 
 			customer.bookNowPageInfo(passObj)
 				.then(function(response) {
-					// alert(response.data.data[0]);
 					$scope.barberInformation = response.data.data;
 				});
 
@@ -68,12 +70,11 @@ angular.module('BarbrDoApp')
 			$scope.timeSlots = timeSlots;
 		}
 		$scope.setSelected = function(prop) {
-			$scope.selectedDate = prop.toISOString().slice(0,10);
+			$scope.selectedDate = prop.toISOString().slice(0, 10);
 		};
 		$scope.setSelectedTime = function(prop) {
 			$scope.choosedTime = prop;
 		};
-
 		$scope.barberList = function() {
 			customer.barberAll(obj)
 				.then(function(response) {
@@ -83,7 +84,6 @@ angular.module('BarbrDoApp')
 		$scope.selection = [];
 		$scope.toggleSelection = function toggleSelection(fruitName) {
 			var idx = $scope.selection.indexOf(fruitName);
-
 			// Is currently selected
 			if (idx > -1) {
 				$scope.selection.splice(idx, 1);
@@ -95,17 +95,95 @@ angular.module('BarbrDoApp')
 				console.log($scope.selection);
 			}
 		};
-		$scope.payLater = function(){
+		$scope.payLater = function() {
 			var postObj = {
-				"shop_id":$stateParams.shop_id,
-				"barber_id":$stateParams.barber_id,
-				"services":$scope.selection,
-				"appointment_date":$scope.selectedDate+" "+$scope.choosedTime,
-				"payment_method":"cash",
+				"shop_id": $stateParams.shop_id,
+				"barber_id": $stateParams.barber_id,
+				"services": $scope.selection,
+				"appointment_date": $scope.selectedDate + " " + $scope.choosedTime,
+				"payment_method": "cash",
 			}
 			customer.takeAppointment(postObj)
 				.then(function(response) {
-					$scope.barbers = response.data.data;
+					$state.go('pending', {
+						_id: response.data.data._id
+					});
+				});
+		}
+		$scope.appointments = function() {
+			$scope.loaderStart = true;
+			$scope.tableParams = new ngTableParams({
+				page: 1,
+				count: 10,
+				sorting: {
+					created: "desc"
+				}
+			}, {
+				counts: [],
+				getData: function($defer, params) {
+					customer.fetchAppointments().then(function(response) {
+						$scope.loaderStart = false;
+						$scope.data = response.data;
+						$defer.resolve($scope.data);
+					})
+				}
+			})
+		}
+			$scope.markers = [];
+			$scope.map = {
+				center: {
+					latitude: 30.708225,
+					longitude: 76.7029445
+				},
+				zoom: 4
+		}
+		if ($state.current.name == 'pending') {
+			var passingObj = {
+				_id: $stateParams._id
+			}
+			customer.pendingConfirmation(passingObj)
+				.then(function(response) {
+					$scope.pendingData = response.data.data;
+					var Markers = [{
+						"id": "0",
+						"coords": {
+							"latitude": "30.708225",
+							"longitude": "76.7029445"
+						},
+						"window": {
+							"title": ""
+						}
+					}];
+					$scope.markers = Markers;
+				});
+		}
+		$scope.uploadImage = function(){
+			var fs = new FormData();
+			console.log($scope.uploadedImages);
+			if ($scope.uploadedImages) {
+				fs.append("file", $scope.uploadedImages);
+			}
+			// customer.uploadImages(fs)
+			// 	.then(function(response) {
+			// })
+			var obj = JSON.parse($window.localStorage.user);
+			$http.post("/api/v1/customer/gallery", fs, {
+				//	transformRequest: angular.identity,
+					headers: {'Content-Type': undefined,'user_id': obj._id}
+				})
+				.success(function(response){
+						if(response){
+							callback(response);
+							//return { response:$q.defer().resolve(response)};
+						}
+						else{
+							$q.reject(response);
+							callback({ response:$q.defer().promise});
+							//return { response:$q.defer().promise};
+						}
+					})
+				.error(function(err){ 
+					alert('There was some error uploading your files. Please try Uploading them again.');
 				});
 		}
 	});

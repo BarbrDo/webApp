@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Titillium+Web:300,400,600,700');
+<!--@import url('https://fonts.googleapis.com/css?family=Titillium+Web:300,400,600,700');
 @font-face {
     font-family: 'Berlin Sans FB';
     src: url('../fonts/BerlinSansFB-Reg.eot');
@@ -191,7 +191,8 @@ font-family: 'Oswald', sans-serif;
     width: 100%;
     background: url(../images/barber_banner.png) 0 0 no-repeat;
     background-size: cover;
-    padding: 60px 0
+    padding: 60px 0;
+    margin: 0;
 }
 .slider-wrap {
     float: left;
@@ -941,10 +942,11 @@ font-size: 24px
 .userimage span.uimg {
     float: left;
     color: #000;
-    width: 60px;
-    height: 60px;
+    width:50px;
+    height:50px;
     border-radius: 50%;
     overflow: hidden;
+    margin-top: 5px;
 }
 .userimage a {
     color: #000;
@@ -1006,7 +1008,7 @@ font-size: 24px
     color: #fff;
     float: left;
     width: 100%;
-    font-size: 18px;
+    font-size: 16px;
     font-family: 'Titillium Web', sans-serif;
     padding: 15px 20px;
 }
@@ -1014,7 +1016,11 @@ font-size: 24px
     background: #203f8c;
 }
 .sidebar ul li a.active {
-    border-left: 5px solid #ce2029;
+    box-shadow: 5px 0px #ce2029 inset;
+}
+.sidebar ul li a i {
+    width: 25px;
+    text-align: center;
 }
 .b {
     border: 1px solid #000;
@@ -1026,15 +1032,16 @@ font-size: 24px
 .block {
     font-family: 'Titillium Web', sans-serif;
     float: left;
-    width: 100%
+    width: 100%;
+    margin-bottom: 30px;
 }
 .block h2 {
-    font-size: 22px;
-    padding-bottom: 10px;
+    border-bottom: 1px solid #999;
+    color: #777;
     float: left;
+    font-size: 17px;
+    padding-bottom: 10px;
     width: 100%;
-    color: #545454;
-    border-bottom: 1px solid #545454;
 }
 .sorting {
     float: left;
@@ -1118,6 +1125,8 @@ font-size: 24px
     text-align: center;
     padding-top: 60px;
     border: 1px solid #ccc6c6;
+    padding-bottom: 15px;
+    min-height:190px; 
 }
 .barber .user_pic {
     border-radius: 50%;
@@ -1169,7 +1178,7 @@ font-size: 24px
     background: #ce2029
 }
 .csdwon {
-    min-width: 221px;
+    min-width: 210px;
     right: 0;
     left: auto;
     border: none;
@@ -1252,8 +1261,9 @@ ul.csdwon li a {
     float: left;
     width: 100%;
     padding: 10px 10px 10px 150px;
-    margin: 25px 0;
+    margin: 25px 0 0;
     position: relative;
+    min-height: 121px;
 }
 .selected_user {
     width: 100px;
@@ -1383,40 +1393,311 @@ ul.csdwon li a {
     background: #6892fd;
     color: #fff;
 }
-
-
 .stsr {
     float: left;
     width: 100%;
     margin: 10px 0;
     padding: 20px 0 0 0;
 }
+.stsr a {
+    font-size: 21px;
+    float: left;
+    width: 100%;
+    background: #f3f3f3;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    color: #6d6d6d;
+}
+.stsr a span {
+    float: right;
+    font-size: 21px;
+    font-weight: 600;
+}
+.stsr a:hover {
+    background: #d7d7d7;
+}
+.stsr a.select {
+    background: #6892fd;
+    color: #fff;
+}
+.totl {
+    float: left;
+    width: 100%;
+    font-size: 28px;
+    font-weight: 600;
+    text-align: right;
+    margin: 20px 0;
+    padding: 0 10px;
+}
+.totl span {
+    font-size: 38px;
+    color: #ce2029;
+}
+.subtn {
+    float: left;
+    width: 100%;
+    background: #ce2029;
+    border: none;
+    font-size: 25px;
+    font-family: 'Berlin Sans FB';
+    color: #fff;
+    padding: 15px 0;
+    margin: 15px 0;
+}
+.subtn:hover {
+    background: #c01d26;
+}
+.subtn.blue {
+    background: #27499E;
+}
+.cprofile .form-control {
+    font-size: 20px;
+}
+.cprofile .form-control-placeholder {
+    color: #424242 !important;
+}
+.all_cuts {
+    float: left;
+    width: 100%;
+    margin: 20px 0;
+}
+.all_cuts th {
+    background: #d8d8d8;
+    color: #666666;
+    font-size: 18px;
+    font-weight: 400;
+}
+.all_cuts tr td {
+    font-size: 20px;
+    vertical-align: middle !important;
+}
+span.lspic {
+    float: left;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: inline-block;
+}
+span.lspic img {
+    min-height: 65px;
+}
+.all_cuts .rebook {
+    background: #3154ae none repeat scroll 0 0;
+    border-radius: 5px;
+    color: #fff;
+    display: inline-block;
+    padding: 10px;
+    text-align: center;
+    width: 130px;
+}
+.pedetail {
+    float: left;
+    margin: 20px 0 0;
+    padding: 20px 0;
+    width: 100%;
+}
+.all_cuts .rebook:hover {
+    background: #2e4d9f;
+}
+.action {
+    width: 150px;
+}
+.allgallery {
+    float: left;
+    width: 100%;
+    margin: 20px 0;
+}
+.allgallery a {
+    float: left;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.allgallery a img {
+    border: 5px solid #e0e0e0;
+    width: 100%;
+}
+.customtab {
+    float: left;
+    width: 100%;
+}
+.customtab li a {
+    border-radius: 0 !important;
+    font-size: 18px;
+    color: #444;
+    font-family: 'Titillium Web', sans-serif;
+    font-weight: 600;
+}
+.customtab li.active a {
+    box-shadow: 0 4px 0 #27499E inset;
+}
+.customtab .tab-content {
+    padding: 20px 0;
+    float: left;
+    width: 100%;
+}
+.ac_btn a {
+    background: #27499e none repeat scroll 0 0;
+    border-radius: 1px;
+    color: #fff;
+    display: inline-block;
+    font-size: 20px;
+    height: 35px;
+    padding-top: 4px;
+    text-align: center;
+    width: 35px;
+}
+.ac_btn {
+    text-align: center;
+}
+td.action {
+    text-align: center;
+}
+.higlght p {
+    font-size: 20px;
+    padding: 30px 0 0;
+    display: inline-block;
+}
+.cmbtn {
+    background: #ce2029 none repeat scroll 0 0;
+    color: #fff;
+    display: inline-block;
+    font-size: 16px;
+    margin: 14px 0;
+    padding: 10px;
+    text-align: center;
+    width: 150px;
+}
+.cmbtn:hover, .cmbtn:focus {
+    background: #c02028;
+    color: #fff;
+}
+.perform_action {
+    background: #ececec;
+    float: left;
+    width: 100%;
+    padding: 20px;
+}
+.pad10 {
+    padding: 10px;
+}
+.namertng.inshop h3 {
+    font-size: 21px;
+    line-height: 27px;
+    margin: 8px 0 10px;
+}
+.toshop .user_pic {
+    background: #fafafa;
+    border: 1px solid #ccc6c6;
+}
+
+.book_nw.disable {
+    background: #ccc6c6 !important;
+}
+
+.adds_Btn { background: #ce2029 none repeat scroll 0 0;
+    border: medium none;
+    border-radius: 2px;
+    color: #fff;
+    font-size: 20px;
+    margin: 10px auto;
+    padding: 13px 0;
+    width: 200px;
+    
+}
+
+.serve { border-radius: 3px; float: left; margin: 10px 0 12px; width:100%; background: #6892FE; color: #fff; padding: 10px; position:relative;}
 
 
-.stsr a{ font-size: 21px; float: left; width: 100%;  background: #f3f3f3; border-radius: 5px; padding: 10px 15px; margin-bottom: 15px; color: #6d6d6d; }
+
+.serve p{ font-size:18px;  }
+
+
+.serve p span{ float: right; font-size:22px; }
+
+
+.serve .option{  background: #6892FE none repeat scroll 0 0;
+    bottom: -20px;
+    display: none;
+    position: absolute;
+    right: 0;
+    width:50px; }
+
+.serve:hover .option{ display: block;}
+.serve .option a{ width:50%; float: left; color: #fff; text-align:center; padding:1px 0; }
+
+.serve .option a:hover{ background: #5382fb; }
+
+.loader{ position: fixed; left:0; top:0; width:100%; height:100%; background-color: rgba(0,0,0,0.7) !important; z-index: 9; text-align: center; }
+
+.loader-inner { width:70px; height: 70px; margin: auto; position: absolute; left:0; right:0; top:0; bottom: 0; }
 
 
 
-.stsr a span{ float: right; font-size: 21px; font-weight: 600;}
+.range { float:left; width:100%; margin:20px 0; }
+
+.type_selection.wekmonth  span{ width:auto; float: none;}
 
 
-.stsr a:hover{ background: #d7d7d7; }
-
-.stsr a.select{ background: #6892fd; color: #fff;}
-
-
-
-.totl { float: left; width: 100%; font-size: 28px; font-weight: 600; text-align: right; margin: 20px 0; padding: 0 10px;}
-
-
-.totl span{ font-size:38px; color: #ce2029; }
-
-
-.subtn { float: left; width: 100%;  background: #ce2029; border: none; font-size: 25px;  font-family: 'Berlin Sans FB'; color: #fff; padding: 15px 0; margin: 15px 0; }
+.type_selection.wekmonth label { width: 48%; margin:30px 0;}
 
 
 
-.subtn:hover { background: #c01d26; }
+.alllnk a{background: #27499e none repeat scroll 0 0;
+    color: #fff;
+    float: left;
+    font-size: 18px;
+    padding: 20px;
+    text-align: center;
+    width: 23%;
+    margin: 5px 1%;
+    font-family: 'Titillium Web', sans-serif;
+}
+
+.alllnk a:hover{ background: #24428e; }
+
+
+
+.actn { margin: 13px 0;
+    text-align: center;
+}
+
+
+.pz { padding: 0;}
+
+
+.foremail {  float:left; width:100%; margin: 50px 0;}
+
+
+.finance{ float: left; width:100%; padding:20px 0; font-size:25px; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1435,8 +1716,6 @@ ul.csdwon li a {
 
 
 /* Media Queries Start over here */
-
-
 @media(max-width:1200px) {
 .navbar-inverse .navbar-nav > li > a {
     padding: 15px 20px
@@ -1480,6 +1759,7 @@ ul.csdwon li a {
     position: absolute;
     top: 0;
     width: 100%;
+    z-index: 1;
 }
 .sidebar.active {
     display: block;
@@ -1550,102 +1830,110 @@ ul.csdwon li a {
 }
 
 @media(max-width:767px) {
+    .namertng, .locdis {
+        float: left;
+        width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .half.left {
+        display: none;
+    }
+    .holder .half {
+        width: 100%;
+    }
+    .holder {
+        max-width: 500px;
+    }
+    .engage {
+        padding: 50px 0;
+    }
+    .cutbottom {
+        display: none;
+    }
+    .mobile {
+        background: none;
+        height: auto;
+        width: 100%;
+        padding: 30px 25px 0;
+    }
+    .mobile .splash {
+        display: none;
+    }
+    .mobile .mobile-icon {
+        position: relative;
+        bottom: auto;
+    }
+    .banner .mrtop {
+        text-align: center;
+    }
+    .mobile .mobile-icon a {
+        margin: 5px 15px;
+    }
+    .banner .mrtop {
+        margin-top: 20px;
+    }
+    .slider-wrap p {
+        text-align: center;
+    }
+    .nav.navbar-nav.text-right {
+        background: rgba(0, 0, 0, 0.9) none repeat scroll 0 0;
+        padding: 0 25px;
+        width: 250px;
+    }
+    .navbar-inverse .navbar-nav > li > a {
+        text-align: left;
+        padding-left: 0;
+        color: #fff
+    }
+    .banner h1 {
+        font-size: 46px
+    }
+    .banner .text-center {
+        margin-top: 95px
+    }
+    .slider-wrap h2, .slider-wrap h4, .slider-wrap p {
+        text-align: center;
+        max-width: 100%
+    }
+    .slider-wrap {
+        padding: 60px 0
+    }
+    .features p, .platforms p {
+        font-size: 18px
+    }
+    .white-outline {
+        font-size: 16px;
+    }
+    .text-wrap {
+        min-height: 165px
+    }
+    .platforms h5 {
+        font-size: 22px;
+        margin-bottom: 25px
+    }
+    .slider-wrap h2 {
+        font-size: 36px;
+    }
+    .slider-wrap h4 {
+        font-size: 24px;
+    }
+    .slider-wrap p {
+        font-size: 16px;
+    }
+    .banner h1 {
+        text-align: center;
+    }
+    .trybtn {
+        padding: 20px 15px;
+    }
+}
 
+@media(max-width:730px) {
+    
+    .alllnk a { width:48%; }
+}
 
-.namertng, .locdis{  float: left; width: 100%; padding-left: 0; padding-right: 0; }
-
-.half.left {
-    display: none;
-}
-.holder .half {
-    width: 100%;
-}
-.holder {
-    max-width: 500px;
-}
-.engage {
-    padding: 50px 0;
-}
-.cutbottom {
-    display: none;
-}
-.mobile {
-    background: none;
-    height: auto;
-    width: 100%;
-    padding: 30px 25px 0;
-}
-.mobile .splash {
-    display: none;
-}
-.mobile .mobile-icon {
-    position: relative;
-    bottom: auto;
-}
-.banner .mrtop {
-    text-align: center;
-}
-.mobile .mobile-icon a {
-    margin: 5px 15px;
-}
-.banner .mrtop {
-    margin-top: 20px;
-}
-.slider-wrap p {
-    text-align: center;
-}
-.nav.navbar-nav.text-right {
-    background: rgba(0, 0, 0, 0.9) none repeat scroll 0 0;
-    padding: 0 25px;
-    width: 250px;
-}
-.navbar-inverse .navbar-nav > li > a {
-    text-align: left;
-    padding-left: 0;
-    color: #fff
-}
-.banner h1 {
-    font-size: 46px
-}
-.banner .text-center {
-    margin-top: 95px
-}
-.slider-wrap h2, .slider-wrap h4, .slider-wrap p {
-    text-align: center;
-    max-width: 100%
-}
-.slider-wrap {
-    padding: 60px 0
-}
-.features p, .platforms p {
-    font-size: 18px
-}
-.white-outline {
-    font-size: 16px;
-}
-.text-wrap {
-    min-height: 165px
-}
-.platforms h5 {
-    font-size: 22px;
-    margin-bottom: 25px
-}
-.slider-wrap h2 {
-    font-size: 36px;
-}
-.slider-wrap h4 {
-    font-size: 24px;
-}
-.slider-wrap p {
-    font-size: 16px;
-}
-.banner h1 {
-    text-align: center;
-}
-.trybtn {
-    padding: 20px 15px;
-}
-}
 
 @media(max-width:600px) {
 .fullb {
@@ -1710,16 +1998,36 @@ ul.csdwon li a {
 }
 
 @media(max-width:480px) {
-
-.selected_barber{ padding:10px; text-align: center;}
-
-
-.selected_user{ margin:auto; float: none; position: relative; left:0; }
-
-
-
-
-
+    
+    .alllnk a { width:100%; margin:5px 0;  }  
+    
+    
+    .adds_Btn { width:100%;    }
+.subtn {
+    font-size: 21px;
+    margin: 5px 0;
+    padding: 11px 0;
+}
+.totl {
+    font-size: 19px;
+}
+.totl span {
+    font-size: 25px;
+}
+.selected_barber {
+    padding: 10px;
+    text-align: center;
+}
+.selected_user {
+    margin: auto;
+    float: none;
+    position: relative;
+    left: 0;
+}
+.customtab li a {
+    font-size: 15px;
+    padding: 7px;
+}
 .sorting {
     padding: 10px;
 }
@@ -1763,16 +2071,12 @@ ul.csdwon li a {
 }
 }
 
-
-
 @media(max-width:360px) {
-
 .sttimes ul li a {
- padding: 8px 10px;
- width: 100px;
- font-size: 19px;
+    padding: 8px 10px;
+    width: 100px;
+    font-size: 19px;
 }
-
 .othsv .part {
     width: 100%;
 }
@@ -1801,3 +2105,4 @@ ul.csdwon li a {
 }
 
 /* Media Queries End here */
+-->

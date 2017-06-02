@@ -1,0 +1,25 @@
+<div class="crumb"> <span>Gallery</span> </div>
+<div class="wrapper">
+    <div class="block higlght">
+        <h2>Gallery</h2>
+        <div class="row">
+            <div class="col-md-4 col-sm-6">
+               <img src="http://watchdog.org/wp-content/blogs.dir/1/files/2016/06/barbershop.jpg">
+            </div>
+            <div class="col-md-4 col-sm-6">
+                 <img src="http://watchdog.org/wp-content/blogs.dir/1/files/2016/06/barbershop.jpg">
+            </div>
+            <div class="col-md-4 col-sm-6">
+                 <img src="http://watchdog.org/wp-content/blogs.dir/1/files/2016/06/barbershop.jpg">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+    <form name="imageUploadForm">
+    <div class="col-md-4">
+   <input type="file" ngf-select ng-model="uploadedImages" name="file" ngf-pattern="'image/*'" accept="image/*" ngf-max-size="10MB" class="text-center center-block well well-sm" style="color:#222222;font-size:14px;width:250px" required=""></div>
+   <div class="col-md-4">
+   <button ng-click="uploadImage()" ng-disabled="imageUploadForm.$invalid"> Upload</button></div>
+   </form>
+   </div>
+</div>

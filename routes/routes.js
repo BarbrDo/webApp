@@ -67,7 +67,8 @@ module.exports = function(app, express) {
     app.post('/api/v1/appointment', appointmentController.takeAppointment); //Book Appointment
     app.post('/api/v1/customer/gallery', upload.any(), userController.uploadCustomerGallery); //Upload image in gallery
     app.delete('/api/v1/customer/gallery/:image_id',userController.deleteImages); //Delete image from gallery
-     app.get('/api/v1/appointment/pending/:_id',appointmentController.pendingConfiramtion);
+    app.get('/api/v1/appointment/pending/:_id',appointmentController.pendingConfiramtion);
+    
     
     //Barber
     app.get('/api/v1/barbers', shopController.allBarbers); //List all barbers
@@ -85,7 +86,7 @@ module.exports = function(app, express) {
     app.put('/api/v1/barber/services/:barber_service_id',barberServices.editBarberServices); //Edit Barber services
     app.get('/api/v1/barber/services/:barber_id',barberServices.viewAllServiesOfBarber); // Show all services of barbers
     app.delete('/api/v1/barber/services/:barber_service_id',barberServices.deleteBarberService);// Delete barber service
-    
+    app.get('/api/v1/barber/particularAppointment/:appointment_id',barberServices.particularAppointment);
     //Common
     app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of any customer/barber/shop
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);

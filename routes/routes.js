@@ -45,18 +45,20 @@ module.exports = function(app, express) {
     app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);
     app.post('/auth/facebook', userController.authFacebook);
     app.get('/auth/facebook/callback', userController.authFacebookCallback);
-    app.post('/auth/google', userController.authGoogle);
-    app.get('/auth/google/callback', userController.authGoogleCallback);
+    //app.post('/auth/google', userController.authGoogle);
+    //app.get('/auth/google/callback', userController.authGoogleCallback);
     app.post('/reset/:token', userController.resetPost);
     app.post('/api/v1/checkFaceBook', userController.checkFaceBook);
 
     //Shops
     app.get('/api/v1/shops', shopController.allShops); // List all shops and search shop
-    app.put('/api/v1/shops', upload.any(), shopController.editShop); //Edit shop
+    app.put('/api/v1/shops', upload.any(), shopController.editShop); //Update shop
     app.post('/api/v1/shops/chair', userController.addChair) //Add chair in shop
     app.get('/api/v1/shops/chair',shopController.allShopsHavingChairs);// It will show all shops having number of chairs
     app.delete('/api/v1/shops/chair', userController.removeChair); // Remove chair from shop
+    app.get('/api/v1/shops/barberchairrequests/:shop_id',chairRequestController.barberChairReqests); //Get all barber's request for chairs
     app.post('/api/v1/shops/confirmchair', chairRequestController.bookChair);
+    app.get('/api/v1/allbarbers', shopController.availableBarber); //Get all barbers
     app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
     app.put('/api/v1/shops/chairPercentage',shopController.setChairPercentage);
     app.put('/api/v1/shops/weeklyMonthlyChair',shopController.weeklyMonthlyChair);
@@ -71,7 +73,7 @@ module.exports = function(app, express) {
     
     
     //Barber
-    app.get('/api/v1/barbers', shopController.allBarbers); //List all barbers
+    app.get('/api/v1/barbers', shopController.associatedBarbers); //List all barbers
     app.get('/api/v1/barbers/:barber_id',barberServices.viewBarberProfile);//Get barber details like info, rating & comments, galleries
     app.post('/api/v1/barber/gallery',upload.any(), barberServices.uploadBarberGallery);//Upload single or multiple images in Gallery
     app.delete('/api/v1/barber/gallery/:image_id',barberServices.deleteImages); //Delete image from gallery
@@ -451,6 +453,49 @@ module.exports = function(app, express) {
  *         required: false
  *         type: string
  *         format: string
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *   /shops/barberchairrequests/{shop_id}:
+ *     get:
+ *       tags:
+ *       - "shop"
+ *       summary: "Get Barber's request for chair"
+ *       description: "Get Barber's request for chair"
+ *       operationId: "barberChairReqests"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be657b902f60fcc14a9d5"
+ *       - in: "path"
+ *         name: "shop_id"
+ *         description: "Shop ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: '591be658b902f60fcc14a9d6'
  *       responses:
  *         200:
  *           description: "successful operation"

@@ -6,11 +6,11 @@
     <div class="selected_barber">
       <div class="selected_user"> <img src="images/brbr_pic.png" alt="" > </div>
       <div class="namertng">
-        <h3>walker Smith</h3>
+        <h3>{{particularAppointment.customer_name}}</h3>
         <div class="rtng"><img src="images/rating.png" alt="" > </div>
       </div>
       <div class="locdis">
-        <p><span>Last Cut :</span> 31 March, 2017</p>
+        <p><span>Last Cut :</span>{{particularAppointment.appointment_date | date:medium}}</p>
       </div>
     </div>
   </div>
@@ -18,11 +18,11 @@
     <h2>Appointment Booked</h2>
     <div class="row">
       <div class="col-md-4 col-sm-6">
-        <p><i class="fa fa-calendar"> </i> Saturday, March 11</p>
+        <p><i class="fa fa-calendar"> </i>{{particularAppointment.appointment_date | date:medium}}</p>
       </div>
-      <div class="col-md-4 col-sm-6">
+      <!-- <div class="col-md-4 col-sm-6">
         <p><i class="fa  fa-clock-o"> </i> 9:00 AM</p>
-      </div>
+      </div> -->
       <div class="col-md-4"> <a href="#" class="cmbtn">Add to Calendar</a> </div>
     </div>
   </div>
@@ -30,7 +30,7 @@
     <h2>Barber Shop Address</h2>
     <div class="row">
       <div class="col-md-8 col-sm-8">
-        <p><i class="fa  fa-map-marker"> </i> Pop's Barber Shop, 123 Main Street, Jersey City, NJ 07302</p>
+        <p><i class="fa  fa-map-marker"> </i> {{particularAppointment.shop_id.name}} {{particularAppointment.shop_id.address}} {{particularAppointment.shop_id.city}} {{particularAppointment.shop_id.state}}</p>
       </div>
       <div class="col-md-4 col-sm-4"> <a href="#" class="cmbtn">View on Map</a> </div>
     </div>
@@ -39,8 +39,7 @@
     <h2>Summary of Services</h2>
     <div class="row">
       <div class="stsr">
-        <div class="col-md-6"> <a href="#" class="select">Clippers Haircut <span>$13</span></a> </div>
-        <div class="col-md-6"> <a href="#" class="select">Clippers Haircut <span>$13</span></a> </div>
+        <div class="col-md-6" ng-repeat = "serv in particularAppointment.services"> <a href="#" class="select">{{serv.name}} <span>${{serv.price}}</span></a> </div>
       </div>
     </div>
     <div class="totl">

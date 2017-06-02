@@ -51,6 +51,16 @@ angular.module('BarbrDoApp')
           }
         },data);
       },
+      uploadImages: function(data) {
+        return $http({
+          method: 'post',
+          url: '/api/v1/customer/gallery',
+          data:data,
+          headers: {
+            'user_id': obj._id
+          }
+        },data);
+      },
       barbrProfile: function(data) {
         return $http.get('/api/v1/barber/'+data._id, data);
       },

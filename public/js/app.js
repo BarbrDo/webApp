@@ -1,4 +1,4 @@
-angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap','ngTable','alexjoffroy.angular-loaders','uiGmapgoogle-maps','rzModule'])
+angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap','ngTable','alexjoffroy.angular-loaders','uiGmapgoogle-maps','rzModule','ngFileUpload'])
  .config(
     ['uiGmapGoogleMapApiProvider', function(GoogleMapApiProviders) {
         GoogleMapApiProviders.configure({
@@ -171,7 +171,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     $ocLazyLoad.load({
                         name: 'BarbrDoApp',
                         files: ['js/controllers/barberController.js',
-                            'js/services/customer.js'
+                            'js/services/barber.js'
                         ]
                     }).then(function () {
                         deferred.resolve();
@@ -181,13 +181,15 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 loginRequired: loginRequired
             }
         })
-
-
         .state('appointmentDetail', {
-            url: '/appointmentdetail',
+            url: '/appointmentdetail/:_id',
+             params: {
+                _id: null,
+            },
             views: {
                 "homeDash": {
-                    templateUrl: 'partials/appointment_detail.html'
+                    templateUrl: 'partials/appointment_detail.html',
+                    controller: "barberCtrl"
                 },
                 "header": {
                     templateUrl: 'partials/barber_header_after_login.html',
@@ -414,6 +416,37 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
         }
       })
     
+    .state('gallery', {
+      url: '/gallery',
+      views: {
+          "homeDash": {
+            templateUrl: 'partials/customer_gallery.html',
+            controller: "dashboardCtrl"
+          },
+          "header": {
+            templateUrl: 'partials/headerAfterLogin.html',
+            controller: "HeaderCtrl"
+          },
+          "sideBar": {
+            templateUrl: 'partials/afterLoginSideBar.html'
+          }
+        },
+        resolve: {
+          lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+            var deferred = $q.defer();
+            $ocLazyLoad.load({
+              name: 'BarbrDoApp',
+              files: ['/js/controllers/dashboard.js',
+                '/js/services/customer.js'
+              ]
+            }).then(function() {
+              deferred.resolve();
+            });
+            return deferred.promise;
+          }],
+          loginRequired: loginRequired
+        }
+      })
     .state('requestchair', {
         url: '/requestchair',
         views: {
@@ -541,9 +574,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
           }
         }
       })
-        
-        
-        
+  
      .state('contactbarbrDO', {
         url: '/contactbarbrDO',
         views: {
@@ -561,9 +592,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
       });
         
         
-        
-        
-        
+
 
     $urlRouterProvider.otherwise('pageNotFound');
     $authProvider.loginUrl = '/api/v1/login';

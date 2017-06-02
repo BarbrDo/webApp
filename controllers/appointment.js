@@ -82,7 +82,6 @@ exports.takeAppointment = function(req, res) {
 		});
 	});
 }
-
 let removeOffset = function(dobFormat) {
 	let userOffset = new Date(dobFormat).getTimezoneOffset();
 	let userOffsetMilli = userOffset * 60 * 1000;
@@ -127,9 +126,6 @@ let findShopData = function(shopp, cb) {
 		}
 	})
 }
-
-
-
 exports.customerAppointments = function(req, res) {
 	req.checkHeaders("user_id", "user_id cannot be blank").notEmpty();
 	let errors = req.validationErrors();

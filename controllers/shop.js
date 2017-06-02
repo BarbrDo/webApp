@@ -185,7 +185,8 @@ exports.allShops = function(req, res) {
     }
 }
 
-exports.allBarbers = function(req, res) {
+//Get all barber associated with shops
+exports.associatedBarbers = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
         let long = parseFloat(req.headers.device_longitude);
         let lati = parseFloat(req.headers.device_latitude);
@@ -575,7 +576,7 @@ exports.listshops = function(req, res) {
         }
     })
 };
-exports.barberList = function(req, res) {
+exports.availableBarber = function(req, res) {
     var page = req.body.page || 1,
         count = req.body.count || 10;
     var skipNo = (page - 1) * count;

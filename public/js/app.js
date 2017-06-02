@@ -1,4 +1,4 @@
-angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap','ngTable','alexjoffroy.angular-loaders','uiGmapgoogle-maps','rzModule','ngFileUpload'])
+angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap','ngTable','alexjoffroy.angular-loaders','uiGmapgoogle-maps','rzModule','ngFileUpload','uiSwitch'])
  .config(
     ['uiGmapGoogleMapApiProvider', function(GoogleMapApiProviders) {
         GoogleMapApiProviders.configure({
@@ -534,7 +534,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             templateUrl: 'partials/addservice.html'
           },
          "header": {
-                templateUrl: 'partials/barber_shop_header.html',
+                templateUrl: 'partials/barber_header_manage_services.html',
                 controller: "barberCtrl"
             },
           "sideBar": {

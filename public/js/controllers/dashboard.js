@@ -3,8 +3,8 @@ angular.module('BarbrDoApp')
 		$scope.dollarAmmount = 0.00;
 		$scope.annualCost = "$" + $scope.dollarAmmount;
 		var obj = {
-			'latitude': "30.708225",
-			'longitude': "76.7029445"
+			'latitude': "40.658801",
+			'longitude': "-74.1063776"
 		}
 		$scope.callFunctions = function() {
 			$scope.shoplist();

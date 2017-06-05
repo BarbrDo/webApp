@@ -1,13 +1,12 @@
 angular.module('BarbrDoApp')
   .controller('SignupCtrl', function($scope, $rootScope, $location, $window, $auth) {
-    $scope.messages = {};
+    $scope.messagess = {};
     $scope.active={val:0};
     $scope.changeTab = function(tab){
       console.log('tab',tab);
       $scope.active.val = tab;
     }
     $scope.signup = function() {
-      $('#bs-example-modal-lg').modal('hide');
       $auth.signup($scope.user)
         .then(function(response) {
           $auth.setToken(response);
@@ -15,20 +14,17 @@ angular.module('BarbrDoApp')
           $window.localStorage.user = JSON.stringify(response.data.user);
           $scope.user = {};
           $location.path('/');
+          $('#bs-example-modal-lg').modal('hide');
         })
         .catch(function(response) {
+          console.log("modal need to dispaly");
           $('#bs-example-modal-lg').modal('show');
-          $scope.messages = {
+          $scope.messagess = {
             error: Array.isArray(response.data) ? response.data : response.data
           };
+          console.log($scope.messagess);
         });
     };
-
-    $("#signup").on("hide.bs.modal", function () {
-      setTimeout(function(){$scope.$apply()},1)
-        $scope.user = {};
-        $scope.messages = {};
-    });
 
     $scope.authenticate = function(provider) {
       $auth.authenticate(provider)

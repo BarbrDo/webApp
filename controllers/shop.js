@@ -876,3 +876,29 @@ exports.deleteshop = function(req, res) {
     });
 
 };
+exports.shopContainsChairs = function(req,res){
+    req.checkParams('shop_id', 'Shop id is required').notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    shop.findOne({
+        _id: req.params.shop_id
+    }).exec(function(err, result) {
+        if (err) {
+            return res.status(400).send({
+                msg: "error in your request",
+                err: errors
+            });
+        } else {
+            
+            res.status(200).send({
+                "msg": constantObj.messages.successRetreivingData,
+                "data": result
+            })
+        }
+    })
+}

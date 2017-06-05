@@ -729,32 +729,34 @@ font-size: 24px
 .right-menu .navbar-collapse {
     padding-right: 0;
 }
-.holder {
+
+
+.modal-holder {
     background: #27499e none repeat scroll 0 0;
     display: table;
     margin: 20px auto;
     max-width: 920px;
     width: 100%;
 }
-.holder .half {
+.modal-holder .half {
     width: 50%;
     float: left
 }
-.holder .half.left {
+.modal-holder .half.left {
     padding: 20px 25px;
     text-align: center;
 }
-.holder .half.right {
+.modal-holder .half.right {
     background: #fff;
 }
-.holder .half.left .chair {
+.modal-holder .half.left .chair {
     margin: 40px 0;
 }
-.holder .half.left ul {
+.modal-holder .half.left ul {
     margin: 20px;
     padding: 0;
 }
-.holder .half.left ul li {
+.modal-holder .half.left ul li {
     list-style: none;
     font-size: 21px;
     color: #7fa1f5;
@@ -763,6 +765,10 @@ font-size: 24px
     padding-left: 30px;
     position: relative;
 }
+
+
+
+
 .half.left span {
     left: 0;
     position: absolute;

@@ -1,0 +1,45 @@
+<!-- <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div> -->
+<div class="crumb"> <span>Reschedule Appointments</span> </div>
+<div class="wrapper">
+
+ <div class="block">
+        <h2>Reschedule Appointment</h2>
+        
+
+
+      </div>
+
+
+  <div class="block">
+   <div class="row">
+     <div class="col-sm-2">
+       To
+     </div>
+      <div class="col-sm-10">
+       Name of the Customer
+     </div>
+   </div>
+  </div>
+
+<div class="block higlght">
+    <h2>Can we move appointment back by:</h2>
+    <div class="row" style="margin-top: 50px;">
+      <div class="col-md-4 col-sm-6">
+        <button class="btn btn-primary btn-lg" ng-click="timeReschedule(15)">15 minutes</button>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <button class="btn btn-primary btn-lg" ng-click="timeReschedule(30)">30 minutes</button>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <button class="btn btn-primary btn-lg" ng-click="timeReschedule(45)">45 minutes</button>
+      </div>
+      <!-- <div class="col-md-4 col-sm-6">
+        <p><i class="fa  fa-clock-o"> </i> 9:00 AM</p>
+      </div> -->
+      <!-- <div class="col-md-4"> <a href="#" class="cmbtn">Add to Calendar</a> </div> -->
+    </div>
+    <div>
+      <button ng-click="cancelAppointment()">Cancel Appointment</button>
+    </div>
+  </div>
+</div>

@@ -2,6 +2,7 @@ let async = require('async');
 let crypto = require('crypto');
 let User = require('../models/User');
 let nodemailer = require('nodemailer');
+var geocoder = require('geocoder');
 let jwt = require('jsonwebtoken');
 let moment = require('moment');
 let request = require('request');
@@ -108,6 +109,7 @@ exports.loginPost = function(req, res, next) {
 exports.signupPost = function(req, res, next) {
   // req.assert('first_name', 'First name cannot be blank.').notEmpty();
   // req.assert('last_name', 'Last name cannot be blank.').notEmpty();
+  console.log("req.body",req.body);
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('mobile_number', 'Mobile number cannot be blank').notEmpty();
@@ -167,24 +169,42 @@ exports.signupPost = function(req, res, next) {
       } else {
         let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
         if (req.body.user_type == 'shop') {
-          let saveDataForShop = {};
-          saveDataForShop.user_id = data._id
-          saveDataForShop.license_number = req.body.license_number;
-          Shop(saveDataForShop).save(function(errSaveShop, shopData) {
-            if (errSaveShop) {
-              return res.status(400).send({
-                msg: constantObj.messages.errorInSave
-              })
-            } else {
-              res.status(200).send({
-                msg: "Please check your email to verify your account.",
-                link: resetUrl,
-                token: generateToken(shopData),
-                user: data,
-                "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-              });
-            }
-          })
+
+          geocoder.geocode(req.body.zip, function(err, data) {
+              if (err) {
+                // return 0;
+                console.log('geolocation error : ' + err);
+              } else {
+                if (data.status == 'OK') {
+                  let saveDataForShop = {};
+                  saveDataForShop.user_id = data._id
+                  saveDataForShop.license_number = req.body.license_number;
+                  saveDataForShop.name = req.body.name;
+                  saveDataForShop.state = req.body.state;
+                  saveDataForShop.city = req.body.city;
+                  saveDataForShop.zip = req.body.zip;
+                  saveDataForShop.latLong = [data.results[0].geometry.location.lng,data.results[0].geometry.location.lat];
+                      Shop(saveDataForShop).save(function(errSaveShop, shopData) {
+                    if (errSaveShop) {
+                      return res.status(400).send({
+                        msg: constantObj.messages.errorInSave
+                      })
+                    } else {
+                      res.status(200).send({
+                        msg: "Please check your email to verify your account.",
+                        link: resetUrl,
+                        token: generateToken(shopData),
+                        user: data,
+                        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+                      });
+                    }
+                  });
+                } else {
+                  console.log("errors");
+                }
+              }
+            });
+          
         } else if (req.body.user_type == 'barber') {
           let saveDataForBarber = {};
           saveDataForBarber.user_id = data._id
@@ -229,6 +249,8 @@ exports.accountPut = function(req, res, next) {
     req.assert('password', 'Password must be at least 6 characters long').len(6);
     req.assert('confirm', 'Passwords must match').equals(req.body.password);
   }
+  console.log("req.headers",req.headers.user_id);
+  console.log("req.body",req.body);
 
   let errors = req.validationErrors();
 
@@ -666,17 +688,17 @@ exports.authGoogleCallback = function(req, res) {
 exports.addChair = function(req, res) {
   req.assert("id", "id is required")
   let errors = req.validationErrors();
-
+ console.log("req.body",req.body);
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",
       err: errors
     });
   }
-  let validateId = objectID.isValid(req.body.id)
+  let validateId = objectID.isValid(req.body._id)
   if (validateId) {
     Shop.findOne({
-      _id: req.body.id
+      _id: req.body._id
     }, function(err, data) {
       if (err) {
         res.status(400).send({
@@ -694,7 +716,7 @@ exports.addChair = function(req, res) {
           let saveChairData = {};
           saveChairData.chairs = saveChair;
           Shop.update({
-            _id: req.body.id
+            _id: req.body._id
           }, {
             $push: {
               chairs: {
@@ -708,7 +730,8 @@ exports.addChair = function(req, res) {
               });
             } else {
               res.status(200).send({
-                msg: 'Chair successfully added.'
+                msg: 'Chair successfully added.',
+                data: success
               });
             }
           })
@@ -730,7 +753,7 @@ exports.removeChair = function(req, res) {
   req.assert("shop_id", "Shop ID is required")
   req.assert("chair_id", "Chair ID is required");
   let errors = req.validationErrors();
-
+  console.log("req.body",req.body);
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",

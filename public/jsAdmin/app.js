@@ -25,10 +25,35 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: 'templatesAdmin/company-list.html'
         })
 
+       .state('edit_barbers', {
+            url: '/barbers/edit',
+            controller: "AdminCtrl",
+            templateUrl: "/modalsAdmin/adminHTml/views/edit-barber.html"
+           
+        })
+
        .state('barbers', {
             url: '/barbers',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/adminBarber.html"
+            // resolve: {
+            //      checklogin: login
+            //  }
+        })
+
+       .state('editshop', {
+            url: '/shop/edit',
+            controller: "AdminCtrl",
+            templateUrl: "/modalsAdmin/adminHTml/views/editshop.html"
+            // resolve: {
+            //      checklogin: login
+            //  }
+        })
+
+       .state('editchair', {
+            url: '/chair/edit',
+            controller: "AdminCtrl",
+            templateUrl: "/modalsAdmin/adminHTml/views/editchair.html"
             // resolve: {
             //      checklogin: login
             //  }
@@ -44,7 +69,7 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
         })
 
         .state('chairs', {
-            url: '/chairs',
+            url: '/chairs/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/chairsdetails.html"
             // resolve: {
@@ -87,79 +112,15 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/addCustomer.html"
         
+        })  
+
+        .state('shopdetail', {
+            url: '/shops/details',
+            controller: "AdminCtrl",
+            templateUrl: "/modalsAdmin/adminHTml/views/shopdetail.html"
+        
         })       
   
-
-         // Upgrade Company
-        .state('manage_subscription', {
-            url: '/manage_subscription-company',
-            templateUrl: 'templatesAdmin/manage_subscription.html'
-        })
-
-        // Add Members
-        .state('add_members', {
-            url: '/add-members',
-            templateUrl: 'templatesAdmin/add-member.html'
-        })
-        
-        // Member list
-        .state('member_list', {
-            url: '/member-list',
-            templateUrl: 'templatesAdmin/member-list.html'
-        })
-        
-        // All Site
-        .state('all_site', {
-            url: '/all-site',
-            templateUrl: 'templatesAdmin/all-site.html'
-        })
-        
-        // Beacon List
-        .state('beacon_list', {
-            url: '/beacon-list',
-            templateUrl: 'templatesAdmin/beacon-list.html'
-        })
-        
-        // plan list
-        .state('plan', {
-            url: '/plan',
-            templateUrl: 'templatesAdmin/plan.html'
-        })
-        
-        // add service
-        .state('service_subservice', {
-            url: '/service_subservice',
-            templateUrl: 'templatesAdmin/service_subservice.html'
-        })
-        // Task Library
-        .state('task-library', {
-            url: '/task_library',
-            templateUrl: 'templatesAdmin/task-library.html'
-        })
-        
-         // Edit Task Library
-        .state('edit-tasklibrary', {
-            url: '/edittask_library',
-            templateUrl: 'templatesAdmin/edit-tasklibrary.html'
-        })
-        
-         // Add Beacon
-        .state('add_beacon', {
-            url: '/add-beacon',
-            templateUrl: 'templatesAdmin/add-beacon.html'
-        })
-        
-        // Edit Beacon
-        .state('edit_beacon', {
-            url: '/edit-beacon',
-            templateUrl: 'templatesAdmin/edit-beacon.html'
-        })
-        
-        // view-site
-        .state('view_site', {
-            url: '/view-site',
-            templateUrl: 'templatesAdmin/view-site.html'
-        })
 });
 
 app_admin.config(function (ChartJsProvider) {

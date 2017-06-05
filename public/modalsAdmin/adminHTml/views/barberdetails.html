@@ -1,4 +1,4 @@
-<div class="panel" ng-init="shoppageChanged()">
+<div class="panel">
   <div class="panel-heading">
     Barber Details
   </div>
@@ -29,18 +29,18 @@
             <th style="font-size: 20px;">ACTION</th>
         </tr>
     </thead>
-    <tbody data-ng-repeat="shop in shops | orderBy:sort:reverse | limitTo:quantity" data-ng-class="{danger:!shop.active}">
-        <tr ng-repeat="barbers in shop.chairs" ng-hide="!barbers.barber_name">
-        <td><span ng-if="!barbers.barber_name" data-ng-hide="editMode">NOT SPECIFIED</span>
-            <span data-ng-hide="editMode">{{barbers.barber_name}} </span>
-            <input type="text" data-ng-show="editMode" data-ng-model="barbers.barber_name" placeholder="name" data-ng-required />
+    <tbody ng-repeat="shop in shopdetailview.chairs">
+        <tr ng-hide="!shop.barber_name">
+       <td><span ng-if="!shop.barber_name" data-ng-hide="editMode">NOT SPECIFIED</span>
+            <span data-ng-hide="editMode">{{shop.barber_name}}</span>
+         <input type="text" data-ng-show="editMode" data-ng-model="shop.barber_name" placeholder="Name" data-ng-required />
         </td>
-        <td><span ng-if="!barbers.barber_percentage" data-ng-hide="editMode">NOT SPECIFIED</span>
-            <span data-ng-hide="editMode">{{barbers.barber_percentage}}</span>
-         <input type="text" data-ng-show="editMode" data-ng-model="barbers.barber_percentage" placeholder="City" data-ng-required />
+        <td><span ng-if="!shop.barber_percentage" data-ng-hide="editMode">NOT SPECIFIED</span>
+            <span data-ng-hide="editMode">{{shop.barber_percentage}}</span>
+         <input type="text" data-ng-show="editMode" data-ng-model="shop.barber_percentage" placeholder="Barber Percentage" data-ng-required />
         </td>
            <td><span ng-if="!shop.name" data-ng-hide="editMode">NO TYPE</span>
-           <span data-ng-hide="editMode" >{{shop.name}} </span>
+           <span data-ng-hide="editMode" >{{shopdetailview.name}} </span>
             <input type="text"  data-ng-show="editMode" data-ng-model="shop.name" placeholder="Type Of Chair" data-ng-required />
         </td>
 
@@ -49,7 +49,7 @@
              <span data-toggle="modal" data-target="#myAnotherModal">
              <a type="submit"  data-ng-click="deleteshop(shop)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
               <span data-toggle="modal" data-target="#viewModal">
-             <a type="submit" ng-click="shopdetail(shop)" data-ng-hide="editMode" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a></span>
+             <a type="submit"  data-ng-hide="editMode" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a></span>
              <span data-toggle="modal" data-target="#myModal">
             <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; updatechair(chairs)" class="glyphicon glyphicon-check" style="font-size: 25px;margin-left: 20px;color: #17a109;" data-toggle="tooltip" title="SAVE DETAILS" id="btnAlert"  ></a></span>
             <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" class="glyphicon glyphicon-ban-circle" style="font-size: 25px;margin-left: 20px;color: #f94040;" data-toggle="tooltip" title="CANCEL"></a>
@@ -59,9 +59,9 @@
 </table>
  </div>
  <div>
-<div class="col-sm-6">
+<!-- <div class="col-sm-6">
      <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="shoppageChanged()"></ul>       
-          </div>
+          </div> -->
 <br>
 <label>No. of Enteries</label>
             <select ng-model="quantity">

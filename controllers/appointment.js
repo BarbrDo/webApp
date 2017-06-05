@@ -217,6 +217,13 @@ exports.pendingConfiramtion = function(req, res) {
 		})
 }
 
+
+
+exports.countappoint = function(req, res) {
+    appointment.find(function(err, barber) {
+        res.json(barber);
+    });
+};
 //Delete this function and use customerAppointments function only for both future and completed booking
 
 /*

@@ -45,6 +45,8 @@ exports.listcustomers = function(req, res) {
             email: "$email",
             mobile_number: "$mobile_number",
             isDeleted: "$isDeleted",
+             isActive: "$isActive",
+            is_verified: "$is_verified",
             user_type: "$user_type"
         }
     }, {
@@ -62,6 +64,8 @@ exports.listcustomers = function(req, res) {
                     email: "$email",
                     mobile_number: "$mobile_number",
                     isDeleted: "$isDeleted",
+                     isActive: "$isActive",
+                    is_verified: "$is_verified",
                     user_type: "$user_type",
                     isActive: "$isActive"
                 }
@@ -82,7 +86,7 @@ exports.listcustomers = function(req, res) {
                     outputJSON = {
                         'status': 'success',
                         'messageId': 200,
-                        'message': 'data retrieve from products',
+                        'message': 'data retrieve from customer',
                         'data': result,
                         'count': length
                     }
@@ -146,6 +150,7 @@ exports.countcustomer = function(req, res) {
     });
 };
 
+
 exports.deletecustomer = function(req, res) {
     console.log(req.params.cust_id);
     User.update({
@@ -176,6 +181,133 @@ exports.deactivecustomer = function(req, res) {
     }, function(err, count) {
         User.find({
             user_type: "customer"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
+exports.activatecustomer = function(req, res) {
+    console.log("custid", req.params.cust_id);
+    User.update({
+        _id: req.params.cust_id
+    }, {
+        $set: {
+            isActive: true
+        }
+    }, function(err, count) {
+        User.find({
+            user_type: "customer"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
+exports.disapprovecustomer = function(req, res) {
+    console.log("custid", req.params.cust_id);
+    User.update({
+        _id: req.params.cust_id
+    }, {
+        $set: {
+            is_verified: false
+        }
+    }, function(err, count) {
+        User.find({
+            user_type: "customer"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
+exports.verifycustomer = function(req, res) {
+    console.log("custid", req.params.cust_id);
+    User.update({
+        _id: req.params.cust_id
+    }, {
+        $set: {
+            is_verified: true
+        }
+    }, function(err, count) {
+        User.find({
+            user_type: "customer"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
+exports.deactivebarber = function(req, res) {
+    console.log("barber_id", req.params.barber_id);
+    User.update({
+        _id: req.params.barber_id
+    }, {
+        $set: {
+            isActive: false
+        }
+    }, function(err, count) {
+        User.find({
+            user_type: "barber"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
+
+exports.activatebarber = function(req, res) {
+    console.log("barber_id", req.params.barber_id);
+    User.update({
+        _id: req.params.barber_id
+    }, {
+        $set: {
+            isActive: true
+        }
+    }, function(err, count) {
+        User.find({
+            user_type: "barber"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
+exports.verifybarber = function(req, res) {
+    console.log("barber_id", req.params.barber_id);
+    User.update({
+        _id: req.params.barber_id
+    }, {
+        $set: {
+            is_verified: true
+        }
+    }, function(err, count) {
+        User.find({
+            user_type: "barber"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
+exports.disapprovebarber = function(req, res) {
+    console.log("barber_id", req.params.barber_id);
+    User.update({
+        _id: req.params.barber_id
+    }, {
+        $set: {
+            is_verified: false
+        }
+    }, function(err, count) {
+        User.find({
+            user_type: "barber"
         }, function(err, shopss) {
             res.json(shopss);
         });
@@ -220,11 +352,63 @@ exports.deletebarber = function(req, res) {
 
 
 exports.addbarber = function(req, res) {
-    User({
-        first_name: req.body.first_name,
-        user_type: "barber"
-    }).save(function(err, barber) {
-        res.json(barber);
-        console.log("barber", barber);
+    User.find({email:req.body.email}, function(err,barber) {
+        if(err)
+        {
+            console.log(err)
+        }
+        else
+        {
+          if(barber=="" || barber == undefined)
+        {
+             barber = new User(req.body);
+           
+            barber.user_type = "barber";
+            console.log("req.body",req.body);
+               console.log("cust",cust);
+           barber.save(function(error,result)
+           {
+                res.send(result);
+           });
+        }
+        else
+        {        
+         console.log("email id exists",cust);   
+        }
+        }
+
+       
     });
+
+};
+
+
+exports.addcustomer = function(req, res) {
+    User.find({email:req.body.email}, function(err,cust) {
+        if(err)
+        {
+            console.log(err)
+        }
+        else
+        {
+          if(cust=="" || cust == undefined)
+        {
+             cust = new User(req.body);
+           
+            cust.user_type = "customer";
+            
+           cust.save(function(error,result)
+           {
+                res.send(result);
+           });
+        }
+        else
+        {        
+         console.log("email id exists",cust);   
+        }
+        }
+
+       
+    });
+
 };

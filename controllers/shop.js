@@ -4,7 +4,11 @@ let constantObj = require('./../constants.js');
 let chairRequest = require('../models/chair_request');
 let mongoose = require('mongoose');
 exports.editShop = function(req, res) {
+    console.log("user_id",req.body._id);
+    console.log("req.body",req.body);
     let updateData = JSON.parse(JSON.stringify(req.body));
+    
+    
     updateData.modified_date = new Date();
     delete updateData._id;
     if ((req.files) && (req.files.length > 0)) {
@@ -24,7 +28,7 @@ exports.editShop = function(req, res) {
         updateData.latLong = [req.headers.device_longitude, req.headers.device_latitude]
     }
     user.update({
-        _id: req.headers.user_id
+        _id: req.body._id
     }, {
         $push: {
             gallery: {
@@ -36,15 +40,16 @@ exports.editShop = function(req, res) {
             res.status(400).send({
                 msg: 'Error in updating data.',
                 "err": err
+
             });
         } else {
             if (data.nModified == 1) {
-                let response = {
+                var response = {
                     "message": "Successfully updated fieldssss.",
                     "data": data
                 };
             } else {
-                let response = {
+                var response = {
                     "message": "No record updated.",
                     "data": data
                 };
@@ -476,16 +481,52 @@ var chairRequsett = function(data, userId, chairId, obj, shop_name) {
     }
 }
 exports.updateshop = function(req, res) {
-    shop.findById(req.params.id, function(err, shops) {
-        shops = new shop(req.body);
+    
+    user.findById(req.params.id, function(err, shops) {
+        shops = new user(req.body);
         shops.update(req.body, function(err, count) {
             console.log("count", count);
-            shop.find(function(err, shopss) {
-                res.json(shopss);
-            });
+        });
+    });
+    shop.findById(req.body.shopinfo[0]._id, function(err, shops) {
+        shops = new shop(req.body);
+        shops.update(req.body.shopinfo[0], function(err, count) {
+            console.log("hash", count);
         });
     });
 };
+
+exports.addshop = function(req, res) {
+    user.find({email:req.body.email}, function(err,shop) {
+        if(err)
+        {
+            console.log(err)
+        }
+        else
+        {
+          if(shop=="" || shop == undefined)
+        {
+            var shop = new user(req.body);
+           
+            shop.user_type = "shop";
+           shop.save(function(error,result)
+           {
+                res.send(result);
+           });
+        }
+        else
+        {        
+         console.log("email id exists",shop);   
+        }
+        }
+
+       
+    });
+
+};
+
+
+
 exports.listshops = function(req, res) {
     var page = req.body.page || 1,
         count = req.body.count || 10;
@@ -493,6 +534,8 @@ exports.listshops = function(req, res) {
     console.log("page", page);
     console.log("count", count);
     var query = {};
+    query.isDeleted = false,
+        query.user_type = "shop"
     var searchStr = req.body.search;
 
     if (req.body.search) {
@@ -524,15 +567,23 @@ exports.listshops = function(req, res) {
         }]
     }
 
-    shop.aggregate([{
-        $project: {
-            _id: "$_id",
-            name: "$name",
-            city: "$city",
-            state: "$state",
-            chairs: "$chairs",
-            address: "$address"
-        }
+    user.aggregate([{
+       $project: {
+                    _id: "$_id",
+                    first_name: "$first_name",
+                    last_name: "$last_name",
+                    email: "$email",
+                    isActive: "$isActive",
+                    is_verified: "$is_verified",
+                    isDeleted: "$isDeleted",
+                    created_date: "$created_date",
+                    created_date: "$created_date",
+                    mobile_number: "$mobile_number",
+                    gallery: "$gallery",
+                    ratings: "$ratings",
+                    latLong: "$latLong",
+                    shopinfo : "$ShopInformation"
+                }
     }, {
         $match: query
     }]).exec(function(err, data) {
@@ -540,21 +591,35 @@ exports.listshops = function(req, res) {
             console.log(err)
         } else {
             var length = data.length;
-            shop.aggregate([{
-                $project: {
-                    _id: "$_id",
-                    name: "$name",
-                    city: "$city",
-                    state: "$state",
-                    chairs: "$chairs",
-                    address: "$address"
-                }
-            }, {
+            user.aggregate([{
                 $match: query
             }, {
                 "$skip": skipNo
             }, {
                 "$limit": count
+            }, {
+            $lookup: {
+                from: "shops",
+                localField: "_id",
+                foreignField: "user_id",
+                as: "ShopInformation"
+                }
+            },{
+                $project: {
+                    _id: "$_id",
+                    first_name: "$first_name",
+                    last_name: "$last_name",
+                    email: "$email",
+                    isActive: "$isActive",
+                    is_verified: "$is_verified",
+                    isDeleted: "$isDeleted",
+                    created_date: "$created_date",
+                    mobile_number: "$mobile_number",
+                    gallery: "$gallery",
+                    ratings: "$ratings",
+                    latLong: "$latLong",
+                    shopinfo : "$ShopInformation"
+                }
             }]).exec(function(err, result) {
                 if (err) {
                     outputJSON = {
@@ -580,9 +645,6 @@ exports.availableBarber = function(req, res) {
     var page = req.body.page || 1,
         count = req.body.count || 10;
     var skipNo = (page - 1) * count;
-    console.log("page", page);
-    console.log("count", count);
-    console.log("asdfasdjklfasdkfj");
     var query = {};
     query.isDeleted = false,
         query.user_type = "barber"
@@ -627,7 +689,6 @@ exports.availableBarber = function(req, res) {
             }
         }]
     }
-    console.log("query", query);
     user.aggregate([{
         $project: {
             _id: "$_id",
@@ -638,6 +699,8 @@ exports.availableBarber = function(req, res) {
             ratings: "$ratings",
             created_date: "$created_date",
             isDeleted: "$isDeleted",
+            isActive: "$isActive",
+            is_verified: "$is_verified",
             user_type: "$user_type"
         }
     }, {
@@ -664,6 +727,8 @@ exports.availableBarber = function(req, res) {
                     created_date: "$created_date",
                     ratings: "$ratings",
                     isDeleted: "$isDeleted",
+                    isActive: "$isActive",
+                    is_verified: "$is_verified",
                     user_type: "$user_type",
                     name: "$shopdetails.name"
                 }
@@ -684,7 +749,7 @@ exports.availableBarber = function(req, res) {
                     outputJSON = {
                         'status': 'success',
                         'messageId': 200,
-                        'message': 'data retrieve from products',
+                        'message': 'data retrieve from barber',
                         'data': result,
                         'count': length
                     }
@@ -788,4 +853,24 @@ exports.updatechair = function(req, res) {
                 res.json(customers);
             });
         });
+};
+
+
+exports.deleteshop = function(req, res) {
+    console.log(req.params.shop_id);
+    user.update({
+        _id: req.params.shop_id
+    }, {
+        $set: {
+            isDeleted: true
+        }
+    }, function(err, count) {
+        user.find({
+            isDeleted: false,
+            user_type: "shop"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
 };

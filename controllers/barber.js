@@ -375,7 +375,6 @@ exports.rescheduleAppointment = function (req, res) {
         _id: req.params.appointment_id
     }, {
             $set: {
-                "appointment_status": "reschedule",
                 "appointment_date": newDateObj
             }
         }, function (err, result) {

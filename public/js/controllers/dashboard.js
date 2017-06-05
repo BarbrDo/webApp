@@ -14,7 +14,7 @@ angular.module('BarbrDoApp')
 			$scope.loaderStart = true;
 			customer.shopList(obj)
 				.then(function(response) {
-					$scope.loaderStart = true;
+					$scope.loaderStart = false;
 					$scope.shops = response.data.data;
 				});
 		}

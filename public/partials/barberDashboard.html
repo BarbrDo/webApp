@@ -1,5 +1,5 @@
 <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
-<div class="crumb"> <span>Book Appointment</span> </div>
+<div class="crumb" ng-init="appointments()"> <span>Book Appointment</span> </div>
 <div class="wrapper">
   <div class="block">
     <div class="tabs customtab">
@@ -21,7 +21,7 @@
                   <td>{{result.appointment_date | date:'medium'}}</td>
                   <td>{{result.shop_id.name}}</td>
                   <td class="ac_btn"> <a ui-sref="appointmentDetail({_id:result._id})" class=""  tooltip-placement="top" uib-tooltip="View Detail" > <i class="fa fa-eye"></i> </a> 
-                      <a href="#" class="" tooltip-placement="top" uib-tooltip="Confirmed" > <i class="fa fa-check "></i> </a> <a href="#" class="" tooltip-placement="top" uib-tooltip="Reschedule" > <i class="fa fa-repeat "></i> </a> </td>
+                      <a href="#" class="" tooltip-placement="top" uib-tooltip="Confirmed" ng-click="confirmAppointment(result._id)"> <i class="fa fa-check "></i> </a> <a ui-sref="rescheduleAppointment({_id:result._id})" class="" tooltip-placement="top" uib-tooltip="Reschedule" > <i class="fa fa-repeat "></i> </a> </td>
                 </tr>
               </table>
             </div>

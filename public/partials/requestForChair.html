@@ -1,0 +1,62 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<div class="crumb"> <span>Book Appointment</span> </div>
+<div class="wrapper">
+    <div class="block">
+        <h2>Your Barber</h2>
+        <div class="selected_barber">
+            <div class="selected_user"> <img src="images/brbr_pic.png" alt=""> </div>
+            <div class="namertng">
+                <h3>{{particularShop.name}}</h3>
+                <div class="rtng"><img src="images/rating.png" alt=""> </div>
+            </div>
+            <div class="locdis">
+                <p><span>Location :</span> {{particularShop.address}} {{particularShop.address}} {{particularShop.city}} {{particularShop.state}}</p>
+               <!--  <p><span>Distance :</span> {{particularShop.distance | number}} Miles</p> -->
+            </div>
+        </div>
+    </div>
+    <div class="block">
+        <h2>Select Date</h2>
+        <div class="sldt">
+            <ul>
+                <li ng-repeat = "dates in selectDate" ng-click="setSelected(dates)">
+                    <a href="">
+                        <p>{{dates | date: EEEE}}</p>
+                        <!-- <p>{{dates | date: dd}}</p> -->
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="clndrbtn"> <img src="images/clndr.png" alt=""> </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="block" ng-if="selectedDate">
+        <h2>Select Chair</h2>
+        <div class="row">
+            <div class="stsr">
+                <div class="col-md-6" ng-repeat = "chair in particularShop.chairs">
+                <!-- <div class="col-md-6"> -->
+                    <input type="radio" class="select" name="chairs" ng-model="$parent.selectChair" ng-change="changeObject(chair._id)" ng-value="chair._id">{{chair.name}}
+                <!-- </div> -->
+                <!-- <div class="col-md-6"> -->
+                    <span>chairSplit{{chair.barber_percentage}}/{{chair.shop_percentage}}</span>
+                </div>
+                    <!-- <a href="#" class="select">{{chair.name}} <span>${{services.price}}</span></a> -->
+                    <!-- <input type="checkbox"  name="selectedServices[]" value="{{fruitName}}" ng-checked="selection.indexOf(services) > -1" ng-click="toggleSelection(services)">{{chair.name}}<span>chairSplit{{chair.barber_percentage}}/{{chair.shop_percentage}}</span> -->
+                </div>
+            </div>
+        </div>
+      <!--   <div class="totl">
+            <p>Total <span>$13</span></p>
+        </div> -->
+        <div class="row">
+            <div class="col-md-12">
+                <button class="subtn" ng-click="requestChair()">Request</button>
+            </div>
+            <!-- <div class="col-md-6">
+                <button class="subtn">Pay Now</button>
+            </div> -->
+        </div>
+    </div>
+</div>

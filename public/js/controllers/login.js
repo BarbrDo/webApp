@@ -3,7 +3,8 @@ angular.module('BarbrDoApp')
     $scope.user = {};
     $scope.messages = {};
     $scope.login = function() {
-      $('#bs-example-modal-lg').modal('hide');
+      // $('#bs-example-modal-lg').modal('hide');
+      $('#bs-example').modal('hide');
       $auth.login($scope.user)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
@@ -18,26 +19,16 @@ angular.module('BarbrDoApp')
           }     
         })
         .catch(function(response) {
-          $('#bs-example-modal-lg').modal('show');
+           $('#bs-example').modal('show');
           $scope.messages = {
             error: Array.isArray(response.data) ? response.data : [response.data]
           };
-          setTimeout(function(){$scope.$apply()},1)
+          setTimeout(function(){
+            $scope.$apply()},1)
           console.log("sdfsdfsd",$scope.messages);
         });
     };
-    $scope.modalDismiss = function(){
-      $('#login').modal('hide');
-    }
-    $scope.signUpClick = function(){
-      $('#login').modal('hide');
-      $('#signup').modal('show');
-    }
-    $("#login").on("hide.bs.modal", function () {
-        $scope.user.email = "";
-        $scope.user.password = "";
-        $scope.messages = {};
-    });
+    
     
     $scope.authenticate = function(provider) {
       $auth.authenticate(provider)

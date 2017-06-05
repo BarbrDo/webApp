@@ -1,0 +1,59 @@
+
+<div class="crumb"> <span>Book Appointment</span> </div>
+<div class="wrapper">
+  <div class="block">
+    <h2>Your Customer</h2>
+    <div class="selected_barber">
+      <div class="selected_user"> <img src="images/brbr_pic.png" alt="" > </div>
+      <div class="namertng">
+        <h3>{{particularAppointment.customer_name}}</h3>
+        <div class="rtng"><img src="images/rating.png" alt="" > </div>
+      </div>
+      <div class="locdis">
+        <p><span>Last Cut :</span>{{particularAppointment.appointment_date | date:medium}}</p>
+      </div>
+    </div>
+  </div>
+  <div class="block higlght">
+    <h2>Appointment Booked</h2>
+    <div class="row">
+      <div class="col-md-4 col-sm-6">
+        <p><i class="fa fa-calendar"> </i>{{particularAppointment.appointment_date | date:medium}}</p>
+      </div>
+      <!-- <div class="col-md-4 col-sm-6">
+        <p><i class="fa  fa-clock-o"> </i> 9:00 AM</p>
+      </div> -->
+      <div class="col-md-4"> <a href="#" class="cmbtn">Add to Calendar</a> </div>
+    </div>
+  </div>
+  <div class="block higlght">
+    <h2>Barber Shop Address</h2>
+    <div class="row">
+      <div class="col-md-8 col-sm-8">
+        <p><i class="fa  fa-map-marker"> </i> {{particularAppointment.shop_id.name}} {{particularAppointment.shop_id.address}} {{particularAppointment.shop_id.city}} {{particularAppointment.shop_id.state}}</p>
+      </div>
+      <div class="col-md-4 col-sm-4"> <a href="#" class="cmbtn">View on Map</a> </div>
+    </div>
+  </div>
+  <div class="block">
+    <h2>Summary of Services</h2>
+    <div class="row">
+      <div class="stsr">
+        <div class="col-md-6" ng-repeat = "serv in particularAppointment.services"> <a href="#" class="select">{{serv.name}} <span>${{serv.price}}</span></a> </div>
+      </div>
+    </div>
+    <div class="totl">
+      <p>Payment Received : <span>$26</span></p>
+    </div>
+  </div>
+  <div class="perform_action">
+    <div class="row">
+      <div class="col-md-6">
+        <button class="subtn blue"><i class="fa   fa-repeat"></i> Re-Schedule</button>
+      </div>
+      <div class="col-md-6">
+        <button class="subtn"><i class="fa  fa-thumbs-o-up"></i> Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>

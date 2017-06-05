@@ -189,7 +189,7 @@ exports.viewAllServiesOfBarber = function (req, res) {
     }
     barber_service.find({
         "barber_id": req.params.barber_id,
-        "isDeleted": true
+        "isDeleted": false
     }, function (err, data) {
         if (err) {
             res.status(400).send({
@@ -585,4 +585,32 @@ exports.deleteImages = function(req, res) {
       })
     }
   })
+}
+exports.particularAppointment = function(req,res){
+    req.checkParams("appointment_id", "Appointment id is required.").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    appointment.findOne({
+        _id: req.params.appointment_id
+    }).populate('barber_id', 'first_name last_name ratings picture')
+    .populate('customer_id', 'first_name last_name ratings picture')
+    .populate('shop_id', 'name address city state gallery latLong')
+    .exec(function (err, result){
+            if (err) {
+                res.status(400).send({
+                    msg: constantObj.messages.errorRetreivingData,
+                    "err": err
+                });
+            } else {
+                res.status(200).send({
+                    msg: 'Successfully retrieve data.',
+                    "data": result
+                });
+            }
+        })
 }

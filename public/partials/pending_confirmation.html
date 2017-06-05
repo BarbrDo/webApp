@@ -1,0 +1,70 @@
+<style type="text/css">
+.angular-google-map-container {
+    height: 990px;
+    width: 990px;
+}
+</style>
+<div class="crumb"> <span>Pending Confirmation</span> </div>
+<div class="wrapper">
+    <div class="block higlght">
+        <h2>Appointment Booked</h2>
+        <div class="row">
+            <div class="col-md-4 col-sm-6">
+                <p><i class="fa fa-calendar"> </i> {{pendingData.appointment_date}} </p>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <p><i class="fa  fa-clock-o"> </i> 9:00 AM</p>
+            </div>
+            <!-- <div class="col-md-4"> <a href="#" class="cmbtn">Add to Calendar</a> </div> -->
+        </div>
+    </div>
+    <div class="block higlght">
+        <h2>Barber Shop Address</h2>
+        <div class="row">
+            <div class="col-md-8 col-sm-8">
+                <p><i class="fa  fa-map-marker"> </i> {{pendingData.shop_id.name}} {{pendingData.shop_id.address}} {{pendingData.shop_id.city}} {{pendingData.shop_id.state}}</p>
+            </div>
+            <div class="col-md-4 col-sm-4"> 
+            <input type="checkbox" ng-model="checked" aria-label="Toggle ngShow">
+                View on Map
+             </div>
+        </div>
+    </div>
+    <div ng-if="checked">
+        <h2></h2>
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <p><i class=""> </i>
+                    <ui-gmap-google-map center='map.center' zoom='map.zoom' aria-label="Google map">
+                        <ui-gmap-marker ng-repeat="marker in markers" coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id">
+                            <ui-gmap-window>
+                                <div>{{marker.window.title}}</div>
+                            </ui-gmap-window>
+                        </ui-gmap-marker>
+                    </ui-gmap-google-map>
+                </p>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <p><i class=""></i></p>
+            </div>
+        </div>
+    </div>
+    <div class="block">
+        <h2>Summary of Services</h2>
+        <div class="row">
+            <div class="stsr">
+                <div class="col-md-6" ng-repeat="result in pendingData.services"> <a href="#" class="select">{{result.name}}<span>${{result.price}}</span></a> </div>
+            </div>
+        </div>
+        <div class="selected_barber">
+            <div class="selected_user"> <img src="images/brbr_pic.png" alt=""> </div>
+            <div class="namertng">
+                <h3>{{pendingData.barber_id.first_name}} {{pendingData.barber_id.last_name}}</h3>
+                <div class="rtng"><img src="images/rating.png" alt=""> </div>
+            </div>
+            <div class="locdis">
+                <p><span>Last Cut :</span> 31 March, 2017</p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -851,6 +851,7 @@ exports.uploadCustomerGallery = function(req, res) {
   let updateData = {};
   updateData.modified_date = new Date();
   delete updateData._id;
+  console.log("here in ",req.files);
   if ((req.files) && (req.files.length > 0)) {
     let userimg = [];
     for (let i = 0; i < req.files.length; i++) {
@@ -941,6 +942,7 @@ exports.deleteImages = function(req, res) {
     }
   })
 }
+
 exports.getProfiles = function (req, res) {
   req.checkParams("id", "customer_id can not be blank").notEmpty();
   let errors = req.validationErrors();

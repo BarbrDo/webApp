@@ -5,7 +5,7 @@ module.exports = function(app, express) {
     let appointController = require('./../../controllers/appointment');
    
   
-    app.post('/api/v1/allbarbers', shopController.barberList); //Get all barbers
+
     app.post('/api/v1/allshops',shopController.listshops);
     app.post('/api/v1/allcustomers',customerController.listcustomers);
     app.put('/api/v1/updatecust/:cust_id',customerController.updatecustomer);

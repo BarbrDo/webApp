@@ -1,0 +1,124 @@
+<div class="container">
+  
+  <div>
+     <font color="green">
+    <h2 align="center"><font color="orange">Shop Details</h2></font>
+    <br><br> 
+    </font>    
+       <div  class="row list-group" ng-repeat="shop in shopdetailview.shopinfo">
+        <div class="item  col-xs-12 col-lg-12"  >
+            <div class="thumbnail">
+                <img class="group list-group-image" src="/images/shop.jpg" height="60%" width="60%" />
+                <div class="caption" >
+                    <h4 class="group inner list-group-item-heading" align="center"><b>
+                       <font color="red"> {{shop.name}} </font></b></h4>
+                        <hr/>
+                    <div class="item  col-xs-6 col-lg-6">
+                    <h4 class="group inner list-group-item-heading" align="center"><b>
+                        Shop Details</b></h4>
+                    <table>
+                    <tr>
+                        <td><h5>BARBERS </h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberinshops.length}}</td>
+                    </tr>
+                    <tr>
+                        <td><h5>CHAIRS </h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shop.chairs.length}}</td>
+                    </tr>
+                    <tr>
+                        <td><h5>ADDRESS</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shop.address}} </td>
+                    </tr>
+                     <tr>
+                        <td><h5>CITY</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shop.city}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>STATE</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shop.state}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>ZIP</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shop.zip}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>LATTITUDE</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shop.latLong[0]}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>LONGITUDE</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shop.latLong[1]}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>RATINGS</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shop.ratings}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>PAYMENT METHODS</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shop.payment_methods}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>DATE OF CREATION</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shop.created_date}} </td>
+                    </tr>
+                     </table>
+                     </div>
+                     <div class="item  col-xs-6 col-lg-6">
+                     <h4 class="group inner list-group-item-heading" align="center"><b>
+                        Owner Details </b></h4>
+                       <table >
+                   <tr>
+                        <td><h5>SHOP OWNER</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.first_name}} &nbsp; {{shopdetailview.last_name}} </td>
+                    </tr>
+                    <tr >
+                        <td><h5> MOBILE</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.mobile_number}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5> EMAIL</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.email}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>DATE OF CREATION</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.created_date | date :'dd/mm/yyyy'}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>IS SHOP ACTIVE</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.isActive}}  </td>
+                    </tr>
+                    <tr>
+                        <td><h5>IS SHOP VERIFIED</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.is_verified}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>IS SHOP DELETED</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.isDeleted}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>GALARY</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.gallery}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>RATINGS</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.ratings}} </td>
+                    </tr>
+                     </table>
+                     </div>
+                      
+                       
+
+                    <div class="row">
+                        
+                        <div class="col-xs-12 col-md-6" style="margin-left: 450px;"><br><br>
+                            <button class="btn btn-success" ui-sref="editshop" >Edit Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+     

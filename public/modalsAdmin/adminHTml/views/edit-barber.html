@@ -1,0 +1,80 @@
+<div class="panel" >
+  <div class="panel-heading">
+    Edit Barber
+  </div>
+  <div class="panel-body">
+     <div class="title">
+      Barber Information
+     </div>
+     <form >
+     <div class="clearfix">
+      <div class="col-sm-4 form-group">
+        <label>First Name</label>{{barberdetail.first_name}}
+        <input type="text" class="form-control" data-ng-model="barberdetail.first_name" required />
+      </div>
+      <div class="col-sm-4 form-group">
+        <label>Last Name</label>
+        <input type="text" class="form-control" data-ng-model="barberdetail.last_name" required />
+      </div>
+      <div class="col-sm-4 form-group">
+        <label>Mobile Number</label>
+        <input type="text" class="form-control"  data-ng-model="barberdetail.mobile_number" required />
+      </div>
+                
+     </div>
+     <div class="clearfix">
+      <div class="col-sm-4 form-group">
+        <label>Password</label>
+        <input type="password" class="form-control" data-ng-model="shopdetailview.password"  ng-minlength="6" ng-maxlength="20" name="password" required/>
+              <div class="validationError" ng-if="!updateButton" ng-show="signUpForm.password.$error.maxlength && signUpForm.password.$dirty">
+              <span style="color:red ">password maximum length exceeds</span>
+              </div>
+      </div>
+              
+              
+      <div class="col-sm-4 form-group">
+        <label>Email</label>
+        <input type="text" class="form-control"  name="email" data-ng-model="barberdetail.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" required/>
+         <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="
+                  signUpForm.email.$touched &&signUpForm.email.$invalid && (!signUpForm.email.$pristine || signUpForm.$submitted)" role="alert">
+                  <span style="color:red" ng-message="pattern" class="error-message">Email is not valid</span>
+                  </div>
+                  </div>
+      </div>
+                 
+     </div>
+    
+      </form>
+     <div class="clearfix text-center">
+
+      <button type="submit"  class="btn btn-primary" >
+        <i class="fa fa-check" aria-hidden="true"></i>
+        <span >Save
+      </button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     </div>
+  </div>
+</div>
+
+
+
+
+
+<div class="modal fade" id="saved" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #c2f7b5;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Added</h4>
+        </div>
+        <div class="modal-body">
+          <p>This Record is Added successfully</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" ui-sref="shops">OK</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>

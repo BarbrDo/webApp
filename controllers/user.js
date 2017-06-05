@@ -106,6 +106,25 @@ exports.loginPost = function(req, res, next) {
 /**
  * POST /signup
  */
+var saveShop = function(saveDataForShop,resetUrl,user,req,res){
+    Shop(saveDataForShop).save(function(errSaveShop, shopData) {
+        if (errSaveShop) {
+          return res.status(400).send({
+            msg: constantObj.messages.errorInSave
+          })
+        } else {
+          res.status(200).send({
+            msg: "Please check your email to verify your account.",
+            link: resetUrl,
+            token: generateToken(shopData),
+            user: user,
+            shop: shopData,
+            "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+          });
+        }
+      });
+}
+
 exports.signupPost = function(req, res, next) {
   req.assert('first_name', 'First name cannot be blank.').notEmpty();
   req.assert('last_name', 'Last name cannot be blank.').notEmpty();
@@ -179,22 +198,7 @@ exports.signupPost = function(req, res, next) {
             
             if (req.headers.device_longitude && req.headers.device_latitude) {
                 saveDataForShop.latLong = [req.headers.device_longitude, req.headers.device_latitude];
-                Shop(saveDataForShop).save(function(errSaveShop, shopData) {
-                  if (errSaveShop) {
-                    return res.status(400).send({
-                      msg: constantObj.messages.errorInSave
-                    })
-                  } else {
-                    res.status(200).send({
-                      msg: "Please check your email to verify your account.",
-                      link: resetUrl,
-                      token: generateToken(shopData),
-                      user: data,
-                      shop: shopData,
-                      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-                    });
-                  }
-                });
+                saveShop(saveDataForShop,resetUrl,data,req,res);
             } else if(req.body.zip){
                 geocoder.geocode(req.body.zip, function(errGeo, latlng) {
                     if(errGeo){
@@ -203,46 +207,11 @@ exports.signupPost = function(req, res, next) {
                         })
                     } else {
                         saveDataForShop.latLong = [latlng.results[0].geometry.location.lng,latlng.results[0].geometry.location.lat];
-                        console.log('latlng',saveDataForShop);
-                        Shop(saveDataForShop).save(function(errSaveShop, shopData) {
-                          if (errSaveShop) {
-                            return res.status(400).send({
-                              msg: constantObj.messages.errorInSave
-                            })
-                          } else {
-                            res.status(200).send({
-                              msg: "Please check your email to verify your account.",
-                              link: resetUrl,
-                              token: generateToken(shopData),
-                              user: data,
-                              shop: shopData,
-                              "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-                            });
-                          }
-                        });
-                    }
-                    
+                        saveShop(saveDataForShop,resetUrl,data,req,res);
+                    }    
                 });
             } else {
-                //console.log('latlng'+latlng);
-                console.log('saveDataForShop',saveDataForShop);
-
-                Shop(saveDataForShop).save(function(errSaveShop, shopData) {
-                  if (errSaveShop) {
-                    return res.status(400).send({
-                      msg: constantObj.messages.errorInSave
-                    })
-                  } else {
-                    res.status(200).send({
-                      msg: "Please check your email to verify your account.",
-                      link: resetUrl,
-                      token: generateToken(shopData),
-                      user: data,
-                      shop: shopData,
-                      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-                    });
-                  }
-                });
+                saveShop(saveDataForShop,resetUrl,data,req,res);
             }
            
           

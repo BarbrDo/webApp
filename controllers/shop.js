@@ -254,7 +254,7 @@ exports.associatedBarbers = function(req, res) {
                         obj.distance = distt;
                         obj.units = "miles";
                         obj.created_date = data[i].barberInformation.created_date;
-                        obj.rating = data[i].barberInformation.ratings;
+                        obj.ratings = data[i].barberInformation.ratings;
                         obj.location = data[i].name;
                         obj.shop_id = data[i]._id;
                         resultTantArray.push(obj);

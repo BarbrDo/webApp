@@ -2,7 +2,7 @@ angular.module('barbrdo')
   .factory('Admin', function($http) {
     return {
       barbers: function(data) {
-      return $http.post('/api/v1/allbarbers', data);
+      return $http.get('/api/v1/allbarbers', data);
       },
       shopsAll: function(data) {
       return $http.post('/api/v1/allshops', data);

@@ -652,44 +652,7 @@ exports.availableBarber = function(req, res) {
     var searchStr = req.body.search;
 
 
-    if (req.body.search) {
-        query.$or = [{
-            first_name: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            last_name: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            email: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            name: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            ratings: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            created_date: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            mobile_number: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }]
-    }
+    
     user.aggregate([{
         $project: {
             _id: "$_id",
@@ -760,6 +723,45 @@ exports.availableBarber = function(req, res) {
             })
         }
     })
+
+    if (req.body.search) {
+        query.$or = [{
+            first_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            last_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            email: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            ratings: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            created_date: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            mobile_number: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }]
+    }
 };
 exports.getDataForBookNowPage = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {

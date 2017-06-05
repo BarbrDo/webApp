@@ -107,9 +107,8 @@ exports.loginPost = function(req, res, next) {
  * POST /signup
  */
 exports.signupPost = function(req, res, next) {
-  // req.assert('first_name', 'First name cannot be blank.').notEmpty();
-  // req.assert('last_name', 'Last name cannot be blank.').notEmpty();
-  console.log("req.body",req.body);
+  req.assert('first_name', 'First name cannot be blank.').notEmpty();
+  req.assert('last_name', 'Last name cannot be blank.').notEmpty();
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('mobile_number', 'Mobile number cannot be blank').notEmpty();
@@ -169,41 +168,83 @@ exports.signupPost = function(req, res, next) {
       } else {
         let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
         if (req.body.user_type == 'shop') {
-
-          geocoder.geocode(req.body.zip, function(err, data) {
-              if (err) {
-                // return 0;
-                console.log('geolocation error : ' + err);
-              } else {
-                if (data.status == 'OK') {
-                  let saveDataForShop = {};
-                  saveDataForShop.user_id = data._id
-                  saveDataForShop.license_number = req.body.license_number;
-                  saveDataForShop.name = req.body.name;
-                  saveDataForShop.state = req.body.state;
-                  saveDataForShop.city = req.body.city;
-                  saveDataForShop.zip = req.body.zip;
-                  saveDataForShop.latLong = [data.results[0].geometry.location.lng,data.results[0].geometry.location.lat];
-                      Shop(saveDataForShop).save(function(errSaveShop, shopData) {
-                    if (errSaveShop) {
-                      return res.status(400).send({
-                        msg: constantObj.messages.errorInSave
-                      })
+            let saveDataForShop = {};
+            saveDataForShop.user_id = data._id
+            saveDataForShop.license_number = req.body.license_number;
+            saveDataForShop.name = req.body.name;
+            saveDataForShop.state = req.body.state;
+            saveDataForShop.city = req.body.city;
+            saveDataForShop.zip = req.body.zip;
+            
+            
+            if (req.headers.device_longitude && req.headers.device_latitude) {
+                saveDataForShop.latLong = [req.headers.device_longitude, req.headers.device_latitude];
+                Shop(saveDataForShop).save(function(errSaveShop, shopData) {
+                  if (errSaveShop) {
+                    return res.status(400).send({
+                      msg: constantObj.messages.errorInSave
+                    })
+                  } else {
+                    res.status(200).send({
+                      msg: "Please check your email to verify your account.",
+                      link: resetUrl,
+                      token: generateToken(shopData),
+                      user: data,
+                      shop: shopData,
+                      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+                    });
+                  }
+                });
+            } else if(req.body.zip){
+                geocoder.geocode(req.body.zip, function(errGeo, latlng) {
+                    if(errGeo){
+                        return res.status(400).send({
+                          msg: constantObj.messages.errorInSave
+                        })
                     } else {
-                      res.status(200).send({
-                        msg: "Please check your email to verify your account.",
-                        link: resetUrl,
-                        token: generateToken(shopData),
-                        user: data,
-                        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-                      });
+                        saveDataForShop.latLong = [latlng.results[0].geometry.location.lng,latlng.results[0].geometry.location.lat];
+                        console.log('latlng',saveDataForShop);
+                        Shop(saveDataForShop).save(function(errSaveShop, shopData) {
+                          if (errSaveShop) {
+                            return res.status(400).send({
+                              msg: constantObj.messages.errorInSave
+                            })
+                          } else {
+                            res.status(200).send({
+                              msg: "Please check your email to verify your account.",
+                              link: resetUrl,
+                              token: generateToken(shopData),
+                              user: data,
+                              shop: shopData,
+                              "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+                            });
+                          }
+                        });
                     }
-                  });
-                } else {
-                  console.log("errors");
-                }
-              }
-            });
+                    
+                });
+            } else {
+                //console.log('latlng'+latlng);
+                console.log('saveDataForShop',saveDataForShop);
+
+                Shop(saveDataForShop).save(function(errSaveShop, shopData) {
+                  if (errSaveShop) {
+                    return res.status(400).send({
+                      msg: constantObj.messages.errorInSave
+                    })
+                  } else {
+                    res.status(200).send({
+                      msg: "Please check your email to verify your account.",
+                      link: resetUrl,
+                      token: generateToken(shopData),
+                      user: data,
+                      shop: shopData,
+                      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+                    });
+                  }
+                });
+            }
+           
           
         } else if (req.body.user_type == 'barber') {
           let saveDataForBarber = {};

@@ -63,6 +63,7 @@ module.exports = function(app, express) {
     app.put('/api/v1/shops/chairPercentage',shopController.setChairPercentage);
     app.put('/api/v1/shops/weeklyMonthlyChair',shopController.weeklyMonthlyChair);
     app.post('/api/v1/shops/postChairToAllBarbers',shopController.postChairToAllBarbers);
+    app.get('/api/v1/shops/chair/:shop_id',shopController.shopContainsChairs);
     
     //Customer
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment

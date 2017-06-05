@@ -1,45 +1,33 @@
-  <div class="crumb"> <span>Book Appointment</span> </div>
+  <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+  <div class="crumb" ng-init="allShopsHavingChairs()"> <span>Book Appointment</span> </div>
   <div class="wrapper">
     <div class="block">
       <h2>Search Chair</h2>
-      
       <!-- Sorting -->
       <div class="sorting mbft pad10">
-       
         <div class="search">
           <input type="text" placeholder="Search" >
           <input type="submit" value="" name="" >
         </div>
       </div>
       <!-- Sorting -->
-      
       <div class="org_content">
         <div class="row">
-
-          
           <!-- By shop -->
-         
-          
-         
-          
-          <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+          <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat = "result in shopChairs">
             <div class="shop"> <img class="shopimage" src="images/shop.png" alt="" >
               <div class="above">
                 <div class="dtll shpdtl">
                   <div class="icon"><img src="images/barbr_icon.png" alt="" ></div>
-                  <p>6 Chairs</p>
+                  <p>{{result.chairs.length}}</p>
                 </div>
                 <div class="dtlr shpdtl">
                   <div class="icon"><img src="images/miles.png" alt="" ></div>
-                  <p>46.03 miles</p>
+                  <p>{{result.dist.calculated | number : 2}}</p>
                 </div>
-                <a href="#" class="byshop" > Aidan Gill for Men <i class="fa  fa-angle-right"></i> </a> </div>
+                <a ui-sref="shopChairs({_id:result._id})" class="byshop" >{{result.name}}<i class="fa  fa-angle-right"></i> </a> </div>
             </div>
           </div>
-          
-         
-      
-          
         </div>
       </div>
     </div>

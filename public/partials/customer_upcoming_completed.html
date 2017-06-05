@@ -14,7 +14,7 @@
                   <td data-title="'When'">{{user.appointment_date | date:yyyy:mm:dd}}</td>
                   <td data-title="'Where'">{{user.shop_name}}</td>
                   <td class="action" data-title="'Action'">
-                      <div class="ac_btn"> <a ui-sref="appointmentDetail" class=""  tooltip-placement="top" uib-tooltip="View Detail" > <i class="fa fa-eye"></i> </a>
+                      <div class="ac_btn"> <a ui-sref="appointmentDetail({_id:user._id})" class=""  tooltip-placement="top" uib-tooltip="View Detail" > <i class="fa fa-eye"></i> </a>
                       <a href="#" class="" tooltip-placement="top" uib-tooltip="Confirmed" > <i class="fa fa-check "></i> </a> <a href="#" class="" tooltip-placement="top" uib-tooltip="Reschedule" > <i class="fa fa-repeat "></i> </a> </div>
                   </td>
                 </tr>

@@ -531,10 +531,8 @@ exports.listshops = function(req, res) {
     var page = req.body.page || 1,
         count = req.body.count || 10;
     var skipNo = (page - 1) * count;
-    console.log("page", page);
-    console.log("count", count);
     var query = {};
-    query.isDeleted = false,
+    
         query.user_type = "shop"
     var searchStr = req.body.search;
 
@@ -568,6 +566,8 @@ exports.listshops = function(req, res) {
     }
 
     user.aggregate([{
+        $match: query
+    },{
        $project: {
                     _id: "$_id",
                     first_name: "$first_name",
@@ -584,13 +584,12 @@ exports.listshops = function(req, res) {
                     latLong: "$latLong",
                     shopinfo : "$ShopInformation"
                 }
-    }, {
-        $match: query
     }]).exec(function(err, data) {
+        
         if (err) {
             console.log(err)
         } else {
-            var length = data.length;
+
             user.aggregate([{
                 $match: query
             }, {
@@ -621,6 +620,7 @@ exports.listshops = function(req, res) {
                     shopinfo : "$ShopInformation"
                 }
             }]).exec(function(err, result) {
+                var length = result.length;
                 if (err) {
                     outputJSON = {
                         'status': 'failure',
@@ -635,6 +635,7 @@ exports.listshops = function(req, res) {
                         'data': result,
                         'count': length
                     }
+                    console.log("length",length);
                 }
                 res.status(200).jsonp(outputJSON);
             })
@@ -730,6 +731,7 @@ exports.availableBarber = function(req, res) {
                     isActive: "$isActive",
                     is_verified: "$is_verified",
                     user_type: "$user_type",
+                    password: "$password",
                     name: "$shopdetails.name"
                 }
             }, {

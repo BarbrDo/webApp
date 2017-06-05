@@ -33,7 +33,7 @@
         </tr>
     </thead>
     <tbody data-ng-repeat="shop in shops">
-        <tr data-ng-repeat="shopinfo in shop.shopinfo" | orderBy:sort:reverse | limitTo:quantity" data-ng-class="{danger:!shop.active}" ng-hide="!shopinfo.name">
+        <tr data-ng-repeat="shopinfo in shop.shopinfo" | orderBy:sort:reverse | limitTo:quantity" data-ng-class="{danger:!shop.active}">
         <td>
             <a data-toggle="tooltip" title="View {{shopinfo.name}}'s detailed info" ui-sref="shopdetail" ng-click="shopdetail(shop)"><span data-ng-hide="editMode" >{{shopinfo.name}} </span></a>
             <input type="text" data-ng-show="editMode" data-ng-model="shopinfo.name" placeholder="name" data-ng-required />

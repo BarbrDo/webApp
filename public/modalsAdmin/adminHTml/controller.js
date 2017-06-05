@@ -50,6 +50,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         .then(function(response) {
           $scope.myobj.totalItems = response.data.count;
           $rootScope.customers = response.data.data;
+             console.log("all custs",response);
         });
 
     };
@@ -74,13 +75,13 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         .then(function(response) {
           $scope.myobj.totalItems = response.data.count;
           $rootScope.shops = response.data.data;
-
+          console.log("all shops",response.data.data);
         });
 
         Admin.shopList(obj)
         .then(function(response) {
           $rootScope.barberinshops = response.data.data ;
-          
+          console.log("all shops having barbers",response.data.data);
         });
 
     };
@@ -281,13 +282,11 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
     $scope.barbdetail = function(barber) {
       $rootScope.barberdetail = barber;
-      console.log("bar",barber);
     };
 
     $scope.shopdetail = function(shop) {
       $rootScope.shopdetailview = shop;
       $rootScope.chairdetails = shop.shopinfo;
-      console.log("shop",shop);
     };
 
     $scope.chairdetail = function(chair) {
@@ -298,7 +297,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     {
        Admin.addChair(chair)
         .then(function(response) {
-          console.log("res",response);
         });
     };
 

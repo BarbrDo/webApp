@@ -30,12 +30,12 @@
             <th style="font-size: 20px;" width="20%"><a ng-click="Sort('created_date')" class="created_date"  style="color: #ffffff;">MEMBER SINCE <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
             <th style="font-size: 20px;" width="10%" >IsACTIVE</th>
             <th style="font-size: 20px;" width="10%">IsVERIFIED</th>
-            <th style="font-size: 20px;" ><font align="center">ACTION</th></font>
+            <th style="font-size: 20px;" >ACTION</th>
         </tr>
     </thead>
     <tbody>
         <tr data-ng-repeat="barber in barbers | orderBy:sort:reverse  | limitTo:quantity" data-ng-class="{danger:!barber.active}">
-        <td><span ng-if="!barber.first_name" data-ng-hide="editMode">NOT SPECIFIED</span>
+        <td>
             <span data-ng-hide="editMode" >{{barber.first_name}} {{barber.last_name}} </span>
             <input type="text" data-ng-show="editMode" data-ng-model="barber.first_name" placeholder="first name" data-ng-required /><input type="text" data-ng-show="editMode" placeholder="last name" data-ng-model="barber.last_name" data-ng-required />
         </td>

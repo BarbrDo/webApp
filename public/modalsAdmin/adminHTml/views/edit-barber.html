@@ -9,7 +9,7 @@
      <form >
      <div class="clearfix">
       <div class="col-sm-4 form-group">
-        <label>First Name</label>{{barberdetail.first_name}}
+        <label>First Name</label>
         <input type="text" class="form-control" data-ng-model="barberdetail.first_name" required />
       </div>
       <div class="col-sm-4 form-group">
@@ -25,7 +25,7 @@
      <div class="clearfix">
       <div class="col-sm-4 form-group">
         <label>Password</label>
-        <input type="password" class="form-control" data-ng-model="shopdetailview.password"  ng-minlength="6" ng-maxlength="20" name="password" required/>
+        <input type="password" class="form-control" data-ng-model="barberdetail.password"  ng-minlength="6" ng-maxlength="20" name="password" required/>
               <div class="validationError" ng-if="!updateButton" ng-show="signUpForm.password.$error.maxlength && signUpForm.password.$dirty">
               <span style="color:red ">password maximum length exceeds</span>
               </div>
@@ -46,8 +46,8 @@
     
       </form>
      <div class="clearfix text-center">
-
-      <button type="submit"  class="btn btn-primary" >
+     <span data-toggle="modal" data-target="#updated">
+      <button type="submit"  class="btn btn-primary" ng-click="updatebarber(barberdetail)">
         <i class="fa fa-check" aria-hidden="true"></i>
         <span >Save
       </button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -59,20 +59,20 @@
 
 
 
-<div class="modal fade" id="saved" role="dialog">
+<div class="modal fade" id="updated" role="dialog">
     <div class="modal-dialog">
     
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header" style="background-color: #c2f7b5;">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Added</h4>
+          <h4 class="modal-title">Updated</h4>
         </div>
         <div class="modal-body">
-          <p>This Record is Added successfully</p>
+          <p>This Record is Updated successfully</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" ui-sref="shops">OK</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" >OK</button>
         </div>
       </div>
       

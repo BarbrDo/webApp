@@ -6,8 +6,8 @@ module.exports = function(app, express) {
    
   
 
-    app.post('/api/v1/allshops',shopController.listshops);
-    app.post('/api/v1/allcustomers',customerController.listcustomers);
+    app.get('/api/v1/allshops',shopController.listshops);
+    app.get('/api/v1/allcustomers',customerController.listcustomers);
     app.put('/api/v1/updatecust/:cust_id',customerController.updatecustomer);
     app.put('/api/v1/updatebarber/:barber_id',customerController.updatebarber);
     app.put('/api/v1/updateshop/:shop_id',shopController.updateshop);
@@ -29,7 +29,7 @@ module.exports = function(app, express) {
     app.put('/api/v1/disapprovecust/:cust_id',customerController.disapprovecustomer);
     app.put('/api/v1/verifycust/:cust_id',customerController.verifycustomer);
 
-     app.put('/api/v1/activatebarber/:barber_id',customerController.activatebarber);
+    app.put('/api/v1/activatebarber/:barber_id',customerController.activatebarber);
     app.put('/api/v1/deactivebarber/:barber_id',customerController.deactivebarber);
     app.put('/api/v1/disapprovebarber/:barber_id',customerController.disapprovebarber);
     app.put('/api/v1/verifybarber/:barber_id',customerController.verifybarber);

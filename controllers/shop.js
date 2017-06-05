@@ -529,13 +529,12 @@ exports.addshop = function(req, res) {
 
 exports.listshops = function(req, res) {
     var page = req.body.page || 1,
-        count = req.body.count || 10;
+        count = req.body.count || 50;
     var skipNo = (page - 1) * count;
     console.log("page", page);
     console.log("count", count);
     var query = {};
-    query.isDeleted = false,
-        query.user_type = "shop"
+    query.user_type = "shop"
     var searchStr = req.body.search;
 
     if (req.body.search) {
@@ -636,6 +635,7 @@ exports.listshops = function(req, res) {
                         'count': length
                     }
                 }
+                console.log(result);
                 res.status(200).jsonp(outputJSON);
             })
         }
@@ -646,8 +646,7 @@ exports.availableBarber = function(req, res) {
         count = req.body.count || 10;
     var skipNo = (page - 1) * count;
     var query = {};
-    query.isDeleted = false,
-        query.user_type = "barber"
+    query.user_type = "barber"
     var searchStr = req.body.search;
 
 

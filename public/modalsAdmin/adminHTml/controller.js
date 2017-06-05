@@ -23,8 +23,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
     };
 
-
-
        $scope.addcustomer = function() {
        Admin.addCustomer($scope.user)
         .then(function(response) {
@@ -60,6 +58,9 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
       'longitude': "76.7029445"
     }
 
+     $scope.query = {}
+    $scope.queryBy = '$'
+
 
     $scope.shoppageChanged = function() {
       var passingObj = {
@@ -75,7 +76,8 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         .then(function(response) {
           $scope.myobj.totalItems = response.data.count;
           $rootScope.shops = response.data.data;
-          console.log("all shops",response.data.data);
+          console.log("shops",response.data.data);
+          
         });
 
         Admin.shopList(obj)

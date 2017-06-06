@@ -150,6 +150,38 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         })
 
+        .state('viewProfile', {
+            url: '/profile',
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/profile.html',
+                    controller: "ProfileCtrl"
+                },
+                "header": {
+                    templateUrl: 'partials/headerAfterLogin.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/afterLoginSideBar.html'
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['/js/controllers/profile.js',
+                            '/js/services/account.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }],
+                loginRequired: loginRequired
+            }
+        })
+
         .state('barberDashboard', {
             url: '/designDashboardOfBarber',
             views: {

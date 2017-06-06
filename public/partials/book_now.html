@@ -68,12 +68,15 @@
             <div class="stsr">
                 <div class="col-md-6" ng-repeat = "services in barberservice">
                     <!-- <a href="#" class="select">{{services.name}} <span>${{services.price}}</span></a> -->
-                    <input type="checkbox"  name="selectedServices[]" value="{{fruitName}}" ng-checked="selection.indexOf(services) > -1" ng-click="toggleSelection(services)">{{services.name}}<span>${{services.price}}</span>
+                    <!-- <label class="checkbox" > -->
+                   <!--  <input type="checkbox" ng-model="selection.seleect[services]" ng-true-value="'{{services._id}}'" ng-false-value="''" name="service" id="services.id"> -->
+                    <input type="checkbox" data-checklist-model="selection.barberservice" data-checklist-value="services"> 
+                    {{services.name}}<span>${{services.price}}</span><!-- </label> -->
                 </div>
             </div>
         </div>
         <div class="totl">
-            <p>Total <span>$13</span></p>
+            <p>Total <span>${{totalMoney}}</span></p>
         </div>
         <div class="row">
             <div class="col-md-6">

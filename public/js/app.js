@@ -1,4 +1,4 @@
-angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap', 'ngTable', 'alexjoffroy.angular-loaders', 'uiGmapgoogle-maps', 'rzModule', 'ngFileUpload', 'uiSwitch', 'toastr'])
+angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap', 'ngTable', 'alexjoffroy.angular-loaders', 'uiGmapgoogle-maps', 'rzModule', 'ngFileUpload', 'uiSwitch', 'toastr','checklist-model'])
     .config(
         ['uiGmapGoogleMapApiProvider', function(GoogleMapApiProviders) {
             GoogleMapApiProviders.configure({
@@ -543,6 +543,39 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     loginRequired: loginRequired
                 }
             })
+
+        .state('barberGallery', {
+                url: '/barberGallery',
+                views: {
+                    "homeDash": {
+                        templateUrl: 'partials/customer_gallery.html',
+                        controller: "dashboardCtrl"
+                    },
+                    "header": {
+                        templateUrl: 'partials/barber_header_after_login.html',
+                        controller: "HeaderCtrl"
+                    },
+                    "sideBar": {
+                        templateUrl: 'partials/barberSideBar.html'
+                    }
+                },
+                resolve: {
+                    lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                        var deferred = $q.defer();
+                        $ocLazyLoad.load({
+                            name: 'BarbrDoApp',
+                            files: ['/js/controllers/dashboard.js',
+                                '/js/services/customer.js'
+                            ]
+                        }).then(function() {
+                            deferred.resolve();
+                        });
+                        return deferred.promise;
+                    }],
+                    loginRequired: loginRequired
+                }
+            })
+
             .state('requestchair', {
                 url: '/requestchair',
                 views: {

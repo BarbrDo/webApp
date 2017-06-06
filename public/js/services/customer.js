@@ -6,6 +6,7 @@ angular.module('BarbrDoApp')
         return $http({
           method: 'GET',
           url: '/api/v1/shops',
+          params: {search:data.search},
           headers: {
             'device_latitude': data.latitude,
             'device_longitude': data.longitude
@@ -16,6 +17,7 @@ angular.module('BarbrDoApp')
         return $http({
           method: 'GET',
           url: '/api/v1/barbers',
+          params: {search:data.search},
           headers: {
             'device_latitude': data.latitude,
             'device_longitude': data.longitude

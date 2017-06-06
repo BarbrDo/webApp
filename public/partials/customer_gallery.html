@@ -1,17 +1,17 @@
-<div class="crumb"> <span>Gallery</span> </div>
+<div class="crumb" ng-init="customerGallery()"> <span>Gallery</span> </div>
 <div class="wrapper">
     <div class="block higlght">
         <h2>Gallery</h2>
         <div class="row">
-            <div class="col-md-4 col-sm-6">
-               <img src="http://watchdog.org/wp-content/blogs.dir/1/files/2016/06/barbershop.jpg">
+            <div class="col-md-4 col-sm-6" ng-repeat="pic in userGallery.gallery">
+               <img src="{{imgPath+pic.name}}">
             </div>
-            <div class="col-md-4 col-sm-6">
+           <!--  <div class="col-md-4 col-sm-6">
                  <img src="http://watchdog.org/wp-content/blogs.dir/1/files/2016/06/barbershop.jpg">
-            </div>
-            <div class="col-md-4 col-sm-6">
+            </div> -->
+            <!-- <div class="col-md-4 col-sm-6">
                  <img src="http://watchdog.org/wp-content/blogs.dir/1/files/2016/06/barbershop.jpg">
-            </div>
+            </div> -->
         </div>
     </div>
     <div class="row">

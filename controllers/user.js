@@ -259,11 +259,7 @@ exports.accountPut = function(req, res, next) {
     req.assert('password', 'Password must be at least 6 characters long').len(6);
     req.assert('confirm', 'Passwords must match').equals(req.body.password);
   }
-  console.log("req.headers",req.headers.user_id);
-  console.log("req.body",req.body);
-
   let errors = req.validationErrors();
-
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",
@@ -284,13 +280,13 @@ exports.accountPut = function(req, res, next) {
       if (req.body.mobile_number) {
         user.mobile_number = req.body.mobile_number;
       }
-
       if ((req.files) && (req.files.length > 0)) {
         user.picture = req.files[0].filename;
       }
       user.gender = req.body.gender;
       user.location = req.body.location;
       user.website = req.body.website;
+      user.radius_search = req.body.radius_search;
     }
 
     user.save(function(err) {

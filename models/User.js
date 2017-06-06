@@ -30,6 +30,7 @@ var userSchema = new mongoose.Schema({
         enum:["customer","barber","shop"],
         require: true,
     },
+    radius_search: String,
     passwordResetToken: String,
     passwordResetExpires: Date,
     randomString: String,

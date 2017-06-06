@@ -1,9 +1,12 @@
 angular.module('BarbrDoApp')
-  .controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account) {
-    $scope.profile = $rootScope.currentUser;
+  .controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account,toastr) {
+    $scope.profile= JSON.parse($window.localStorage.user);
 
     $scope.updateProfile = function() {
       console.log($scope.profile);
+      // var fs = new FormData();
+      toastr.warning('Work in progress');
+      return false;
       Account.updateProfile($scope.profile)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
@@ -20,6 +23,8 @@ angular.module('BarbrDoApp')
     };
 
     $scope.changePassword = function() {
+      toastr.warning('Work in progress');
+      return false;
       Account.changePassword($scope.profile)
         .then(function(response) {
           $scope.messages = {
@@ -34,6 +39,8 @@ angular.module('BarbrDoApp')
     };
 
     $scope.link = function(provider) {
+      toastr.warning('Work in progress');
+      return false;
       $auth.link(provider)
         .then(function(response) {
           $scope.messages = {
@@ -48,6 +55,8 @@ angular.module('BarbrDoApp')
         });
     };
     $scope.unlink = function(provider) {
+      toastr.warning('Work in progress');
+      return false;
       $auth.unlink(provider)
         .then(function() {
           $scope.messages = {
@@ -62,6 +71,8 @@ angular.module('BarbrDoApp')
     };
 
     $scope.deleteAccount = function() {
+      toastr.warning('Work in progress');
+      return false;
       Account.deleteAccount()
         .then(function() {
           $auth.logout();

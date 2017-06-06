@@ -63,7 +63,7 @@ var shopSchema = new mongoose.Schema({
             name: String,
             availability: {
                 type: String,
-                enum: ["booked", "available"]
+                enum: ["booked", "available","closed"]
             },
             type: {
                 type: String,

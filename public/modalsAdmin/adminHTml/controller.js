@@ -3,9 +3,13 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     $scope.user = {};
     $scope.myobj = {};
     $scope.myobj.currentPage = 1;
-    $scope.bigTotalItems = 175;
+    $scope.bigTotalItems = 300;
     $scope.bigCurrentPage = 1;
     $scope.fieldDisabled = false;
+ 
+
+  
+  
 
     $scope.pageChanged = function() {
       var passingObj = {
@@ -19,6 +23,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         .then(function(response) {
           $scope.myobj.totalItems = response.data.count;
           $rootScope.barbers = response.data.data;
+
         });
 
     };
@@ -48,8 +53,8 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         .then(function(response) {
           $scope.myobj.totalItems = response.data.count;
           $rootScope.customers = response.data.data;
-             console.log("all custs",response);
         });
+
 
     };
 
@@ -76,14 +81,16 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         .then(function(response) {
           $scope.myobj.totalItems = response.data.count;
           $rootScope.shops = response.data.data;
-          console.log("shops",response.data.data);
-          
+          var count = 0;
+          angular.forEach($rootScope.shops, function(shop){
+          });
+          return count; 
         });
 
         Admin.shopList(obj)
         .then(function(response) {
           $rootScope.barberinshops = response.data.data ;
-          console.log("all shops having barbers",response.data.data);
+     
         });
 
     };
@@ -237,6 +244,46 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
     };
 
+     $scope.deactiveshop = function(shop) {
+
+      $scope.shop = shop;
+      Admin.deactiveShop(shop)
+        .then(function(response) {
+          $rootScope.deactiveshops = response.data;
+        });
+
+    };
+
+    $scope.activateshop = function(shop) {
+
+      $scope.shop = shop;
+      Admin.activateShop(shop)
+        .then(function(response) {
+          $rootScope.deactiveshops = response.data;
+        });
+
+    };
+
+    $scope.disapproveshop = function(shop) {
+
+      $scope.shop = shop;
+      Admin.disapproveShop(shop)
+        .then(function(response) {
+          $rootScope.deactiveshops = response.data;
+        });
+
+    };
+
+    $scope.verifyshop = function(shop) {
+      $scope.shop = shop;
+      Admin.verifyShop(shop)
+        .then(function(response) {
+          $rootScope.deactiveshops = response.data;
+        });
+
+    };
+
+
     $scope.deactivatebarber = function(barber) {
       $scope.barber = barber;
       Admin.deactiveBarber(barber)
@@ -277,8 +324,8 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     };
 
     $scope.custdetails = function(customer) {
-
-      $scope.customerdetail = customer;
+      $rootScope.customerdetail = customer;
+      console.log("custdetail",$scope.customerdetail);
 
     };
 
@@ -326,3 +373,5 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
 
   }]);
+
+

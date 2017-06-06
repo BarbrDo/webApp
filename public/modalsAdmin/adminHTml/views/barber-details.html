@@ -1,0 +1,124 @@
+<div class="container">
+  
+  <div>
+     <font color="green">
+    <h2 align="center"><font color="orange">Barber Details</h2></font>
+    <br><br> 
+    </font>    
+       <div  class="row list-group">
+        <div class="item  col-xs-12 col-lg-12"  >
+            <div class="thumbnail">
+                <img class="group list-group-image" src="/images/shop.jpg" height="60%" width="60%" />
+                <div class="caption" >
+                    <h4 class="group inner list-group-item-heading" align="center"><b>
+                       <font color="red"> {{barberdetail.first_name}} {{barberdetail.last_name}} </font></b></h4>
+                        <hr/>
+                    <div class="item  col-xs-6 col-lg-6">
+                    <h4 class="group inner list-group-item-heading" align="center"><b>
+                        Shop Associated With</b></h4>
+                    <table>
+                    <tr >
+                        <td><h5>SHOPNAME </h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.name[0]}}</td>
+                    </tr>
+                    <tr>
+                        <td><h5>CHAIRS </h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.shop[0].chairs.length}}</td>
+                    </tr>
+                    <tr>
+                        <td><h5>ADDRESS</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.shop[0].address}} </td>
+                    </tr>
+                     <tr>
+                        <td><h5>CITY</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.shop[0].city}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>STATE</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.shop[0].state}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>ZIP</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.shop[0].zip}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>LATTITUDE</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.shop[0].latLong[0]}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>LONGITUDE</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.shop[0].latLong[1]}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>RATINGS</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.shop[0].ratings}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>PAYMENT METHODS</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.shop[0].payment_methods}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>DATE OF CREATION</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.shop[0].created_date}} </td>
+                    </tr>
+                     </table>
+                     </div>
+                     <div class="item  col-xs-6 col-lg-6">
+                     <h4 class="group inner list-group-item-heading" align="center"><b>
+                        Barber Details </b></h4>
+                       <table >
+                   <tr>
+                        <td><h5>BARBER NAME</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.first_name}} &nbsp; {{barberdetail.last_name}} </td>
+                    </tr>
+                    <tr >
+                        <td><h5> MOBILE</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.mobile_number}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5> EMAIL</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.email}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>DATE OF CREATION</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.created_date | date :'dd/mm/yyyy'}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>IS SHOP ACTIVE</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.isActive}}  </td>
+                    </tr>
+                    <tr>
+                        <td><h5>IS SHOP VERIFIED</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.is_verified}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>IS SHOP DELETED</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.isDeleted}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>GALARY</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.gallery}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>RATINGS</h5></td>
+                        <td>&nbsp;&nbsp;&nbsp;  {{barberdetail.ratings}} </td>
+                    </tr>
+                     </table>
+                     </div>
+                      
+                       
+
+                    <div class="row">
+                        
+                        <div class="col-xs-12 col-md-6" style="margin-left: 450px;"><br><br>
+                            <button class="btn btn-success" ui-sref="edit_barbers" >Edit Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+     

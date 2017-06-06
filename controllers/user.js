@@ -717,7 +717,7 @@ exports.addChair = function(req, res) {
           let obj = {};
           let saveChair = [];
           obj.name = 'Chair' + " " + totalNumberOfChairs
-          obj.availability = "available";
+          obj.availability = "closed";
           saveChair.push(obj);
           let saveChairData = {};
           saveChairData.chairs = saveChair;

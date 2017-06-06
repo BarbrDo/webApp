@@ -2,7 +2,7 @@ angular.module('barbrdo')
   .factory('Admin', function($http) {
     return {
       barbers: function(data) {
-      return $http.get('/api/v1/allbarbers', data);
+      return $http.post('/api/v1/allbarbers', data);
       },
        shopList: function(data) {
         return $http({
@@ -17,14 +17,23 @@ angular.module('barbrdo')
         // return $http.get('/api/v1/shops', data);
       },
       shopsAll: function(data) {
-      return $http.get('/api/v1/allshops', data);
-      console.log("data",data);
+      return $http.post('/api/v1/allshops', data);
+      
       },
       customersAll: function(data) {
-      return $http.get('/api/v1/allcustomers', data);
+        console.log("data",data);
+      return $http.post('/api/v1/allcustomers', data);
       },
       updateCustomer: function(data) {
-      return $http.put('/api/v1/updatecust/'+data._id, data);
+        console.log("data",data);
+         return $http({
+          method: 'PUT',
+          url: '/api/v1/account',
+          headers: {
+            'user_id':data._id
+          },
+          data: data
+        });
       },
       deactiveCustomer: function(data) {
       return $http.put('/api/v1/deactivecust/'+data._id, data);
@@ -37,6 +46,18 @@ angular.module('barbrdo')
       },
        verifyCustomer: function(data) {
       return $http.put('/api/v1/verifycust/'+data._id, data);
+      },
+      deactiveShop: function(data) {
+      return $http.put('/api/v1/deactiveshop/'+data._id, data);
+      },
+       activateShop: function(data) {
+      return $http.put('/api/v1/activateshop/'+data._id, data);
+      },
+       disapproveShop: function(data) {
+      return $http.put('/api/v1/disapproveshop/'+data._id, data);
+      },
+       verifyShop: function(data) {
+      return $http.put('/api/v1/verifyshop/'+data._id, data);
       },
       deactiveBarber: function(data) {
       return $http.put('/api/v1/deactivebarber/'+data._id, data);
@@ -52,7 +73,6 @@ angular.module('barbrdo')
       },
       updateBarber: function(data) {
         console.log("data",data);
-        // return $http.put('/api/v1/account', data);
          return $http({
           method: 'PUT',
           url: '/api/v1/account',
@@ -63,10 +83,15 @@ angular.module('barbrdo')
         });
       },      
       updateShop: function(data) {
-       return $http.put('/api/v1/shops',data);
-      },
-      updateChair: function(data) { 
-      return $http.put('/api/v1/updatechair/'+data._id, data);
+        console.log("data",data);
+         return $http({
+          method: 'PUT',
+          url: '/api/v1/account',
+          headers: {
+            'user_id':data._id
+          },
+          data: data
+        });
       },
       addChair: function(data) {
         return $http.post('/api/v1/shops/chair',data);

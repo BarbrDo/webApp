@@ -1,33 +1,57 @@
+<style type="text/css">
+.angular-google-map-container {
+    height: 990px;
+    width: 990px;
+}
+</style>
 <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
-  <div class="crumb"> <span>Book Appointment</span> </div >
-  <div class="wrapper">
+<div class="crumb"> <span>Book Appointment</span> </div>
+<div class="wrapper">
     <div class="block">
-      <center><h2>{{shopBarbers.name}}</h2></center>
-      <div class="org_content">
-      <div class="row" style="background-color: grey;margin-top: 10px;">
-        <div class="col-sm-8">
-          <div >
-        <div>{{shopBarbers.name}}</div>
-        <div>{{shopBarbers.address}}</div>
-        <div>{{shopBarbers.state}} {{shopBarbers.city}}</div>
-      </div>
+        <h2>Your Shop</h2>
+        <div class="selected_barber">
+            <div class="selected_user"> <img src="images/brbr_pic.png" alt=""> </div>
+            <div class="namertng">
+                <h3>{{shopBarbers.name}}</h3>
+                <div class="rtng">
+                    {{shopBarbers.address}} {{shopBarbers.state}} {{shopBarbers.city}}
+                </div>
+            </div>
+            <div class="locdis">
+            <label class="btn btn-primary">
+                <input type="checkbox" autocomplete="off" ng-model="checkedbox"> View on Map</label>
+            </div>
         </div>
-        <div class="col-sm-4" style="float: right;">
-          <button>View On Map</button>
-        </div>
-      </div>
-        <div class="row">
-          <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat="data in shopBarbers.barber">
-            <div class="barber">
-              <div class="cont">
-                <div class="user_pic"> <img src="/images/brbr_pic.png" alt="" ></div>
-                <h3>{{data.first_name}} {{data.last_name}}</h3>
-                <p><span>Member Since</span> : {{data.created_date | date:'yyyy-MM-dd'}}</p>
-                <div class="rating"> <img src="/images/rating.png" alt="" > </div>
-              </div>
-              <a ui-sref="bookNow({shop_id:shopBarbers._id,barber_id:data._id})" class="book_nw" > Book Now <i class="fa  fa-angle-right"></i> </a> </div>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
+    <div ng-if="checkedbox">
+        <h2></h2>
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <p><i class=""> </i>
+                    <ui-gmap-google-map center='map.center' zoom='map.zoom' aria-label="Google map">
+                        <ui-gmap-marker ng-repeat="marker in markers" coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id">
+                            <ui-gmap-window>
+                                <div>{{marker.window.title}}</div>
+                            </ui-gmap-window>
+                        </ui-gmap-marker>
+                    </ui-gmap-google-map>
+                </p>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <p><i class=""></i></p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat="data in shopBarbers.barber">
+            <div class="barber">
+                <div class="cont">
+                    <div class="user_pic"> <img src="/images/brbr_pic.png" alt=""></div>
+                    <h3>{{data.first_name}} {{data.last_name}}</h3>
+                    <p><span>Member Since</span> : {{data.created_date | date:'yyyy-MM-dd'}}</p>
+                    <div class="rating"> <img src="/images/rating.png" alt=""> </div>
+                </div>
+                <a ui-sref="bookNow({shop_id:shopBarbers._id,barber_id:data._id})" class="book_nw"> Book Now <i class="fa  fa-angle-right"></i> </a> </div>
+        </div>
+    </div>
+</div>

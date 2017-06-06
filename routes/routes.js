@@ -51,18 +51,19 @@ module.exports = function(app, express) {
     app.post('/api/v1/checkFaceBook', userController.checkFaceBook);
 
     //Shops
-    app.get('/api/v1/shops', shopController.allShops); // List all shops and search shop
+    app.get('/api/v1/allshops',shopController.listshops); // All shops registered in system
+    app.get('/api/v1/shops', shopController.allShops); // List barber associated shops only
     app.put('/api/v1/shops', upload.any(), shopController.editShop); //Update shop
     app.post('/api/v1/shops/chair', userController.addChair) //Add chair in shop
     app.get('/api/v1/shops/chair',shopController.allShopsHavingChairs);// It will show all shops having number of chairs
     app.delete('/api/v1/shops/chair', userController.removeChair); // Remove chair from shop
     app.get('/api/v1/shops/barberchairrequests/:shop_id',chairRequestController.barberChairReqests); //Get all barber's request for chairs
     app.post('/api/v1/shops/confirmchair', chairRequestController.bookChair);
-    app.get('/api/v1/allbarbers', shopController.availableBarber); //Get all barbers
+    app.post('/api/v1/allbarbers', shopController.availableBarber); //Get all barbers
     app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
     app.put('/api/v1/shops/chairPercentage',shopController.setChairPercentage);
     app.put('/api/v1/shops/weeklyMonthlyChair',shopController.weeklyMonthlyChair);
-    app.post('/api/v1/shops/postChairToAllBarbers',shopController.postChairToAllBarbers);
+    app.put('/api/v1/shops/postChairToAllBarbers',shopController.postChairToAllBarbers);
     app.get('/api/v1/shops/chair/:shop_id',shopController.shopContainsChairs);
     
     //Customer

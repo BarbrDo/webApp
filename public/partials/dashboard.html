@@ -12,8 +12,12 @@
             <option value="barber">Barber</option>
           </select>
         </div>
-        <div class="search">
-          <input type="text" placeholder="Search" >
+        <div class="search" ng-if="valueOfSelect=='shop'">
+          <input type="text" placeholder="Search" ng-model="search.searchShop" ng-change="shoplist()">
+          <input type="submit" value="" name="" >
+        </div>
+        <div class="search" ng-if="valueOfSelect=='barber'">
+          <input type="text" placeholder="Search" ng-model="search.searchBarber" ng-change="barberList()">
           <input type="submit" value="" name="" >
         </div>
       </div>

@@ -1,10 +1,10 @@
 <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
-<div class="crumb" ng-init="appointments()"> <span>Book Appointment</span> </div>
+<div class="crumb" ng-init="appointments()"> <span>Home</span> </div>
 <div class="wrapper">
   <div class="block">
     <div class="tabs customtab">
       <uib-tabset active="activeJustified" justified="true">
-        <uib-tab index="0" heading="Pending Request">
+        <uib-tab index="0" heading="Upcoming">
           <div class="all_cuts">
             <div class="table-responsive">
               <table class="table table-bordered" ng-table="tableParams">
@@ -15,14 +15,14 @@
                   <td data-title="'Where'">{{user.shop_name}}</td>
                   <td class="action" data-title="'Action'">
                       <div class="ac_btn"> <a ui-sref="appointmentDetail({_id:user._id})" class=""  tooltip-placement="top" uib-tooltip="View Detail" > <i class="fa fa-eye"></i> </a>
-                      <a href="#" class="" tooltip-placement="top" uib-tooltip="Confirmed" > <i class="fa fa-check "></i> </a> <a href="#" class="" tooltip-placement="top" uib-tooltip="Reschedule" > <i class="fa fa-repeat "></i> </a> </div>
+                      <!-- <a href="#" class="" tooltip-placement="top" uib-tooltip="Confirmed" > <i class="fa fa-check "></i> </a> <a href="#" class="" tooltip-placement="top" uib-tooltip="Reschedule" > <i class="fa fa-repeat "></i> </a> --> </div>
                   </td>
                 </tr>
               </table>
             </div>
           </div>
         </uib-tab>
-        <uib-tab index="1" heading="Confirmed">
+        <uib-tab index="1" heading="Completed">
           <div class="all_cuts">
             <div class="table-responsive">
               <table class="table table-bordered" ng-table="tableParams">

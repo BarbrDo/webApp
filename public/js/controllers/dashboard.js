@@ -2,6 +2,7 @@ angular.module('BarbrDoApp')
 	.controller('dashboardCtrl', function($scope, $rootScope, $location, customer, $stateParams, $state, $window, ngTableParams, $timeout,$http) {
 		$scope.dollarAmmount = 0.00;
 		$scope.annualCost = "$" + $scope.dollarAmmount;
+		$scope.search = {};
 		var obj = {
 			'latitude': "30.708225",
 			'longitude': "76.7029445"
@@ -10,7 +11,10 @@ angular.module('BarbrDoApp')
 			$scope.shoplist();
 			$scope.barberList();
 		}
+		// $scope.searchBarber = "";
+		// $scope.searchShop = "";
 		$scope.shoplist = function() {
+			obj.search = $scope.search.searchShop;
 			$scope.loaderStart = true;
 			customer.shopList(obj)
 				.then(function(response) {
@@ -28,6 +32,18 @@ angular.module('BarbrDoApp')
 			var obj = {
 				_id: $stateParams._id
 			}
+			var Markers = [{
+						"id": "0",
+						"coords": {
+							"latitude": "30.708225",
+							"longitude": "76.7029445"
+						},
+						"window": {
+							"title": ""
+						}
+					}];
+					$scope.markers = Markers;
+
 			customer.shopContainsBarbers(obj).then(function(response) {
 				$scope.loaderStart = false;
 				$scope.shopBarbers = response.data.data;
@@ -76,13 +92,18 @@ angular.module('BarbrDoApp')
 			$scope.choosedTime = prop;
 		};
 		$scope.barberList = function() {
+			obj.search = $scope.search.searchBarber;
+			$scope.loaderStart = true;
 			customer.barberAll(obj)
 				.then(function(response) {
+					$scope.loaderStart = false;
 					$scope.barbers = response.data.data;
 				});
 		}
-		$scope.selection = [];
+		$scope.selection = {};
+		$scope.totalMoney = 0;
 		$scope.toggleSelection = function toggleSelection(fruitName) {
+
 			var idx = $scope.selection.indexOf(fruitName);
 			// Is currently selected
 			if (idx > -1) {
@@ -92,17 +113,28 @@ angular.module('BarbrDoApp')
 					name: fruitName.name,
 					price: fruitName.price
 				});
+				$scope.totalMoney+=fruitName.price
 				console.log($scope.selection);
 			}
 		};
 		$scope.payLater = function() {
+			var myarr = [];
+
+			for(var i=0;i<$scope.selection.barberservice.length;i++){
+				var cusObj = {};
+				cusObj.name = $scope.selection.barberservice[i].name;
+				cusObj.price = $scope.selection.barberservice[i].price;
+				myarr.push(cusObj);
+			}
 			var postObj = {
 				"shop_id": $stateParams.shop_id,
 				"barber_id": $stateParams.barber_id,
-				"services": $scope.selection,
+				"services": myarr,
 				"appointment_date": $scope.selectedDate + " " + $scope.choosedTime,
 				"payment_method": "cash",
 			}
+			console.log(postObj);
+			return false;
 			customer.takeAppointment(postObj)
 				.then(function(response) {
 					$state.go('pending', {
@@ -167,6 +199,7 @@ angular.module('BarbrDoApp')
 			// 	.then(function(response) {
 			// })
 			var obj = JSON.parse($window.localStorage.user);
+
 			$http.post("/api/v1/customer/gallery", fs, {
 				//	transformRequest: angular.identity,
 					headers: {'Content-Type': undefined,'user_id': obj._id}
@@ -186,4 +219,6 @@ angular.module('BarbrDoApp')
 					alert('There was some error uploading your files. Please try Uploading them again.');
 				});
 		}
+		$scope.userGallery = JSON.parse($window.localStorage.user)
+		$scope.imgPath = $window.localStorage.imagePath;
 	});

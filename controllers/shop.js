@@ -347,11 +347,11 @@ exports.setChairPercentage = function(req, res) {
     }, updateCollectionData, function(err, result) {
         if (err) {
             return res.status(400).send({
-                msg: "Error in updating the shop collection."
+                "msg": constantObj.messages.userStatusUpdateFailure
             })
         } else {
             res.status(200).send({
-                msg: 'shop updated successfully'
+               "msg": constantObj.messages.userStatusUpdateSuccess
             });
         }
     })
@@ -379,11 +379,11 @@ exports.weeklyMonthlyChair = function(req, res) {
     }, updateCollectionData, function(err, result) {
         if (err) {
             return res.status(400).send({
-                msg: "Error in updating the shop collection."
+                "msg": constantObj.messages.userStatusUpdateFailure
             })
         } else {
             res.status(200).send({
-                msg: 'shop updated successfully'
+                "msg": constantObj.messages.userStatusUpdateSuccess
             });
         }
     })
@@ -523,8 +523,8 @@ exports.updateshop = function(req, res) {
 
 
  exports.listshops = function(req, res) {
-    var page = req.body.page || 1,
-        count = req.body.count || 50;
+    var page = parseInt(req.query.page) || 1;
+    var count = parseInt(req.query.count) || 10;
     var skipNo = (page - 1) * count;
     var query = {};
         query.user_type = "shop"
@@ -597,15 +597,13 @@ exports.updateshop = function(req, res) {
 
 
 exports.availableBarber = function(req, res) {
-    var page = req.body.page || 1,
-        count = req.body.count || 10;
+    var page = parseInt(req.query.page) || 1;
+    var count = parseInt(req.query.count) || 10;
     var skipNo = (page - 1) * count;
     var query = {};
     query.user_type = "barber"
     var searchStr = req.body.search;
 
-
-    
     user.aggregate([{
         $project: {
             _id: "$_id",
@@ -658,64 +656,23 @@ exports.availableBarber = function(req, res) {
             }, {
                 "$limit": count
             }]).exec(function(err, result) {
-                if (err) {
-                    outputJSON = {
-                        'status': 'failure',
-                        'messageId': 203,
-                        'message': 'data not retrieved '
-                    };
-                } else {
-                    outputJSON = {
-                        'status': 'success',
-                        'messageId': 200,
-                        'message': 'data retrieve from barber',
-                        'data': result,
-                        'count': length
-                    }
+                if(err){
+                        res.status(400).send({
+                        "msg": constantObj.messages.userStatusUpdateFailure,
+                        "err": err
+                    });
+                }else{
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": result,
+                        "count": length
+                    })
                 }
-                res.status(200).jsonp(outputJSON);
             })
         }
     })
-
-    if (req.body.search) {
-        query.$or = [{
-            first_name: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            last_name: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            email: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            name: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            ratings: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            created_date: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            mobile_number: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }]
-    }
+            
+    
 };
 exports.getDataForBookNowPage = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
@@ -878,7 +835,7 @@ exports.shopAcceptChairRequest = function(req, res) {
             })
         } else {
             res.status(200).send({
-                msg: 'shop updated successfully'
+                "msg": constantObj.messages.successRetreivingData,
             });
         }
     })

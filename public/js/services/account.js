@@ -2,7 +2,7 @@ angular.module('BarbrDoApp')
   .factory('Account', function($http) {
     return {
       updateProfile: function(data) {
-        return $http.post('/api/v1/account', data);
+        return $http.put('/api/v1/account', data);
       },
       changePassword: function(data) {
         return $http.put('/api/v1/account', data);

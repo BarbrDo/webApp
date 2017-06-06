@@ -9,7 +9,7 @@
             <div class="table-responsive">
               <table class="table table-bordered" ng-table="tableParams">
                 <tr ng-repeat = "user in data.data.upcoming">
-                  <td data-title="'Picture'"><span><img src="http://dhakaprice.com/images/No-image-found.jpg" height="100" width="100"></span></td>
+                  <td data-title="'Picture'"><span><img src="{{imgPath+user.barber_id.picture}}" height="100" width="100"></span></td>
                   <td data-title="'barber Name'">{{user.barber_id.first_name}} {{user.barber_id.last_name}}</td>
                   <td data-title="'When'">{{user.appointment_date | date:yyyy:mm:dd}}</td>
                   <td data-title="'Where'">{{user.shop_name}}</td>
@@ -28,7 +28,7 @@
               <table class="table table-bordered" ng-table="tableParams">
                 <tr ng-repeat = "users in data.data.complete">
                   <td data-title="'Picture'">
-                    <span><img src="http://dhakaprice.com/images/No-image-found.jpg" height="100" width="100"></span>
+                    <span><img src="{{imgPath+users.barber_id.picture}}" width="100"></span>
                   </td>
                   <td data-title="'barber Name'">{{users.barber_id.first_name}} {{users.barber_id.last_name}}</td>
                   <td data-title="'When'">{{users.appointment_date | date:yyyy:mm:dd}}</td>

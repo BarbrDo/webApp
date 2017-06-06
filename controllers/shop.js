@@ -496,43 +496,14 @@ exports.updateshop = function(req, res) {
     });
 };
 
-exports.addshop = function(req, res) {
-    user.find({email:req.body.email}, function(err,shop) {
-        if(err)
-        {
-            console.log(err)
-        }
-        else
-        {
-          if(shop=="" || shop == undefined)
-        {
-            var shop = new user(req.body);
-           
-            shop.user_type = "shop";
-           shop.save(function(error,result)
-           {
-                res.send(result);
-           });
-        }
-        else
-        {        
-         console.log("email id exists",shop);   
-        }
-        }
-
-       
-    });
-
-};
 
 
 
-exports.listshops = function(req, res) {
+ exports.listshops = function(req, res) {
     var page = req.body.page || 1,
         count = req.body.count || 50;
     var skipNo = (page - 1) * count;
     var query = {};
-    
         query.user_type = "shop"
     var searchStr = req.body.search;
 
@@ -553,11 +524,6 @@ exports.listshops = function(req, res) {
                 '$options': 'i'
             }
         }, {
-            chairs: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
             address: {
                 $regex: searchStr,
                 '$options': 'i'
@@ -567,29 +533,12 @@ exports.listshops = function(req, res) {
 
     user.aggregate([{
         $match: query
-    },{
-       $project: {
-                    _id: "$_id",
-                    first_name: "$first_name",
-                    last_name: "$last_name",
-                    email: "$email",
-                    isActive: "$isActive",
-                    is_verified: "$is_verified",
-                    isDeleted: "$isDeleted",
-                    created_date: "$created_date",
-                    created_date: "$created_date",
-                    mobile_number: "$mobile_number",
-                    gallery: "$gallery",
-                    ratings: "$ratings",
-                    latLong: "$latLong",
-                    shopinfo : "$ShopInformation"
-                }
-    }]).exec(function(err, data) {
+    }
+    ]).exec(function(err, data) {
         
         if (err) {
             console.log(err)
         } else {
-
             user.aggregate([{
                 $match: query
             }, {
@@ -601,48 +550,29 @@ exports.listshops = function(req, res) {
                 from: "shops",
                 localField: "_id",
                 foreignField: "user_id",
-                as: "ShopInformation"
+                as: "shopinfo"
                 }
-            },{
-                $project: {
-                    _id: "$_id",
-                    first_name: "$first_name",
-                    last_name: "$last_name",
-                    email: "$email",
-                    isActive: "$isActive",
-                    is_verified: "$is_verified",
-                    isDeleted: "$isDeleted",
-                    created_date: "$created_date",
-                    mobile_number: "$mobile_number",
-                    gallery: "$gallery",
-                    ratings: "$ratings",
-                    latLong: "$latLong",
-                    shopinfo : "$ShopInformation"
-                }
-            }]).exec(function(err, result) {
+            }
+        ]).exec(function(err, result) {
                 var length = result.length;
-                if (err) {
-                    outputJSON = {
-                        'status': 'failure',
-                        'messageId': 203,
-                        'message': 'data not retrieved '
-                    };
-                } else {
-                    outputJSON = {
-                        'status': 'success',
-                        'messageId': 200,
-                        'message': 'data retrieve from shop',
-                        'data': result,
-                        'count': length
-                    }
-                    console.log("length",length);
+                if(err){
+                        res.status(400).send({
+                        "msg": constantObj.messages.userStatusUpdateFailure,
+                        "err": err
+                    });
+                }else{
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": result,
+                        "count": length
+                    })
                 }
-                console.log(result);
-                res.status(200).jsonp(outputJSON);
             })
         }
     })
 };
+
+
 exports.availableBarber = function(req, res) {
     var page = req.body.page || 1,
         count = req.body.count || 10;
@@ -695,7 +625,8 @@ exports.availableBarber = function(req, res) {
                     is_verified: "$is_verified",
                     user_type: "$user_type",
                     password: "$password",
-                    name: "$shopdetails.name"
+                    name: "$shopdetails.name",
+                    shop: "$shopdetails"
                 }
             }, {
                 $match: query
@@ -848,16 +779,7 @@ exports.getDataForBookNowPage = function(req, res) {
         })
     }
 }
-exports.updatechair = function(req, res) {
-    console.log("chair id",req.params.chair_id);
-        chair = new shop(req.body);
-        chair.update({"chairs._id":req.params.chair_id},{$set:{"chairs.$.name":"ch","chairs.$.availability":req.body,"chairs.$.type":req.body}}, function(err, count) {
-            console.log("count",count);
-            shop.find( function(err, customers) {
-                res.json(customers);
-            });
-        });
-};
+
 
 
 exports.deleteshop = function(req, res) {

@@ -6,12 +6,11 @@ module.exports = function(app, express) {
    
   
 
-    app.get('/api/v1/allshops',shopController.listshops);
-    app.get('/api/v1/allcustomers',customerController.listcustomers);
+    app.post('/api/v1/allshops',shopController.listshops);
+    app.post('/api/v1/allcustomers',customerController.listcustomers);
     app.put('/api/v1/updatecust/:cust_id',customerController.updatecustomer);
     app.put('/api/v1/updatebarber/:barber_id',customerController.updatebarber);
     app.put('/api/v1/updateshop/:shop_id',shopController.updateshop);
-    app.put('/api/v1/updatechair/:chair_id',shopController.updatechair);
 
     
     app.put('/api/v1/deletecustomer/:cust_id',customerController.deletecustomer);
@@ -33,5 +32,10 @@ module.exports = function(app, express) {
     app.put('/api/v1/deactivebarber/:barber_id',customerController.deactivebarber);
     app.put('/api/v1/disapprovebarber/:barber_id',customerController.disapprovebarber);
     app.put('/api/v1/verifybarber/:barber_id',customerController.verifybarber);
+
+    app.put('/api/v1/activateshop/:shop_id',customerController.activateshop);
+    app.put('/api/v1/deactiveshop/:shop_id',customerController.deactiveshop);
+    app.put('/api/v1/disapproveshop/:shop_id',customerController.disapproveshop);
+    app.put('/api/v1/verifyshop/:shop_id',customerController.verifyshop);
     
 }

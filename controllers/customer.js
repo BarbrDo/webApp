@@ -4,6 +4,8 @@ var shop = require('../models/shop');
 let constantObj = require('./../constants.js');
 
 exports.listcustomers = function(req, res) {
+    console.log("page",req.body.page);
+    console.log("count",req.body.count);
     var page = req.body.page || 1,
         count = req.body.count || 10;
     var skipNo = (page - 1) * count;
@@ -235,6 +237,78 @@ exports.verifycustomer = function(req, res) {
     }, function(err, count) {
         User.find({
             user_type: "customer"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
+exports.deactiveshop = function(req, res) {
+    console.log("shopid", req.params.shop_id);
+    User.update({
+        _id: req.params.shop_id
+    }, {
+        $set: {
+            isActive: false
+        }
+    }, function(err, count) {
+        User.find({
+            user_type: "shop"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
+exports.activateshop = function(req, res) {
+    console.log("shopid", req.params.shop_id);
+    User.update({
+        _id: req.params.shop_id
+    }, {
+        $set: {
+            isActive: true
+        }
+    }, function(err, count) {
+        User.find({
+            user_type: "shop"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
+exports.disapproveshop = function(req, res) {
+    console.log("shopid", req.params.shop_id);
+    User.update({
+        _id: req.params.shop_id
+    }, {
+        $set: {
+            is_verified: false
+        }
+    }, function(err, count) {
+        User.find({
+            user_type: "shop"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
+exports.verifyshop = function(req, res) {
+    console.log("shopid", req.params.shop_id);
+    User.update({
+        _id: req.params.shop_id
+    }, {
+        $set: {
+            is_verified: true
+        }
+    }, function(err, count) {
+        User.find({
+            user_type: "shop"
         }, function(err, shopss) {
             res.json(shopss);
         });

@@ -17,7 +17,7 @@
                     </div>
                     <div>
                     <span class="glyphicon glyphicon-search" style="color:purple" ></span>
-                    <input ng-model="myobj.search" placeholder="Search for..." ng-change="pageChanged()"/>          
+                    <input ng-model="query[queryBy]" placeholder="Search for..." ng-change="pageChanged()"/>          
                     </div> 
                 </div>
 
@@ -34,18 +34,14 @@
         </tr>
     </thead>
     <tbody>
-        <tr data-ng-repeat="barber in barbers | orderBy:sort:reverse  | limitTo:quantity" data-ng-class="{danger:!barber.active}">
+        <tr data-ng-repeat="barber in barbers| orderBy:sort:reverse | filter : query" data-ng-class="{danger:!barber.active}">
         <td>
-            <span data-ng-hide="editMode" >{{barber.first_name}} {{barber.last_name}} </span>
-            <input type="text" data-ng-show="editMode" data-ng-model="barber.first_name" placeholder="first name" data-ng-required /><input type="text" data-ng-show="editMode" placeholder="last name" data-ng-model="barber.last_name" data-ng-required />
+            <a data-toggle="tooltip" title="View {{barber.first_name}} {{barber.last_name}}'s detailed info" ui-sref="barbersdetail" ng-click="barbdetail(barber)">{{barber.first_name}} {{barber.last_name}}</a> 
         </td>
-        <td><span ng-if="!barber.name[0]" data-ng-hide="editMode">NOT ASSOCIATED TO ANY SHOP</span>
-            <span data-ng-hide="editMode">{{barber.name[0]}}</span>
-         <input type="text" data-ng-show="editMode" data-ng-model="barber.name[0]" placeholder="Shop" data-ng-required />
+        <td>{{barber.name[0]}}
         </td>
-        <td><span ng-if="!barber.created_date" data-ng-hide="editMode">NIL</span>
-            <span data-ng-hide="editMode">{{barber.created_date | date:dd/mm/yyyy}} </span>
-            <input type="text"  data-ng-show="editMode" data-ng-model="barber.created_date" placeholder="Member since" data-ng-required />
+        <td>
+          {{barber.created_date | date:dd/mm/yyyy}} 
         </td>
          <td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <span ng-if="barber.isActive==true" data-toggle="modal" data-target="#deactive">
@@ -66,11 +62,6 @@
             <a ui-sref="edit_barbers" ng-click="barbdetail(barber)" class="glyphicon glyphicon-pencil" style="font-size: 20px;" data-toggle="tooltip" title="EDIT DETAILS"></a>
              <span data-toggle="modal" data-target="#confirm">
              <a  type="submit"  ng-click="deleteconfirmbarber(barber)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a> </span>
-              <span data-toggle="modal" data-target="#viewModal">
-             <a type="submit" ng-click="barbdetail(barber)" data-ng-hide="editMode" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a></span>
-             <span data-toggle="modal" data-target="#myModal">
-            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; updatebarber(barber)" class="glyphicon glyphicon-check" style="font-size: 25px;margin-left: 20px;color: #17a109;" data-toggle="tooltip" title="SAVE DETAILS" id="btnAlert"  ></a></span>
-            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" class="glyphicon glyphicon-ban-circle" style="font-size: 25px;margin-left: 20px;color: #f94040;" data-toggle="tooltip" title="CANCEL"></a>
         </td>
 </tr>
 </tbody>
@@ -78,7 +69,7 @@
 </div>
 <div>
 <div class="col-sm-6">
-     <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="shoppageChanged()"></ul>       
+     <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="pageChanged()"></ul>       
           </div>
 <br>
 <label>No. of Enteries</label>

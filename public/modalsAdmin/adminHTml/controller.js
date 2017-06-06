@@ -76,7 +76,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         .then(function(response) {
           $scope.myobj.totalItems = response.data.count;
           $rootScope.shops = response.data.data;
-          console.log("shops",response.data.data);
+          console.log("shops",response);
           
         });
 

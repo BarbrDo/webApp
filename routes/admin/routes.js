@@ -6,7 +6,7 @@ module.exports = function(app, express) {
    
   
 
-    app.get('/api/v1/allshops',shopController.listshops);
+    
     app.get('/api/v1/allcustomers',customerController.listcustomers);
     app.put('/api/v1/updatecust/:cust_id',customerController.updatecustomer);
     app.put('/api/v1/updatebarber/:barber_id',customerController.updatebarber);

@@ -59,7 +59,6 @@ module.exports = function(app, express) {
     app.delete('/api/v1/shops/chair', userController.removeChair); // Remove chair from shop
     app.get('/api/v1/shops/barberchairrequests/:shop_id',chairRequestController.barberChairReqests); //Get all barber's request for chairs
     app.post('/api/v1/shops/confirmchair', chairRequestController.bookChair);
-    app.post('/api/v1/allbarbers', shopController.availableBarber); //Get all barbers
     app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
     app.put('/api/v1/shops/chairPercentage',shopController.setChairPercentage);
     app.put('/api/v1/shops/weeklyMonthlyChair',shopController.weeklyMonthlyChair);
@@ -75,6 +74,7 @@ module.exports = function(app, express) {
     
     
     //Barber
+    app.get('/api/v1/allbarbers', shopController.availableBarber); //Get all barbers
     app.get('/api/v1/barbers', shopController.associatedBarbers); //List all barbers
     app.get('/api/v1/barbers/:barber_id',barberServices.viewBarberProfile);//Get barber details like info, rating & comments, galleries
     app.post('/api/v1/barber/gallery',upload.any(), barberServices.uploadBarberGallery);//Upload single or multiple images in Gallery

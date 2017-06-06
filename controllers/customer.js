@@ -4,13 +4,10 @@ var shop = require('../models/shop');
 let constantObj = require('./../constants.js');
 
 exports.listcustomers = function(req, res) {
-    console.log("page",req.body.page);
-    console.log("count",req.body.count);
-    var page = req.body.page || 1,
-        count = req.body.count || 10;
+    var page = req.query.page || 1;
+    var count = parseInt(req.query.count) || 10;
     var skipNo = (page - 1) * count;
     var query = {};
-    query.isDeleted = false,
         query.user_type = "customer"
     var searchStr = req.body.search;
 
@@ -38,7 +35,7 @@ exports.listcustomers = function(req, res) {
             }
         }]
     }
-
+    
     User.aggregate([{
         $project: {
             _id: "$_id",
@@ -78,25 +75,48 @@ exports.listcustomers = function(req, res) {
             }, {
                 "$limit": count
             }]).exec(function(err, result) {
-                if (err) {
-                    outputJSON = {
-                        'status': 'failure',
-                        'messageId': 203,
-                        'message': 'data not retrieved '
-                    };
-                } else {
-                    outputJSON = {
-                        'status': 'success',
-                        'messageId': 200,
-                        'message': 'data retrieve from customer',
-                        'data': result,
-                        'count': length
-                    }
+                if(err){
+                        res.status(400).send({
+                        "msg": constantObj.messages.errorRetreivingData,
+                        "err": err
+                    });
+                }else{
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": result,
+                        "count": length
+                    })
                 }
-                res.status(200).jsonp(outputJSON);
             })
         }
     })
+    
+    
+    
+    /*
+    User.aggregate([{
+        $match: query
+    }, {
+        "$skip": skipNo
+    }, {
+        "$limit": rcount
+    }]).exec(function(err, result) {
+
+        var length = result.length;
+        if(err){
+                res.status(400).send({
+                "msg": constantObj.messages.errorRetreivingData,
+                "err": err
+            });
+        }else{
+            res.status(200).send({
+                "msg": constantObj.messages.successRetreivingData,
+                "data": result,
+                "count": length
+            })
+        }
+    })*/
+
 };
 
 exports.updatecustomer = function(req, res) {

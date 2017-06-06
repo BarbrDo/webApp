@@ -59,7 +59,7 @@ module.exports = function(app, express) {
     app.delete('/api/v1/shops/chair', userController.removeChair); // Remove chair from shop
     app.get('/api/v1/shops/barberchairrequests/:shop_id',chairRequestController.barberChairReqests); //Get all barber's request for chairs
     app.post('/api/v1/shops/confirmchair', chairRequestController.bookChair);
-    app.get('/api/v1/allbarbers', shopController.availableBarber); //Get all barbers
+    app.post('/api/v1/allbarbers', shopController.availableBarber); //Get all barbers
     app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
     app.put('/api/v1/shops/chairPercentage',shopController.setChairPercentage);
     app.put('/api/v1/shops/weeklyMonthlyChair',shopController.weeklyMonthlyChair);

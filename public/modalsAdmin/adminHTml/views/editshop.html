@@ -45,10 +45,6 @@
      </div>
      <div class="clearfix">
       <div class="col-sm-6 form-group">
-        <label>ID</label>
-        <input type="text" class="form-control" data-ng-model="shopdetailview.shopinfo[0]._id" value="shop" placeholder="shop">
-      </div>
-      <div class="col-sm-6 form-group">
         <label>Licence No.</label>
         <input type="text" class="form-control" data-ng-model="shopdetailview.shopinfo[0].licence_number" required>
       </div>
@@ -71,6 +67,16 @@
         <input type="text " class="form-control "  data-ng-model="shopdetailview.shopinfo[0].city" required  />
       </div>
       </div>
+      <div class="clearfix">
+      <div class="col-sm-4 form-group">
+        <label>State</label>
+        <input type="text " class="form-control " data-ng-model="shopdetailview.shopinfo[0].state" required  />
+      </div>
+      <div class="col-sm-4 form-group">
+        <label>Zip</label>
+        <input type="text " class="form-control " data-ng-model="shopdetailview.shopinfo[0].zip" required  />
+      </div>
+      </div>
       </form>
      <div class="clearfix text-center">
 
@@ -78,9 +84,9 @@
         <i class="fa fa-check" aria-hidden="true"></i>
         <span >Save
       </button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <button type="reset" class="btn btn-grey">
+      <button type="reset" class="btn btn-grey" ui-sref="shops">
         <i class="fa fa-times" aria-hidden="true"></i>
-        <span>Reset</span>
+        <span>Cancel</span>
       </button>
      </div>
   </div>

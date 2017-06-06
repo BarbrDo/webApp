@@ -46,12 +46,9 @@
             <input type="text"  data-ng-show="editMode" data-ng-model="chairs.amount" placeholder="Amount" data-ng-required />
         </td>
         <td>
-            <a ui-sref="editchair" data-ng-hide="editMode" data-ng-click="editMode = true" class="glyphicon glyphicon-pencil" style="font-size: 20px;" data-toggle="tooltip" title="EDIT DETAILS"></a>
+           
              <span data-toggle="modal" data-target="#confirm">
              <a type="submit" ng-click="deleteconfirmchair(chairs)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
-             <span data-toggle="modal" data-target="#myModal">
-            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; updatechair(chairs)" class="glyphicon glyphicon-check" style="font-size: 25px;margin-left: 20px;color: #17a109;" data-toggle="tooltip" title="SAVE DETAILS" id="btnAlert"  ></a></span>
-            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" class="glyphicon glyphicon-ban-circle" style="font-size: 25px;margin-left: 20px;color: #f94040;" data-toggle="tooltip" title="CANCEL"></a>
         </td>
 </tr>
 </tbody>

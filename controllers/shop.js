@@ -519,38 +519,10 @@ exports.updateshop = function(req, res) {
     });
 };
 
-exports.addshop = function(req, res) {
-    user.find({email:req.body.email}, function(err,shop) {
-        if(err)
-        {
-            console.log(err)
-        }
-        else
-        {
-          if(shop=="" || shop == undefined)
-        {
-            var shop = new user(req.body);
-           
-            shop.user_type = "shop";
-           shop.save(function(error,result)
-           {
-                res.send(result);
-           });
-        }
-        else
-        {        
-         console.log("email id exists",shop);   
-        }
-        }
-
-       
-    });
-
-};
 
 
 
-exports.listshops = function(req, res) {
+ exports.listshops = function(req, res) {
     var page = req.body.page || 1,
         count = req.body.count || 50;
     var skipNo = (page - 1) * count;
@@ -622,6 +594,8 @@ exports.listshops = function(req, res) {
         }
     })
 };
+
+
 exports.availableBarber = function(req, res) {
     var page = req.body.page || 1,
         count = req.body.count || 10;
@@ -674,7 +648,8 @@ exports.availableBarber = function(req, res) {
                     is_verified: "$is_verified",
                     user_type: "$user_type",
                     password: "$password",
-                    name: "$shopdetails.name"
+                    name: "$shopdetails.name",
+                    shop: "$shopdetails"
                 }
             }, {
                 $match: query
@@ -827,16 +802,7 @@ exports.getDataForBookNowPage = function(req, res) {
         })
     }
 }
-exports.updatechair = function(req, res) {
-    console.log("chair id",req.params.chair_id);
-        chair = new shop(req.body);
-        chair.update({"chairs._id":req.params.chair_id},{$set:{"chairs.$.name":"ch","chairs.$.availability":req.body,"chairs.$.type":req.body}}, function(err, count) {
-            console.log("count",count);
-            shop.find( function(err, customers) {
-                res.json(customers);
-            });
-        });
-};
+
 
 
 exports.deleteshop = function(req, res) {

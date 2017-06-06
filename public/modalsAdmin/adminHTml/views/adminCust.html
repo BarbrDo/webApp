@@ -18,7 +18,7 @@
                     </div> 
                 </div>
 
-<table class="table" >
+<table class="table">
     <thead>
         <tr >
          
@@ -33,16 +33,14 @@
     <tbody>
         <tr data-ng-repeat="customer in customers | orderBy:sort:reverse | limitTo:quantity" data-ng-class="{danger:!customer.active}">
         <td>
-            <span data-ng-hide="editMode">{{customer.first_name}} {{customer.last_name}} </span>
-            <input type="text" data-ng-show="editMode" data-ng-model="customer.first_name" placeholder="first name" data-ng-required /><input type="text" data-ng-show="editMode" placeholder="last name" data-ng-model="customer.last_name" data-ng-required />
+            {{customer.first_name}} {{customer.last_name}} 
         </td>
         <td>
-            <span data-ng-hide="editMode">{{customer.email}}</span>
-         <input type="email" data-ng-show="editMode" data-ng-model="customer.email" placeholder="email" data-ng-required />
+            {{customer.email}}
+         
         </td>
         <td>
-            <span data-ng-hide="editMode">{{customer.mobile_number}} </span>
-            <input type="text" pattern="[789][0-9]{9}" data-ng-show="editMode" data-ng-model="customer.mobile_number" placeholder="mobile" data-ng-required />
+            {{customer.mobile_number}}
         </td>
         <td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <span ng-if="customer.isActive==true">
@@ -60,7 +58,7 @@
               <a  data-toggle="tooltip" title="Verify" onClick="history.go(0)"  ng-click="verifycust(customer)"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;color: green;"></i></a> </span>
         </td>
         <td>
-            <a data-ng-hide="editMode" data-ng-click="editMode = true" class="glyphicon glyphicon-pencil" style="font-size: 20px;" data-toggle="tooltip" title="EDIT DETAILS"></a>
+            <a ui-sref="edit_customers" class="glyphicon glyphicon-pencil" style="font-size: 20px;" data-toggle="tooltip" ng-click="custdetails(customer)" title="EDIT DETAILS"></a>
             <span data-toggle="modal" data-target="#confirm">
              <a type="submit" ng-click="deleteconfirmcustomer(customer)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
              <span data-toggle="modal" data-target="#viewModal">

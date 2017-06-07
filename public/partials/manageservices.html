@@ -4,13 +4,13 @@
   <div class="block">
     <h2>Manage Service</h2>
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-6" ng-repeat = "service in servicesData">
         <div class="serve">
-          <p>Clippers hair Cut <span>$13</span></p>
+          <p>{{service.name}} <span></span></p>
           <div class="option"> <a ui-sref="addservice"> <i class="fa  fa-edit "></i> </a> <a href="#"> <i class="fa  fa-trash "></i> </a> </div>
         </div>
       </div>
-        <div class="col-md-6">
+       <!--  <div class="col-md-6">
         <div class="serve">
           <p>Beard Trim <span>$13</span></p>
           <div class="option"> <a ui-sref="addservice"> <i class="fa  fa-edit "></i> </a> <a href="#"> <i class="fa  fa-trash "></i> </a> </div>
@@ -27,8 +27,7 @@
           <p>Clippers hair Cut <span>$13</span></p>
           <div class="option"> <a ui-sref="addservice"> <i class="fa  fa-edit "></i> </a> <a href="#"> <i class="fa  fa-trash "></i> </a> </div>
         </div>
-      </div>
-     
+      </div> -->
     </div>
   </div>
 </div>

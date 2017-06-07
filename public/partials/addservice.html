@@ -1,106 +1,27 @@
-
 <div class="crumb"> <span>Book Appointment</span> </div>
 <div class="wrapper">
-
   <div class="block">
     <h2>Create Service</h2>
-
-      
-      
-
  <div class="pedetail contact-us cprofile">
-     
      <div class="table-responsive">
-     
         <table class="table table-striped table-bordered toth">
          <tr>
             <th>Service Name</th>
             <th width="150px">Add Price</th>
             <th width="150px" class="text-center" align="center" >Add to list</th>
          </tr>
-        <tr>
-            <td class="sname">Service Name</td>
+        <tr ng-repeat="data in servicesData">
+            <td class="sname">{{data.name}}</td>
             <td>
               <input type="text" class="form-control" required value="$ " />
-            
             </td>
             <td align="center">
              <switch name="enabled" ng-model="enabled" class="green"></switch>
             </td>
          </tr>
-            
-            <tr>
-            <td class="sname">Service Name</td>
-            <td>
-              <input type="text" class="form-control" required value="$ " />
-              
-            </td>
-            <td align="center">
-             <switch name="enabled" ng-model="enabled3" class="green"></switch>
-            </td>
-         </tr>
-            
-            <tr>
-            <td class="sname">Service Name</td>
-            <td>
-              <input type="text" class="form-control" required value="$ " />
-             
-            </td>
-            <td align="center">
-             <switch name="enabled" ng-model="enabled4" class="green"></switch>
-            </td>
-         </tr>
-            
-        <tr>
-            <td class="sname" >Service Name</td>
-            <td>
-              <input type="text" class="form-control" required value="$ " />
-             
-            </td>
-           <td align="center">
-             <switch name="enabled" ng-model="enabled5" class="green"></switch>
-            </td>
-         </tr>
-            
-          <tr>
-            <td class="sname" >Service Name</td>
-            <td>
-              <input type="text" class="form-control" required value="$ " />
-             
-            </td>
-           <td align="center">
-             <switch name="enabled" ng-model="enabled6" class="green"></switch>
-            </td>
-         </tr>    
-        
-            
-        
         </table>
-         
-     
-     
-     </div>
-     
-     
-     
-     
-     
-     
-     
-     
-     
+     </div> 
 </div>
-      
-      
-
-      
-      
-      
-      
-       <button class="adds_Btn "><!--i class="fa  fa-plus"></i--> Save</button>
-   
-     
-   
-      
+       <button class="adds_Btn" ng-click="saveServicesPrice()">Save</button> 
   </div>
 </div>

@@ -50,5 +50,8 @@ angular.module('BarbrDoApp')
       cancelAppoint: function(data) {
         return $http.put('/api/v1/barber/cancelappointment/'+data.appointment_id, data);
       },
+      allServices: function(data) {
+        return $http.get('/api/v1/barber/services', data);
+      }
       }
   });

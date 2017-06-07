@@ -70,8 +70,6 @@ angular.module('BarbrDoApp')
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
           $window.localStorage.imagePath = response.data.imagesPath;
-          $scope.user = {};
-          console.log(JSON.stringify(response.data.user));
           if(response.data.user.user_type =='customer'){  
             $state.go('upcomingComplete');    
           }
@@ -97,7 +95,6 @@ angular.module('BarbrDoApp')
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
           $window.localStorage.imagePath = response.data.imagesPath;
-          $scope.user = {};
           if(response.data.user.user_type =='customer'){  
             $state.go('upcomingComplete');    
           }
@@ -109,7 +106,6 @@ angular.module('BarbrDoApp')
           $scope.messagess = {
             error: Array.isArray(response.data) ? response.data : response.data
           };
-          console.log($scope.messagess);
         });
     };
 

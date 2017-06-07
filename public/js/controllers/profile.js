@@ -1,40 +1,61 @@
 angular.module('BarbrDoApp')
-  .controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account,toastr) {
+  .controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account,toastr,$http) {
     $scope.profile= JSON.parse($window.localStorage.user);
-
+    console.log($scope.profile);
+    $scope.imgPath = $window.localStorage.imagePath;
     $scope.updateProfile = function() {
-      console.log($scope.profile);
-      // var fs = new FormData();
-      toastr.warning('Work in progress');
-      return false;
-      Account.updateProfile($scope.profile)
-        .then(function(response) {
-          $rootScope.currentUser = response.data.user;
-          $window.localStorage.user = JSON.stringify(response.data.user);
-          $scope.messages = {
-            success: [response.data]
-          };
+      var fs = new FormData();
+      fs.append("first_name", $scope.profile.first_name);
+      fs.append("last_name", $scope.profile.last_name);
+      fs.append("gender", $scope.profile.gender);
+      fs.append("mobile_number", $scope.profile.mobile_number);
+      fs.append("radius_search", $scope.profile.radius_search);
+      if($scope.profile.file){
+      fs.append("profileImage", $scope.profile.file);}
+
+      $http.put("/api/v1/account", fs, {
+          //  transformRequest: angular.identity,
+          headers: {
+            'Content-Type': undefined,
+            'user_id': $scope.profile._id
+          }
         })
-        .catch(function(response) {
+        .success(function(response) {
+          if (response) {
+          console.log(response.user);
+          $rootScope.currentUser = response.user;
+          $window.localStorage.user = JSON.stringify(response.user);
+          }
+        })
+        .error(function(err) {
           $scope.messages = {
-            error: Array.isArray(response.data) ? response.data : [response.data]
+            error: Array.isArray(response.user) ? response.user : [response.user]
           };
         });
+
+
+      // Account.updateProfile(fs)
+      //   .then(function(response) {
+      //     $rootScope.currentUser = response.data.user;
+      //     $window.localStorage.user = JSON.stringify(response.data.user);
+      //     $scope.messages = {
+      //       success: [response.data]
+      //     };
+      //   })
+      //   .catch(function(response) {
+      //     $scope.messages = {
+      //       error: Array.isArray(response.data) ? response.data : [response.data]
+      //     };
+      //   });
     };
 
     $scope.changePassword = function() {
-      toastr.warning('Work in progress');
-      return false;
       Account.changePassword($scope.profile)
         .then(function(response) {
-          $scope.messages = {
-            success: [response.data]
-          };
+          toastr.success('Password changed successfully.');
         })
         .catch(function(response) {
-          $scope.messages = {
-            error: Array.isArray(response.data) ? response.data : [response.data]
-          };
+          toastr.success('Error in updating password.');
         });
     };
 

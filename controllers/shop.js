@@ -162,7 +162,7 @@ exports.allShops = function(req, res) {
                     }
                     if (totalbarbers > 0) {
                         obj._id = data[i]._id;
-                        obj.shopName = data[i].name;
+                        obj.name = data[i].name;
                         obj.state = data[i].state;
                         obj.city = data[i].city;
                         obj.address = data[i].address;

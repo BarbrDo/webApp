@@ -9,7 +9,7 @@
   <div class="block">
     <h2>Your Customer</h2>
     <div class="selected_barber">
-      <div class="selected_user"> <img src="images/brbr_pic.png" alt="" > </div>
+      <div class="selected_user"> <img src="{{imgPath+particularAppointment.customer_id}}" alt="" > </div>
       <div class="namertng">
         <h3>{{particularAppointment.customer_name}}</h3>
         <div class="rtng"><img src="images/rating.png" alt="" > </div>
@@ -75,7 +75,7 @@
   <div class="perform_action">
     <div class="row">
       <div class="col-md-6">
-        <button class="subtn blue"><i class="fa fa-usd"></i> Pay Now</button>
+        <button class="subtn blue" ng-click="payNow()"><i class="fa fa-usd"></i> Pay Now</button>
       </div>
       <div class="col-md-6">
         <button class="subtn" data-toggle="modal" data-target="#contactbarber" ><i class="fa fa-commenting-o"></i> Contact barber</button>

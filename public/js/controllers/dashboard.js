@@ -228,7 +228,4 @@ angular.module('BarbrDoApp')
 		}
 		$scope.userGallery = JSON.parse($window.localStorage.user)
 		$scope.imgPath = $window.localStorage.imagePath;
-
-
-
 	});

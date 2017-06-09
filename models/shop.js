@@ -67,7 +67,7 @@ var shopSchema = new mongoose.Schema({
             },
             type: {
                 type: String,
-                enum: ["weekly", "monthly", "percentage"]
+                enum: ["weekly", "monthly", "percentage","self"]
             },
             amount: Number,
             shop_percentage: Number,

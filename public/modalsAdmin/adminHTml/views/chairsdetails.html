@@ -1,3 +1,10 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+  <li class="breadcrumb-item"><a ui-sref="shops">Shops</a></li>
+  <li class="breadcrumb-item active">View Chairs</li>
+</ol>
+
+
 <div class="panel" >
   <div class="panel-heading">
     Chair Details
@@ -10,7 +17,7 @@
    <form>
     <!-- Page Content -->
    <span data-toggle="modal" data-target="#added">                    
-<button type="submit"  class='btn btn-default btn-success btn-lg' ng-click="addchair(chairdetails[0])">Add Chairs</button></span>
+<button type="submit"  class='btn btn-default btn-success btn-lg' ng-click="addchair(shopdetailview.shopinfo[0])">Add Chairs</button></span>
 <input type="hidden" ng-model="user.id" value="{{shopdetailview.shopinfo[0]._id}}" placeholder="{{shopdetailview.shopinfo[0]._id}}">
 <input type="hidden" ng-model="user.user_id" value="{{shopdetailview._id}}" placeholder="{{shopdetailview._id}}"></form>
 
@@ -27,8 +34,8 @@
             <th style="font-size: 20px;">ACTION</th>
         </tr>
     </thead>
-    <tbody data-ng-repeat="shop in chairdetails " data-ng-class="{danger:!chairs.active}">
-        <tr data-ng-repeat="chairs in shop.chairs  | filter:query | orderBy:sort:reverse | limitTo:quantity ">
+    <tbody>
+        <tr data-ng-repeat="chairs in chairdetails  | filter:query | orderBy:sort:reverse | limitTo:quantity " data-ng-class="{danger:!chairs.active}">
         <td><span ng-if="!chairs.name" data-ng-hide="editMode">NOT SPECIFIED</span>
             <span data-ng-hide="editMode">{{chairs.name}} </span>
             <input type="text" data-ng-show="editMode" data-ng-model="chairs.name" placeholder="name" data-ng-required />
@@ -48,7 +55,7 @@
         <td>
            
              <span data-toggle="modal" data-target="#confirm">
-             <a type="submit" ng-click="deleteconfirmchair(chairs)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
+             <a type="submit" ng-click="deleteconfirmchair(delchair)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
         </td>
 </tr>
 </tbody>
@@ -71,7 +78,7 @@
 </div>
      </span>    
              <!-- Modal -->
-  <div class="modal fade" id="added" role="dialog">
+  <div class="modal " id="added" role="dialog">
     <div class="modal-dialog">
     
       <!-- Modal content-->
@@ -84,14 +91,14 @@
           <p> Chair is Added successfully</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ui-sref="shops">OK</button>
         </div>
       </div>
       
     </div>
   </div>
 
-    <div class="modal fade" id="myAnotherModal" role="dialog">
+    <div class="modal " id="myAnotherModal" role="dialog">
     <div class="modal-dialog">
     
       <!-- Modal content-->
@@ -104,60 +111,19 @@
           <p>Record Deleted successfully</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ui-sref="shops">OK</button>
         </div>
       </div>
       
     </div>
   </div>
         
-        <div class="modal fade" id="viewModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header" style="background-color: #5cfcfa;">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Details</h4>
-        </div>
-        <div class="modal-body">
-          <p>CHAIRNAME : {{chairdetailview.name}} <br>
-          AMOUNT : {{chairdetailview.amount}} <br>
-          BARBERS ASSOCIATED : {{chairdetailview.barber_name}}
-          </p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
 
-  <div class="modal fade" id="deactive" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header" style="background-color: #f52727;">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Deacticvated</h4>
-        </div>
-        <div class="modal-body">
-          <p>
-          This Record Is Deactivaed Successfully,
-          </p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
 
-  <div class="modal fade" id="confirm" role="dialog" ng-repeat="shop in chairdetails">
-    <div class="modal-dialog" data-ng-repeat="chairs in shop.chairs" ng-show="$first">
+
+
+  <div class="modal" id="confirm" role="dialog" >
+    <div class="modal-dialog" >
     
       <!-- Modal content-->
       <div class="modal-content">
@@ -168,7 +134,7 @@
           </p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deletechair(chairs)" data-toggle="modal" data-target="#myAnotherModal">DELETE</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deletechair(delchair)" data-toggle="modal" data-target="#myAnotherModal">DELETE</button>
           <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
         </div>
       </div>

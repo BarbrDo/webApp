@@ -26,16 +26,9 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
         })
 
        .state('edit_barbers', {
-            url: '/barbers/edit',
+            url: '/barbers/edit/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/edit-barber.html"
-           
-        })
-
-       .state('edit_customers', {
-            url: '/customers/edit',
-            controller: "AdminCtrl",
-            templateUrl: "/modalsAdmin/adminHTml/views/edit-customer.html"
            
         })
 
@@ -49,9 +42,18 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
         })
 
        .state('editshop', {
-            url: '/shop/edit',
+            url: '/shop/edit/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/editshop.html"
+            // resolve: {
+            //      checklogin: login
+            //  }
+        })
+
+       .state('editcust', {
+            url: '/customer/edit/:id',
+            controller: "AdminCtrl",
+            templateUrl: "/modalsAdmin/adminHTml/views/editcust.html"
             // resolve: {
             //      checklogin: login
             //  }
@@ -79,9 +81,6 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
             url: '/chairs/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/chairsdetails.html"
-            // resolve: {
-            //      checklogin: login
-            //  }
         })
 
         .state('barbdetail', {
@@ -93,8 +92,17 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
             //  }
         })
 
+        .state('customer_detail', {
+            url: '/customer/details/:id',
+            controller: "AdminCtrl",
+            templateUrl: "/modalsAdmin/adminHTml/views/customerdetails.html"
+            // resolve: {
+            //      checklogin: login
+            //  }
+        })
+
         .state('barbersdetail', {
-            url: '/barberDetail',
+            url: '/barberDetail/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/barber-details.html"
             // resolve: {
@@ -131,7 +139,7 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
         })  
 
         .state('shopdetail', {
-            url: '/shops/details',
+            url: '/shops/details/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/shopdetail.html"
         
@@ -163,8 +171,6 @@ app_admin.directive('dropMenus', function(){
                     targetval.slideToggle();
                     parentVal.toggleClass('dropdownopen');
                 }
-                console.log(parentVal);
-               
 
             });
         }

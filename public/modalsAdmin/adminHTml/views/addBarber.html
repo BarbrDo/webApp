@@ -1,3 +1,9 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+  <li class="breadcrumb-item"><a ui-sref="barbers">Barbers</a></li>
+  <li class="breadcrumb-item active">Add Barber</li>
+</ol>
+
 <div class="panel">
   <div class="panel-heading">
     Add Barbers
@@ -10,11 +16,13 @@
      <div class="clearfix">
       <div class="col-sm-4 form-group">
         <label>First Name</label>
-        <input type="text" class="form-control" ng-model="user.first_name" required />
+        <input type="text" class="form-control" name="first_name" ng-model="user.first_name" required />
+        <span style="color:red;" ng-show="signUpForm.first_name.$touched && signUpForm.first_name.$invalid && signUpForm.first_name.$error.required">First Name is required.</span>
       </div>
       <div class="col-sm-4 form-group">
         <label>Last Name</label>
-        <input type="text" class="form-control" ng-model="user.last_name" required />
+        <input type="text" class="form-control" name="last_name" ng-model="user.last_name" required />
+         <span style="color:red;" ng-show="signUpForm.last_name.$touched && signUpForm.last_name.$invalid && signUpForm.last_name.$error.required">Last Name is required.</span>
       </div>
       <div class="col-sm-4 form-group">
         <label>Mobile Number</label>
@@ -27,14 +35,14 @@
      <div class="clearfix">
       <div class="col-sm-4 form-group">
         <label>Password</label>
-        <input type="password" name="password" id="password" class="form-control" ng-model="user.password" ng-minlength="5" ng-maxlength="20" maxlength="21" required />
+        <input type="password" name="password" id="password" class="form-control" ng-model="user.password" ng-minlength="6" ng-maxlength="20" maxlength="21" required />
 
               <span class="validationError" ng-messages="signUpForm.password.$error" ng-show="
                 signUpForm.password.$error.required && signUpForm.password.$touched && signUpForm.password.$invalid" role="alert">
                <span style="color:red" ng-message="required">password is required</span>
               </span>
               <div class="validationError" ng-if="!updateButton" ng-show="signUpForm.password.$error.minlength">
-              <span style="color:red ">password too Short (atleast 5 characters)</span>
+              <span style="color:red ">password too Short (atleast 6 characters)</span>
               </div>
               <div class="validationError" ng-if="!updateButton" ng-show="signUpForm.password.$error.maxlength && signUpForm.password.$dirty">
               <span style="color:red ">password maximum length exceeds</span>
@@ -74,16 +82,16 @@
       </div>
       <div class="col-sm-4 form-group">
         <label>Licence No.</label>
-        <input type="text" class="form-control" ng-model="user.license_number" required>
+        <input type="text" class="form-control" name="license_number" ng-model="user.license_number" required>
                  <span style="color:red;" ng-show="signUpForm.license_number.$touched && signUpForm.license_number.$invalid && signUpForm.license_number.$error.required">Licence number is required.</span>
       </div>
      </div>
      <div class="clearfix text-center">
-     
-       <button type="submit" id="save" ng-show="signUpForm.$invalid==false" class="btn btn-primary" ng-click="addcustomer()" style="background-color: #97f580;">
+       <button type="submit" id="save" ng-show="signUpForm.$invalid==false" class="btn btn-primary" ng-click="addcustomer()" style="background-color: #97f580;" ui-sref="barbers">
         <i class="fa fa-check" aria-hidden="true" style="color: #000000;"></i>
-        <span data-toggle="modal" data-target="#saved" style="color: #000000;">Save
-      </button></span>
+        Save
+      </button>
+      
       <button type="submit" id="save" ng-hide="signUpForm.$invalid==false" ng-disabled="signUpForm.$invalid" class="btn btn-primary" data-toggle="tooltip" title="Invalid Form">
         <i class="fa fa-check" aria-hidden="true"></i>
         <span >Save
@@ -99,25 +107,3 @@
 </div>
 
 
-
-
-
-<div class="modal fade" id="saved" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header" style="background-color: #c2f7b5;">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Added</h4>
-        </div>
-        <div class="modal-body">
-          <p>This Record is Added successfully</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" >OK</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>

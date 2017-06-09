@@ -51,7 +51,7 @@ module.exports = function(app, express) {
     app.post('/api/v1/checkFaceBook', userController.checkFaceBook);
 
     //Shops
-    app.get('/api/v1/allshops',shopController.listshops); // All shops registered in system
+    app.post('/api/v1/allshops',shopController.listshops); // All shops registered in system
     app.get('/api/v1/shops', shopController.allShops); // List barber associated shops only
     app.put('/api/v1/shops', upload.any(), shopController.editShop); //Update shop
     app.post('/api/v1/shops/chair', userController.addChair) //Add chair in shop

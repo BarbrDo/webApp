@@ -596,6 +596,77 @@ exports.updateshop = function(req, res) {
 };
 
 
+exports.shopdetail = function(req, res) {
+    
+    var query = {};
+        query._id = mongoose.Types.ObjectId(req.params.user_id);
+
+        console.log("query",query)
+            user.aggregate([{
+                $match: query
+            },{
+            $lookup: {
+                from: "shops",
+                localField: "_id",
+                foreignField: "user_id",
+                as: "shopinfo"
+                }
+            }
+        ]).exec(function(err, result) {
+                var length = result.length;
+                if(err){
+                        res.status(400).send({
+                        "msg": constantObj.messages.userStatusUpdateFailure,
+                        "err": err
+                    });
+                }else{
+                    console.log(result)
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": result,
+                        "count": length
+                    })
+                }
+            })
+};
+
+
+exports.viewshopdetail = function(req, res) {
+    
+    var query = {};
+        query._id = mongoose.Types.ObjectId(req.params.user_id);
+
+        console.log("query",query)
+            user.aggregate([{
+                $match: query
+            },{
+            $lookup: {
+                from: "shops",
+                localField: "_id",
+                foreignField: "user_id",
+                as: "shopinfo"
+                }
+            }
+        ]).exec(function(err, result) {
+                var length = result.length;
+                if(err){
+                        res.status(400).send({
+                        "msg": constantObj.messages.userStatusUpdateFailure,
+                        "err": err
+                    });
+                }else{
+                    console.log(result)
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": result,
+                        "count": length
+                    })
+                }
+            })
+};
+
+
+
 exports.availableBarber = function(req, res) {
     var page = req.body.page || 1,
         count = req.body.count || 10;
@@ -618,7 +689,8 @@ exports.availableBarber = function(req, res) {
             isDeleted: "$isDeleted",
             isActive: "$isActive",
             is_verified: "$is_verified",
-            user_type: "$user_type"
+            user_type: "$user_type",
+            picture: "$picture"
         }
     }, {
         $match: query
@@ -647,7 +719,8 @@ exports.availableBarber = function(req, res) {
                     isActive: "$isActive",
                     is_verified: "$is_verified",
                     user_type: "$user_type",
-                    password: "$password",
+                    latLong: "$latLong",
+                    picture: "$picture",
                     name: "$shopdetails.name",
                     shop: "$shopdetails"
                 }
@@ -815,7 +888,6 @@ exports.deleteshop = function(req, res) {
         }
     }, function(err, count) {
         user.find({
-            isDeleted: false,
             user_type: "shop"
         }, function(err, shopss) {
             res.json(shopss);
@@ -823,6 +895,25 @@ exports.deleteshop = function(req, res) {
     });
 
 };
+
+exports.undeleteshop = function(req, res) {
+    console.log(req.params.shop_id);
+    user.update({
+        _id: req.params.shop_id
+    }, {
+        $set: {
+            isDeleted: false
+        }
+    }, function(err, count) {
+        user.find({
+            user_type: "shop"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
 exports.shopContainsChairs = function(req,res){
     req.checkParams('shop_id', 'Shop id is required').notEmpty();
     let errors = req.validationErrors();

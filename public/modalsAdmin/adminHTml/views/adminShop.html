@@ -1,3 +1,9 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+  <li class="breadcrumb-item active">Shops</li>
+</ol>
+
+
 <div class="panel" ng-init="shoppageChanged()">
     <div class="panel-heading">
         All Shops
@@ -20,90 +26,26 @@
     <thead>
         <tr >
          
-            <th style="font-size: 13px;color: #ffffff;"><a ng-click="Sort('name')" class="first_name"  style="color: #ffffff;">SHOPNAME<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 13px;color: #ffffff;"><a ng-click="Sort('shopinfo[0].name')" class="first_name"  style="color: #ffffff;">SHOPNAME<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
             <th style="font-size: 13px;color: #ffffff;"><a ng-click="Sort('first_name')" class="first_name"  style="color: #ffffff;">SHOP OWNER<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
-            <th style="font-size: 13px;"><a ng-click="Sort('city')" class="email"  style="color: #ffffff;">LOCATION<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 13px;"><a ng-click="Sort('shopinfo[0].state')" class="location"  style="color: #ffffff;">LOCATION<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
             <th style="font-size: 13px;"><a ng-click="Sort('chairs.length')" class="mobile_number"  style="color: #ffffff;">CHAIRS  <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 13px;" width="20%"><a ng-click="Sort('email')" class="email"  style="color: #ffffff;">Email  <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 13px;"><a ng-click="Sort('created_date')" class="created_date"  style="color: #ffffff;">Created Date  <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
              <th style="font-size: 13px;"><a ng-click="Sort('chairs.length')" class="mobile_number"  style="color: #ffffff;">BARBERS  <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
-            <th style="font-size: 13px;">IsACTIVE</th>
-            <th style="font-size: 13px;">IsVERIFIED</th>
-            <th style="font-size: 13px;">ACTION</th>
         </tr>
     </thead>
     <tbody>
-     <tr ng-repeat="shop in shops | filter:query ">
-        <td > <a data-toggle="tooltip" title="View {{shopinfo.name}}'s detailed info" ui-sref="shopdetail" ng-click="shopdetail(shop)">{{shop.shopinfo[0].name}}</a> </td>
-       <td > {{shop.first_name}} {{shop.last_name}}  </td>
-        <td >  {{shop.shopinfo[0].state}} </td>
-        <td >  <a data-toggle="tooltip" title="VIEW CHAIRS DETAILS" ui-sref="chairs({id:shopinfo._id})" ng-click="shopdetail(shop)"> {{shop.shopinfo[0].chairs.length}}</a> </td>
-        <td> <a data-toggle="tooltip" title="VIEW BARBERS IN {{shop.name}}" ui-sref="barbdetail" ng-click="shopdetail(shopinfo)"> <span  data-toggle="modal" data-target="#chairs" >{{barberinshops.length}} </span></a> </td>
-         <td > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <span ng-if="shop.isActive==true">
-              <a data-toggle="tooltip" title="Deactivate" onClick="history.go(0)" ng-click="deactiveshop(shop)"><i class="fa fa-toggle-on" style="font-size: 30px;color: green;" aria-hidden="true"></i></a></span>
-              <span ng-if="shop.isActive==false">
-              <a  data-toggle="tooltip" ng-click="activateshop(shop)" onClick="history.go(0)" title="Activate"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;color: green;"></i></a> </span></span>
-        </td>
-         <td > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-         <span ng-if="shop.is_verified==true">
+     <tr ng-repeat="shop in shops  | filter:query | orderBy:sort:reverse ">
+        <td > <a data-toggle="tooltip" title="View {{shop.shopsdata.shopinfo[0].name}}'s detailed info" ui-sref="shopdetail({id:shop.shop_id})" ng-click="shopdetail(shop.shopsdata)">{{shop.shopsdata.shopinfo[0].name}}</a> </td>
+       <td > {{shop.shopsdata.first_name}} {{shop.shopsdata.last_name}}  </td>
+        <td >  {{shop.shopsdata.shopinfo[0].state}} </td>
+        <td >  <a data-toggle="tooltip" title="View Chairs in {{shop.shopsdata.shopinfo[0].name}}" ui-sref="chairs({id:shop.shop_id})" ng-click="shopdetail(shop.shopsdata)"> {{shop.shopsdata.shopinfo[0].chairs.length}}</a> </td>
+        <td > {{shop.shopsdata.email}}</td>
+        <td > {{shop.shopsdata.created_date| date:dd/mm/yyyy}}</td>
+        <td > <a data-toggle="tooltip" title="VIEW BARBERS IN {{shop.shopsdata.shopinfo[0].name}}" ui-sref="barbdetail" ng-click="shopdetail(shop.shopsdata)"> {{shop.totalBarbers}} </a> </td>
         
-              <a data-toggle="tooltip" title="Disapprove"  onClick="history.go(0)"  ng-click="disapproveshop(shop)"><i class="fa fa-toggle-on" style="font-size: 30px;color: green;" aria-hidden="true"></i></a></span>
-              <span ng-if="shop.is_verified==false">
-              <a  data-toggle="tooltip" title="Verify" onClick="history.go(0)"  ng-click="verifyshop(shop)"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;color: green;"></i></a> </span>
-        </td>
-         <td>
-            <a ui-sref="editshop" ng-click="shopdetail(shop)" class="glyphicon glyphicon-pencil" style="font-size: 20px;" data-toggle="tooltip" title="EDIT DETAILS"></a>
-             <span data-toggle="modal" data-target="#confirm">
-             <a type="submit"  data-ng-click="deleteconfirmshop(shop)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
-             <span data-toggle="modal" data-target="#myModal">
-            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; updateshop(shop)" class="glyphicon glyphicon-check" style="font-size: 25px;margin-left: 20px;color: #17a109;" data-toggle="tooltip" title="SAVE DETAILS" id="btnAlert"  ></a></span>
-            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" class="glyphicon glyphicon-ban-circle" style="font-size: 25px;margin-left: 20px;color: #f94040;" data-toggle="tooltip" title="CANCEL"></a>
-        </td>
-
-
-        <!-- <tr data-ng-repeat="shopinfo in shop.shopinfo " data-ng-class="{danger:!shop.active}"> -->
-       <!--  <td>
-            <a data-toggle="tooltip" title="View {{shopinfo.name}}'s detailed info" ui-sref="shopdetail" ng-click="shopdetail(shop)"><span data-ng-hide="editMode" >{{shopinfo.name}} </span></a>
-            <input type="text" data-ng-show="editMode" data-ng-model="shopinfo.name" placeholder="name" data-ng-required />
-        </td>
-        <td >
-            <span data-ng-hide="editMode">{{shop.first_name}} {{shop.last_name}} </span>
-            <input type="text" data-ng-show="editMode" data-ng-model="shop.name" placeholder="name" data-ng-required />
-        </td>
-        <td>
-            <span data-ng-hide="editMode">{{shopinfo.state}}</span>
-         <input type="text" data-ng-show="editMode" data-ng-model="shopinfo.city" placeholder="City" data-ng-required />
-        </td>
-         <td>
-           <a data-toggle="tooltip" title="VIEW CHAIRS DETAILS" ui-sref="chairs({id:shopinfo._id})" ng-click="shopdetail(shop)"> <span data-ng-hide="editMode" >{{shopinfo.chairs.length}} </span></a>
-            <input type="text"  data-ng-show="editMode" data-ng-model="shop.chairs.length" placeholder="Total Chairs" data-ng-required />
-        </td>
-         <td >
-           <a data-toggle="tooltip" title="VIEW BARBERS IN {{shop.name}}" ui-sref="barbdetail" ng-click="shopdetail(shopinfo)"> <span data-ng-hide="editMode" data-toggle="modal" data-target="#chairs" >{{barberinshops.length}} </span></a>
-            <input type="text"  data-ng-show="editMode" data-ng-model="shop.chairs.length" placeholder="Total Chairs" data-ng-required />
-        </td>
-          <td > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <span ng-if="shop.isActive==true">
-              <a data-toggle="tooltip" title="Deactivate" onClick="history.go(0)" ng-click="deactiveshop(shop)"><i class="fa fa-toggle-on" style="font-size: 30px;color: green;" aria-hidden="true"></i></a></span>
-              <span ng-if="shop.isActive==false">
-              <a  data-toggle="tooltip" ng-click="activateshop(shop)" onClick="history.go(0)" title="Activate"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;color: green;"></i></a> </span></span>
-        </td>
-         <td > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-         <span ng-if="shop.is_verified==true">
-        
-              <a data-toggle="tooltip" title="Disapprove"  onClick="history.go(0)"  ng-click="disapproveshop(shop)"><i class="fa fa-toggle-on" style="font-size: 30px;color: green;" aria-hidden="true"></i></a></span>
-              <span ng-if="shop.is_verified==false">
-              <a  data-toggle="tooltip" title="Verify" onClick="history.go(0)"  ng-click="verifyshop(shop)"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;color: green;"></i></a> </span>
-        </td>
-        <td>
-            <a ui-sref="editshop" ng-click="shopdetail(shop)" class="glyphicon glyphicon-pencil" style="font-size: 20px;" data-toggle="tooltip" title="EDIT DETAILS"></a>
-             <span data-toggle="modal" data-target="#confirm">
-             <a type="submit"  data-ng-click="deleteconfirmshop(shop)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
-             <span data-toggle="modal" data-target="#myModal">
-            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; updateshop(shop)" class="glyphicon glyphicon-check" style="font-size: 25px;margin-left: 20px;color: #17a109;" data-toggle="tooltip" title="SAVE DETAILS" id="btnAlert"  ></a></span>
-            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" class="glyphicon glyphicon-ban-circle" style="font-size: 25px;margin-left: 20px;color: #f94040;" data-toggle="tooltip" title="CANCEL"></a>
-        </td> -->
-</tr>
-
+      </tr>
 </tbody>
 </table>
  </div>
@@ -112,7 +54,7 @@
      <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="shoppageChanged()"></ul>       
           </div>
 <br>
-<label>No. of Enteries</label>
+<!-- <label>No. of Enteries</label>
             <select ng-model="quantity">
               <option value="">All</option>
               <option value="1">1</option>
@@ -120,186 +62,11 @@
               <option value="3">3</option>
               <option value="4">4</option>
               <option value="5">5</option>
-            </select>
+            </select> -->
 </div>
          
              <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header" style="background-color: #c2f7b5;">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Saved</h4>
-        </div>
-        <div class="modal-body">
-          <p>Your Changes are saved successfully</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
 
-    <div class="modal fade" id="myAnotherModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header" style="background-color: #d6110c;">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Deleted</h4>
-        </div>
-        <div class="modal-body">
-          <p>Record Deleted successfully</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-        
-        <div class="modal fade" id="viewModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header" style="background-color: #5cfcfa;">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Details</h4>
-        </div>
-        <div class="modal-body">
-          <p>SHOPNAME : {{shopdetailview.name}} <br>
-          CITY : {{shopdetailview.city}} <br>
-          STATE : {{shopdetailview.state}}<br>
-          NO. OF CHAIRS : {{shopdetailview.chairs.length}}</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-
-            <div class="modal fade" id="deactive" role="dialog">
-                <div class="modal-dialog">
-
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header" style="background-color: #f52727;">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Deacticvated</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>
-                                This Record Is Deactivated Successfully,
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-
-            <div class="modal fade" id="active" role="dialog">
-                <div class="modal-dialog">
-
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header" style="background-color: #c2f7b5;">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Acticvated</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>
-                                The Record Is Activated Successfully,
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-
-            <div class="modal fade" id="verified" role="dialog">
-                <div class="modal-dialog">
-
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header" style="background-color: #c2f7b5;">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Verified</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>
-                                The Record Is Verified Successfully,
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <!-- RAHUL CODE -->
-
-
-
-            <div class="modal fade" id="confirm" role="dialog" ng-repeat="shop in shops">
-                <div class="modal-dialog">
-
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <p>
-                                Are You Sure!!!!!! 
-                                You want to Delete this Record 
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deleteshop(shop)" data-toggle="modal" data-target="#myAnotherModal">DELETE</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-
-            <div class="modal fade" id="disaproved" role="dialog">
-                <div class="modal-dialog">
-
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header" style="background-color: #c2f7b5;">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Disaproved</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>
-                                The Record Is Disapproved Successfully,
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
 
 
             <!-- RAHUL CODE -->

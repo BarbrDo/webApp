@@ -1,3 +1,11 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+  <li class="breadcrumb-item"><a ui-sref="shops">Shops</a></li>
+  <li class="breadcrumb-item active">View Barber in Shops</li>
+</ol>
+
+
+
 <div class="panel">
   <div class="panel-heading">
     Barber Details
@@ -24,35 +32,24 @@
          
             <th style="font-size: 20px;color: #ffffff;"><a ng-click="Sort('name')" class="first_name"  style="color: #ffffff;">NAME<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
             <th style="font-size: 20px;"><a ng-click="Sort('city')" class="email"  style="color: #ffffff;">BARBER PERCENTAGE<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
-            <th style="font-size: 20px;"><a ng-click="Sort('chairs.length')" class="mobile_number"  style="color: #ffffff;">SHOPNAME <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 20px;"><a ng-click="Sort('chairs.length')" class="mobile_number"  style="color: #ffffff;">CHAIRNAME <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
 
             <th style="font-size: 20px;">ACTION</th>
         </tr>
     </thead>
-    <tbody ng-repeat="shop in shopdetailview.chairs">
-        <tr ng-hide="!shop.barber_name">
-       <td><span ng-if="!shop.barber_name" data-ng-hide="editMode">NOT SPECIFIED</span>
-            <span data-ng-hide="editMode">{{shop.barber_name}}</span>
-         <input type="text" data-ng-show="editMode" data-ng-model="shop.barber_name" placeholder="Name" data-ng-required />
+    <tbody >
+        <tr ng-repeat="barbersinshop in chairdetails" ng-hide="!barbersinshop.barber_name">
+       <td>
+            {{barbersinshop.barber_name}}
         </td>
-        <td><span ng-if="!shop.barber_percentage" data-ng-hide="editMode">NOT SPECIFIED</span>
-            <span data-ng-hide="editMode">{{shop.barber_percentage}}</span>
-         <input type="text" data-ng-show="editMode" data-ng-model="shop.barber_percentage" placeholder="Barber Percentage" data-ng-required />
+        <td>{{barbersinshop.barber_percentage}}
         </td>
-           <td><span ng-if="!shop.name" data-ng-hide="editMode">NO TYPE</span>
-           <span data-ng-hide="editMode" >{{shopdetailview.name}} </span>
-            <input type="text"  data-ng-show="editMode" data-ng-model="shop.name" placeholder="Type Of Chair" data-ng-required />
+           <td>{{barbersinshop.name}}
         </td>
 
         <td>
-            <a data-ng-hide="editMode" data-ng-click="editMode = true" class="glyphicon glyphicon-pencil" style="font-size: 20px;" data-toggle="tooltip" title="EDIT DETAILS"></a>
              <span data-toggle="modal" data-target="#myAnotherModal">
              <a type="submit"  data-ng-click="deleteshop(shop)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
-              <span data-toggle="modal" data-target="#viewModal">
-             <a type="submit"  data-ng-hide="editMode" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a></span>
-             <span data-toggle="modal" data-target="#myModal">
-            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; updatechair(chairs)" class="glyphicon glyphicon-check" style="font-size: 25px;margin-left: 20px;color: #17a109;" data-toggle="tooltip" title="SAVE DETAILS" id="btnAlert"  ></a></span>
-            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" class="glyphicon glyphicon-ban-circle" style="font-size: 25px;margin-left: 20px;color: #f94040;" data-toggle="tooltip" title="CANCEL"></a>
         </td>
 </tr>
 </tbody>

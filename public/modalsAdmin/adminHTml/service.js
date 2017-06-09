@@ -4,25 +4,17 @@ angular.module('barbrdo')
       barbers: function(data) {
       return $http.post('/api/v1/allbarbers', data);
       },
-       shopList: function(data) {
-        return $http({
-          method: 'GET',
-          url: '/api/v1/shops',
-          headers: {
-            'device_latitude': data.latitude,
-            'device_longitude': data.longitude
-          }
-        },data);
-
-        // return $http.get('/api/v1/shops', data);
-      },
       shopsAll: function(data) {
       return $http.post('/api/v1/allshops', data);
-      
       },
       customersAll: function(data) {
-        console.log("data",data);
       return $http.post('/api/v1/allcustomers', data);
+      },
+      shopDetail: function(data) {
+      return $http.get('/api/v1/shopdetail/'+data._id, data);
+      },
+       viewShopDetail: function(data) {
+      return $http.get('/api/v1/viewshopdetail/'+data.user_id, data);
       },
       updateCustomer: function(data) {
         console.log("data",data);
@@ -98,17 +90,33 @@ angular.module('barbrdo')
       },
       deleteChair: function(data) {
         console.log("data",data);
-        return $http.delete('/api/v1/shops/chair',data);
+        return $http({
+          method: 'DELETE',
+          url: '/api/v1/shops/chair',
+          headers: {
+            'user_id':data._id
+          },
+          data: data
+        });
+        return $http.delete('',data);
       },
       deleteBarber: function(data) {
       return $http.put('/api/v1/deletebarber/'+data._id, data);
       },
+      undeleteBarber: function(data) {
+      return $http.put('/api/v1/undeletebarber/'+data._id, data);
+      },
       deleteShop: function(data) {
-        console.log("data",data);
       return $http.put('/api/v1/deleteshop/'+data._id, data);
+      },
+      undeleteShop: function(data) {
+      return $http.put('/api/v1/undeleteshop/'+data._id, data);
       },
       deleteCustomer: function(data) {
       return $http.put('/api/v1/deletecustomer/'+data._id, data);
+      },
+      undeleteCustomer: function(data) {
+      return $http.put('/api/v1/undeletecustomer/'+data._id, data);
       },
       barberList: function(data) {
         return $http.get('/api/v1/shops/barbers/'+data._id, data);

@@ -10,7 +10,6 @@ exports.listcustomers = function(req, res) {
         count = req.body.count || 10;
     var skipNo = (page - 1) * count;
     var query = {};
-    query.isDeleted = false,
         query.user_type = "customer"
     var searchStr = req.body.search;
 
@@ -40,39 +39,48 @@ exports.listcustomers = function(req, res) {
     }
 
     User.aggregate([{
+        $match: query
+    },{
         $project: {
             _id: "$_id",
             first_name: "$first_name",
             last_name: "$last_name",
             email: "$email",
             mobile_number: "$mobile_number",
+            ratings: "$ratings",
+            created_date: "$created_date",
             isDeleted: "$isDeleted",
-             isActive: "$isActive",
+            isActive: "$isActive",
             is_verified: "$is_verified",
-            user_type: "$user_type"
+            gallery: "$gallery",
+            latLong: "$latLong",
+            picture: "$picture"
         }
-    }, {
-        $match: query
     }]).exec(function(err, data) {
         if (err) {
             console.log(err)
         } else {
+            
             var length = data.length;
             User.aggregate([{
-                $project: {
-                    _id: "$_id",
-                    first_name: "$first_name",
-                    last_name: "$last_name",
-                    email: "$email",
-                    mobile_number: "$mobile_number",
-                    isDeleted: "$isDeleted",
-                     isActive: "$isActive",
-                    is_verified: "$is_verified",
-                    user_type: "$user_type",
-                    isActive: "$isActive"
-                }
-            }, {
                 $match: query
+            }, {
+                $project: {
+            _id: "$_id",
+            first_name: "$first_name",
+            last_name: "$last_name",
+            email: "$email",
+            mobile_number: "$mobile_number",
+            ratings: "$ratings",
+            created_date: "$created_date",
+            isDeleted: "$isDeleted",
+            isActive: "$isActive",
+            is_verified: "$is_verified",
+            gallery: "$gallery",
+            latLong: "$latLong",
+             picture: "$picture"
+        }
+
             }, {
                 "$skip": skipNo
             }, {
@@ -99,33 +107,6 @@ exports.listcustomers = function(req, res) {
     })
 };
 
-exports.updatecustomer = function(req, res) {
-    User.findById(req.params.id, function(err, customer) {
-        customer = new User(req.body);
-        customer.update(req.body, function(err, count) {
-            User.find({
-                user_type: "customer",
-                isDeleted: "false"
-            }, function(err, customers) {
-                res.json(customers);
-            });
-        });
-    });
-};
-exports.updatebarber = function(req, res) {
-    User.findById(req.params.id, function(err, barber) {
-        barber = new User(req.body);
-        barber.update(req.body, function(err, count) {
-            console.log("count", count);
-            User.find({
-                user_type: "barber",
-                isDeleted: "false"
-            }, function(err, barbers) {
-                res.json(barbers);
-            });
-        });
-    });
-};
 
 
 exports.countbarber = function(req, res) {
@@ -163,7 +144,25 @@ exports.deletecustomer = function(req, res) {
         }
     }, function(err, count) {
         User.find({
-            isDeleted: false,
+            user_type: "customer"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
+
+exports.undeletecustomer = function(req, res) {
+    console.log("undel",req.params.cust_id);
+    User.update({
+        _id: req.params.cust_id
+    }, {
+        $set: {
+            isDeleted: false
+        }
+    }, function(err, count) {
+        User.find({
             user_type: "customer"
         }, function(err, shopss) {
             res.json(shopss);
@@ -390,9 +389,26 @@ exports.disapprovebarber = function(req, res) {
 };
 
 
-
 exports.deletebarber = function(req, res) {
-    console.log(req.params.barber_id);
+    console.log("barber_id", req.params.barber_id);
+    User.update({
+        _id: req.params.barber_id
+    }, {
+        $set: {
+            isDeleted: false
+        }
+    }, function(err, count) {
+        User.find({
+            user_type: "barber"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
+exports.undeletebarber = function(req, res) {
+    console.log("barber_id", req.params.barber_id);
     User.update({
         _id: req.params.barber_id
     }, {
@@ -400,89 +416,15 @@ exports.deletebarber = function(req, res) {
             isDeleted: true
         }
     }, function(err, count) {
-        console.log("count", count);
-        User.aggregate([{
-            "$match": {
-                "user_type": "barber",
-                "isDeleted": false
-            }
-        }, {
-            $lookup: {
-                from: "shops",
-                "localField": "_id",
-                "foreignField": "chairs.barber_id",
-                "as": "shopdetails"
-            }
-        }]).exec(function(err, data) {
-            if (err) {
-                console.log(err);
-            } else {
-                res.send(data);
-            }
+        User.find({
+            user_type: "barber"
+        }, function(err, shopss) {
+            res.json(shopss);
         });
     });
 
 };
 
 
-exports.addbarber = function(req, res) {
-    User.find({email:req.body.email}, function(err,barber) {
-        if(err)
-        {
-            console.log(err)
-        }
-        else
-        {
-          if(barber=="" || barber == undefined)
-        {
-             barber = new User(req.body);
-           
-            barber.user_type = "barber";
-            console.log("req.body",req.body);
-               console.log("cust",cust);
-           barber.save(function(error,result)
-           {
-                res.send(result);
-           });
-        }
-        else
-        {        
-         console.log("email id exists",cust);   
-        }
-        }
-
-       
-    });
-
-};
 
 
-exports.addcustomer = function(req, res) {
-    User.find({email:req.body.email}, function(err,cust) {
-        if(err)
-        {
-            console.log(err)
-        }
-        else
-        {
-          if(cust=="" || cust == undefined)
-        {
-             cust = new User(req.body);
-           
-            cust.user_type = "customer";
-            
-           cust.save(function(error,result)
-           {
-                res.send(result);
-           });
-        }
-        else
-        {        
-         console.log("email id exists",cust);   
-        }
-        }
-
-       
-    });
-
-};

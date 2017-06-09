@@ -404,23 +404,21 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   $scope.barbdetail = function(barber) {
     $rootScope.barberdetail = barber;
   };
-
+  
   $scope.shopdetail = function(shop) {
     $rootScope.delchair = shop.shopinfo[0];
-
       Admin.shopDetail(shop)
       .then(function(response) {
          $rootScope.shopdetailview = response.data.data[0];
+         $rootScope.chairdetails = response.data.data[0].shopinfo[0].chairs;
       });
  
   };
-
 
   $scope.viewshop = function(shop) {
     console.log("here",shop);
       Admin.viewShopDetail(shop)
       .then(function(response) {
-         console.log("this",response.data.data[0]);
          $rootScope.shopdetailview = response.data.data[0];
          $rootScope.chairdetails = response.data.data[0].shopinfo[0].chairs;
       });

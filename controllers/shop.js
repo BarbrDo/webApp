@@ -360,6 +360,7 @@ exports.weeklyMonthlyChair = function(req, res) {
     req.checkHeaders('user_id', 'Shop id is required.').notEmpty();
     req.assert('chair_id', 'Chair id is required.').notEmpty();
     req.assert('type', 'Type is required.').notEmpty();
+    req.assert('amount', 'Amount is required.').notEmpty();
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -789,6 +790,7 @@ exports.shopContainsChairs = function(req,res){
             err: errors
         });
     }
+    console.log(req.params.shop_id);
     shop.findOne({
         _id: req.params.shop_id
     }).exec(function(err, result) {
@@ -836,6 +838,38 @@ exports.shopAcceptChairRequest = function(req, res) {
         } else {
             res.status(200).send({
                 "msg": constantObj.messages.successRetreivingData,
+            });
+        }
+    })
+}
+
+exports.markChairAsBooked = function(req, res) {
+    req.checkHeaders('user_id', 'Shop id is required.').notEmpty();
+    req.assert('chair_id', 'Chair id is required.').notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let updateCollectionData = {
+        "$set": {
+            "chairs.$.type": 'self',
+            "chairs.$.availability":'booked'
+        }
+    };
+    shop.update({
+        "user_id": req.headers.user_id,
+        "chairs._id": req.body.chair_id
+    }, updateCollectionData, function(err, result) {
+        if (err) {
+            return res.status(400).send({
+                msg: "Error in updating the shop collection."
+            })
+        } else {
+            res.status(200).send({
+                msg: 'shop updated successfully'
             });
         }
     })

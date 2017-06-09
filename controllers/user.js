@@ -254,6 +254,8 @@ exports.signupPost = function(req, res, next) {
  * Update profile information OR change password.
  */
 exports.accountPut = function(req, res, next) {
+  console.log(req.body);
+  console.log(req.files);
   if ('password' in req.body) {
     req.checkHeaders('user_id', 'User ID is missing').notEmpty();
     req.assert('password', 'Password must be at least 6 characters long').len(6);
@@ -271,6 +273,7 @@ exports.accountPut = function(req, res, next) {
     if ('password' in req.body) {
       user.password = req.body.password;
     } else {
+      console.log("user",user);
       if (req.body.first_name) {
         user.first_name = req.body.first_name;
       }
@@ -283,13 +286,16 @@ exports.accountPut = function(req, res, next) {
       if ((req.files) && (req.files.length > 0)) {
         user.picture = req.files[0].filename;
       }
-      user.gender = req.body.gender;
-      user.location = req.body.location;
-      user.website = req.body.website;
-      user.radius_search = req.body.radius_search;
+      if(req.body.gender !='undefined'){
+        user.gender = req.body.gender;
+      }
+      if(req.body.radius_search!='undefined'){
+        user.radius_search = req.body.radius_search;
+      }
     }
 
     user.save(function(err) {
+      console.log("err",err);
       if ('password' in req.body) {
         res.send({
           msg: 'Your password has been changed.',

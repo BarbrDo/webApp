@@ -33,7 +33,7 @@
                         <ul class="nav navbar-nav text-right">
                             <li ng-class="{'active':checkState('home')}"><a ui-sref="home">Customers</a></li>
                             <li ng-class="{'active':checkState('barberHome')}"><a ui-sref="barberHome">Barbers</a></li>
-                            <li ng-class="{'active':checkState('shopHome')}"><a href="javascript:void(0)">Barber Shops</a></li>
+                            <li ng-class="{'active':checkState('shopHome')}"><a ui-sref="shopHome">Barber Shops</a></li>
                         </ul>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                                         <div class="form-control-placeholder">Password</div>
                                         <!-- <a href="#" class="eye"><i class="fa fa-eye"></i></a> -->
                                     </div>
-                                    <a href="#" class="forgot">Forgot Password ?</a>
+                                    <a ui-sref="forgot" class="forgot">Forgot Password ?</a>
                                     <button type="submit" class="sb_button" ng-click="login()" ng-disabled="loginForm.$invalid">Login</button>
                                     <p class="msg">New User? <span>   <button type="button" class="btn btn-default btn-sm" ng-click="$root.active = 1">Signup</button> </span>
                                     </p>
@@ -94,7 +94,7 @@
                     </uib-tab>
                     <uib-tab index="1" heading="Signup">
                         <!-- <div class="tab-content contact-us"> -->
-                        <div role="tabpanel" class="tab-pane contact-us" id="signup" >
+                        <div role="tabpanel" class="tab-pane contact-us" id="signup" style="margin-top: 10px;">
                             <div ng-if="messagess.error" role="alert" class="alert alert-danger">
                                 <div ng-repeat="err in messagess.error">
                                 {{err[0].msg}}</div>
@@ -109,6 +109,48 @@
                                         <input type="radio" name="type" ng-model="user.user_type" value="shop"> <span>Barber Shop</span> </label>
                                 </div>
                                 <div class="form-group">
+                                <input type="text" name="firstname" id="email" class="form-control" ng-model="user.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                                    <div class="form-control-placeholder">First Name</div>
+
+                                    <div class="validationError" ng-messages="signUpForm.firstname.$error" ng-show="
+                                                        signUpForm.firstname.$error.required && signUpForm.firstname.$touched &&
+                                                        signUpForm.firstname.$invalid 
+                                                       " role="alert">
+                                                            <span style="color:red" ng-message="required">First name is required</span>
+                                                     </div>
+                                                      <div class="validationError" ng-messages="signUpForm.firstname.$error" ng-show="
+                                                           signUpForm.firstname.$error.pattern && (!signUpForm.firstname.$pristine || signUpForm.$submitted)" role="alert">
+                                                                <span style="color:red" ng-message="pattern">Enter valid character </span>
+                                                       </div>
+                                                        <div class="validationError"  ng-show="signUpForm.firstname.$error.maxlength && signUpForm.firstname.$dirty"">
+
+                                                             <span style="color:red">First name maximum length exceeds</span>
+                                                        </div>
+                                                        </div>
+
+                                        <div class="form-group">
+                                <input type="text" name="lastname" id="email" class="form-control" ng-model="user.last_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                                    <div class="form-control-placeholder">First Name</div>
+
+                                    <div class="validationError" ng-messages="signUpForm.lastname.$error" ng-show="
+                                                        signUpForm.lastname.$error.required && signUpForm.lastname.$touched &&
+                                                        signUpForm.lastname.$invalid 
+                                                       " role="alert">
+                                                            <span style="color:red" ng-message="required">Last name is required</span>
+                                                     </div>
+                                                      <div class="validationError" ng-messages="signUpForm.lastname.$error" ng-show="
+                                                           signUpForm.lastname.$error.pattern && (!signUpForm.lastname.$pristine || signUpForm.$submitted)" role="alert">
+                                                                <span style="color:red" ng-message="pattern">Enter valid character </span>
+                                                       </div>
+                                                        <div class="validationError"  ng-show="signUpForm.lastname.$error.maxlength && signUpForm.lastname.$dirty"">
+
+                                                             <span style="color:red">Last name maximum length exceeds</span>
+                                                        </div>
+                                                        </div>
+
+
+
+                                        <div class="form-group">
                                     <input type="text" name="email" id="email" class="form-control" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" required/>
                                     <div class="form-control-placeholder">Email Address</div>
                                     <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="

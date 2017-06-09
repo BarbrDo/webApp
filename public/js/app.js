@@ -30,11 +30,31 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     skipIfAuthenticated: skipIfAuthenticated
                 }
             })
+
             .state('barberHome', {
                 url: '/barber',
                 views: {
                     "home": {
                         templateUrl: 'partials/barbersHome.html',
+                    },
+                    "footer": {
+                        templateUrl: 'partials/footer.html'
+                    },
+                    "header": {
+                        templateUrl: 'partials/header.html',
+                        controller: 'HeaderCtrl'
+                    }
+                },
+                resolve: {
+                    skipIfAuthenticated: skipIfAuthenticated
+                }
+            })
+            .state('shopHome', {
+                url: '/shops',
+                views: {
+                    "home": {
+                        templateUrl: 'partials/barberShopHome.html',
+                        controller: 'HeaderCtrl'
                     },
                     "footer": {
                         templateUrl: 'partials/footer.html'
@@ -191,7 +211,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 },
                 "header": {
                     templateUrl: 'partials/barber_header_after_login.html',
-                    controller: "barberCtrl"
+                    controller: "HeaderCtrl"
                 },
                 "sideBar": {
                     templateUrl: 'partials/barberSideBar.html'
@@ -223,7 +243,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 },
                 "header": {
                     templateUrl: 'partials/barber_header_after_login.html',
-                    controller: "barberCtrl"
+                    controller: "HeaderCtrl"
                 },
                 "sideBar": {
                     templateUrl: 'partials/barberSideBar.html'
@@ -255,7 +275,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 },
                 "header": {
                     templateUrl: 'partials/barber_header_after_login.html',
-                    controller: "barberCtrl"
+                    controller: "HeaderCtrl"
                 },
                 "sideBar": {
                     templateUrl: 'partials/barberSideBar.html'
@@ -287,7 +307,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 },
                 "header": {
                     templateUrl: 'partials/barber_header_after_login.html',
-                    controller: "barberCtrl"
+                    controller: "HeaderCtrl"
                 },
                 "sideBar": {
                     templateUrl: 'partials/barberSideBar.html'
@@ -354,7 +374,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 },
                 "header": {
                     templateUrl: 'partials/barber_header_after_login.html',
-                    controller: "barberCtrl"
+                    controller: "HeaderCtrl"
                 },
                 "sideBar": {
                     templateUrl: 'partials/barberSideBar.html'
@@ -370,7 +390,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     },
                     "header": {
                         templateUrl: 'partials/barber_header_after_login.html',
-                        controller: "barberCtrl"
+                        controller: "HeaderCtrl"
                     },
                     "sideBar": {
                         templateUrl: 'partials/barberSideBar.html'
@@ -381,50 +401,70 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 url: '/barbershopdashboard',
                 views: {
                     "homeDash": {
-                        templateUrl: 'partials/barbershopdashboard.html'
+                        templateUrl: 'partials/barbershopdashboard.html',
+                        controller: "shopCtrl"
                     },
                     "header": {
                         templateUrl: 'partials/barber_shop_header.html',
-                        controller: "barberCtrl"
+                        controller:"HeaderCtrl"
                     },
                     "sideBar": {
                         templateUrl: 'partials/barbershopSideBar.html'
                     }
-                }
+                },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/shopController.js',
+                            'js/services/shop.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }],
+                loginRequired: loginRequired
+            }
             })
 
-
-        .state('chairaction', {
-                url: '/chairaction',
+            .state('chairaction', {
+                url: '/chairaction/:id/:name',
+                params: {
+                id: null,
+                name:null
+                },
                 views: {
                     "homeDash": {
                         templateUrl: 'partials/chairaction.html',
-                        controller: "barberCtrl"
+                        controller: "shopCtrl"
                     },
                     "header": {
                         templateUrl: 'partials/barber_shop_header.html',
-                        controller: "barberCtrl"
+                        controller:"HeaderCtrl"
                     },
                     "sideBar": {
                         templateUrl: 'partials/barbershopSideBar.html'
                     }
                 },
                 resolve: {
-                    lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
-                        var deferred = $q.defer();
-                        $ocLazyLoad.load({
-                            name: 'BarbrDoApp',
-                            files: ['js/controllers/barberController.js',
-                                'js/services/customer.js'
-                            ]
-                        }).then(function() {
-                            deferred.resolve();
-                        });
-                        return deferred.promise;
-                    }],
-                    loginRequired: loginRequired
-                }
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/shopController.js',
+                            'js/services/shop.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }],
+                loginRequired: loginRequired
+            }
             })
+        
             .state('upcomingComplete', {
                 url: '/home',
                 views: {
@@ -481,9 +521,26 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             })
             .state('forgot', {
                 url: '/forgot',
-                templateUrl: 'partials/forgot.html',
-                controller: 'ForgotCtrl',
+                 views: {
+                    "home": {
+                        templateUrl: 'partials/forgot.html',
+                        controller: 'ForgotCtrl'
+                    }
+                },
+
                 resolve: {
+                    lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                        var deferred = $q.defer();
+                        $ocLazyLoad.load({
+                            name: 'BarbrDoApp',
+                            files: ['js/controllers/forgot.js',
+                                'js/services/account.js'
+                            ]
+                        }).then(function() {
+                            deferred.resolve();
+                        });
+                        return deferred.promise;
+                    }],
                     skipIfAuthenticated: skipIfAuthenticated
                 }
             })
@@ -506,7 +563,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 controller: 'ShopCtrl'
             })
             .state('pageNotFound', {
-                url: '/partials',
+                url: '/partials/pageNotFound',
                 templateUrl: 'partials/404.html'
             })
             .state('pending', {
@@ -616,7 +673,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     },
                     "header": {
                         templateUrl: 'partials/barber_header_after_login.html',
-                        controller: "barberCtrl"
+                        controller: "HeaderCtrl"
                     },
                     "sideBar": {
                         templateUrl: 'partials/barberSideBar.html'
@@ -632,7 +689,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 },
                 "header": {
                     templateUrl: 'partials/barber_header_after_login.html',
-                    controller: "barberCtrl"
+                    controller: "HeaderCtrl"
                 },
                 "sideBar": {
                     templateUrl: 'partials/barberSideBar.html'
@@ -648,7 +705,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 },
                 "header": {
                     templateUrl: 'partials/barber_header_after_login.html',
-                    controller: "barberCtrl"
+                    controller: "HeaderCtrl"
                 },
                 "sideBar": {
                     templateUrl: 'partials/barberSideBar.html'
@@ -664,7 +721,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 },
                 "header": {
                     templateUrl: 'partials/barber_header_after_login.html',
-                    controller: "barberCtrl"
+                    controller: "HeaderCtrl"
                 },
                 "sideBar": {
                     templateUrl: 'partials/barberSideBar.html'
@@ -677,31 +734,63 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 url: '/manageservices',
                 views: {
                     "homeDash": {
-                        templateUrl: 'partials/manageservices.html'
+                        templateUrl: 'partials/manageservices.html',
+                         controller: "barberCtrl"
                     },
                     "header": {
                         templateUrl: 'partials/barber_header_manage_services.html',
-                        controller: "barberCtrl"
+                        controller:"HeaderCtrl"
                     },
                     "sideBar": {
                         templateUrl: 'partials/barberSideBar.html'
                     }
-                }
+                },
+                resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/barberController.js',
+                            'js/services/barber.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }],
+                loginRequired: loginRequired
+            }
             })
             .state('addservice', {
                 url: '/addservice',
                 views: {
                     "homeDash": {
-                        templateUrl: 'partials/addservice.html'
+                        templateUrl: 'partials/addservice.html',
+                        controller: "barberCtrl"
                     },
                     "header": {
                         templateUrl: 'partials/barber_header_manage_services.html',
-                        controller: "barberCtrl"
+                         controller:"HeaderCtrl"
                     },
                     "sideBar": {
                         templateUrl: 'partials/barberSideBar.html'
                     }
-                }
+                },
+                resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/barberController.js',
+                            'js/services/barber.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }],
+                loginRequired: loginRequired
+            }
             })
             .state('barbershop_manage_request', {
                 url: '/barbershop_manage_request',
@@ -711,7 +800,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     },
                     "header": {
                         templateUrl: 'partials/barber_shop_header.html',
-                        controller: "barberCtrl"
+                        controller: "HeaderCtrl"
                     },
                     "sideBar": {
                         templateUrl: 'partials/barbershopSideBar.html'
@@ -728,7 +817,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 },
                 "header": {
                     templateUrl: 'partials/barber_shop_header.html',
-                    controller: "barberCtrl"
+                    controller: "HeaderCtrl"
                 },
                 "sideBar": {
                     templateUrl: 'partials/barbershopSideBar.html'
@@ -744,7 +833,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 },
                 "header": {
                     templateUrl: 'partials/barber_shop_header.html',
-                    controller: "barberCtrl"
+                    controller: "HeaderCtrl"
                 },
                 "sideBar": {
                     templateUrl: 'partials/barbershopSideBar.html'

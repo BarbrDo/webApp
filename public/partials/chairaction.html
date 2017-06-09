@@ -1,98 +1,87 @@
-
-<div class="crumb"> <span>Book Appointment</span> </div>
+<div class="crumb"> <span>Manage Chair</span> </div>
 <div class="wrapper">
-    
-    
-    
-        
     <div class="col-md-12">
-        
-        <h3 class="actn"> Chair 2</h3>
-    
+        <h3 class="actn"> Chair {{chairId}}</h3>
     </div>
-    
-    
-    
-    
     <div class="row">
-    <div class="col-md-6">
-      <div class="block">
-        <h2>Chair Split - Shop Percentage</h2>
-        <div class="range">
-          <rzslider rz-slider-model="slider.value"
-          rz-slider-options="slider.options"></rzslider>
+        <div class="col-md-6">
+            <div class="block">
+                <h2>Chair Split - Shop Percentage</h2>
+                <div class="range">
+                    <rzslider rz-slider-model="slider.value" rz-slider-options="slider.options"></rzslider>
+                </div>
+                <button ng-click="saveSplitFair()" class="btn btn-primary">Save Split Fair</button>
+            </div>
         </div>
-      </div>
-    </div>
-       <div class="col-md-6">
-      <div class="block">
-        <h2>Rent Chair Weekly/ Monthly</h2>
-          
-      
-           <div class="type_selection wekmonth " >
-               <form>
-               
-               <label for="Weekly" >
-                  <input id="Weekly" type="radio" value="Weekly" name="content" ng-model="content" >
-                  <span>Weekly</span> </label>
-                <label for="Monthly">
-                  <input id="Monthly" type="radio" value="Monthly" name="content" ng-model="content" >
-                  <span>Monthly</span> </label>
-              
-               </form>
-               
-              
-               <div class="contact-us  pz">
-               
-               <div class="form-group" ng-show="content == 'Weekly'" >
-              <input type="text" class="form-control" required value="" />
-              <div class="form-control-placeholder">Enter Price for Week</div>
-            </div>
-               
-            <div class="form-group" ng-show="content == 'Monthly'">
-              <input type="text" class="form-control" required value="" />
-              <div class="form-control-placeholder">Enter Price for Month</div>
-            </div>
-               </div>
-               
-           
-               
-               
-               
-              </div>
-          
-          
-           
-    
+        <div class="col-md-6">
+            <div class="block">
+                <h2>Rent Chair Weekly/ Monthly</h2>
+                <div class="type_selection wekmonth ">
+                    <form>
+                        <label for="Weekly">
+                            <input id="Weekly" type="radio" value="Weekly" name="content" ng-model="content">
+                            <span>Weekly</span> </label>
+                        <label for="Monthly">
+                            <input id="Monthly" type="radio" value="Monthly" name="content" ng-model="content">
+                            <span>Monthly</span> </label>
+                    </form>
+                    <div class="contact-us  pz">
+                        <div class="form-group" ng-show="content == 'Weekly'">
+                         <form name="myform">
+                            <input type="text" class="form-control" required value="" / ng-model="priceValue" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7">
+                            <div class="form-control-placeholder">Enter Price for Week</div>
 
-          
-          
-      </div>
+                             <div class="validationError" ng-messages="myform.priceVal.$error" ng-show="
+                            myform.priceVal.$error.required && myform.priceVal.$touched &&
+                            myform.priceVal.$invalid 
+                           " role="alert">
+                                <span style="color:red" ng-message="required">Price is required</span>
+                            </div>
+                            <div class="validationError" ng-messages="myform.priceVal.$error" ng-show="
+                                                           myform.priceVal.$error.pattern && (!myform.priceVal.$pristine || myform.$submitted)" role="alert">
+                                <span style="color:red" ng-message="pattern">Enter valid character </span>
+                            </div>
+                            <div class="validationError" ng-show="myform.priceVal.$error.maxlength && myform.priceVal.$dirty" ">
+
+                             <span style="color:red ">Price maximum length exceeds</span>
+                        </div>
+
+                            <button style="margin-top: 15px;" ng-click="saveWeeklyFair()" class="btn btn-primary" ng-disabled="myform.$invalid">Save Rent Fair</button>
+                        </div>
+                        </form>
+                        <div class="form-group" ng-show="content == 'Monthly'">
+                        <form name="secondForm">
+                            <input type="text" class="form-control" required value="" ng-model="priceValue" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7">
+                            <div class="form-control-placeholder">Enter Price for Month</div>
+
+                             <div class="validationError" ng-messages="secondForm.priceVal.$error" ng-show="
+                            secondForm.priceVal.$error.required && secondForm.priceVal.$touched &&
+                            secondForm.priceVal.$invalid 
+                           " role="alert">
+                                <span style="color:red" ng-message="required">Price is required</span>
+                            </div>
+                            <div class="validationError" ng-messages="secondForm.priceVal.$error" ng-show="
+                                                           secondForm.priceVal.$error.pattern && (!secondForm.priceVal.$pristine || secondForm.$submitted)" role="alert">
+                                <span style="color:red" ng-message="pattern">Enter valid character </span>
+                            </div>
+                            <div class="validationError" ng-show="secondForm.priceVal.$error.maxlength && secondForm.priceVal.$dirty" ">
+
+                             <span style="color:red ">Price maximum length exceeds</span>
+                        </div>
+
+                            <button style="margin-top: 15px;" ng-click="saveWeeklyFair()" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair</button>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 alllnk">
+            <h3 class="actn">Action to this Chair </h3>
+            <a href="" ng-click="markBooked()">Mark Booked</a>
+            <a href="" ng-click="postToAllBarbers()">Post to All</a>
+            <a href="">Search Barber</a>
+            <a href="" ng-click="deleteChair()">Remove Chair</a>
+        </div>
     </div>
-      
-      
-    <div class="col-md-12 alllnk">
-        
-        <h3 class="actn">Action to this Chair </h3>
-        
-        
-        <a href="">Mark Booked</a>
-        <a href="">Post to All</a>
-        <a href="">Search Barber</a>
-        <a href="">Remove Chair</a>
-      
-      
-    </div>  
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-  </div>
 </div>
-

@@ -910,7 +910,7 @@ exports.markChairAsBooked = function(req, res) {
             return res.status(400).send({
                 msg: "Error in updating the shop collection."
             })
-        } else {
+        } else {    
             res.status(200).send({
                 msg: 'shop updated successfully'
             });

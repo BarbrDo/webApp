@@ -162,7 +162,7 @@ exports.allShops = function(req, res) {
                     }
                     if (totalbarbers > 0) {
                         obj._id = data[i]._id;
-                        obj.shopName = data[i].name;
+                        obj.name = data[i].name;
                         obj.state = data[i].state;
                         obj.city = data[i].city;
                         obj.address = data[i].address;
@@ -347,11 +347,11 @@ exports.setChairPercentage = function(req, res) {
     }, updateCollectionData, function(err, result) {
         if (err) {
             return res.status(400).send({
-                msg: "Error in updating the shop collection."
+                "msg": constantObj.messages.userStatusUpdateFailure
             })
         } else {
             res.status(200).send({
-                msg: 'shop updated successfully'
+               "msg": constantObj.messages.userStatusUpdateSuccess
             });
         }
     })
@@ -360,6 +360,7 @@ exports.weeklyMonthlyChair = function(req, res) {
     req.checkHeaders('user_id', 'Shop id is required.').notEmpty();
     req.assert('chair_id', 'Chair id is required.').notEmpty();
     req.assert('type', 'Type is required.').notEmpty();
+    req.assert('amount', 'Amount is required.').notEmpty();
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -379,11 +380,11 @@ exports.weeklyMonthlyChair = function(req, res) {
     }, updateCollectionData, function(err, result) {
         if (err) {
             return res.status(400).send({
-                msg: "Error in updating the shop collection."
+                "msg": constantObj.messages.userStatusUpdateFailure
             })
         } else {
             res.status(200).send({
-                msg: 'shop updated successfully'
+                "msg": constantObj.messages.userStatusUpdateSuccess
             });
         }
     })
@@ -523,14 +524,17 @@ exports.updateshop = function(req, res) {
 
 
  exports.listshops = function(req, res) {
-    var page = req.body.page || 1,
-        count = req.body.count || 50;
+    var page = parseInt(req.query.page) || 1;
+    var count = parseInt(req.query.count) || 10;
     var skipNo = (page - 1) * count;
     var query = {};
-        query.user_type = "shop"
-    var searchStr = req.body.search;
+    query.user_type = "shop";
+    var searchStr = ""
+    if (req.query.search) {
+        searchStr = req.query.search;
+    }
 
-    if (req.body.search) {
+    if (searchStr) {
         query.$or = [{
             name: {
                 $regex: searchStr,
@@ -668,15 +672,39 @@ exports.viewshopdetail = function(req, res) {
 
 
 exports.availableBarber = function(req, res) {
-    var page = req.body.page || 1,
-        count = req.body.count || 10;
+    var page = parseInt(req.query.page) || 1;
+    var count = parseInt(req.query.count) || 10;
     var skipNo = (page - 1) * count;
     var query = {};
     query.user_type = "barber"
-    var searchStr = req.body.search;
+    var searchStr = ""
+    if (req.query.search) {
+        searchStr = req.query.search;
+    }
+    if (searchStr) {
+        query.$or = [{
+            first_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            last_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            email: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }]
+    }
 
-
-    
     user.aggregate([{
         $project: {
             _id: "$_id",
@@ -731,64 +759,23 @@ exports.availableBarber = function(req, res) {
             }, {
                 "$limit": count
             }]).exec(function(err, result) {
-                if (err) {
-                    outputJSON = {
-                        'status': 'failure',
-                        'messageId': 203,
-                        'message': 'data not retrieved '
-                    };
-                } else {
-                    outputJSON = {
-                        'status': 'success',
-                        'messageId': 200,
-                        'message': 'data retrieve from barber',
-                        'data': result,
-                        'count': length
-                    }
+                if(err){
+                        res.status(400).send({
+                        "msg": constantObj.messages.userStatusUpdateFailure,
+                        "err": err
+                    });
+                }else{
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": result,
+                        "count": length
+                    })
                 }
-                res.status(200).jsonp(outputJSON);
             })
         }
     })
-
-    if (req.body.search) {
-        query.$or = [{
-            first_name: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            last_name: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            email: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            name: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            ratings: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            created_date: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            mobile_number: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }]
-    }
+            
+    
 };
 exports.getDataForBookNowPage = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
@@ -923,6 +910,7 @@ exports.shopContainsChairs = function(req,res){
             err: errors
         });
     }
+    console.log(req.params.shop_id);
     shop.findOne({
         _id: req.params.shop_id
     }).exec(function(err, result) {
@@ -968,6 +956,38 @@ exports.shopAcceptChairRequest = function(req, res) {
                 msg: "Error in updating the shop collection."
             })
         } else {
+            res.status(200).send({
+                "msg": constantObj.messages.successRetreivingData,
+            });
+        }
+    })
+}
+
+exports.markChairAsBooked = function(req, res) {
+    req.checkHeaders('user_id', 'Shop id is required.').notEmpty();
+    req.assert('chair_id', 'Chair id is required.').notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let updateCollectionData = {
+        "$set": {
+            "chairs.$.type": 'self',
+            "chairs.$.availability":'booked'
+        }
+    };
+    shop.update({
+        "user_id": req.headers.user_id,
+        "chairs._id": req.body.chair_id
+    }, updateCollectionData, function(err, result) {
+        if (err) {
+            return res.status(400).send({
+                msg: "Error in updating the shop collection."
+            })
+        } else {    
             res.status(200).send({
                 msg: 'shop updated successfully'
             });

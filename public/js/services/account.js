@@ -1,11 +1,19 @@
 angular.module('BarbrDoApp')
-  .factory('Account', function($http) {
+  .factory('Account', function($http,$window) {
+    var obj = JSON.parse($window.localStorage.user);
     return {
       updateProfile: function(data) {
-        return $http.post('/api/v1/account', data);
+        return $http.put('/api/v1/account', data);
       },
       changePassword: function(data) {
-        return $http.put('/api/v1/account', data);
+        return $http({
+          method: 'put',
+          url: '/api/v1/account',
+          data:data,
+          headers: {
+            'user_id': obj._id
+          }
+        },data);
       },
       deleteAccount: function() {
         return $http.delete('/api/v1/account');

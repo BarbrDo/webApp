@@ -1,5 +1,5 @@
 angular.module('BarbrDoApp')
-	.controller('dashboardCtrl', function($scope, $rootScope, $location, customer, $stateParams, $state, $window, ngTableParams, $timeout,$http) {
+	.controller('dashboardCtrl', function($scope, $rootScope, $location, customer, $stateParams, $state, $window, ngTableParams, $timeout, $http) {
 		$scope.dollarAmmount = 0.00;
 		$scope.annualCost = "$" + $scope.dollarAmmount;
 		$scope.search = {};
@@ -8,11 +8,11 @@ angular.module('BarbrDoApp')
 			'longitude': "-74.1063776"
 		}
 		$scope.callFunctions = function() {
-			$scope.shoplist();
-			$scope.barberList();
-		}
-		// $scope.searchBarber = "";
-		// $scope.searchShop = "";
+				$scope.shoplist();
+				$scope.barberList();
+			}
+			// $scope.searchBarber = "";
+			// $scope.searchShop = "";
 		$scope.shoplist = function() {
 			obj.search = $scope.search.searchShop;
 			$scope.loaderStart = true;
@@ -33,16 +33,16 @@ angular.module('BarbrDoApp')
 				_id: $stateParams._id
 			}
 			var Markers = [{
-						"id": "0",
-						"coords": {
-							"latitude": "30.708225",
-							"longitude": "76.7029445"
-						},
-						"window": {
-							"title": ""
-						}
-					}];
-					$scope.markers = Markers;
+				"id": "0",
+				"coords": {
+					"latitude": "30.708225",
+					"longitude": "76.7029445"
+				},
+				"window": {
+					"title": ""
+				}
+			}];
+			$scope.markers = Markers;
 
 			customer.shopContainsBarbers(obj).then(function(response) {
 				$scope.loaderStart = false;
@@ -102,28 +102,33 @@ angular.module('BarbrDoApp')
 		}
 		$scope.selection = {};
 		$scope.totalMoney = 0;
-		$scope.toggleSelection = function toggleSelection(fruitName) {
+		$scope.selected = [];
 
-			var idx = $scope.selection.indexOf(fruitName);
-			// Is currently selected
-			if (idx > -1) {
-				$scope.selection.splice(idx, 1);
+		$scope.cost = function(amt, e, value) {
+			if (e.target.checked) {
+				$scope.names = e.target.value;
+				$scope.dollarAmmount = $scope.dollarAmmount + amt;
+				$scope.selected.push(value);
+
 			} else {
-				$scope.selection.push({
-					name: fruitName.name,
-					price: fruitName.price
-				});
-				$scope.totalMoney+=fruitName.price
-				console.log($scope.selection);
+				$scope.dollarAmmount = $scope.dollarAmmount - amt;
+				for (var i = 0; i < $scope.selected.length; i++) {
+					if ($scope.selected[i]._id == value._id) {
+						$scope.selected.splice(i, 1);
+					}
+				}
 			}
-		};
-		$scope.payLater = function() {
-			var myarr = [];
+			$scope.annualCost = "$" + $scope.dollarAmmount;
 
-			for(var i=0;i<$scope.selection.barberservice.length;i++){
+		};
+
+		$scope.payLater = function() {
+			console.log($scope.selected);
+			var myarr = [];
+			for (var i = 0; i < $scope.selected.length; i++) {
 				var cusObj = {};
-				cusObj.name = $scope.selection.barberservice[i].name;
-				cusObj.price = $scope.selection.barberservice[i].price;
+				cusObj.name = $scope.selected[i].name;
+				cusObj.price = $scope.selected[i].price;
 				myarr.push(cusObj);
 			}
 			var postObj = {
@@ -133,8 +138,6 @@ angular.module('BarbrDoApp')
 				"appointment_date": $scope.selectedDate + " " + $scope.choosedTime,
 				"payment_method": "cash",
 			}
-			console.log(postObj);
-			return false;
 			customer.takeAppointment(postObj)
 				.then(function(response) {
 					$state.go('pending', {
@@ -161,13 +164,13 @@ angular.module('BarbrDoApp')
 				}
 			})
 		}
-			$scope.markers = [];
-			$scope.map = {
-				center: {
-					latitude: 30.708225,
-					longitude: 76.7029445
-				},
-				zoom: 4
+		$scope.markers = [];
+		$scope.map = {
+			center: {
+				latitude: 30.708225,
+				longitude: 76.7029445
+			},
+			zoom: 4
 		}
 		if ($state.current.name == 'pending') {
 			var passingObj = {
@@ -189,7 +192,7 @@ angular.module('BarbrDoApp')
 					$scope.markers = Markers;
 				});
 		}
-		$scope.uploadImage = function(){
+		$scope.uploadImage = function() {
 			var fs = new FormData();
 			console.log($scope.uploadedImages);
 			if ($scope.uploadedImages) {
@@ -201,21 +204,25 @@ angular.module('BarbrDoApp')
 			var obj = JSON.parse($window.localStorage.user);
 
 			$http.post("/api/v1/customer/gallery", fs, {
-				//	transformRequest: angular.identity,
-					headers: {'Content-Type': undefined,'user_id': obj._id}
+					//	transformRequest: angular.identity,
+					headers: {
+						'Content-Type': undefined,
+						'user_id': obj._id
+					}
 				})
-				.success(function(response){
-						if(response){
-							callback(response);
-							//return { response:$q.defer().resolve(response)};
-						}
-						else{
-							$q.reject(response);
-							callback({ response:$q.defer().promise});
-							//return { response:$q.defer().promise};
-						}
-					})
-				.error(function(err){ 
+				.success(function(response) {
+					if (response) {
+						callback(response);
+						//return { response:$q.defer().resolve(response)};
+					} else {
+						$q.reject(response);
+						callback({
+							response: $q.defer().promise
+						});
+						//return { response:$q.defer().promise};
+					}
+				})
+				.error(function(err) {
 					alert('There was some error uploading your files. Please try Uploading them again.');
 				});
 		}

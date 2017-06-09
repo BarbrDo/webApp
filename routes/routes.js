@@ -30,7 +30,7 @@ module.exports = function(app, express) {
     // Controllers
     let userController = require('./../controllers/user');
     let contactController = require('./../controllers/contact');
-    // let customerController = require('./../controllers/customer');
+    let customerController = require('./../controllers/customer');
     let shopController = require('./../controllers/shop');
     let chairRequestController = require('./../controllers/chair_request');
     let appointmentController = require('./../controllers/appointment');
@@ -50,8 +50,9 @@ module.exports = function(app, express) {
     app.post('/reset/:token', userController.resetPost);
     app.post('/api/v1/checkFaceBook', userController.checkFaceBook);
 
+    
     //Shops
-    app.post('/api/v1/allshops',shopController.listshops); // All shops registered in system
+    app.get('/api/v1/allshops',shopController.listshops); // All shops registered in system
     app.get('/api/v1/shops', shopController.allShops); // List barber associated shops only
     app.put('/api/v1/shops', upload.any(), shopController.editShop); //Update shop
     app.post('/api/v1/shops/chair', userController.addChair) //Add chair in shop
@@ -59,14 +60,16 @@ module.exports = function(app, express) {
     app.delete('/api/v1/shops/chair', userController.removeChair); // Remove chair from shop
     app.get('/api/v1/shops/barberchairrequests/:shop_id',chairRequestController.barberChairReqests); //Get all barber's request for chairs
     app.post('/api/v1/shops/confirmchair', chairRequestController.bookChair);
-    app.post('/api/v1/allbarbers', shopController.availableBarber); //Get all barbers
     app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
     app.put('/api/v1/shops/chairPercentage',shopController.setChairPercentage);
     app.put('/api/v1/shops/weeklyMonthlyChair',shopController.weeklyMonthlyChair);
     app.put('/api/v1/shops/postChairToAllBarbers',shopController.postChairToAllBarbers);
     app.get('/api/v1/shops/chair/:shop_id',shopController.shopContainsChairs);
+    app.put('/api/v1/shops/markChairAsBooked',shopController.markChairAsBooked);
     
+
     //Customer
+    app.get('/api/v1/allcustomers',customerController.listcustomers);
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
     app.post('/api/v1/appointment', appointmentController.takeAppointment); //Book Appointment
     app.post('/api/v1/customer/gallery', upload.any(), userController.uploadCustomerGallery); //Upload image in gallery
@@ -75,6 +78,7 @@ module.exports = function(app, express) {
     
     
     //Barber
+    app.get('/api/v1/allbarbers', shopController.availableBarber); //Get all barbers
     app.get('/api/v1/barbers', shopController.associatedBarbers); //List all barbers
     app.get('/api/v1/barbers/:barber_id',barberServices.viewBarberProfile);//Get barber details like info, rating & comments, galleries
     app.post('/api/v1/barber/gallery',upload.any(), barberServices.uploadBarberGallery);//Upload single or multiple images in Gallery

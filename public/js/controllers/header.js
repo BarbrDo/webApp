@@ -17,6 +17,7 @@ angular.module('BarbrDoApp')
 
     if($window.localStorage.user){
       $scope.userInfo = JSON.parse($window.localStorage.user);
+      $scope.imgPath = $window.localStorage.imagePath;
     }
 
     $scope.isAuthenticated = function() {
@@ -44,7 +45,7 @@ angular.module('BarbrDoApp')
           if(response.data.imagesPath){
             $window.localStorage.imagePath = response.data.imagesPath;
           }
-          $state.go('upcomingComplete');    
+          $state.go('upcomingComplete');  
         })
         .catch(function(response) {
           if (response.error) {
@@ -70,14 +71,15 @@ angular.module('BarbrDoApp')
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
           $window.localStorage.imagePath = response.data.imagesPath;
-          $scope.user = {};
-          console.log(JSON.stringify(response.data.user));
           if(response.data.user.user_type =='customer'){  
             $state.go('upcomingComplete');    
           }
           if(response.data.user.user_type =='barber'){
             $state.go('barberDashboard'); 
-          }     
+          }
+          if(response.data.user.user_type =='shop'){
+            $state.go('barbershopdashboard')
+          }   
         })
         .catch(function(response) {
           $scope.messages = {
@@ -97,19 +99,20 @@ angular.module('BarbrDoApp')
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
           $window.localStorage.imagePath = response.data.imagesPath;
-          $scope.user = {};
           if(response.data.user.user_type =='customer'){  
             $state.go('upcomingComplete');    
           }
           if(response.data.user.user_type =='barber'){
             $state.go('barberDashboard'); 
+          }
+          if(response.data.user.user_type =='shop'){
+            $state.go('barbershopdashboard')
           }    
         })
         .catch(function(response) {
           $scope.messagess = {
             error: Array.isArray(response.data) ? response.data : response.data
           };
-          console.log($scope.messagess);
         });
     };
 

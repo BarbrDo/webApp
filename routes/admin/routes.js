@@ -4,8 +4,7 @@ module.exports = function(app, express) {
     let shopController = require('./../../controllers/shop');
     let appointController = require('./../../controllers/appointment');
     
-    app.post('/api/v1/allcustomers',customerController.listcustomers);
-    
+       
     app.get('/api/v1/countbarber', customerController.countbarber); 
     app.get('/api/v1/countshop', customerController.countshop); 
     app.get('/api/v1/countcustomer', customerController.countcustomer); 

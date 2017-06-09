@@ -23,7 +23,7 @@
       <div class="col-sm-4 form-group">
         <label>Last Name</label>
         <input type="text" class="form-control" name="last_name" data-ng-model="customerdetail.last_name" required />
-        <span style="color:red;" ng-show="editForm.last_name.$error.required">First Name cannot left blank</span>
+        <span style="color:red;" ng-show="editForm.last_name.$error.required">Last Name cannot left blank</span>
       </div>
       <div class="col-sm-4 form-group">
         <label>Mobile Number</label>
@@ -92,7 +92,7 @@
         <i class="fa fa-check" aria-hidden="true"></i>
         Save
       </button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <button type="reset" class="btn btn-grey" ui-sref="shops">
+      <button type="reset" class="btn btn-grey" ui-sref="customer_detail">
         <i class="fa fa-times" aria-hidden="true"></i>
         <span>Cancel</span>
       </button>

@@ -1,23 +1,21 @@
-
-<div class="crumb"> <span>Book Appointment</span> </div>
+<div class="crumb"> <span>Manage Chair</span> </div>
 <div class="wrapper">
-  
   <div class="block">
     <h2>Manage Chair</h2>
-    <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+    <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat = "res in chairs.shop[0].chairs">
       <div class="barber toshop">
         <div class="cont">
           <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
-          <h3>Chair 1</h3>
-          <p><span>Chair Split</span> : 50/50</p>
-       
+          <h3>Chair {{$index+1}}</h3>
+          <p ng-if="res.barber_id"><span>{{res.barber_name}}</span></p>
+          <p ng-if="res.shop_percentage"><span>Chair Split</span> : {{res.shop_percentage}}/{{res.barber_percentage}}</p>
+          <p ng-if="res.type=='Weekly' || res.type=='Monthly'"><span>{{res.type}}</span> : ${{res.amount}}</p>
+          <p ng-if="!res.shop_percentage && !res.type">Empty</p>
         </div>
-        <a ui-sref="chairaction" class="book_nw" > Manage <i class="fa  fa-angle-right"></i> </a>
+        <a class="book_nw" ui-sref="chairaction({id:res._id,name:$index+1})"> Manage <i class="fa  fa-angle-right"></i> </a>
      </div>
-    </div>
-      
-      
-    <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+    </div>  
+    <!-- <div class="col-md-4 col-sm-4 col-xs-6 fullb">
       <div class="barber toshop">
         <div class="cont">
           <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
@@ -29,11 +27,11 @@
         </div>
         <a ui-sref="chairaction" class="book_nw" > Manage <i class="fa  fa-angle-right"></i> </a>
      </div>
-    </div>
+    </div> -->
       
       
       
-      <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+    <!--   <div class="col-md-4 col-sm-4 col-xs-6 fullb">
       <div class="barber toshop">
         <div class="cont">
           <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
@@ -44,10 +42,10 @@
         <a  class="book_nw" ui-sref="chairaction"  > Manage <i class="fa  fa-angle-right"></i> </a>
      </div>
     </div>
+       -->
       
       
-      
-      <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+      <!-- <div class="col-md-4 col-sm-4 col-xs-6 fullb">
       <div class="barber toshop">
         <div class="cont">
           <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
@@ -57,10 +55,10 @@
         </div>
         <a ui-sref="chairaction" class="book_nw" > Manage <i class="fa  fa-angle-right"></i> </a>
      </div>
-    </div>
+    </div> -->
       
       
-      <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+     <!--  <div class="col-md-4 col-sm-4 col-xs-6 fullb">
       <div class="barber toshop">
         <div class="cont">
           <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
@@ -70,10 +68,10 @@
         </div>
         <a  class="book_nw" ui-sref="chairaction" > Manage <i class="fa  fa-angle-right"></i> </a>
      </div>
-    </div>
+    </div> -->
       
       
-      <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+     <!--  <div class="col-md-4 col-sm-4 col-xs-6 fullb">
       <div class="barber toshop">
         <div class="cont">
           <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
@@ -83,7 +81,7 @@
         </div>
         <a  class="book_nw" ui-sref="chairaction" > Manage <i class="fa  fa-angle-right"></i> </a>
      </div>
-    </div>
+    </div> -->
    
       
   </div>

@@ -2,15 +2,7 @@ angular.module('BarbrDoApp')
 	.controller('barberCtrl', function($scope, $rootScope, $location, barber, $stateParams, $state, $window, toastr) {
 		var objj = JSON.parse($window.localStorage.user);
 		$scope.imgPath = $window.localStorage.imagePath;
-		$scope.slider = {
-			value: 50,
-			options: {
-				showSelectionBar: true,
-				floor: 0,
-				ceil: 100,
-				ticksArray: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-			}
-		};
+		
 		$scope.loaderStart = true;
 		$scope.appointments = function() {
 			barber.appointments()

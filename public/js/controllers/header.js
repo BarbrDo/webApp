@@ -44,7 +44,7 @@ angular.module('BarbrDoApp')
           if(response.data.imagesPath){
             $window.localStorage.imagePath = response.data.imagesPath;
           }
-          $state.go('upcomingComplete');    
+          $state.go('upcomingComplete');  
         })
         .catch(function(response) {
           if (response.error) {
@@ -75,7 +75,10 @@ angular.module('BarbrDoApp')
           }
           if(response.data.user.user_type =='barber'){
             $state.go('barberDashboard'); 
-          }     
+          }
+          if(response.data.user.user_type =='shop'){
+            $state.go('barbershopdashboard')
+          }   
         })
         .catch(function(response) {
           $scope.messages = {
@@ -100,6 +103,9 @@ angular.module('BarbrDoApp')
           }
           if(response.data.user.user_type =='barber'){
             $state.go('barberDashboard'); 
+          }
+          if(response.data.user.user_type =='shop'){
+            $state.go('barbershopdashboard')
           }    
         })
         .catch(function(response) {

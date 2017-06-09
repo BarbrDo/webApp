@@ -201,6 +201,70 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 loginRequired: loginRequired
             }
         })
+        
+        .state('viewShopProfile', {
+            url: '/viewshopprofile',
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/profile.html',
+                    controller: "ProfileCtrl"
+                },
+                "header": {
+                    templateUrl: 'partials/barber_shop_header.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/barbershopSideBar.html'
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['/js/controllers/profile.js',
+                            '/js/services/account.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }],
+                loginRequired: loginRequired
+            }
+        })
+        
+        .state('viewBarberProfile', {
+            url: '/viewbarberprofile',
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/profile.html',
+                    controller: "ProfileCtrl"
+                },
+                "header": {
+                    templateUrl: 'partials/barber_header_after_login.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/barberSideBar.html'
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['/js/controllers/profile.js',
+                            '/js/services/account.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }],
+                loginRequired: loginRequired
+            }
+        })
 
         .state('barberDashboard', {
             url: '/designDashboardOfBarber',

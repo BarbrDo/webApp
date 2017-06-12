@@ -15,8 +15,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 url: '/',
                 views: {
                     "home": {
-                        templateUrl: 'partials/home.html',
-                        controller: 'HeaderCtrl'
+                        templateUrl: 'partials/home.html'
                     },
                     "footer": {
                         templateUrl: 'partials/footer.html'
@@ -51,8 +50,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 url: '/shops',
                 views: {
                     "home": {
-                        templateUrl: 'partials/barberShopHome.html',
-                        controller: 'HeaderCtrl'
+                        templateUrl: 'partials/barberShopHome.html'
                     },
                     "footer": {
                         templateUrl: 'partials/footer.html'
@@ -761,9 +759,25 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             })
             .state('resetToken', {
                 url: '/reset/:token',
-                templateUrl: 'partials/reset.html',
-                controller: 'ResetCtrl',
+                views: {
+                    "home": {
+                        templateUrl: 'partials/reset.html',
+                        controller: 'ResetCtrl'
+                    }
+                },
                 resolve: {
+                    lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                        var deferred = $q.defer();
+                        $ocLazyLoad.load({
+                            name: 'BarbrDoApp',
+                            files: ['js/controllers/reset.js',
+                                'js/services/account.js'
+                            ]
+                        }).then(function() {
+                            deferred.resolve();
+                        });
+                        return deferred.promise;
+                    }],
                     skipIfAuthenticated: skipIfAuthenticated
                 }
             })
@@ -954,13 +968,11 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         };
     })
-    .run(['$rootScope', '$q', '$state', '$auth', '$window', function($rootScope, $q, $state, $auth, $window) {
+    .run(['$rootScope', '$q', '$state', '$auth', '$window','toastr', function($rootScope, $q, $state, $auth, $window,toastr) {
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
             console.log(toState.url);
-             let loggedInUser = JSON.parse($window.localStorage.user)
-            console.log("user_type",loggedInUser.user_type)
             // Following if will allow only Landing site routes 
-            if (toState.url == '/' || toState.url == '/barber' || toState.url == '/shops') {
+            if (toState.url == '/' || toState.url == '/barber' || toState.url == '/shops' || toState.url == '/forgot' || toState.url == '/reset/:token') {
                 var deferred = $q.defer();
                 if ($auth.isAuthenticated()) {
                     setTimeout(function() {
@@ -968,88 +980,109 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         $state.go('dashboard');
                     }, 0);
                     return deferred.promise;
-                }
-            }
-            // Following if will allow only customer routes
-            if (toState.url == '/dashboard' || toState.url == '/shopContainsBarbers/:_id' || toState.url == '/home' || toState.url == '/book/:shop_id/:barber_id' || toState.url == '/profile' || toState.url == '/pending-confirmation/:_id' || toState.url == '/gallery' || toState.url =='/appointmentdetail/:_id') {
-                var deferred = $q.defer();
-                if (loggedInUser.user_type == 'customer') {
-                    console.log("inside customer");
-                    if (!$auth.isAuthenticated()) {
-                        setTimeout(function() {
-                            deferred.resolve()
-                            $state.go('home');
-                        }, 0);
-                        return deferred.promise;
-                    }
-                    else{
-                        setTimeout(function() {
-                            deferred.resolve()
-                            $state.go(toState.url);
-                        }, 0);
-                         return deferred.promise;
-                    }
                 } else {
                     setTimeout(function() {
                         deferred.resolve()
-                        $state.go('pageNotFound')
+                        $state.go(toState.url);
                     }, 0);
                     return deferred.promise;
                 }
             }
-            // Following if will allow only barbers routes
-            if (toState.url == '/dashboardOfBarber' || toState.url == '/searchchair' || toState.url == '/manageservices' || toState.url == '/addservice' || toState.url == '/chairs/:_id' || toState.url == '/reschedule/:_id' || toState.url == '/appointmentdetail/:_id' || toState.url == '/appointmentdetailconfirm' || toState.url == '/sendinvitation') {
-                var deferred = $q.defer();
-                if (loggedInUser.user_type == 'barber') {
-                    console.log("inside customer");
-                    if (!$auth.isAuthenticated()) {
+            else if ($window.localStorage.user) {
+                let loggedInUser = JSON.parse($window.localStorage.user)
+                console.log("user_type", loggedInUser.user_type)
+
+                // Following if will allow only customer routes
+                if (toState.url == '/dashboard' || toState.url == '/shopContainsBarbers/:_id' || toState.url == '/home' || toState.url == '/book/:shop_id/:barber_id' || toState.url == '/profile' || toState.url == '/pending-confirmation/:_id' || toState.url == '/gallery' || toState.url == '/appointmentdetail/:_id') {
+                    var deferred = $q.defer();
+                    if (loggedInUser.user_type == 'customer') {
+                        console.log("inside customer");
+                        if (!$auth.isAuthenticated()) {
+                            setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('home');
+                            }, 0);
+                            return deferred.promise;
+                        } else {
+                            setTimeout(function() {
+                                deferred.resolve()
+                                $state.go(toState.url);
+                            }, 0);
+                            return deferred.promise;
+                        }
+                    } else {
                         setTimeout(function() {
                             deferred.resolve()
+                            $auth.logout();
+                            delete $window.localStorage.user;
+                            toastr.error('Please Login again');
                             $state.go('home');
+                            // $state.go('pageNotFound')
                         }, 0);
                         return deferred.promise;
                     }
-                    else{
-                        setTimeout(function() {
-                            deferred.resolve()
-                            $state.go(toState.url);
-                        }, 0);
-                         return deferred.promise;
-                    }
-                } else {
-                    setTimeout(function() {
-                        deferred.resolve()
-                        $state.go('pageNotFound')
-                    }, 0);
-                    return deferred.promise;
                 }
-            }
-            // Following if will allow only shop routes
-            if (toState.url == '/shopdashboard' || toState.url == '/chairaction/:id/:name') {
-                var deferred = $q.defer();
-                if (loggedInUser.user_type == 'shop') {
-                    console.log("inside customer");
-                    if (!$auth.isAuthenticated()) {
+                // Following if will allow only barbers routes
+                if (toState.url == '/dashboardOfBarber' || toState.url == '/searchchair' || toState.url == '/manageservices' || toState.url == '/addservice' || toState.url == '/chairs/:_id' || toState.url == '/reschedule/:_id' || toState.url == '/appointmentdetail/:_id' || toState.url == '/appointmentdetailconfirm' || toState.url == '/sendinvitation' || toState.url == '/barberGallery' || toState.url == '/managerequest') {
+                    var deferred = $q.defer();
+                    if (loggedInUser.user_type == 'barber') {
+                        console.log("inside barber");
+                        if (!$auth.isAuthenticated()) {
+                            setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('home');
+                            }, 0);
+                            return deferred.promise;
+                        } else {
+                            setTimeout(function() {
+                                deferred.resolve()
+                                $state.go(toState.url);
+                            }, 0);
+                            return deferred.promise;
+                        }
+                    } else {
                         setTimeout(function() {
                             deferred.resolve()
+                            $auth.logout();
+                            delete $window.localStorage.user;
+                            toastr.error('Please Login again');
                             $state.go('home');
+                            // $state.go('pageNotFound')
                         }, 0);
                         return deferred.promise;
                     }
-                    else{
+                }
+                // Following if will allow only shop routes
+                if (toState.url == '/shopdashboard' || toState.url == '/chairaction/:id/:name' || toState.url == '/financialcenter' || toState.url == '/barbershop_manage_request' || toState.url == '/contactbarbrDO') {
+                    var deferred = $q.defer();
+                    if (loggedInUser.user_type == 'shop') {
+                        console.log("inside shop");
+                        if (!$auth.isAuthenticated()) {
+                            setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('home');
+                            }, 0);
+                            return deferred.promise;
+                        } else {
+                            setTimeout(function() {
+                                deferred.resolve()
+                                $state.go(toState.url);
+                            }, 0);
+                            return deferred.promise;
+                        }
+                    } else {
                         setTimeout(function() {
                             deferred.resolve()
-                            $state.go(toState.url);
+                            $auth.logout();
+                            delete $window.localStorage.user;
+                            toastr.error('Please Login again');
+                            $state.go('home');
+                            // $state.go('pageNotFound')
                         }, 0);
-                         return deferred.promise;
+                        return deferred.promise;
                     }
-                } else {
-                    setTimeout(function() {
-                        deferred.resolve()
-                        $state.go('pageNotFound')
-                    }, 0);
-                    return deferred.promise;
-                }            } else {
+                }
+            } else {
                 var deferred = $q.defer();
                 setTimeout(function() {
                     deferred.resolve()
@@ -1057,6 +1090,5 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 }, 0);
                 return deferred.promise;
             }
-
         })
     }]);

@@ -40,6 +40,7 @@ module.exports = function(app, express) {
     app.post('/api/v1/signup', userController.signupPost); //Signup
     app.post('/api/v1/login', userController.loginPost); // Login
     app.post('/api/v1/forgot', userController.forgotPost); //Forgot Password
+    app.post('/api/v1/reset/:token', userController.resetPost); //Forgot Password
     app.put('/api/v1/account',upload.any(), userController.accountPut); // Account update
     app.delete('/api/v1/account', userController.ensureAuthenticated, userController.accountDelete);
     app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);
@@ -48,9 +49,7 @@ module.exports = function(app, express) {
     //app.post('/auth/google', userController.authGoogle);
     //app.get('/auth/google/callback', userController.authGoogleCallback);
     app.post('/reset/:token', userController.resetPost);
-    app.post('/api/v1/checkFaceBook', userController.checkFaceBook);
-
-    
+    app.post('/api/v1/checkFaceBook', userController.checkFaceBook);    
     //Shops
     app.get('/api/v1/allshops',shopController.listshops); // All shops registered in system
     app.get('/api/v1/shops', shopController.allShops); // List barber associated shops only
@@ -67,7 +66,6 @@ module.exports = function(app, express) {
     app.get('/api/v1/shops/chair/:shop_id',shopController.shopContainsChairs);
     app.put('/api/v1/shops/markChairAsBooked',shopController.markChairAsBooked);
     
-
     //Customer
     app.get('/api/v1/allcustomers',customerController.listcustomers);
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
@@ -75,7 +73,6 @@ module.exports = function(app, express) {
     app.post('/api/v1/customer/gallery', upload.any(), userController.uploadCustomerGallery); //Upload image in gallery
     app.delete('/api/v1/customer/gallery/:image_id',userController.deleteImages); //Delete image from gallery
     app.get('/api/v1/appointment/pending/:_id',appointmentController.pendingConfiramtion);
-    
     
     //Barber
     app.get('/api/v1/allbarbers', shopController.availableBarber); //Get all barbers

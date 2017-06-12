@@ -367,6 +367,7 @@ exports.unlink = function(req, res, next) {
 
 
 exports.forgotPost = function(req, res, next) {
+  console.log("inside forgotPost");
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.sanitize('email').normalizeEmail({
@@ -449,13 +450,20 @@ exports.resetPost = function(req, res, next) {
     });
   }
 
+  let auth = {
+    auth: {
+      api_key: process.env.MAILGUN_APIKEY,
+      domain: process.env.MAILGUN_DOMAIN
+    }
+  }
+
   async.waterfall([
     function(done) {
       User.findOne({
           passwordResetToken: req.params.token
         })
-        .where('passwordResetExpires').gt(Date.now())
         .exec(function(err, user) {
+          console.log(err, user)
           if (!user) {
             return res.status(400).send({
               msg: 'Password reset token is invalid or has expired.'
@@ -470,24 +478,20 @@ exports.resetPost = function(req, res, next) {
         });
     },
     function(user, done) {
-      let transporter = nodemailer.createTransport({
-        service: 'Mailgun',
-        auth: {
-          user: process.env.MAILGUN_USERNAME,
-          pass: process.env.MAILGUN_PASSWORD
-        }
-      });
+      let nodemailerMailgun = nodemailer.createTransport(mg(auth));
       let mailOptions = {
         from: 'support@yourdomain.com',
         to: user.email,
-        subject: 'Your Mega Boilerplate password has been changed',
+        subject: 'Your barbrdo password has been changed',
         text: 'Hello,\n\n' +
           'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
       };
-      transporter.sendMail(mailOptions, function(err) {
+
+      nodemailerMailgun.sendMail(mailOptions, function(err, info) {
         res.send({
           msg: 'Your password has been changed successfully.'
         });
+        done(err);
       });
     }
   ]);
@@ -549,6 +553,7 @@ exports.authFacebook = function(req, res) {
           user.gender = user.gender || profile.gender;
           user.picture = user.picture || 'https://graph.facebook.com/' + profile.id + '/picture?type=large';
           user.facebook = profile.id;
+          user.user_type='customer';
           user.save(function() {
             res.send({
               token: generateToken(user),
@@ -580,6 +585,7 @@ exports.authFacebook = function(req, res) {
               last_name: splitName[1],
               email: profile.email,
               gender: profile.gender,
+              user_type:'customer',
               location: profile.location && profile.location.name,
               picture: 'https://graph.facebook.com/' + profile.id + '/picture?type=large',
               facebook: profile.id

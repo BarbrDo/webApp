@@ -1,4 +1,11 @@
 
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+  <li class="breadcrumb-item"><a ui-sref="shops">Shops</a></li>
+  <li class="breadcrumb-item active">View Shop Detail</li>
+</ol>
+
 <div class="container" >
   
   <div>
@@ -16,11 +23,11 @@
                     <h4 class="group inner list-group-item-heading" align="center"><b>
                         Shop Details</b></h4>
                     <table class="table table-striped" >
-                    <tr>
+                    <tr ui-sref="barbdetail" ng-click="shopdetail(shop.shopsdata)" style="cursor:pointer" data-toggle="tooltip" title="View Barbers in the Shop">
                         <td><h5>BARBERS </h5></td>
-                        <td>  {{shopdetailview.shopinfo[0].length}}</td>
+                        <td>  {{totalbarbers.totalBarbers}}</td>
                     </tr>
-                    <tr ui-sref="chairs({id:shop.shop_id})" ng-click="shopdetail(shop.shopsdata)">
+                    <tr ui-sref="chairs({id:shop.shop_id})" ng-click="shopdetail(shop.shopsdata)" style="cursor:pointer" data-toggle="tooltip" title="View Chairs in the Shop">
                         <td><h5>CHAIRS </h5></td>
                         <td>  {{shopdetailview.shopinfo[0].chairs.length}}</td>
                     </tr>
@@ -58,7 +65,7 @@
                     </tr>
                     <tr>
                         <td><h5>DATE OF CREATION</h5></td>
-                        <td>  {{shopdetailview.shopinfo[0].created_date}} </td>
+                        <td>  {{shopdetailview.shopinfo[0].created_date | date:dd/mm/yyyy }} </td>
                     </tr>
                      </table>
                      </div>
@@ -81,7 +88,7 @@
                     </tr>
                     <tr>
                         <td><h5>DATE OF CREATION</h5></td>
-                        <td>  {{shopdetailview.created_date | date :'dd/mm/yyyy'}} </td>
+                        <td>  {{shopdetailview.created_date | date:dd/mm/yyyy}} </td>
                     </tr>
                     <tr>
                         <td><h5>IS OWNER ACTIVE</h5></td>

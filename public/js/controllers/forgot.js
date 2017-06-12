@@ -1,6 +1,7 @@
 angular.module('BarbrDoApp')
   .controller('ForgotCtrl', function($scope, Account) {
     $scope.forgotPassword = function() {
+      alert("forgotPassword",$scope.user);
       Account.forgotPassword($scope.user)
         .then(function(response) {
           $scope.messages = {

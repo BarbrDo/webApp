@@ -46,7 +46,7 @@
         <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat="data in shopBarbers.barber">
             <div class="barber">
                 <div class="cont">
-                    <div class="user_pic" ng-click="barberInfopage(data._id)"> <img src="/images/brbr_pic.png" alt=""></div>
+                    <div class="user_pic" ng-click="barberInfopage(data._id)"> <img src="/images/brbr_pic.png" alt="view Profile" title="view profile" style="cursor:pointer;"></div>
                     <h3>{{data.first_name}} {{data.last_name}}</h3>
                     <p><span>Member Since</span> : {{data.created_date | date:'yyyy-MM-dd'}}</p>
                     <div class="rating"> <img src="/images/rating.png" alt=""> </div>

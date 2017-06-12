@@ -364,7 +364,7 @@ exports.weeklyMonthlyChair = function(req, res) {
 exports.postChairToAllBarbers = function(req, res) {
     req.checkHeaders('user_id', 'Shop id is required.').notEmpty();
     req.assert('chair_id', 'Chair id is required.').notEmpty();
-    
+    console.log(req.body);
     if (req.validationErrors()) {
         return res.status(400).send({
             msg: "error in your request",

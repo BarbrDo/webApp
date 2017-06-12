@@ -62,7 +62,7 @@ module.exports = function(app, express) {
     app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
     app.put('/api/v1/shops/chairPercentage',shopController.setChairPercentage);
     app.put('/api/v1/shops/weeklyMonthlyChair',shopController.weeklyMonthlyChair);
-    app.put('/api/v1/shops/postChairToAllBarbers',shopController.postChairToAllBarbers);
+    app.put('/api/v1/shops/postchairtoallbarbers',shopController.postChairToAllBarbers);
     app.get('/api/v1/shops/chair/:shop_id',shopController.shopContainsChairs);
     app.put('/api/v1/shops/markChairAsBooked',shopController.markChairAsBooked);
     

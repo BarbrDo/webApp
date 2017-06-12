@@ -3,7 +3,15 @@ let user = require('../models/User');
 let constantObj = require('./../constants.js');
 let chairRequest = require('../models/chair_request');
 let mongoose = require('mongoose');
-exports.editShop = function(req, res) {
+exports.updateShop = function(req, res) {
+    req.assert("_id", "Shop id is required.").notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
     var updateData = JSON.parse(JSON.stringify(req.body));
     shop.update({ _id: req.body._id }, updateData, function (err, data) {
         if (err) {
@@ -468,22 +476,6 @@ var chairRequsett = function(data, userId, chairId, obj, shop_name) {
         })
     }
 }
-exports.updateshop = function(req, res) {
-    
-    user.findById(req.params.id, function(err, shops) {
-        shops = new user(req.body);
-        shops.update(req.body, function(err, count) {
-            console.log("count", count);
-        });
-    });
-    shop.findById(req.body.shopinfo[0]._id, function(err, shops) {
-        shops = new shop(req.body);
-        shops.update(req.body.shopinfo[0], function(err, count) {
-            console.log("hash", count);
-        });
-    });
-};
-
 
 
 

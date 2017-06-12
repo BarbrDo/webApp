@@ -30,7 +30,6 @@ angular.module('barbrdo').factory('Admin', function($http) {
       return $http.get('/api/v1/viewshopdetail/' + data.user_id, data);
     },
     updateCustomer: function(data) {
-      console.log("data", data);
       return $http({
         method: 'PUT',
         url: '/api/v1/account',
@@ -88,7 +87,6 @@ angular.module('barbrdo').factory('Admin', function($http) {
       });
     },
     updateShop: function(data) {
-      console.log("data", data);
       return $http({
         method: 'PUT',
         url: '/api/v1/account',
@@ -97,6 +95,10 @@ angular.module('barbrdo').factory('Admin', function($http) {
         },
         data: data
       });
+    },
+    updateShopinfo: function(data) {
+      console.log("data",data);
+      return $http.post('/api/v1/shops/'+data._id, data);
     },
     addChair: function(data) {
       return $http.post('/api/v1/shops/chair', data);

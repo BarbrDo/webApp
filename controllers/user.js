@@ -711,10 +711,10 @@ exports.addChair = function(req, res) {
       err: errors
     });
   }
-  let validateId = objectID.isValid(req.body._id)
+  let validateId = objectID.isValid(req.body.id)
   if (validateId) {
     Shop.findOne({
-      _id: req.body._id
+      _id: req.body.id
     }, function(err, data) {
       if (err) {
         res.status(400).send({
@@ -732,7 +732,7 @@ exports.addChair = function(req, res) {
           let saveChairData = {};
           saveChairData.chairs = saveChair;
           Shop.update({
-            _id: req.body._id
+            _id: req.body.id
           }, {
             $push: {
               chairs: {
@@ -760,7 +760,7 @@ exports.addChair = function(req, res) {
     })
   } else {
     res.status(400).send({
-      msg: '_id is not valid.'
+      msg: 'id is not valid.'
     });
   }
 }

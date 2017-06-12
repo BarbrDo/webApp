@@ -22,6 +22,13 @@ angular.module('BarbrDoApp')
 					$scope.shops = response.data.data;
 				});
 		}
+		$scope.dateSelectClass = function(index){
+			if($scope.selectedDate){	
+			 return {
+			  active:index>$scope.selectDate.length / 2 - 1
+			 }
+			}
+		}
 		$scope.allShopsHavingBarbers = function(id) {
 			$state.go('shopContainsBarbers', {
 				_id: id
@@ -85,8 +92,10 @@ angular.module('BarbrDoApp')
 			// timeSlots defines in costant file
 			$scope.timeSlots = timeSlots;
 		}
-		$scope.setSelected = function(prop) {
+		$scope.selected = 0;
+		$scope.setSelected = function(prop,parentIndex, index) {
 			$scope.selectedDate = prop.toISOString().slice(0, 10);
+			$scope.selected = index; 
 		};
 		$scope.setSelectedTime = function(prop) {
 			$scope.choosedTime = prop;

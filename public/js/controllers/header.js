@@ -5,7 +5,14 @@ angular.module('BarbrDoApp')
     $scope.isActive = function(viewLocation) {
       return viewLocation === $location.path();
     };
-  
+      
+  // $(document).ready(function() {
+  //   $.getJSON("http://jsonip.com/?callback=?", function(data) {
+  //     console.log(data);
+  //     alert("ip" + data.ip);
+  //   });
+  // });
+
     $scope.mainClass = function(){
       if ($auth.isAuthenticated()) {
         return "bg_grey";

@@ -1,6 +1,8 @@
 angular.module('BarbrDoApp')
-  .controller('ResetCtrl', function($scope, Account) {
+  .controller('ResetCtrl', function($scope, Account,$stateParams) {
     $scope.resetPassword = function() {
+      $scope.user.token = $stateParams.token;
+      console.log($scope.user);
       Account.resetPassword($scope.user)
         .then(function(response) {
           $scope.messages = {

@@ -1,6 +1,9 @@
 angular.module('BarbrDoApp')
   .factory('Account', function($http,$window) {
-    var obj = JSON.parse($window.localStorage.user);
+    if($window.localStorage.user){
+     var obj = JSON.parse($window.localStorage.user); 
+    }
+    
     return {
       updateProfile: function(data) {
         return $http.put('/api/v1/account', data);
@@ -22,7 +25,7 @@ angular.module('BarbrDoApp')
         return $http.post('/api/v1/forgot', data);
       },
       resetPassword: function(data) {
-        return $http.post('/api/v1/reset', data);
+        return $http.post('/api/v1/reset/'+data.token, data);
       }
     };
   });

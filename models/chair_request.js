@@ -19,8 +19,8 @@ let chairRequestSchema = new mongoose.Schema({
     type:Schema.Types.ObjectId,
     ref:'users'
    },
-   barber_name:{
-    type:String
+   requested_by:{
+     type:String
    },
    status:{
     type:String,

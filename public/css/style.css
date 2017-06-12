@@ -1333,7 +1333,7 @@ ul.csdwon li a {
     position: relative;
     text-align: center;
 }
-.sldt ul li a:hover, .sldt ul li a:focus {
+.sldt ul li a.active,.sldt ul li a:hover, .sldt ul li a:focus {
     background: #c5c5c5;
 }
 .sldt ul li a p {

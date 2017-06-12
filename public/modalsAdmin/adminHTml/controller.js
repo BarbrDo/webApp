@@ -443,7 +443,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   $scope.barbdetail = function(barber) {
     $rootScope.barberdetail = barber;
   };
-
+  
   $scope.shopdetail = function(shop) {
     $rootScope.delchair = shop.shopinfo[0];
       Admin.shopDetail(shop)
@@ -467,10 +467,10 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
           shopsdet.push(object);
           $rootScope.totalbarbers = object;
         }          
+
       });
  
   };
-
 
   $scope.viewshop = function(shop) {
       Admin.viewShopDetail(shop)

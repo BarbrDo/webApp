@@ -54,7 +54,7 @@ module.exports = function(app, express) {
     //Shops
     app.get('/api/v1/allshops',shopController.listshops); // All shops registered in system
     app.get('/api/v1/shops', shopController.allShops); // List barber associated shops only
-    app.put('/api/v1/shops', upload.any(), shopController.editShop); //Update shop
+    app.put('/api/v1/shops', shopController.updateShop); //Update shop
     app.post('/api/v1/shops/chair', userController.addChair) //Add chair in shop
     app.get('/api/v1/shops/chair',shopController.allShopsHavingChairs);// It will show all shops having number of chairs
     app.delete('/api/v1/shops/chair', userController.removeChair); // Remove chair from shop

@@ -3,64 +3,36 @@ let user = require('../models/User');
 let constantObj = require('./../constants.js');
 let chairRequest = require('../models/chair_request');
 let mongoose = require('mongoose');
-exports.editShop = function(req, res) {
-    console.log("user_id",req.body._id);
-    console.log("req.body",req.body);
-    let updateData = JSON.parse(JSON.stringify(req.body));
-    
-    
-    updateData.modified_date = new Date();
-    delete updateData._id;
-    if ((req.files) && (req.files.length > 0)) {
-        let userimg = [];
-        for (let i = 0; i < req.files.length; i++) {
-            if (req.files[i].fieldname == 'image') {
-                updateData.picture = req.files[i].filename;
-            } else {
-                let obj = {};
-                obj.name = req.files[i].filename;
-                userimg.push(obj);
-            }
-        }
-        updateData.gallery = userimg;
+exports.updateShop = function(req, res) {
+    req.assert("_id", "Shop id is required.").notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
     }
-    if (req.headers.device_latitude && req.headers.device_longitude) {
-        updateData.latLong = [req.headers.device_longitude, req.headers.device_latitude]
-    }
-    user.update({
-        _id: req.body._id
-    }, {
-        $push: {
-            gallery: {
-                $each: updateData.gallery
-            }
-        }
-    }, function(err, data) {
+    var updateData = JSON.parse(JSON.stringify(req.body));
+    shop.update({ _id: req.body._id }, updateData, function (err, data) {
         if (err) {
             res.status(400).send({
-                msg: 'Error in updating data.',
+                "msg": constantObj.messages.userStatusUpdateFailure,
                 "err": err
-
             });
         } else {
-            if (data.nModified == 1) {
-                var response = {
-                    "message": "Successfully updated fieldssss.",
-                    "data": data
-                };
-            } else {
-                var response = {
-                    "message": "No record updated.",
-                    "data": data
-                };
-            }
-            res.status(200).json(response);
+            res.status(200).send({
+                "msg": constantObj.messages.userStatusUpdateSuccess,
+                "data": data,
+                "shop": shop
+            });
         }
-    })
+    });
 }
+
+
 exports.shopContainsBarber = function(req, res) {
     req.checkParams('shop_id', 'Shop id is required').notEmpty();
-    let errors = req.validationErrors();
+    var errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
             msg: "error in your request",
@@ -504,22 +476,6 @@ var chairRequsett = function(data, userId, chairId, obj, shop_name) {
         })
     }
 }
-exports.updateshop = function(req, res) {
-    
-    user.findById(req.params.id, function(err, shops) {
-        shops = new user(req.body);
-        shops.update(req.body, function(err, count) {
-            console.log("count", count);
-        });
-    });
-    shop.findById(req.body.shopinfo[0]._id, function(err, shops) {
-        shops = new shop(req.body);
-        shops.update(req.body.shopinfo[0], function(err, count) {
-            console.log("hash", count);
-        });
-    });
-};
-
 
 
 

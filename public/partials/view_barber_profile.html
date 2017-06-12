@@ -1,0 +1,81 @@
+<div class="crumb"> <span>Book Appointment</span> </div>
+<div class="wrapper">
+    <div class="customtab">
+        <!-- Nav tabs -->
+        <uib-tabset active="activeJustified" justified="true">
+            <uib-tab index="0" heading="Your Profile">
+                <div role="tabpanel" class="tab-pane active" id="home">
+                    <div class="block">
+                        <!--h2>Your Profile</h2-->
+                        <div class="pedetail contact-us cprofile">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" required value="{{profileInfo.email}}" />
+                                        <div class="form-control-placeholder">Email</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" required value="{{profileInfo.mobile_number}}" />
+                                        <div class="form-control-placeholder">Phone</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" required value="{{profileInfo.created_date | date}}" />
+                                        <div class="form-control-placeholder">Member Since</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </uib-tab>
+            <uib-tab index="1" heading="No.of cuts">
+                <div class="block">
+                    <!--<h2>No.of cuts</h2>-->
+                    <div class="all_cuts">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Picture</th>
+                                    <th>Name</th>
+                                    <th>Cut Date</th>
+                                    <th>Rating</th>
+                                    <!-- <th class="action">Action</th> -->
+                                </tr>
+                                <tr ng-repeat="res in profileInfo.ratings">
+                                    <td> <span class="lspic"> <img src="images/brbr_pic.png" alt=""> </span> </td>
+                                    <td>{{res.rated_by_name}}</td>
+                                    <td>{{res.rated_by_name}}</td>
+                                    <td><img src="images/rating.png" alt=""></td>
+                                    <!-- <td><a href="#" class="rebook" > Re-book </a></td> -->
+                                </tr>
+                                <!--  <tr>
+              <td> <span class="lspic"> <img src="images/brbr_pic.png" alt=""> </span> </td>
+              <td>Jain Smith</td>
+              <td>02/01/2017</td>
+              <td><img src="images/rating.png" alt="" ></td>
+              <td><a href="#" class="rebook" > Re-book </a></td>
+            </tr> -->
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </uib-tab>
+            <uib-tab index="2" heading="Gallery">
+                <div class="block">
+                    <!-- <h2>Gallery</h2>-->
+                    <div class="allgallery">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-4 " ng-repeat="res in profileInfo.gallery">
+                                <a href="#"><img src="{{imgPath+res.name}}" alt=""></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</div>

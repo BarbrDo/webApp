@@ -71,9 +71,12 @@ angular.module('BarbrDoApp')
           method: 'get',
           url: '/api/v1/appointment',
           headers: {
-            'user_id': '591be53fb902f60fcc14a9d1'//obj._id
+            'user_id': obj._id//obj._id
           }
         },data);
+      },
+      barberInfo: function(data) {
+        return $http.get('/api/v1/userprofile/'+data._id, data);
       }
     };
   });

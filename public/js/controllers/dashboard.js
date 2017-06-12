@@ -236,4 +236,21 @@ angular.module('BarbrDoApp')
 		}
 		$scope.userGallery = JSON.parse($window.localStorage.user)
 		$scope.imgPath = $window.localStorage.imagePath;
+		$scope.barberInfopage = function(id){
+			$state.go('barberInfo',{
+						_id: id
+					});
+		}
+
+		if($state.current.name =='barberInfo'){
+			var obj = {
+				_id: $stateParams._id
+			}
+			customer.barberInfo(obj)
+				.then(function(response) {
+					console.log(response.data.user)
+					$scope.profileInfo = response.data.user;
+				})
+		}
+
 	});

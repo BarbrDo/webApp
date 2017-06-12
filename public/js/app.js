@@ -354,6 +354,37 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         })
 
+         .state('barberInfo', {
+                url: '/barber_info/:_id',
+                views: {
+                    "homeDash": {
+                        templateUrl: 'partials/view_barber_profile.html',
+                        controller: "dashboardCtrl"
+                    },
+                    "header": {
+                        templateUrl: 'partials/headerAfterLogin.html',
+                        controller: "HeaderCtrl"
+                    },
+                    "sideBar": {
+                        templateUrl: 'partials/afterLoginSideBar.html'
+                    }
+                },
+                resolve: {
+                    lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                        var deferred = $q.defer();
+                        $ocLazyLoad.load({
+                            name: 'BarbrDoApp',
+                            files: ['js/controllers/dashboard.js',
+                                'js/services/customer.js'
+                            ]
+                        }).then(function() {
+                            deferred.resolve();
+                        });
+                        return deferred.promise;
+                    }]
+                }
+            })
+
 
         // Barbers from here
 
@@ -993,7 +1024,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 console.log("user_type", loggedInUser.user_type)
 
                 // Following if will allow only customer routes
-                if (toState.url == '/dashboard' || toState.url == '/shopContainsBarbers/:_id' || toState.url == '/home' || toState.url == '/book/:shop_id/:barber_id' || toState.url == '/profile' || toState.url == '/pending-confirmation/:_id' || toState.url == '/gallery' || toState.url == '/appointmentdetail/:_id') {
+                if (toState.url == '/dashboard' || toState.url == '/shopContainsBarbers/:_id' || toState.url == '/home' || toState.url == '/book/:shop_id/:barber_id' || toState.url == '/profile' || toState.url == '/pending-confirmation/:_id' || toState.url == '/gallery' || toState.url == '/appointmentdetail/:_id' || toState.url == '/barber_info/:_id') {
                     var deferred = $q.defer();
                     if (loggedInUser.user_type == 'customer') {
                         console.log("inside customer");

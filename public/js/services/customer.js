@@ -74,6 +74,9 @@ angular.module('BarbrDoApp')
             'user_id': obj._id//obj._id
           }
         },data);
+      },
+      barberInfo: function(data) {
+        return $http.get('/api/v1/userprofile/'+data._id, data);
       }
     };
   });

@@ -767,6 +767,10 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             .state('forgot', {
                 url: '/forgot',
                 views: {
+                    "header": {
+                        templateUrl: 'partials/barber_shop_header.html',
+                        controller: "HeaderCtrl"
+                    },
                     "home": {
                         templateUrl: 'partials/forgot.html',
                         controller: 'ForgotCtrl'

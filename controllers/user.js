@@ -726,7 +726,7 @@ exports.addChair = function(req, res) {
           let saveChairData = {};
           saveChairData.chairs = saveChair;
           Shop.update({
-            _id: req.body._id
+            _id: req.body.id
           }, {
             $push: {
               chairs: {

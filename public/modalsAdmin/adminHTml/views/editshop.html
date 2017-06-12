@@ -66,23 +66,23 @@
 
       </div>
               
-              <div class="clearfix">        
+        <div class="clearfix">        
       <div class="col-sm-3 form-group">
         <label>Is Active</label><br>
-        <input type="radio" ng-model="shopdetailview.isActive" name="active" value="Yes" ng-checked="shopdetailview.isActive==true">&nbsp;&nbsp;&nbsp;<input type="radio" name="active" value="No" ng-checked="shopdetailview.isActive == false">
+        <input type="radio" ng-model="activeSelected" name="active" value="true" ng-checked="shopdetailview.isActive==true">YES&nbsp;&nbsp;&nbsp;<input type="radio" name="active" value="false" ng-model="activeSelected" ng-checked="shopdetailview.isActive == false">NO
         </div>
 
          <div class="col-sm-3 form-group">
         <label>Is Verified</label><br>
-       <input type="radio" ng-model="shopdetailview.is_verified" name="verify" value="Yes" ng-checked="shopdetailview.is_verified==true">&nbsp;&nbsp;&nbsp;<input type="radio" name="verify" value="No" ng-checked="shopdetailview.is_verified == false">
+       <input type="radio"  ng-model="verifySelected" name="verify" value="true" ng-checked="shopdetailview.is_verified==true">YES&nbsp;&nbsp;&nbsp;<input type="radio" name="verify" ng-model="verifySelected" value="false" ng-checked="shopdetailview.is_verified == false">NO
                   </div>    
 
         <div class="col-sm-3 form-group">
         <label>Is Deleted</label><br>
-        <input type="radio" ng-model="shopdetailview.isDeleted" name="delete" value="Yes" ng-checked="shopdetailview.isDeleted==true">&nbsp;&nbsp;&nbsp;<input type="radio" name="delete" value="No" ng-checked="shopdetailview.isDeleted == false">
+        <input type="radio" ng-model="deleteSelected" name="delete" value="true" ng-checked="shopdetailview.isDeleted==true">YES&nbsp;&nbsp;&nbsp;<input type="radio" name="delete" value="false" ng-model="deleteSelected" ng-checked="shopdetailview.isDeleted == false">NO
                   </div>         
         
-      </div>   
+      </div>
      </div>
   
      
@@ -98,6 +98,59 @@
         <span>Cancel</span>
       </button>
      </div>
+<br><br>
+
+
+   <div class="panel-body">
+     <div class="title">
+      Shop Information
+     </div>
+     <form name="editForm">
+     <div class="clearfix">
+      <div class="col-sm-4 form-group">
+        <label>Shop Name</label>
+        <input type="text" class="form-control" name="name" data-ng-model="shopdetailview.shopinfo[0].name" required />
+        <span style="color:red;" ng-show="editForm.name.$error.required"> Name cannot left blank</span>
+      </div>
+      <div class="col-sm-4 form-group">
+        <label>Date Of Creation</label>
+       <input size="30" height="30px" type="text" data-ng-model="shopdetailview.shopinfo[0].created_date" readonly class="form-control">
+      </div>
+     </div>
+     <div class="clearfix">               
+      <div class="col-sm-3 form-group">
+        <label>Address</label>
+        <input type="text" class="form-control"  name="address" data-ng-model="shopdetailview.shopinfo[0].address"/>
+        </div>
+
+         <div class="col-sm-3 form-group">
+        <label> City</label>
+        <input type="text" class="form-control"  name="city" data-ng-model="shopdetailview.shopinfo[0].city" />
+          </div>
+        <div class="col-sm-3 form-group">
+        <label>State</label>
+        <input type="text" class="form-control"  name="city" data-ng-model="shopdetailview.shopinfo[0].state"  />
+          </div>
+
+           <div class="col-sm-3 form-group">
+        <label>Zip</label>
+       <input type="text" class="form-control"  name="city" data-ng-model="shopdetailview.shopinfo[0].zip">
+      </div>
+
+      </div>
+                          
+      </form>
+     <div class="clearfix text-center">
+      <button type="submit"  class="btn btn-primary" ng-click="updateshop(shopdetailview.shopinfo[0])" ui-sref="shopdetail">
+        <i class="fa fa-check" aria-hidden="true"></i>
+        Save
+      </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <button type="reset" class="btn btn-grey" ui-sref="shopdetail">
+        <i class="fa fa-times" aria-hidden="true"></i>
+        <span>Cancel</span>
+      </button>
+     </div>
   </div>
 </div>
 
+</div>

@@ -92,13 +92,14 @@ angular.module('BarbrDoApp')
 			// timeSlots defines in costant file
 			$scope.timeSlots = timeSlots;
 		}
-		$scope.selected = 0;
-		$scope.setSelected = function(prop,parentIndex, index) {
+		$scope.selecteddd = 0;
+		$scope.setSelected = function(prop, index) {
 			$scope.selectedDate = prop.toISOString().slice(0, 10);
-			$scope.selected = index; 
+			$scope.selecteddd = index; 
 		};
-		$scope.setSelectedTime = function(prop) {
+		$scope.setSelectedTime = function(prop,index) {
 			$scope.choosedTime = prop;
+			$scope.selectedTime = index
 		};
 		$scope.barberList = function() {
 			obj.search = $scope.search.searchBarber;
@@ -118,7 +119,6 @@ angular.module('BarbrDoApp')
 				$scope.names = e.target.value;
 				$scope.dollarAmmount = $scope.dollarAmmount + amt;
 				$scope.selected.push(value);
-
 			} else {
 				$scope.dollarAmmount = $scope.dollarAmmount - amt;
 				for (var i = 0; i < $scope.selected.length; i++) {
@@ -128,7 +128,6 @@ angular.module('BarbrDoApp')
 				}
 			}
 			$scope.annualCost = "$" + $scope.dollarAmmount;
-
 		};
 
 		$scope.payLater = function() {

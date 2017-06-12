@@ -20,7 +20,7 @@
         <div class="sldt">
             <ul>
                 <li ng-repeat = "dates in selectDate" ng-click="setSelected(dates,$index)">
-                    <a href="" ng-class="{active: $index == selected}">
+                    <a href="" ng-class="{active: $index == selecteddd}">
                         {{dates | date: EEEE}}
                         <!-- <p>{{dates | date: dd}}</p> -->
                     </a>
@@ -44,20 +44,20 @@
             </div>
             <div class="sttimes" ng-if="checkTime=='morning'">
                 <ul>
-                    <li ng-repeat = "time in timeSlots.morning" ng-click="setSelectedTime(time)">
-                    <a href="">{{time}} am</a> </li>
+                    <li ng-repeat = "time in timeSlots.morning" ng-click="setSelectedTime(time,$index)">
+                    <a href="" ng-class="{active: $index == selectedTime}">{{time}} am</a> </li>
                 </ul>
             </div>
             <div class="sttimes" ng-if="checkTime=='afternoon'">
                 <ul>
-                    <li ng-repeat = "time in timeSlots.afternoon" ng-click="setSelectedTime(time)">
-                    <a href="">{{time}} pm</a> </li>
+                    <li ng-repeat = "time in timeSlots.afternoon" ng-click="setSelectedTime(time,$index)">
+                    <a href="" ng-class="{active: $index == selectedTime}">{{time}} pm</a> </li>
                 </ul>
             </div>
             <div class="sttimes" ng-if="checkTime=='evening'" >
                 <ul>
-                    <li ng-repeat = "time in timeSlots.evening" ng-click="setSelectedTime(time)">
-                    <a href="">{{time}} pm</a> </li>
+                    <li ng-repeat = "time in timeSlots.evening" ng-click="setSelectedTime(time,$index)">
+                    <a href="" ng-class="{active: $index == selectedTime}">{{time}} pm</a> </li>
                 </ul>
             </div>
         </div>
@@ -67,9 +67,7 @@
         <div class="row">
             <div class="stsr">
                 <div class="col-md-6" ng-repeat = "services in barberservice">
-                        
                     <label class="checkbox" for="{{services._id}}">
-
         <input type="checkbox" value="{{services._id}}" ng-click="cost(services.price,$event,services)" name="group" id="{{services._id}}"   />
       {{services.name}}>$ {{services.price}}</label>
                     <!-- <input type="checkbox" data-checklist-model="selection.barberservice" data-checklist-value="services"> 

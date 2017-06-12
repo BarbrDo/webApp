@@ -59,7 +59,7 @@
                 <uib-tabset active="$root.active">
                     <uib-tab index="0" heading="Login">
                         <div class="tab-content contact-us">
-                            <div role="tabpanel" class="tab-pane active " id="login">
+                            <div role="tabpanel" class="tab-pane active" id="login">
                                 <div ng-if="messages.error" role="alert" class="alert alert-danger">
                                     <div ng-repeat="myerr in messages.error">{{myerr.msg}}</div>
                                 </div>
@@ -67,17 +67,17 @@
                                     <a href="#" ng-click="authenticate('facebook')"><img src="images/fbb.png"></a>
                                 </div>
                                 <form name="loginForm">
-                                    <div class="form-group ">
+                                    <div class="form-group">
                                         <input type="text" name="email" id="email" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" class="form-control" required/>
                                         <div class="form-control-placeholder">Email Address</div>
                                         <div class="validationError" ng-messages="loginForm.email.$error" ng-show="
-                                                    loginForm.email.$touched &&loginForm.email.$invalid && (!loginForm.email.$pristine || loginForm.$submitted)" role="alert">
-                                        <span style="color:red" ng-message="pattern" class="error-message">Email is not valid</span>
-                                    </div>
-                                    <div class="validationError" ng-messages="loginForm.email.$error" ng-show="loginForm.email.$error.required &&
-                                                    loginForm.email.$touched && loginForm.email.$invalid" role="alert">
-                                        <span style="color:red" ng-message="required" class="error-message">Email is required</span>
-                                    </div>
+                                                loginForm.email.$touched && loginForm.email.$invalid && (!loginForm.email.$pristine || loginForm.$submitted)" role="alert">
+                                            <span style="color:red" ng-message="pattern" class="error-message">Email is not valid</span>
+                                        </div>
+                                        <div class="validationError" ng-messages="loginForm.email.$error" ng-show="loginForm.email.$error.required &&
+                                                        loginForm.email.$touched && loginForm.email.$invalid" role="alert">
+                                            <span style="color:red" ng-message="required" class="error-message">Email is required</span>
+                                        </div>
                                     </div>
                                     <div class="form-group mbzero">
                                         <input type="password" name="password" id="password" ng-model="user.password" class="form-control" required />
@@ -93,11 +93,10 @@
                         </div>
                     </uib-tab>
                     <uib-tab index="1" heading="Signup">
-                        <!-- <div class="tab-content contact-us"> -->
-                        <div role="tabpanel" class="tab-pane contact-us" id="signup" style="margin-top: 10px;">
+                        <div role="tabpanel" class="tab-pane contact-us" id="signup" style="margin-top: 0px; padding:0px;">
                             <div ng-if="messagess.error" role="alert" class="alert alert-danger">
                                 <div ng-repeat="err in messagess.error">
-                                {{err[0].msg}}</div>
+                                    {{err[0].msg}}</div>
                             </div>
                             <form name="signUpForm">
                                 <div class="type_selection">
@@ -108,101 +107,128 @@
                                     <label>
                                         <input type="radio" name="type" ng-model="user.user_type" value="shop"> <span>Barber Shop</span> </label>
                                 </div>
-                                <div class="form-group">
-                                <input type="text" name="firstname" id="email" class="form-control" ng-model="user.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
-                                    <div class="form-control-placeholder">First Name</div>
 
-                                    <div class="validationError" ng-messages="signUpForm.firstname.$error" ng-show="
-                                                        signUpForm.firstname.$error.required && signUpForm.firstname.$touched &&
-                                                        signUpForm.firstname.$invalid 
-                                                       " role="alert">
-                                                            <span style="color:red" ng-message="required">First name is required</span>
-                                                     </div>
-                                                      <div class="validationError" ng-messages="signUpForm.firstname.$error" ng-show="
-                                                           signUpForm.firstname.$error.pattern && (!signUpForm.firstname.$pristine || signUpForm.$submitted)" role="alert">
-                                                                <span style="color:red" ng-message="pattern">Enter valid character </span>
-                                                       </div>
-                                                        <div class="validationError"  ng-show="signUpForm.firstname.$error.maxlength && signUpForm.firstname.$dirty"">
+                                <div class="col-md-6">
 
-                                                             <span style="color:red">First name maximum length exceeds</span>
-                                                        </div>
-                                                        </div>
+                                    <div class="form-group">
+                                        <input type="text" name="firstname" id="email" class="form-control" ng-model="user.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                                        <div class="form-control-placeholder">First Name</div>
 
-                                        <div class="form-group">
-                                <input type="text" name="lastname" id="email" class="form-control" ng-model="user.last_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
-                                    <div class="form-control-placeholder">First Name</div>
+                                        <div class="validationError" ng-messages="signUpForm.firstname.$error" ng-show="
+                                                signUpForm.firstname.$error.required && signUpForm.firstname.$touched &&
+                                                        signUpForm.firstname.$invalid
+                                            " role="alert">
+                                            <span style="color:red" ng-message="required">First name is required</span>
+                                        </div>
+                                        <div class="validationError" ng-messages="signUpForm.firstname.$error" ng-show="
+                                                signUpForm.firstname.$error.pattern && (!signUpForm.firstname.$pristine || signUpForm.$submitted)" role="alert">
+                                            <span style="color:red" ng-message="pattern">Enter valid character </span>
+                                        </div>
+                                        <div class="validationError"  ng-show="signUpForm.firstname.$error.maxlength && signUpForm.firstname.$dirty"">
 
-                                    <div class="validationError" ng-messages="signUpForm.lastname.$error" ng-show="
-                                                        signUpForm.lastname.$error.required && signUpForm.lastname.$touched &&
-                                                        signUpForm.lastname.$invalid 
-                                                       " role="alert">
-                                                            <span style="color:red" ng-message="required">Last name is required</span>
-                                                     </div>
-                                                      <div class="validationError" ng-messages="signUpForm.lastname.$error" ng-show="
-                                                           signUpForm.lastname.$error.pattern && (!signUpForm.lastname.$pristine || signUpForm.$submitted)" role="alert">
-                                                                <span style="color:red" ng-message="pattern">Enter valid character </span>
-                                                       </div>
-                                                        <div class="validationError"  ng-show="signUpForm.lastname.$error.maxlength && signUpForm.lastname.$dirty"">
-
-                                                             <span style="color:red">Last name maximum length exceeds</span>
-                                                        </div>
-                                                        </div>
-
-
-
-                                        <div class="form-group">
-                                    <input type="text" name="email" id="email" class="form-control" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" required/>
-                                    <div class="form-control-placeholder">Email Address</div>
-                                    <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="
-                                                    signUpForm.email.$touched &&signUpForm.email.$invalid && (!signUpForm.email.$pristine || signUpForm.$submitted)" role="alert">
-                                        <span style="color:red" ng-message="pattern" class="error-message">Email is not valid</span>
+                                            <span style="color:red">First name maximum length exceeds</span>
+                                        </div>
                                     </div>
-                                    <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="signUpForm.email.$error.required &&
-                                                    signUpForm.email.$touched && signUpForm.email.$invalid" role="alert">
-                                        <span style="color:red" ng-message="required" class="error-message">Email is required</span>
+
+
+
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <div class="form-group">
+                                        <input type="text" name="lastname" id="email" class="form-control" ng-model="user.last_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                                        <div class="form-control-placeholder">Last Name</div>
+
+                                        <div class="validationError" ng-messages="signUpForm.lastname.$error" ng-show="
+                                                signUpForm.lastname.$error.required && signUpForm.lastname.$touched &&
+                                                        signUpForm.lastname.$invalid
+                                            " role="alert">
+                                            <span style="color:red" ng-message="required">Last name is required</span>
+                                        </div>
+                                        <div class="validationError" ng-messages="signUpForm.lastname.$error" ng-show="
+                                                signUpForm.lastname.$error.pattern && (!signUpForm.lastname.$pristine || signUpForm.$submitted)" role="alert">
+                                            <span style="color:red" ng-message="pattern">Enter valid character </span>
+                                        </div>
+                                        <div class="validationError"  ng-show="signUpForm.lastname.$error.maxlength && signUpForm.lastname.$dirty"">
+
+                                            <span style="color:red">Last name maximum length exceeds</span>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" name="email" id="email" class="form-control" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" required/>
+                                        <div class="form-control-placeholder">Email Address</div>
+                                        <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="
+                                                signUpForm.email.$touched && signUpForm.email.$invalid && (!signUpForm.email.$pristine || signUpForm.$submitted)" role="alert">
+                                            <span style="color:red" ng-message="pattern" class="error-message">Email is not valid</span>
+                                        </div>
+                                        <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="signUpForm.email.$error.required &&
+                                                        signUpForm.email.$touched && signUpForm.email.$invalid" role="alert">
+                                            <span style="color:red" ng-message="required" class="error-message">Email is required</span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group ">
-                                    <input type="password" name="password" id="password" class="form-control" ng-model="user.password" ng-minlength="5" ng-maxlength="20" maxlength="21" required />
-                                    <div class="form-control-placeholder">Password</div>
-                                    <!-- <a href="#" class="eye"><i class="fa fa-eye"></i></a> -->
-                                    <div class="validationError" ng-messages="signUpForm.password.$error" ng-show="
-                                                           signUpForm.password.$error.required &&
-                                                           signUpForm.password.$touched && signUpForm.password.$invalid" role="alert">
-                                        <span style="color:red" ng-message="required">password is required</span>
-                                    </div>
-                                    <div class="validationError" ng-if="!updateButton" ng-show="signUpForm.password.$error.maxlength && signUpForm.password.$dirty">
-                                        <span style="color:red ">password maximum length exceeds</span>
-                                    </div>
-                                </div>
-                                <div class="form-group ">
-                                    <input type="password " class="form-control " name="confirmPassword " id="confirmPassword " ng-model="user.confirmPassword " required ng-pattern="user.password " />
-                                    <div class="form-control-placeholder ">Confirm Password</div>
-                                    <!-- <a href="" class="eye "><i class="fa fa-eye "></i></a> -->
-                                    <div class="validationError" ng-messages="signUpForm.confirmPassword.$error " ng-show=" signUpForm.confirmPassword.$error.pattern && (!signUpForm.confirmPassword.$pristine || signUpForm.$submitted) " role="alert ">
-                                        <span style="color:red " ng-if="!updateButton " ng-message="pattern ">password do not match</span>
-                                    </div>
-                                    <div ng-if="!updateButton " class="validationError " ng-messages="signUpForm.confirmPassword.$error " ng-show=" signUpForm.confirmPassword.$error.required && signUpForm.confirmPassword.$touched && signUpForm.confirmPassword.$invalid " role="alert ">
-                                        <span ng-if="!updateButton " style="color:red " ng-message="required " class="error-message ">Confirm password is required</span>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <input type="password" name="password" id="password" class="form-control" ng-model="user.password" ng-minlength="5" ng-maxlength="20" maxlength="21" required />
+                                        <div class="form-control-placeholder">Password</div>
+                                        <!-- <a href="#" class="eye"><i class="fa fa-eye"></i></a> -->
+                                        <div class="validationError" ng-messages="signUpForm.password.$error" ng-show="
+                                                signUpForm.password.$error.required &&
+                                                        signUpForm.password.$touched && signUpForm.password.$invalid" role="alert">
+                                            <span style="color:red" ng-message="required">password is required</span>
+                                        </div>
+                                        <div class="validationError" ng-if="!updateButton" ng-show="signUpForm.password.$error.maxlength && signUpForm.password.$dirty">
+                                            <span style="color:red">password maximum length exceeds</span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group ">
-                                    <input type="text " class="form-control " name="mobile_number " id="mobile_number " ng-model="user.mobile_number " mask="(999) 999-9999 " mask-clean='true' mask-restrict='reject' ng-minlength="14 " ng-maxlength="14 " maxlength="14 " required />
-                                    <div class="form-control-placeholder ">Phone No.</div>
-                                    <p class="help-block">
-                                        <span ng-show="signUpForm.mobile_number.$touched && signUpForm.mobile_number.$invalid && signUpForm.mobile_number.$error.required">Mobile number is required.</span>
-                                        <span ng-show="signUpForm.mobile_number.$error.minlength">Phone have 10-digits minimum.</span>
-                                    </p>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" ng-model="user.confirmPassword" required ng-pattern="user.password" />
+                                        <div class="form-control-placeholder">Confirm Password</div>
+                                        <!-- <a href="" class="eye"><i class="fa fa-eye"></i></a> -->
+                                        <div class="validationError" ng-messages="signUpForm.confirmPassword.$error" ng-show=" signUpForm.confirmPassword.$error.pattern && (!signUpForm.confirmPassword.$pristine || signUpForm.$submitted)" role="alert">
+                                            <span style="color:red" ng-if="!updateButton" ng-message="pattern">password do not match</span>
+                                        </div>
+                                        <div ng-if="!updateButton" class="validationError" ng-messages="signUpForm.confirmPassword.$error" ng-show=" signUpForm.confirmPassword.$error.required && signUpForm.confirmPassword.$touched && signUpForm.confirmPassword.$invalid" role="alert">
+                                            <span ng-if="!updateButton" style="color:red" ng-message="required" class="error-message">Confirm password is required</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div ng-if="user.user_type=='shop' || user.user_type=='barber' " class="form-group ">
-                                    <input type="text " class="form-control " name="license_number " id="license_number " ng-model="user.license_number " required />
-                                    <div class="form-control-placeholder ">License No.</div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="mobile_number" id="mobile_number" ng-model="user.mobile_number" mask="(999) 999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="14" ng-maxlength="14" maxlength="14" required />
+                                        <div class="form-control-placeholder">Phone No.</div>
+                                        <p class="help-block">
+                                            <span style="color:red" ng-show="signUpForm.mobile_number.$touched && signUpForm.mobile_number.$invalid && signUpForm.mobile_number.$error.required">Mobile number is required.</span>
+                                            <span style="color:red" ng-show="signUpForm.mobile_number.$error.minlength">Phone have 10-digits minimum.</span>
+                                        </p>
+                                    </div>
                                 </div>
-                                <button type="submit " class="sb_button " ng-click="signup() " ng-disabled="signUpForm.$invalid">Sign Up</button>
-                                <p class="msg ">Already have an account? <span> <button type="button" class="btn btn-default btn-sm" ng-click="$root.active = 0">Login</button> </span></p>
+                                <div class="col-md-12">
+                                    <div ng-if="user.user_type == 'shop' || user.user_type == 'barber'" class="form-group">
+                                        <input type="text" class="form-control" name="license_number" id="license_number" ng-model="user.license_number" required />
+                                        <div class="form-control-placeholder">License No.</div>
+                                        <div class="validationError" ng-messages="signUpForm.license_number.$error" ng-show="
+                                                signUpForm.license_number.$error.required && signUpForm.license_number.$touched &&
+                                                        signUpForm.license_number.$invalid
+                                            " role="alert">
+                                            <span style="color:red" ng-message="required">License number is required</span>
+                                        </div> 
+                                    </div>
+                                    
+                                </div>
+                                <button type="submit" class="sb_button" ng-click="signup()" ng-disabled="signUpForm.$invalid">Sign Up</button>
+                                <p class="msg">Already have an account? <span> <button type="button" class="btn btn-default btn-sm" ng-click="$root.active = 0">Login</button> </span></p>
                             </form>
                         </div>
-                        <!-- </div> -->
                     </uib-tab>
                 </uib-tabset>
             </div>

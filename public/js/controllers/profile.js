@@ -25,12 +25,14 @@ angular.module('BarbrDoApp')
           console.log(response.user);
           $rootScope.currentUser = response.user;
           $window.localStorage.user = JSON.stringify(response.user);
+          toastr.success("User profile updated successfully.");
           }
         })
         .error(function(err) {
           $scope.messages = {
             error: Array.isArray(response.user) ? response.user : [response.user]
           };
+        toastr.error("Error while updating.");
         });
 
 

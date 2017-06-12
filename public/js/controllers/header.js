@@ -24,6 +24,7 @@ angular.module('BarbrDoApp')
 
     if($window.localStorage.user){
       $scope.userInfo = JSON.parse($window.localStorage.user);
+      $scope.imgPath = $window.localStorage.imagePath;
     }
 
     $scope.isAuthenticated = function() {

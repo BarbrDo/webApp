@@ -1,3 +1,8 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+  <li class="breadcrumb-item active">Customers</li>
+</ol>
+
 <div class="panel" ng-init="custpageChanged()">
   <div class="panel-heading">
     All Customers
@@ -22,18 +27,16 @@
     <thead>
         <tr >
          
-            <th style="font-size: 20px;" width="20%"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;" >NAME<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
-            <th style="font-size: 20px;" width="25%"><a ng-click="Sort('email')" class="email" style="color: #ffffff;">EMAIL<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
-            <th style="font-size: 20px;" width="15%"><a ng-click="Sort('mobile_number')" class="mobile_number" style="color: #ffffff;">MOBILE <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
-            <th style="font-size: 20px;" width="15%">IsACTIVE</th>
-            <th style="font-size: 20px;" width="15%">IsVERIFIED</th>
-            <th style="font-size: 20px;" width="25%"><font align="center">ACTION</th></font>
+            <th style="font-size: 15px;" width="20%"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;" >NAME<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 15px;" width="25%"><a ng-click="Sort('email')" class="email" style="color: #ffffff;">EMAIL<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 15px;" width="15%"><a ng-click="Sort('mobile_number')" class="mobile_number" style="color: #ffffff;">MOBILE <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 15px;" width="15%"><a ng-click="Sort('mobile_number')" class="mobile_number" style="color: #ffffff;">CREATED DATE <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
         </tr>
     </thead>
     <tbody>
         <tr data-ng-repeat="customer in customers | orderBy:sort:reverse | limitTo:quantity" data-ng-class="{danger:!customer.active}">
-        <td>
-            {{customer.first_name}} {{customer.last_name}} 
+        <td><a data-toggle="tooltip" title="View {{customer.first_name}}'s detailed info" ui-sref="customer_detail({id:customer._id})" ng-click="custdetails(customer)">
+            {{customer.first_name}} {{customer.last_name}} </a>
         </td>
         <td>
             {{customer.email}}
@@ -42,31 +45,10 @@
         <td>
             {{customer.mobile_number}}
         </td>
-        <td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <span ng-if="customer.isActive==true">
-         
-              <a data-toggle="tooltip" title="Deactivate" onClick="history.go(0)" ng-click="deactivecust(customer)"><i class="fa fa-toggle-on" style="font-size: 30px;" aria-hidden="true"></i></a></span>
-              <span ng-if="customer.isActive==false">
-              
-              <a  data-toggle="tooltip" ng-click="activatecust(customer)" onClick="history.go(0)" title="Activate"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;"></i></a> </span></span>
+         <td>
+            {{customer.created_date}}
         </td>
-         <td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-         <span ng-if="customer.is_verified==true">
         
-              <a data-toggle="tooltip" title="Disapprove"  onClick="history.go(0)"  ng-click="disapprovecust(customer)"><i class="fa fa-toggle-on" style="font-size: 30px;color: green;" aria-hidden="true"></i></a></span>
-              <span ng-if="customer.is_verified==false">
-              <a  data-toggle="tooltip" title="Verify" onClick="history.go(0)"  ng-click="verifycust(customer)"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;color: green;"></i></a> </span>
-        </td>
-        <td>
-            <a ui-sref="edit_customers" class="glyphicon glyphicon-pencil" style="font-size: 20px;" data-toggle="tooltip" ng-click="custdetails(customer)" title="EDIT DETAILS"></a>
-            <span data-toggle="modal" data-target="#confirm">
-             <a type="submit" ng-click="deleteconfirmcustomer(customer)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
-             <span data-toggle="modal" data-target="#viewModal">
-             <a type="submit" ng-click="custdetails(customer)" data-ng-hide="editMode" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a></span>
-             <span data-toggle="modal" data-target="#myModal">
-            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; updatecustomer(customer)" class="glyphicon glyphicon-check" style="font-size: 25px;margin-left: 20px;color: #17a109;" data-toggle="tooltip" title="SAVE DETAILS" id="btnAlert"  ></a></span>
-            <a type="submit" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" class="glyphicon glyphicon-ban-circle" style="font-size: 25px;margin-left: 20px;color: #f94040;" data-toggle="tooltip" title="CANCEL"></a>
-        </td>
 </tr>
 </tbody>
 </table>
@@ -76,7 +58,7 @@
      <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="custpageChanged()"></ul>       
           </div>
 <br>
-<label>No. of Enteries</label>
+<!-- <label>No. of Enteries</label>
             <select ng-model="quantity">
               <option value="">All</option>
               <option value="1">1</option>
@@ -84,7 +66,7 @@
               <option value="5">5</option>
               <option value="7">7</option>
               <option value="10">10</option>
-            </select>
+            </select> -->
 </div>
 
              <!-- Modal -->

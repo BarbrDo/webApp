@@ -1,107 +1,115 @@
-<div class="container">
+
+<div class="container" >
   
   <div>
      <font color="green">
-    <h2 align="center"><font color="orange">Shop Details</h2></font>
-    <br><br> 
     </font>    
-       <div  class="row list-group" ng-repeat="shop in shopdetailview.shopinfo">
-        <div class="item  col-xs-12 col-lg-12"  >
-            <div class="thumbnail">
-                <img class="group list-group-image" src="/images/shop.jpg" height="60%" width="60%" />
-                <div class="caption" >
+       <div  class="row list-group">
+        <div class="item  col-xs-12 col-lg-12">
+        <div class="thumbnail">
+        <div class="caption" >
+
                     <h4 class="group inner list-group-item-heading" align="center"><b>
-                       <font color="red"> {{shop.name}} </font></b></h4>
+                       <font color="blue"> {{shopdetailview.shopinfo[0].name}} </font></b></h4>
                         <hr/>
-                    <div class="item  col-xs-6 col-lg-6">
+                    <div class="col-lg-6">
                     <h4 class="group inner list-group-item-heading" align="center"><b>
                         Shop Details</b></h4>
-                    <table>
+                    <table class="table table-striped" >
                     <tr>
                         <td><h5>BARBERS </h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{barberinshops.length}}</td>
+                        <td>  {{shopdetailview.shopinfo[0].length}}</td>
                     </tr>
-                    <tr>
+                    <tr ui-sref="chairs({id:shop.shop_id})" ng-click="shopdetail(shop.shopsdata)">
                         <td><h5>CHAIRS </h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shop.chairs.length}}</td>
+                        <td>  {{shopdetailview.shopinfo[0].chairs.length}}</td>
                     </tr>
                     <tr>
                         <td><h5>ADDRESS</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shop.address}} </td>
+                        <td>  {{shopdetailview.shopinfo[0].address}} </td>
                     </tr>
                      <tr>
                         <td><h5>CITY</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shop.city}} </td>
+                        <td>  {{shopdetailview.shopinfo[0].city}} </td>
                     </tr>
                     <tr>
                         <td><h5>STATE</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shop.state}} </td>
+                        <td>  {{shopdetailview.shopinfo[0].state}} </td>
                     </tr>
                     <tr>
                         <td><h5>ZIP</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shop.zip}} </td>
+                        <td>  {{shopdetailview.shopinfo[0].zip}} </td>
                     </tr>
                     <tr>
                         <td><h5>LATTITUDE</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shop.latLong[0]}} </td>
+                        <td>  {{shopdetailview.shopinfo[0].latLong[0]}} </td>
                     </tr>
                     <tr>
                         <td><h5>LONGITUDE</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shop.latLong[1]}} </td>
+                        <td>  {{shopdetailview.shopinfo[0].latLong[1]}} </td>
                     </tr>
                     <tr>
                         <td><h5>RATINGS</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shop.ratings}} </td>
+                        <td>  {{shopdetailview.shopinfo[0].ratings}} </td>
                     </tr>
                     <tr>
                         <td><h5>PAYMENT METHODS</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shop.payment_methods}} </td>
+                        <td>  {{shopdetailview.shopinfo[0].payment_methods}} </td>
                     </tr>
                     <tr>
                         <td><h5>DATE OF CREATION</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shop.created_date}} </td>
+                        <td>  {{shopdetailview.shopinfo[0].created_date}} </td>
                     </tr>
                      </table>
                      </div>
-                     <div class="item  col-xs-6 col-lg-6">
+                  
+                     <div class="  col-lg-6">
                      <h4 class="group inner list-group-item-heading" align="center"><b>
                         Owner Details </b></h4>
-                       <table >
-                   <tr>
+                       <table class="table table-striped" >
+                    <tr>
                         <td><h5>SHOP OWNER</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.first_name}} &nbsp; {{shopdetailview.last_name}} </td>
+                        <td>  {{shopdetailview.first_name}}  {{shopdetailview.last_name}} </td>
                     </tr>
                     <tr >
                         <td><h5> MOBILE</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.mobile_number}} </td>
+                        <td>  {{shopdetailview.mobile_number}} </td>
                     </tr>
                     <tr>
                         <td><h5> EMAIL</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.email}} </td>
+                        <td>  {{shopdetailview.email}} </td>
                     </tr>
                     <tr>
                         <td><h5>DATE OF CREATION</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.created_date | date :'dd/mm/yyyy'}} </td>
+                        <td>  {{shopdetailview.created_date | date :'dd/mm/yyyy'}} </td>
                     </tr>
                     <tr>
-                        <td><h5>IS SHOP ACTIVE</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.isActive}}  </td>
+                        <td><h5>IS OWNER ACTIVE</h5></td>
+                        <td>  {{shopdetailview.isActive}}  </td>
                     </tr>
                     <tr>
-                        <td><h5>IS SHOP VERIFIED</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.is_verified}} </td>
+                        <td><h5>IS OWNER VERIFIED</h5></td>
+                        <td>  {{shopdetailview.is_verified}} </td>
                     </tr>
                     <tr>
-                        <td><h5>IS SHOP DELETED</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.isDeleted}} </td>
+                        <td><h5>IS OWNER DELETED</h5></td>
+                        <td>  {{shopdetailview.isDeleted}} </td>
                     </tr>
                     <tr>
                         <td><h5>GALARY</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.gallery}} </td>
+                        <td>  {{shopdetailview.gallery}} </td>
                     </tr>
                     <tr>
                         <td><h5>RATINGS</h5></td>
-                        <td>&nbsp;&nbsp;&nbsp;  {{shopdetailview.ratings}} </td>
+                        <td>  {{shopdetailview.ratings}} </td>
+                    </tr>
+                     <tr>
+                        <td><h5>LATTITUDE</h5></td>
+                        <td>  {{shopdetailview.latLong[0]}} </td>
+                    </tr>
+                    <tr>
+                        <td><h5>LONGITUDE</h5></td>
+                        <td>  {{shopdetailview.latLong[1]}} </td>
                     </tr>
                      </table>
                      </div>
@@ -110,12 +118,16 @@
 
                     <div class="row">
                         
-                        <div class="col-xs-12 col-md-6" style="margin-left: 450px;"><br><br>
-                            <button class="btn btn-success" ui-sref="editshop" >Edit Details</button>
+                        <div class="col-xs-12 col-md-6" style="margin-left: 450px;" n><br><br>
+                            <button class="btn btn-success" ui-sref="editshop({id:shopdetailview._id})" >Edit Details</button>
                     </div>
                 </div>
             </div>
-        </div>
+             <img  src="/uploadedFiles/{{shopdetailview.picture}}" style="margin-left: 30px;" height="20%" width="20%" />
+            </div>
+               
+                
+        
     </div>
 </div>
 </div>

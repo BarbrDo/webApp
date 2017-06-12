@@ -3,64 +3,36 @@ let user = require('../models/User');
 let constantObj = require('./../constants.js');
 let chairRequest = require('../models/chair_request');
 let mongoose = require('mongoose');
-exports.editShop = function(req, res) {
-    console.log("user_id",req.body._id);
-    console.log("req.body",req.body);
-    let updateData = JSON.parse(JSON.stringify(req.body));
-    
-    
-    updateData.modified_date = new Date();
-    delete updateData._id;
-    if ((req.files) && (req.files.length > 0)) {
-        let userimg = [];
-        for (let i = 0; i < req.files.length; i++) {
-            if (req.files[i].fieldname == 'image') {
-                updateData.picture = req.files[i].filename;
-            } else {
-                let obj = {};
-                obj.name = req.files[i].filename;
-                userimg.push(obj);
-            }
-        }
-        updateData.gallery = userimg;
+exports.updateShop = function(req, res) {
+    req.assert("_id", "Shop id is required.").notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
     }
-    if (req.headers.device_latitude && req.headers.device_longitude) {
-        updateData.latLong = [req.headers.device_longitude, req.headers.device_latitude]
-    }
-    user.update({
-        _id: req.body._id
-    }, {
-        $push: {
-            gallery: {
-                $each: updateData.gallery
-            }
-        }
-    }, function(err, data) {
+    var updateData = JSON.parse(JSON.stringify(req.body));
+    shop.update({ _id: req.body._id }, updateData, function (err, data) {
         if (err) {
             res.status(400).send({
-                msg: 'Error in updating data.',
+                "msg": constantObj.messages.userStatusUpdateFailure,
                 "err": err
-
             });
         } else {
-            if (data.nModified == 1) {
-                var response = {
-                    "message": "Successfully updated fieldssss.",
-                    "data": data
-                };
-            } else {
-                var response = {
-                    "message": "No record updated.",
-                    "data": data
-                };
-            }
-            res.status(200).json(response);
+            res.status(200).send({
+                "msg": constantObj.messages.userStatusUpdateSuccess,
+                "data": data,
+                "shop": shop
+            });
         }
-    })
+    });
 }
+
+
 exports.shopContainsBarber = function(req, res) {
     req.checkParams('shop_id', 'Shop id is required').notEmpty();
-    let errors = req.validationErrors();
+    var errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
             msg: "error in your request",
@@ -162,7 +134,7 @@ exports.allShops = function(req, res) {
                     }
                     if (totalbarbers > 0) {
                         obj._id = data[i]._id;
-                        obj.shopName = data[i].name;
+                        obj.name = data[i].name;
                         obj.state = data[i].state;
                         obj.city = data[i].city;
                         obj.address = data[i].address;
@@ -347,11 +319,11 @@ exports.setChairPercentage = function(req, res) {
     }, updateCollectionData, function(err, result) {
         if (err) {
             return res.status(400).send({
-                msg: "Error in updating the shop collection."
+                "msg": constantObj.messages.userStatusUpdateFailure
             })
         } else {
             res.status(200).send({
-                msg: 'shop updated successfully'
+               "msg": constantObj.messages.userStatusUpdateSuccess
             });
         }
     })
@@ -380,11 +352,11 @@ exports.weeklyMonthlyChair = function(req, res) {
     }, updateCollectionData, function(err, result) {
         if (err) {
             return res.status(400).send({
-                msg: "Error in updating the shop collection."
+                "msg": constantObj.messages.userStatusUpdateFailure
             })
         } else {
             res.status(200).send({
-                msg: 'shop updated successfully'
+                "msg": constantObj.messages.userStatusUpdateSuccess
             });
         }
     })
@@ -504,34 +476,21 @@ var chairRequsett = function(data, userId, chairId, obj, shop_name) {
         })
     }
 }
-exports.updateshop = function(req, res) {
-    
-    user.findById(req.params.id, function(err, shops) {
-        shops = new user(req.body);
-        shops.update(req.body, function(err, count) {
-            console.log("count", count);
-        });
-    });
-    shop.findById(req.body.shopinfo[0]._id, function(err, shops) {
-        shops = new shop(req.body);
-        shops.update(req.body.shopinfo[0], function(err, count) {
-            console.log("hash", count);
-        });
-    });
-};
-
 
 
 
  exports.listshops = function(req, res) {
-    var page = req.body.page || 1,
-        count = req.body.count || 50;
+    var page = parseInt(req.query.page) || 1;
+    var count = parseInt(req.query.count) || 10;
     var skipNo = (page - 1) * count;
     var query = {};
-        query.user_type = "shop"
-    var searchStr = req.body.search;
+    query.user_type = "shop";
+    var searchStr = ""
+    if (req.query.search) {
+        searchStr = req.query.search;
+    }
 
-    if (req.body.search) {
+    if (searchStr) {
         query.$or = [{
             name: {
                 $regex: searchStr,
@@ -597,16 +556,111 @@ exports.updateshop = function(req, res) {
 };
 
 
+exports.shopdetail = function(req, res) {
+    
+    var query = {};
+        query._id = mongoose.Types.ObjectId(req.params.user_id);
+
+        console.log("query",query)
+            user.aggregate([{
+                $match: query
+            },{
+            $lookup: {
+                from: "shops",
+                localField: "_id",
+                foreignField: "user_id",
+                as: "shopinfo"
+                }
+            }
+        ]).exec(function(err, result) {
+                var length = result.length;
+                if(err){
+                        res.status(400).send({
+                        "msg": constantObj.messages.userStatusUpdateFailure,
+                        "err": err
+                    });
+                }else{
+                    console.log(result)
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": result,
+                        "count": length
+                    })
+                }
+            })
+};
+
+
+exports.viewshopdetail = function(req, res) {
+    
+    var query = {};
+        query._id = mongoose.Types.ObjectId(req.params.user_id);
+
+        console.log("query",query)
+            user.aggregate([{
+                $match: query
+            },{
+            $lookup: {
+                from: "shops",
+                localField: "_id",
+                foreignField: "user_id",
+                as: "shopinfo"
+                }
+            }
+        ]).exec(function(err, result) {
+                var length = result.length;
+                if(err){
+                        res.status(400).send({
+                        "msg": constantObj.messages.userStatusUpdateFailure,
+                        "err": err
+                    });
+                }else{
+                    console.log(result)
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": result,
+                        "count": length
+                    })
+                }
+            })
+};
+
+
+
 exports.availableBarber = function(req, res) {
-    var page = req.body.page || 1,
-        count = req.body.count || 10;
+    var page = parseInt(req.query.page) || 1;
+    var count = parseInt(req.query.count) || 10;
     var skipNo = (page - 1) * count;
     var query = {};
     query.user_type = "barber"
-    var searchStr = req.body.search;
+    var searchStr = ""
+    if (req.query.search) {
+        searchStr = req.query.search;
+    }
+    if (searchStr) {
+        query.$or = [{
+            first_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            last_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            email: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }]
+    }
 
-
-    
     user.aggregate([{
         $project: {
             _id: "$_id",
@@ -619,7 +673,8 @@ exports.availableBarber = function(req, res) {
             isDeleted: "$isDeleted",
             isActive: "$isActive",
             is_verified: "$is_verified",
-            user_type: "$user_type"
+            user_type: "$user_type",
+            picture: "$picture"
         }
     }, {
         $match: query
@@ -648,7 +703,8 @@ exports.availableBarber = function(req, res) {
                     isActive: "$isActive",
                     is_verified: "$is_verified",
                     user_type: "$user_type",
-                    password: "$password",
+                    latLong: "$latLong",
+                    picture: "$picture",
                     name: "$shopdetails.name",
                     shop: "$shopdetails"
                 }
@@ -659,64 +715,23 @@ exports.availableBarber = function(req, res) {
             }, {
                 "$limit": count
             }]).exec(function(err, result) {
-                if (err) {
-                    outputJSON = {
-                        'status': 'failure',
-                        'messageId': 203,
-                        'message': 'data not retrieved '
-                    };
-                } else {
-                    outputJSON = {
-                        'status': 'success',
-                        'messageId': 200,
-                        'message': 'data retrieve from barber',
-                        'data': result,
-                        'count': length
-                    }
+                if(err){
+                        res.status(400).send({
+                        "msg": constantObj.messages.userStatusUpdateFailure,
+                        "err": err
+                    });
+                }else{
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": result,
+                        "count": length
+                    })
                 }
-                res.status(200).jsonp(outputJSON);
             })
         }
     })
-
-    if (req.body.search) {
-        query.$or = [{
-            first_name: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            last_name: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            email: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            name: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            ratings: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            created_date: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            mobile_number: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }]
-    }
+            
+    
 };
 exports.getDataForBookNowPage = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
@@ -816,7 +831,6 @@ exports.deleteshop = function(req, res) {
         }
     }, function(err, count) {
         user.find({
-            isDeleted: false,
             user_type: "shop"
         }, function(err, shopss) {
             res.json(shopss);
@@ -824,6 +838,25 @@ exports.deleteshop = function(req, res) {
     });
 
 };
+
+exports.undeleteshop = function(req, res) {
+    console.log(req.params.shop_id);
+    user.update({
+        _id: req.params.shop_id
+    }, {
+        $set: {
+            isDeleted: false
+        }
+    }, function(err, count) {
+        user.find({
+            user_type: "shop"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
 exports.shopContainsChairs = function(req,res){
     req.checkParams('shop_id', 'Shop id is required').notEmpty();
     let errors = req.validationErrors();
@@ -880,7 +913,7 @@ exports.shopAcceptChairRequest = function(req, res) {
             })
         } else {
             res.status(200).send({
-                msg: 'shop updated successfully'
+                "msg": constantObj.messages.successRetreivingData,
             });
         }
     })

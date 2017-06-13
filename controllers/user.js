@@ -197,11 +197,16 @@ exports.signupPost = function(req, res, next) {
     if (req.headers.device_longitude && req.headers.device_latitude) {
       saveData.latLong = [req.headers.device_longitude, req.headers.device_latitude];
     }
+    if(req.body.facebook){
+        saveData.isActive =   true;
+        saveData.is_verified = true;
+    }
 
     let email_encrypt = commonObj.encrypt(req.body.email);
     let generatedText = commonObj.makeid();
 
     saveData.randomString = generatedText;
+    
     User(saveData).save(function(err, data) {
       if (err) {
         return res.status(400).send({

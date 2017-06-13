@@ -33,5 +33,6 @@ module.exports = function(app, express) {
 
     app.get('/api/v1/shopdetail/:user_id', shopController.shopdetail);
     app.get('/api/v1/viewshopdetail/:user_id', shopController.viewshopdetail);
+    app.get('/api/v1/barberdetail/:barber_id', shopController.barberdetail);
     
 }

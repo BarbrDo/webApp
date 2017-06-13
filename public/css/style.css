@@ -1426,6 +1426,10 @@ ul.csdwon li a {
     background: #6892fd;
     color: #fff;
 }
+
+.stsr label { border:1px solid #eee; }
+
+
 .totl {
     float: left;
     width: 100%;
@@ -1683,6 +1687,13 @@ td.action {
 
 
 .toth th{ font-size: 20px; }
+
+
+
+
+
+
+
 
 
 
@@ -2109,5 +2120,3 @@ ul.csdwon li a {
 }
 }
 
-/* Media Queries End here */
--->

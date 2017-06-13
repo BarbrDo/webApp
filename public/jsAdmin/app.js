@@ -19,6 +19,12 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: 'templatesAdmin/dashboard.html'
         })
 
+        .state('cust_appointments', {
+            url: '/appointments',
+            controller: "AdminCtrl",
+            templateUrl: '/modalsAdmin/adminHTml/views/appointment.html'
+        })
+
         // view_companies
         .state('view_companies', {
             url: '/view-companies',
@@ -31,14 +37,17 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: "/modalsAdmin/adminHTml/views/edit-barber.html"
            
         })
+       .state('view_customer_appoint', {
+            url: '/appointment/detail',
+            controller: "AdminCtrl",
+            templateUrl: "/modalsAdmin/adminHTml/views/appoint-detail.html"
+           
+        })
 
        .state('barbers', {
             url: '/barbers',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/adminBarber.html"
-            // resolve: {
-            //      checklogin: login
-            //  }
         })
 
        .state('editshop', {

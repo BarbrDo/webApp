@@ -12,7 +12,9 @@
       <div class="selected_user"> <img src="{{imgPath+particularAppointment.customer_id}}" alt="" > </div>
       <div class="namertng">
         <h3>{{particularAppointment.customer_name}}</h3>
-        <div class="rtng"><img src="images/rating.png" alt="" > </div>
+        <div class="rtng">
+          <input-stars max="5" ng-model="ratingCus" ng-attr-readonly="true"></input-stars>
+        </div>
       </div>
       <div class="locdis">
         <p><span>Last Cut :</span>{{particularAppointment.appointment_date | date:medium}}</p>

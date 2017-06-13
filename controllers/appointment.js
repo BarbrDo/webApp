@@ -149,8 +149,8 @@ exports.customerAppointments = function(req, res) {
 				$gte: currentDate
 			}
 		}).populate('barber_id', 'first_name last_name ratings picture created_date')
-		.populate('customer_id', 'first_name last_name ratings picture created_date')
-		.populate('shop_id', 'name address city state gallery latLong created_date')
+		.populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong isActive is_verified isDeleted ratings')
+		.populate('shop_id', 'name address city state gallery latLong created_date user_id')
 		.exec(function(err, result) {
 			if (err) {
 				return res.status(400).send({
@@ -167,8 +167,8 @@ exports.customerAppointments = function(req, res) {
 							$in: ['completed']
 						}
 					}).populate('barber_id', 'first_name last_name ratings picture created_date')
-					.populate('customer_id', 'first_name last_name ratings picture created_date')
-					.populate('shop_id', 'name address city state gallery latLong created_date')
+					.populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong isActive is_verified isDeleted ratings')
+					.populate('shop_id', 'name address city state gallery latLong created_date user_id')
 					.exec(function(err, data) {
 						if (err) {
 							return res.status(400).send({

@@ -1,0 +1,112 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+  <li class="breadcrumb-item active">Customer Appointments</li>
+</ol>
+
+<div class="panel" ng-init="custAppoint()">
+  <div class="panel-heading">
+     Customers Appointments
+  </div>
+  <div class="panel-body">
+                    <!-- RAHUL  CODE -->
+
+  <ul class="nav nav-tabs">
+    <li ><a  ng-click="showme=true">Completed</a></li>
+    <li class="active"><a  ng-click="showme=false">Upcoming</a></li>
+  </ul>
+<br>
+                        <!-- Page Content -->
+       <div id="page-content-wrapper" >
+            <div class="container-fluid">
+             <span  ng-show="showme">
+<table class="table" >
+    <thead>
+        <tr >
+            <th style="font-size: 15px;" >Customer</th>
+            <th style="font-size: 15px;" >Barber</th>
+            <th style="font-size: 15px;" >Shop</th>
+            <th style="font-size: 15px;" >Payment Status</th>
+            <th style="font-size: 15px;" >Appointment Date</th>
+            <th style="font-size: 15px;" >View Detail</th>
+
+            
+        </tr>
+    </thead>
+    <tbody>
+        <tr data-ng-repeat="appoint in complete" >
+        <td><a data-toggle="tooltip" title="View Details" ui-sref="customer_detail({id:appoint.customer_id._id})" ng-click="custdetails(appoint.customer_id)">
+            {{appoint.customer_name}} </a>
+        </td>
+        <td><a data-toggle="tooltip" title="View Details" ui-sref="barbersdetail({id:appoint.barber_id._id})" ng-click="viewbarbdetail(appoint.barber_id)">
+            {{appoint.barber_name}}</a>
+        </td>
+        <td><a data-toggle="tooltip" title="View Details" ui-sref="shopdetail({id:appoint.shop_id._id})" ng-click="viewshop(appoint.shop_id)">
+            {{appoint.shop_name}}</a>
+        </td>
+         <td>
+            {{appoint.payment_status}}
+        </td>
+        <td>
+            {{appoint.appointment_date | date : dd/mm/yyyy}}
+        </td>
+        <td>
+            <a type="submit" ui-sref="view_customer_appoint" ng-click="appointdetail(appoint)" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a>
+        </td>
+        
+</tr>
+</tbody>
+</table>
+</span>
+
+<span ng-hide="showme">
+<table class="table" >
+    <thead>
+        <tr >
+            <th style="font-size: 15px;" >Customer</th>
+            <th style="font-size: 15px;" >Barber</th>
+            <th style="font-size: 15px;" >Shop</th>
+            <th style="font-size: 15px;" >Payment Status</th>
+            <th style="font-size: 15px;" >Appointment Date</th>
+            <th style="font-size: 15px;" >View Detail</th>
+
+            
+        </tr>
+    </thead>
+    <tbody>
+        <tr data-ng-repeat="appoint in upcoming" >
+        <td><a data-toggle="tooltip" title="View Details" ui-sref="customer_detail({id:viewappoint.customer_id._id})" ng-click="custdetails(appoint.customer_id)">
+            {{appoint.customer_name}}</a> 
+        </td>
+        <td><a data-toggle="tooltip" title="View Details" ui-sref="barbersdetail({id:viewappoint.barber_id._id})" ng-click="viewbarbdetail(viewappoint.barber_id)">
+            {{appoint.barber_name}} </a>
+        </td>
+        <td><a data-toggle="tooltip" title="View Details" ui-sref="shopdetail({id:viewappoint.shop_id._id})" ng-click="viewshop(viewappoint.shop_id)">
+            {{appoint.shop_name}}</a>
+        </td>
+         <td>
+            {{appoint.payment_status}}
+        </td>
+        <td>
+            {{appoint.appointment_date | date : dd/mm/yyyy}}
+        </td>
+        <td>
+            <a type="submit" ui-sref="view_customer_appoint" ng-click="appointdetail(appoint)" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a>
+        </td>
+        
+</tr>
+</tbody>
+</table>
+</span>
+
+</div>
+<div>
+
+</div>
+
+             <!-- Modal -->
+
+
+
+
+   
+

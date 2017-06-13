@@ -21,7 +21,10 @@ const messages = {
 	"saveSuccessfully": "Successfully saved.",
 
 	// for the required fields
-	"requiredFields": "Please pass the required fields."
+	"requiredFields": "Please pass the required fields.",
+        
+        //Others
+        "chairPostedSuccess":"Chair posted successfully"
 }
 
 const distance = {

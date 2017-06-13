@@ -20,7 +20,7 @@ angular.module('BarbrDoApp')
 			},
 			zoom: 4
 		}
-		if ($state.current.name == 'appointmentDetail') {
+		if ($state.current.name == 'appointmentDetail' || $state.current.name == 'appointmentDetailOfBarber') {
 			$scope.loaderStart = true;
 			var obj = {
 				_id: $stateParams._id

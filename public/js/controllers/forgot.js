@@ -1,7 +1,6 @@
 angular.module('BarbrDoApp')
-  .controller('ForgotCtrl', function($scope, Account) {
+  .controller('ForgotCtrl', function($scope,$stateParams, $state,Account,toastr) {
     $scope.forgotPassword = function() {
-      alert("forgotPassword",$scope.user);
       Account.forgotPassword($scope.user)
         .then(function(response) {
           $scope.messages = {
@@ -14,4 +13,15 @@ angular.module('BarbrDoApp')
           };
         });
     };
+    if($state.current.name == 'accountActivate'){
+      $scope.loaderStart = true;
+      let obj = {
+        email: $stateParams.email,
+        randomString:$stateParams.random
+      }
+      Account.activateAccount(obj).then(function(response){
+        toastr.success('You have successfully activated your account.Please Login again.');
+        $state.go('home')
+      })
+    }
   });

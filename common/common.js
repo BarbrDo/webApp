@@ -139,11 +139,6 @@ exports.decrypt = function(text) {
     return dec;
 }
 
-//var hw = encrypt("hello world")
-// outputs hello world
-//console.log(decrypt(hw));
-
-
 exports.makeid = function() {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

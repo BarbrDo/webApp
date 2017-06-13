@@ -21,8 +21,9 @@ angular.module('BarbrDoApp')
         return
       }
     }
-
+    // console.log($window.localStorage.user);
     if($window.localStorage.user){
+      console.log($window.localStorage.user)
       $scope.userInfo = JSON.parse($window.localStorage.user);
       $scope.imgPath = $window.localStorage.imagePath;
     }
@@ -102,19 +103,7 @@ angular.module('BarbrDoApp')
     $scope.signup = function() {
       $auth.signup($scope.user)
         .then(function(response) {
-          $auth.setToken(response);
-          $rootScope.currentUser = response.data.user;
-          $window.localStorage.user = JSON.stringify(response.data.user);
-          $window.localStorage.imagePath = response.data.imagesPath;
-          if(response.data.user.user_type =='customer'){  
-            $state.go('upcomingComplete');    
-          }
-          if(response.data.user.user_type =='barber'){
-            $state.go('barberDashboard'); 
-          }
-          if(response.data.user.user_type =='shop'){
-            $state.go('barbershopdashboard')
-          }    
+          toastr.success("Please check your mail to activate your account.")   
         })
         .catch(function(response) {
           $scope.messagess = {

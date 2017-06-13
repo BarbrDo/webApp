@@ -73,8 +73,8 @@ exports.loginPost = function(req, res, next) {
     }
 
     /*-- this condition is for check that this account is active or not---- */
-    if(user.isActive == false && user.is_verified== false){
-       return res.status(401).send({
+    if (user.isActive == false && user.is_verified == false) {
+      return res.status(401).send({
         msg: 'Your account is not activated yet.'
       });
     }
@@ -121,12 +121,13 @@ var saveShop = function(saveDataForShop, resetUrl, user, req, res) {
       //   shop: shopData,
       //   "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
       // });
-      accountActivateMailFunction(req,res,user,resetUrl);
+      accountActivateMailFunction(req, res, user, resetUrl);
     }
   });
 }
 
-let accountActivateMailFunction = function(req,res,user,resetUrl) {
+let accountActivateMailFunction = function(req, res, user, resetUrl) {
+  console.log("accountActivateMailFunction", user);
   let auth = {
     auth: {
       api_key: process.env.MAILGUN_APIKEY,
@@ -138,7 +139,7 @@ let accountActivateMailFunction = function(req,res,user,resetUrl) {
     to: user.email,
     from: 'support@barbrdo.com',
     subject: '✔ Activate Your Account',
-    text: 'Please Activate your account by clicking link \n\n' + resetUrl +'\n\n'
+    text: 'Please Activate your account by clicking link \n\n' + resetUrl + '\n\n'
   };
 
   nodemailerMailgun.sendMail(mailOptions, function(err, info) {
@@ -252,18 +253,22 @@ exports.signupPost = function(req, res, next) {
               //   user: data,
               //   "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
               // });
-              accountActivateMailFunction(req,res,barberData,resetUrl)
+              console.log("else part of barber save");
+              let data1 = {};
+              data1.email = data.email;
+              accountActivateMailFunction(req, res, data1, resetUrl)
             }
           })
+        } else if (req.body.facebook) {
+          res.send({
+            msg: "please check your email to verify your account.",
+            link: resetUrl,
+            token: generateToken(data),
+            user: data.toJSON(),
+            "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+          });
         } else {
-          // res.send({
-          //   msg: "please check your email to verify your account.",
-          //   link: resetUrl,
-          //   token: generateToken(data),
-          //   user: data.toJSON(),
-          //   "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-          // });
-          accountActivateMailFunction(req,res,data,resetUrl)
+          accountActivateMailFunction(req, res, data, resetUrl)
         }
       }
     });
@@ -1084,31 +1089,32 @@ exports.getProfiles = function(req, res) {
   })
 }
 
-exports.activate = function(req,res){
-  console.log("req.body",req.body);
+exports.activate = function(req, res) {
+  console.log("req.body", req.body);
   if (req.body.email) {
     var email = commonObj.decrypt(req.body.email);
   }
   var randomcode = req.body.randomString;
-  console.log(email,randomcode)
+  console.log(email, randomcode)
 
   User.findOne({
-          email: email,randomString:randomcode
-        })
-        .exec(function(err, user) {
-          console.log(err, user)
-          if (!user) {
-            return res.status(400).send({
-              msg: err
-            });
-          }
-          user.randomString = undefined;
-          user.isActive = true;
-          user.is_verified = true;
-          user.save(function(err) {
-            res.status(200).send({
-                msg:"You have successfully activated Your Account !  Please Login again to continue."
-              })
-          });
+      email: email,
+      randomString: randomcode
+    })
+    .exec(function(err, user) {
+      console.log(err, user)
+      if (!user) {
+        return res.status(400).send({
+          msg: err
         });
+      }
+      user.randomString = undefined;
+      user.isActive = true;
+      user.is_verified = true;
+      user.save(function(err) {
+        res.status(200).send({
+          msg: "You have successfully activated Your Account !  Please Login again to continue."
+        })
+      });
+    });
 }

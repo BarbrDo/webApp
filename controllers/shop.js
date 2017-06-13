@@ -13,7 +13,9 @@ exports.updateShop = function(req, res) {
         });
     }
     var updateData = JSON.parse(JSON.stringify(req.body));
-    shop.update({ _id: req.body._id }, updateData, function (err, data) {
+    shop.update({
+        _id: req.body._id
+    }, updateData, function(err, data) {
         if (err) {
             res.status(400).send({
                 "msg": constantObj.messages.userStatusUpdateFailure,
@@ -323,7 +325,7 @@ exports.setChairPercentage = function(req, res) {
             })
         } else {
             res.status(200).send({
-               "msg": constantObj.messages.userStatusUpdateSuccess
+                "msg": constantObj.messages.userStatusUpdateSuccess
             });
         }
     })
@@ -364,7 +366,7 @@ exports.weeklyMonthlyChair = function(req, res) {
 exports.postChairToAllBarbers = function(req, res) {
     req.checkHeaders('user_id', 'Shop id is required.').notEmpty();
     req.assert('chair_id', 'Chair id is required.').notEmpty();
-    
+
     if (req.validationErrors()) {
         return res.status(400).send({
             msg: "error in your request",
@@ -390,7 +392,7 @@ exports.postChairToAllBarbers = function(req, res) {
             });
         }
     })
-    
+
     /*let obj = {};
     if (req.body.type) {
         req.assert('type', 'Chair type is required.').notEmpty();
@@ -479,7 +481,7 @@ var chairRequsett = function(data, userId, chairId, obj, shop_name) {
 
 
 
- exports.listshops = function(req, res) {
+exports.listshops = function(req, res) {
     var page = parseInt(req.query.page) || 1;
     var count = parseInt(req.query.count) || 10;
     var skipNo = (page - 1) * count;
@@ -516,9 +518,8 @@ var chairRequsett = function(data, userId, chairId, obj, shop_name) {
 
     user.aggregate([{
         $match: query
-    }
-    ]).exec(function(err, data) {
-        
+    }]).exec(function(err, data) {
+
         if (err) {
             console.log(err)
         } else {
@@ -529,21 +530,20 @@ var chairRequsett = function(data, userId, chairId, obj, shop_name) {
             }, {
                 "$limit": count
             }, {
-            $lookup: {
-                from: "shops",
-                localField: "_id",
-                foreignField: "user_id",
-                as: "shopinfo"
+                $lookup: {
+                    from: "shops",
+                    localField: "_id",
+                    foreignField: "user_id",
+                    as: "shopinfo"
                 }
-            }
-        ]).exec(function(err, result) {
+            }]).exec(function(err, result) {
                 var length = result.length;
-                if(err){
-                        res.status(400).send({
+                if (err) {
+                    res.status(400).send({
                         "msg": constantObj.messages.userStatusUpdateFailure,
                         "err": err
                     });
-                }else{
+                } else {
                     res.status(200).send({
                         "msg": constantObj.messages.successRetreivingData,
                         "data": result,
@@ -557,74 +557,113 @@ var chairRequsett = function(data, userId, chairId, obj, shop_name) {
 
 
 exports.shopdetail = function(req, res) {
-    
-    var query = {};
-        query._id = mongoose.Types.ObjectId(req.params.user_id);
 
-        console.log("query",query)
-            user.aggregate([{
-                $match: query
-            },{
-            $lookup: {
-                from: "shops",
-                localField: "_id",
-                foreignField: "user_id",
-                as: "shopinfo"
-                }
-            }
-        ]).exec(function(err, result) {
-                var length = result.length;
-                if(err){
-                        res.status(400).send({
-                        "msg": constantObj.messages.userStatusUpdateFailure,
-                        "err": err
-                    });
-                }else{
-                    console.log(result)
-                    res.status(200).send({
-                        "msg": constantObj.messages.successRetreivingData,
-                        "data": result,
-                        "count": length
-                    })
-                }
+    var query = {};
+    query._id = mongoose.Types.ObjectId(req.params.user_id);
+    user.aggregate([{
+        $match: query
+    }, {
+        $lookup: {
+            from: "shops",
+            localField: "_id",
+            foreignField: "user_id",
+            as: "shopinfo"
+        }
+    }]).exec(function(err, result) {
+        var length = result.length;
+        if (err) {
+            res.status(400).send({
+                "msg": constantObj.messages.userStatusUpdateFailure,
+                "err": err
+            });
+        } else {
+            res.status(200).send({
+                "msg": constantObj.messages.successRetreivingData,
+                "data": result,
+                "count": length
             })
+        }
+    })
 };
 
 
 exports.viewshopdetail = function(req, res) {
-    
-    var query = {};
-        query._id = mongoose.Types.ObjectId(req.params.user_id);
 
-        console.log("query",query)
-            user.aggregate([{
-                $match: query
-            },{
-            $lookup: {
-                from: "shops",
-                localField: "_id",
-                foreignField: "user_id",
-                as: "shopinfo"
-                }
-            }
-        ]).exec(function(err, result) {
-                var length = result.length;
-                if(err){
-                        res.status(400).send({
-                        "msg": constantObj.messages.userStatusUpdateFailure,
-                        "err": err
-                    });
-                }else{
-                    console.log(result)
-                    res.status(200).send({
-                        "msg": constantObj.messages.successRetreivingData,
-                        "data": result,
-                        "count": length
-                    })
-                }
+    var query = {};
+    query._id = mongoose.Types.ObjectId(req.params.user_id);
+
+    user.aggregate([{
+        $match: query
+    }, {
+        $lookup: {
+            from: "shops",
+            localField: "_id",
+            foreignField: "user_id",
+            as: "shopinfo"
+        }
+    }]).exec(function(err, result) {
+        var length = result.length;
+        if (err) {
+            res.status(400).send({
+                "msg": constantObj.messages.userStatusUpdateFailure,
+                "err": err
+            });
+        } else {
+            res.status(200).send({
+                "msg": constantObj.messages.successRetreivingData,
+                "data": result,
+                "count": length
             })
+        }
+    })
 };
 
+exports.barberdetail = function(req, res) {
+
+    var query = {};
+    query._id = mongoose.Types.ObjectId(req.params.barber_id);
+    query.user_type = "barber";
+    user.aggregate([{
+        $lookup: {
+            from: "shops",
+            "localField": "_id",
+            "foreignField": "chairs.barber_id",
+            "as": "shopdetails"
+        }
+    }, {
+        $project: {
+            _id: "$_id",
+            first_name: "$first_name",
+            last_name: "$last_name",
+            email: "$email",
+            mobile_number: "$mobile_number",
+            created_date: "$created_date",
+            ratings: "$ratings",
+            isDeleted: "$isDeleted",
+            isActive: "$isActive",
+            is_verified: "$is_verified",
+            user_type: "$user_type",
+            latLong: "$latLong",
+            picture: "$picture",
+            name: "$shopdetails.name",
+            shop: "$shopdetails"
+        }
+    }, {
+        $match: query
+    }]).exec(function(err, result) {
+        if (err) {
+            res.status(400).send({
+                "msg": constantObj.messages.userStatusUpdateFailure,
+                "err": err
+            });
+        } else {
+            res.status(200).send({
+                "msg": constantObj.messages.successRetreivingData,
+                "data": result
+            })
+        }
+    })
+};
 
 
 exports.availableBarber = function(req, res) {
@@ -715,12 +754,12 @@ exports.availableBarber = function(req, res) {
             }, {
                 "$limit": count
             }]).exec(function(err, result) {
-                if(err){
-                        res.status(400).send({
+                if (err) {
+                    res.status(400).send({
                         "msg": constantObj.messages.userStatusUpdateFailure,
                         "err": err
                     });
-                }else{
+                } else {
                     res.status(200).send({
                         "msg": constantObj.messages.successRetreivingData,
                         "data": result,
@@ -730,8 +769,8 @@ exports.availableBarber = function(req, res) {
             })
         }
     })
-            
-    
+
+
 };
 exports.getDataForBookNowPage = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
@@ -748,8 +787,8 @@ exports.getDataForBookNowPage = function(req, res) {
             });
         }
 
-        console.log("req.params.shop_id",req.params.shop_id);
-        console.log("req.params.barber_id",req.params.barber_id);
+        console.log("req.params.shop_id", req.params.shop_id);
+        console.log("req.params.barber_id", req.params.barber_id);
 
 
         shop.aggregate([{
@@ -822,7 +861,6 @@ exports.getDataForBookNowPage = function(req, res) {
 
 
 exports.deleteshop = function(req, res) {
-    console.log(req.params.shop_id);
     user.update({
         _id: req.params.shop_id
     }, {
@@ -840,7 +878,6 @@ exports.deleteshop = function(req, res) {
 };
 
 exports.undeleteshop = function(req, res) {
-    console.log(req.params.shop_id);
     user.update({
         _id: req.params.shop_id
     }, {
@@ -857,7 +894,7 @@ exports.undeleteshop = function(req, res) {
 
 };
 
-exports.shopContainsChairs = function(req,res){
+exports.shopContainsChairs = function(req, res) {
     req.checkParams('shop_id', 'Shop id is required').notEmpty();
     let errors = req.validationErrors();
     if (errors) {
@@ -876,7 +913,7 @@ exports.shopContainsChairs = function(req,res){
                 err: errors
             });
         } else {
-            
+
             res.status(200).send({
                 "msg": constantObj.messages.successRetreivingData,
                 "data": result
@@ -932,7 +969,7 @@ exports.markChairAsBooked = function(req, res) {
     let updateCollectionData = {
         "$set": {
             "chairs.$.type": 'self',
-            "chairs.$.availability":'booked'
+            "chairs.$.availability": 'booked'
         }
     };
     shop.update({
@@ -943,7 +980,7 @@ exports.markChairAsBooked = function(req, res) {
             return res.status(400).send({
                 msg: "Error in updating the shop collection."
             })
-        } else {    
+        } else {
             res.status(200).send({
                 msg: 'shop updated successfully'
             });

@@ -768,11 +768,15 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 url: '/forgot',
                 views: {
                     "header": {
-                        templateUrl: 'partials/barber_shop_header.html',
+                        templateUrl: 'partials/header.html',
                         controller: "HeaderCtrl"
                     },
                     "home": {
                         templateUrl: 'partials/forgot.html',
+                        controller: 'ForgotCtrl'
+                    },
+                    "footer": {
+                        templateUrl: 'partials/footer.html',
                         controller: 'ForgotCtrl'
                     }
                 },
@@ -795,9 +799,17 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             .state('resetToken', {
                 url: '/reset/:token',
                 views: {
+                    "header": {
+                        templateUrl: 'partials/header.html',
+                        controller: "HeaderCtrl"
+                    },
                     "home": {
                         templateUrl: 'partials/reset.html',
                         controller: 'ResetCtrl'
+                    },
+                    "footer": {
+                        templateUrl: 'partials/footer.html',
+                        controller: 'ForgotCtrl'
                     }
                 },
                 resolve: {

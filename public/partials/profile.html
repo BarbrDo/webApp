@@ -16,76 +16,76 @@
                         <div class="col-sm-7">
                             <input type="text" name="firstname" id="first_name" class="form-control" ng-model="profile.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required>
                             <div class="validationError" ng-messages="profileForm.firstname.$error" ng-show="
-                            profileForm.firstname.$error.required && profileForm.firstname.$touched &&
-                            profileForm.firstname.$invalid 
-                           " role="alert">
+                                    profileForm.firstname.$error.required && profileForm.firstname.$touched &&
+                                            profileForm.firstname.$invalid
+                                 " role="alert">
                                 <span style="color:red" ng-message="required">First name is required</span>
                             </div>
                             <div class="validationError" ng-messages="profileForm.firstname.$error" ng-show="
-                                                           profileForm.firstname.$error.pattern && (!profileForm.firstname.$pristine || profileForm.$submitted)" role="alert">
+                                    profileForm.firstname.$error.pattern && (!profileForm.firstname.$pristine || profileForm.$submitted)" role="alert">
                                 <span style="color:red" ng-message="pattern">Enter valid character </span>
                             </div>
                             <div class="validationError" ng-show="profileForm.firstname.$error.maxlength && profileForm.firstname.$dirty" ">
 
-                             <span style="color:red ">First name maximum length exceeds</span>
-                        </div>
+                                <span style="color:red ">First name maximum length exceeds</span>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group ">
                         <label for="lastname " class="col-sm-3 ">Last Name</label>
                         <div class="col-sm-7 ">
-                            <input type="text " name="lastname " id="last_name " class="form-control " ng-model="profile.last_name " ng-pattern="/^[a-z ,. '-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                            <input type="text " name="lastname " id="last_name " class="form-control " ng-model="profile.last_name" ng-pattern="/^[a-z ,. '-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
 
                             <div class="validationError" ng-messages="profileForm.lastname.$error" ng-show="
-                          profileForm.lastname.$error.required && profileForm.lastname.$touched &&
-                          profileForm.lastname.$invalid 
-                         " role="alert">
-                              <span style="color:red" ng-message="required">Last name is required</span>
-                       </div>
-                        <div class="validationError" ng-messages="profileForm.lastname.$error" ng-show="
-                             profileForm.lastname.$error.pattern && (!profileForm.lastname.$pristine || profileForm.$submitted)" role="alert">
-                                  <span style="color:red" ng-message="pattern">Enter valid character </span>
-                         </div>
-                          <div class="validationError"  ng-show="profileForm.lastname.$error.maxlength && profileForm.lastname.$dirty"">
+                                    profileForm.lastname.$error.required && profileForm.lastname.$touched &&
+                                            profileForm.lastname.$invalid
+                                 " role="alert">
+                                <span style="color:red" ng-message="required">Last name is required</span>
+                            </div>
+                            <div class="validationError" ng-messages="profileForm.lastname.$error" ng-show="
+                                    profileForm.lastname.$error.pattern && (!profileForm.lastname.$pristine || profileForm.$submitted)" role="alert">
+                                <span style="color:red" ng-message="pattern">Enter valid character </span>
+                            </div>
+                            <div class="validationError"  ng-show="profileForm.lastname.$error.maxlength && profileForm.lastname.$dirty"">
 
-                               <span style="color:red">Last name maximum length exceeds</span>
-                          </div>
+                                <span style="color:red">Last name maximum length exceeds</span>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group ">
                         <label for="email " class="col-sm-3 ">Email</label>
                         <div class="col-sm-7 ">
-                            <input type="email " name="email " id="email " class="form-control " ng-model="profile.email " ng-disabled="true">
+                            <input type="email " name="email " id="email " class="form-control " ng-model="profile.email" ng-disabled="true">
                         </div>
                     </div>
                     <div class="form-group ">
                         <label class="col-sm-3 ">Gender</label>
                         <div class="col-sm-4 ">
                             <label>
-    <input type="radio" ng-model="profile.gender" value="Male">
-    Male
-  </label>
-  <label>
-    <input type="radio" ng-model="profile.gender" ng-value="Female">
-    Female
-  </label>
+                                <input type="radio" ng-model="profile.gender" value="Male">
+                                Male
+                            </label>
+                            <label>
+                                <input type="radio" ng-model="profile.gender" ng-value="Female">
+                                Female
+                            </label>
                         </div>
-                        
+
                     </div>
                     <div class="form-group ">
                         <label for="mobilenumber " class="col-sm-3 ">Mobile Number</label>
                         <div class="col-sm-7 ">
-                            <input type="text " class="form-control " name="mobile_number " id="mobile_number " ng-model="profile.mobile_number " mask="(999) 999-9999 " mask-clean='true ' mask-restrict='reject ' ng-minlength="14 " ng-maxlength="14 " maxlength="14 " required />
-                                    <p class="help-block">
-                                        <span ng-show="profileForm.mobile_number.$touched && profileForm.mobile_number.$invalid && profileForm.mobile_number.$error.required">Mobile number is required.</span>
-                                        <span ng-show="profileForm.mobile_number.$error.minlength">Phone have 10-digits minimum.</span>
-                                    </p>
+                            <input type="text " class="form-control " name="mobile_number " id="mobile_number " ng-model="profile.mobile_number" mask="(999) 999-9999 " mask-clean='true ' mask-restrict='reject ' ng-minlength="14 " ng-maxlength="14 " maxlength="14 " required />
+                            <p class="help-block">
+                                <span ng-show="profileForm.mobile_number.$touched && profileForm.mobile_number.$invalid && profileForm.mobile_number.$error.required">Mobile number is required.</span>
+                                <span ng-show="profileForm.mobile_number.$error.minlength">Phone have 10-digits minimum.</span>
+                            </p>
                         </div>
                     </div>
                     <div class="form-group ">
-                        <label for="Radious Search " class="col-sm-3 ">Radius Search</label>
+                        <label for="Radious Search " class="col-sm-3 ">Radius Search (in miles)</label>
                         <div class="col-sm-7 ">
-                            <input type="text " name="radious " id="radious " class="form-control " ng-model="profile.radius_search ">
+                            <input type="text " name="radious " id="radious " class="form-control " ng-model="profile.radius_search">
                         </div>
                     </div>
                     <!-- <div class="form-group ">
@@ -103,13 +103,13 @@
                     <div class="form-group ">
                         <label class="col-sm-3 ">Profile Image</label>
                         <div class="col-sm-4 ">
-                            <div ng-if="profile.picture && !profile.file ">
-                                <img ng-src="{{imgPath+profile.picture}} " class="profile " width="100 " height="100 ">
+                            <div ng-if="profile.picture && !profile.file">
+                                <img ng-src="{{imgPath + profile.picture}} " class="profile " width="100 " height="100 ">
                             </div>
-                            <div ng-if="!profile.picture && !profile.file ">
+                            <div ng-if="!profile.picture && !profile.file">
                                 <img ng-src="images/no-image-found.jpg " class="profile " width="100 " height="100 ">
                             </div>
-                            <div ng-if="profile.file " style="height:185px ">
+                            <div ng-if="profile.file" style="height:185px ">
                                 <img class="thumb " ngf-thumbnail="profile.file " />
                             </div>
                         </div>
@@ -129,18 +129,18 @@
         </div>
         <div class="panel ">
             <div class="panel-body ">
-                <form ng-submit="changePassword() " class="form-horizontal ">
+                <form ng-submit="changePassword()" class="form-horizontal ">
                     <legend>Change Password</legend>
                     <div class="form-group ">
                         <label for="password " class="col-sm-3 ">New Password</label>
                         <div class="col-sm-7 ">
-                            <input type="password " name="password " id="password " class="form-control " ng-model="profile.password ">
+                            <input type="password " name="password " id="password " class="form-control " ng-model="profile.password">
                         </div>
                     </div>
                     <div class="form-group ">
                         <label for="confirm " class="col-sm-3 ">Confirm Password</label>
                         <div class="col-sm-7 ">
-                            <input type="password " name="confirm " id="confirm " class="form-control " ng-model="profile.confirm ">
+                            <input type="password " name="confirm " id="confirm " class="form-control " ng-model="profile.confirm">
                         </div>
                     </div>
                     <div class="form-group ">
@@ -169,10 +169,10 @@
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div> 
         <div class="panel ">
             <div class="panel-body ">
-                <form ng-submit="deleteAccount() " class="form-horizontal ">
+                <form ng-submit="deleteAccount()" class="form-horizontal ">
                     <legend>Delete Account</legend>
                     <div class="form-group ">
                         <p class="col-sm-offset-3 col-sm-9 ">You can delete your account, but keep in mind this action is irreversible.</p>
@@ -182,6 +182,6 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>

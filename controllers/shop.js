@@ -3,6 +3,7 @@ let user = require('../models/User');
 let constantObj = require('./../constants.js');
 let chairRequest = require('../models/chair_request');
 let mongoose = require('mongoose');
+
 exports.updateShop = function(req, res) {
     req.assert("_id", "Shop id is required.").notEmpty();
     var errors = req.validationErrors();
@@ -30,7 +31,6 @@ exports.updateShop = function(req, res) {
         }
     });
 }
-
 
 exports.shopContainsBarber = function(req, res) {
     req.checkParams('shop_id', 'Shop id is required').notEmpty();
@@ -85,6 +85,7 @@ exports.shopContainsBarber = function(req, res) {
         }
     })
 }
+
 exports.allShops = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
         let long = parseFloat(req.headers.device_longitude);
@@ -165,7 +166,6 @@ exports.allShops = function(req, res) {
     }
 }
 
-//Get all barber associated with shops
 exports.associatedBarbers = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
         let long = parseFloat(req.headers.device_longitude);
@@ -297,6 +297,7 @@ exports.allShopsHavingChairs = function(req, res) {
         })
     }
 }
+
 exports.setChairPercentage = function(req, res) {
     req.checkHeaders('user_id', 'Shop id is required.').notEmpty();
     req.assert('chair_id', 'Chair id is required.').notEmpty();
@@ -331,6 +332,7 @@ exports.setChairPercentage = function(req, res) {
         }
     })
 }
+
 exports.weeklyMonthlyChair = function(req, res) {
     req.checkHeaders('user_id', 'Shop id is required.').notEmpty();
     req.assert('chair_id', 'Chair id is required.').notEmpty();
@@ -364,6 +366,7 @@ exports.weeklyMonthlyChair = function(req, res) {
         }
     })
 }
+
 exports.postChairToAllBarbers = function(req, res) {
     req.checkHeaders('user_id', 'Shop id is required.').notEmpty();
     req.assert('chair_id', 'Chair id is required.').notEmpty();
@@ -392,56 +395,8 @@ exports.postChairToAllBarbers = function(req, res) {
             });
         }
     })
-
-    /*let obj = {};
-    if (req.body.type) {
-        req.assert('type', 'Chair type is required.').notEmpty();
-        obj.type = req.body.type;
-    } else {
-        req.assert('shop_percentage', 'Shop percentage is required.').notEmpty();
-        req.assert('barber_percentage', 'Barber percentage is required.').notEmpty();
-        obj.shop_percentage = req.body.shop_percentage;
-        obj.barber_percentage = req.body.barber_percentage;
-    }
-    
-    if (req.validationErrors()) {
-        return res.status(400).send({
-            msg: "error in your request",
-            err: errors
-        });
-    }
-    let long = parseFloat(req.headers.device_longitude);
-    let lati = parseFloat(req.headers.device_latitude);
-    let maxDistanceToFind = constantObj.distance.shopDistance;
-    user.aggregate([{
-        $geoNear: {
-            near: {
-                type: "Point",
-                coordinates: [long, lati]
-            },
-            distanceField: "dist.calculated",
-            distanceMultiplier: constantObj.distance.distanceMultiplierInMiles, // in miles in km 0.001
-            maxDistance: maxDistanceToFind,
-            includeLocs: "dist.location",
-            spherical: true
-        }
-    }, {
-        $match: {
-            "user_type": "barber"
-        }
-    }]).exec(function(err, result) {
-        if (err) {
-            return res.status(400).send({
-                msg: "Error in Finding users."
-            })
-        } else {
-            chairRequsett(result, req.headers.user_id, req.body.chair_id, obj, req.body.shop_name);
-            res.status(200).send({
-                msg: 'Your request is successfully considered.'
-            });
-        }
-    })*/
 }
+
 var chairRequsett = function(data, userId, chairId, obj, shop_name) {
     let len = data.length;
     console.log(len);
@@ -478,8 +433,6 @@ var chairRequsett = function(data, userId, chairId, obj, shop_name) {
         })
     }
 }
-
-
 
 exports.listshops = function(req, res) {
     var page = parseInt(req.query.page) || 1;
@@ -555,7 +508,6 @@ exports.listshops = function(req, res) {
     })
 };
 
-
 exports.shopdetail = function(req, res) {
 
     var query = {};
@@ -585,7 +537,6 @@ exports.shopdetail = function(req, res) {
         }
     })
 };
-
 
 exports.viewshopdetail = function(req, res) {
 
@@ -664,7 +615,6 @@ exports.barberdetail = function(req, res) {
         }
     })
 };
-
 
 exports.availableBarber = function(req, res) {
     var page = parseInt(req.query.page) || 1;
@@ -772,6 +722,7 @@ exports.availableBarber = function(req, res) {
 
 
 };
+
 exports.getDataForBookNowPage = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
         let long = parseFloat(req.headers.device_longitude);
@@ -857,8 +808,6 @@ exports.getDataForBookNowPage = function(req, res) {
         })
     }
 }
-
-
 
 exports.deleteshop = function(req, res) {
     user.update({

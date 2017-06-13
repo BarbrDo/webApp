@@ -73,11 +73,11 @@ exports.loginPost = function(req, res, next) {
     }
 
     /*-- this condition is for check that this account is active or not---- */
-    // if(user.isActive == false && user.is_verified== false){
-    //    return res.status(401).send({
-    //     msg: 'Your account is not activated yet.'
-    //   });
-    // }
+    if(user.isActive == false && user.is_verified== false){
+       return res.status(401).send({
+        msg: 'Your account is not activated yet.'
+      });
+    }
     user.comparePassword(req.body.password, function(err, isMatch) {
       if (!isMatch) {
         return res.status(401).send({
@@ -106,23 +106,46 @@ exports.loginPost = function(req, res, next) {
 /**
  * POST /signup
  */
-var saveShop = function(saveDataForShop,resetUrl,user,req,res){
-    Shop(saveDataForShop).save(function(errSaveShop, shopData) {
-        if (errSaveShop) {
-          return res.status(400).send({
-            msg: constantObj.messages.errorInSave
-          })
-        } else {
-          res.status(200).send({
-            msg: "Please check your email to verify your account.",
-            link: resetUrl,
-            token: generateToken(shopData),
-            user: user,
-            shop: shopData,
-            "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-          });
-        }
-      });
+var saveShop = function(saveDataForShop, resetUrl, user, req, res) {
+  Shop(saveDataForShop).save(function(errSaveShop, shopData) {
+    if (errSaveShop) {
+      return res.status(400).send({
+        msg: constantObj.messages.errorInSave
+      })
+    } else {
+      // res.status(200).send({
+      //   msg: "Please check your email to verify your account.",
+      //   link: resetUrl,
+      //   token: generateToken(shopData),
+      //   user: user,
+      //   shop: shopData,
+      //   "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+      // });
+      accountActivateMailFunction(req,res,user,resetUrl);
+    }
+  });
+}
+
+let accountActivateMailFunction = function(req,res,user,resetUrl) {
+  let auth = {
+    auth: {
+      api_key: process.env.MAILGUN_APIKEY,
+      domain: process.env.MAILGUN_DOMAIN
+    }
+  }
+  let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+  let mailOptions = {
+    to: user.email,
+    from: 'support@barbrdo.com',
+    subject: '✔ Activate Your Account',
+    text: 'Please Activate your account by clicking link \n\n' + resetUrl +'\n\n'
+  };
+
+  nodemailerMailgun.sendMail(mailOptions, function(err, info) {
+    res.send({
+      msg: 'An email has been sent to ' + user.email + ' with further instructions.'
+    });
+  });
 }
 
 exports.signupPost = function(req, res, next) {
@@ -187,34 +210,31 @@ exports.signupPost = function(req, res, next) {
       } else {
         let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
         if (req.body.user_type == 'shop') {
-            let saveDataForShop = {};
-            saveDataForShop.user_id = data._id
-            saveDataForShop.license_number = req.body.license_number;
-            saveDataForShop.name = req.body.name;
-            saveDataForShop.state = req.body.state;
-            saveDataForShop.city = req.body.city;
-            saveDataForShop.zip = req.body.zip;
-            
-            
-            if (req.headers.device_longitude && req.headers.device_latitude) {
-                saveDataForShop.latLong = [req.headers.device_longitude, req.headers.device_latitude];
-                saveShop(saveDataForShop,resetUrl,data,req,res);
-            } else if(req.body.zip){
-                geocoder.geocode(req.body.zip, function(errGeo, latlng) {
-                    if(errGeo){
-                        return res.status(400).send({
-                          msg: constantObj.messages.errorInSave
-                        })
-                    } else {
-                        saveDataForShop.latLong = [latlng.results[0].geometry.location.lng,latlng.results[0].geometry.location.lat];
-                        saveShop(saveDataForShop,resetUrl,data,req,res);
-                    }    
-                });
-            } else {
-                saveShop(saveDataForShop,resetUrl,data,req,res);
-            }
-           
-          
+          let saveDataForShop = {};
+          saveDataForShop.user_id = data._id
+          saveDataForShop.license_number = req.body.license_number;
+          saveDataForShop.name = req.body.name;
+          saveDataForShop.state = req.body.state;
+          saveDataForShop.city = req.body.city;
+          saveDataForShop.zip = req.body.zip;
+
+          if (req.headers.device_longitude && req.headers.device_latitude) {
+            saveDataForShop.latLong = [req.headers.device_longitude, req.headers.device_latitude];
+            saveShop(saveDataForShop, resetUrl, data, req, res);
+          } else if (req.body.zip) {
+            geocoder.geocode(req.body.zip, function(errGeo, latlng) {
+              if (errGeo) {
+                return res.status(400).send({
+                  msg: constantObj.messages.errorInSave
+                })
+              } else {
+                saveDataForShop.latLong = [latlng.results[0].geometry.location.lng, latlng.results[0].geometry.location.lat];
+                saveShop(saveDataForShop, resetUrl, data, req, res);
+              }
+            });
+          } else {
+            saveShop(saveDataForShop, resetUrl, data, req, res);
+          }
         } else if (req.body.user_type == 'barber') {
           let saveDataForBarber = {};
           saveDataForBarber.user_id = data._id
@@ -225,23 +245,25 @@ exports.signupPost = function(req, res, next) {
                 msg: constantObj.messages.errorInSave
               })
             } else {
-              res.status(200).send({
-                msg: "please check your email to verify your account.",
-                link: resetUrl,
-                token: generateToken(barberData),
-                user: data,
-                "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-              });
+              // res.status(200).send({
+              //   msg: "please check your email to verify your account.",
+              //   link: resetUrl,
+              //   token: generateToken(barberData),
+              //   user: data,
+              //   "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+              // });
+              accountActivateMailFunction(req,res,barberData,resetUrl)
             }
           })
         } else {
-          res.send({
-            msg: "please check your email to verify your account.",
-            link: resetUrl,
-            token: generateToken(data),
-            user: data.toJSON(),
-            "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-          });
+          // res.send({
+          //   msg: "please check your email to verify your account.",
+          //   link: resetUrl,
+          //   token: generateToken(data),
+          //   user: data.toJSON(),
+          //   "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+          // });
+          accountActivateMailFunction(req,res,data,resetUrl)
         }
       }
     });
@@ -271,7 +293,7 @@ exports.accountPut = function(req, res, next) {
     if ('password' in req.body) {
       user.password = req.body.password;
     } else {
-      console.log("user",user);
+      console.log("user", user);
       if (req.body.first_name) {
         user.first_name = req.body.first_name;
       }
@@ -284,16 +306,16 @@ exports.accountPut = function(req, res, next) {
       if ((req.files) && (req.files.length > 0)) {
         user.picture = req.files[0].filename;
       }
-      if(req.body.gender !='undefined'){
+      if (req.body.gender != 'undefined') {
         user.gender = req.body.gender;
       }
-      if(req.body.radius_search!='undefined'){
+      if (req.body.radius_search != 'undefined') {
         user.radius_search = req.body.radius_search;
       }
     }
 
     user.save(function(err) {
-      console.log("err",err);
+      console.log("err", err);
       if ('password' in req.body) {
         res.send({
           msg: 'Your password has been changed.',
@@ -553,7 +575,7 @@ exports.authFacebook = function(req, res) {
           user.gender = user.gender || profile.gender;
           user.picture = user.picture || 'https://graph.facebook.com/' + profile.id + '/picture?type=large';
           user.facebook = profile.id;
-          user.user_type='customer';
+          user.user_type = 'customer';
           user.save(function() {
             res.send({
               token: generateToken(user),
@@ -585,7 +607,7 @@ exports.authFacebook = function(req, res) {
               last_name: splitName[1],
               email: profile.email,
               gender: profile.gender,
-              user_type:'customer',
+              user_type: 'customer',
               location: profile.location && profile.location.name,
               picture: 'https://graph.facebook.com/' + profile.id + '/picture?type=large',
               facebook: profile.id
@@ -704,7 +726,7 @@ exports.authGoogleCallback = function(req, res) {
 exports.addChair = function(req, res) {
   req.assert("id", "id is required")
   let errors = req.validationErrors();
- console.log("req.body",req.body);
+  console.log("req.body", req.body);
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",
@@ -769,7 +791,7 @@ exports.removeChair = function(req, res) {
   req.assert("shop_id", "Shop ID is required")
   req.assert("chair_id", "Chair ID is required");
   let errors = req.validationErrors();
-  console.log("req.body",req.body);
+  console.log("req.body", req.body);
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",
@@ -867,7 +889,7 @@ exports.uploadCustomerGallery = function(req, res) {
   let updateData = {};
   updateData.modified_date = new Date();
   delete updateData._id;
-  console.log("here in ",req.files);
+  console.log("here in ", req.files);
   if ((req.files) && (req.files.length > 0)) {
     let userimg = [];
     for (let i = 0; i < req.files.length; i++) {
@@ -959,7 +981,7 @@ exports.deleteImages = function(req, res) {
   })
 }
 
-exports.getProfiles = function (req, res) {
+exports.getProfiles = function(req, res) {
   req.checkParams("id", "customer_id can not be blank").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
@@ -969,7 +991,9 @@ exports.getProfiles = function (req, res) {
     });
   }
   var id = mongoose.Types.ObjectId(req.params.id);
-  User.findOne({ _id: req.params.id }, function (err, result) {
+  User.findOne({
+    _id: req.params.id
+  }, function(err, result) {
     if (result.user_type) {
       switch (result.user_type) {
         case 'shop':
@@ -1054,8 +1078,37 @@ exports.getProfiles = function (req, res) {
       }
     } else {
       res.status(400).send({
-         msg: "Please pass correct id"
+        msg: "Please pass correct id"
       })
     }
   })
+}
+
+exports.activate = function(req,res){
+  console.log("req.body",req.body);
+  if (req.body.email) {
+    var email = commonObj.decrypt(req.body.email);
+  }
+  var randomcode = req.body.randomString;
+  console.log(email,randomcode)
+
+  User.findOne({
+          email: email,randomString:randomcode
+        })
+        .exec(function(err, user) {
+          console.log(err, user)
+          if (!user) {
+            return res.status(400).send({
+              msg: err
+            });
+          }
+          user.randomString = undefined;
+          user.isActive = true;
+          user.is_verified = true;
+          user.save(function(err) {
+            res.status(200).send({
+                msg:"You have successfully activated Your Account !  Please Login again to continue."
+              })
+          });
+        });
 }

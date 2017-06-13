@@ -1,4 +1,4 @@
-angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap', 'ngTable', 'alexjoffroy.angular-loaders', 'uiGmapgoogle-maps', 'rzModule', 'ngFileUpload', 'uiSwitch', 'toastr', 'checklist-model','angular-input-stars'])
+angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap', 'ngTable', 'alexjoffroy.angular-loaders', 'uiGmapgoogle-maps', 'rzModule', 'ngFileUpload', 'uiSwitch', 'toastr', 'checklist-model', 'angular-input-stars'])
     .config(
         ['uiGmapGoogleMapApiProvider', function(GoogleMapApiProviders) {
             GoogleMapApiProviders.configure({
@@ -289,7 +289,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 }]
             }
         })
-        
+
         .state('viewShopProfile', {
             url: '/viewshopprofile',
             views: {
@@ -321,7 +321,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 loginRequired: loginRequired
             }
         })
-        
+
         .state('viewBarberProfile', {
             url: '/viewbarberprofile',
             views: {
@@ -354,36 +354,70 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         })
 
-         .state('barberInfo', {
-                url: '/barber_info/:_id',
-                views: {
-                    "homeDash": {
-                        templateUrl: 'partials/view_barber_profile.html',
-                        controller: "dashboardCtrl"
-                    },
-                    "header": {
-                        templateUrl: 'partials/headerAfterLogin.html',
-                        controller: "HeaderCtrl"
-                    },
-                    "sideBar": {
-                        templateUrl: 'partials/afterLoginSideBar.html'
-                    }
+        .state('barberInfo', {
+            url: '/barber_info/:_id',
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/view_barber_profile.html',
+                    controller: "dashboardCtrl"
                 },
-                resolve: {
-                    lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
-                        var deferred = $q.defer();
-                        $ocLazyLoad.load({
-                            name: 'BarbrDoApp',
-                            files: ['js/controllers/dashboard.js',
-                                'js/services/customer.js'
-                            ]
-                        }).then(function() {
-                            deferred.resolve();
-                        });
-                        return deferred.promise;
-                    }]
+                "header": {
+                    templateUrl: 'partials/headerAfterLogin.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/afterLoginSideBar.html'
                 }
-            })
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/dashboard.js',
+                            'js/services/customer.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
+            }
+        })
+
+        .state('appointmentDetail', {
+            url: '/appointmentdetail/:_id',
+            params: {
+                _id: null,
+            },
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/appointment_detail.html',
+                    controller: "barberCtrl"
+                },
+                "header": {
+                    templateUrl: 'partials/headerAfterLogin.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/afterLoginSideBar.html'
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/barberController.js',
+                            'js/services/barber.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
+            }
+        })
 
 
         // Barbers from here
@@ -417,6 +451,40 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     return deferred.promise;
                 }],
                 loginRequired: loginRequired
+            }
+        })
+
+        .state('appointmentDetailOfBarber', {
+            url: '/appointmentdetails/:_id',
+            params: {
+                _id: null,
+            },
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/appointment_detail.html',
+                    controller: "barberCtrl"
+                },
+                "header": {
+                    templateUrl: 'partials/headerAfterLogin.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/barberSideBar.html'
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/barberController.js',
+                            'js/services/barber.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
             }
         })
 
@@ -609,39 +677,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         })
 
-        .state('appointmentDetail', {
-            url: '/appointmentdetail/:_id',
-            params: {
-                _id: null,
-            },
-            views: {
-                "homeDash": {
-                    templateUrl: 'partials/appointment_detail.html',
-                    controller: "barberCtrl"
-                },
-                "header": {
-                    templateUrl: 'partials/headerAfterLogin.html',
-                    controller: "HeaderCtrl"
-                },
-                "sideBar": {
-                    templateUrl: 'partials/afterLoginSideBar.html'
-                }
-            },
-            resolve: {
-                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
-                    var deferred = $q.defer();
-                    $ocLazyLoad.load({
-                        name: 'BarbrDoApp',
-                        files: ['js/controllers/barberController.js',
-                            'js/services/barber.js'
-                        ]
-                    }).then(function() {
-                        deferred.resolve();
-                    });
-                    return deferred.promise;
-                }]
-            }
-        })
+
 
         .state('appointmentDetailconfirm', {
             url: '/appointmentdetailconfirm',
@@ -796,7 +832,36 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     skipIfAuthenticated: skipIfAuthenticated
                 }
             })
-            .state('resetToken', {
+
+        .state('accountActivate', {
+            url: '/account/verification/:email/:random',
+            params: {
+                email: null,
+                random:null
+            },
+            views: {
+                "home": {
+                    templateUrl: 'partials/account_activate.html',
+                    controller: 'ForgotCtrl'
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/forgot.js',
+                            'js/services/account.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
+            }
+        })
+
+        .state('resetToken', {
                 url: '/reset/:token',
                 views: {
                     "header": {
@@ -1015,11 +1080,11 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         };
     })
-    .run(['$rootScope', '$q', '$state', '$auth', '$window','toastr', function($rootScope, $q, $state, $auth, $window,toastr) {
+    .run(['$rootScope', '$q', '$state', '$auth', '$window', 'toastr', function($rootScope, $q, $state, $auth, $window, toastr) {
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
             console.log(toState.url);
             // Following if will allow only Landing site routes 
-            if (toState.url == '/' || toState.url == '/barber' || toState.url == '/shops' || toState.url == '/forgot' || toState.url == '/reset/:token') {
+            if (toState.url == '/' || toState.url == '/barber' || toState.url == '/shops' || toState.url == '/forgot' || toState.url == '/reset/:token' || toState.url =='/account/verification/:email/:random') {
                 var deferred = $q.defer();
                 if ($auth.isAuthenticated()) {
                     setTimeout(function() {
@@ -1034,8 +1099,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     }, 0);
                     return deferred.promise;
                 }
-            }
-            else if ($window.localStorage.user) {
+            } else if ($window.localStorage.user) {
                 let loggedInUser = JSON.parse($window.localStorage.user)
                 console.log("user_type", loggedInUser.user_type)
 
@@ -1070,7 +1134,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     }
                 }
                 // Following if will allow only barbers routes
-                if (toState.url == '/dashboardOfBarber' || toState.url == '/searchchair' || toState.url == '/manageservices' || toState.url == '/addservice' || toState.url == '/chairs/:_id' || toState.url == '/reschedule/:_id' || toState.url == '/appointmentdetail/:_id' || toState.url == '/appointmentdetailconfirm' || toState.url == '/sendinvitation' || toState.url == '/barberGallery' || toState.url == '/managerequest') {
+                if (toState.url == '/dashboardOfBarber' || toState.url == '/searchchair' || toState.url == '/manageservices' || toState.url == '/addservice' || toState.url == '/chairs/:_id' || toState.url == '/reschedule/:_id' || toState.url == '//appointmentdetails/:_id' || toState.url == '/appointmentdetailconfirm' || toState.url == '/sendinvitation' || toState.url == '/barberGallery' || toState.url == '/managerequest') {
                     var deferred = $q.defer();
                     if (loggedInUser.user_type == 'barber') {
                         console.log("inside barber");

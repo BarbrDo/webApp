@@ -52,7 +52,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
       return $http.put('/api/v1/deactivecust/' + data._id, data);
     },
     barberDetail: function(data) {
-      return $http.get('/api/v1/barberdetail/' + data._id, data);
+      return $http.get('/api/v1/barberdetail/' + data, data);
     },
     activateCustomer: function(data) {
       return $http.put('/api/v1/activatecust/' + data._id, data);

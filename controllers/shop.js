@@ -622,6 +622,7 @@ exports.barberdetail = function(req, res) {
 
     var query = {};
     query._id = mongoose.Types.ObjectId(req.params.barber_id);
+    console.log(req.params.barber_id);
     query.user_type = "barber";
     user.aggregate([{
         $lookup: {

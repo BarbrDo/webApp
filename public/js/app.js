@@ -1024,7 +1024,8 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 }
             }
             else if ($window.localStorage.user) {
-                let loggedInUser = JSON.parse($window.localStorage.user)
+                console.log($window.localStorage.user);
+                let loggedInUser = JSON.parse($window.localStorage.user);
                 console.log("user_type", loggedInUser.user_type)
 
                 // Following if will allow only customer routes

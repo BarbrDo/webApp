@@ -40,7 +40,7 @@
     <tbody>
         <tr data-ng-repeat="barber in barbers| orderBy:sort:reverse " data-ng-class="{danger:!barber.active}">
         <td>
-            <a data-toggle="tooltip" title="View Details" ui-sref="barbersdetail({id:barber._id})" ng-click="barbdetail(barber)">{{barber.first_name}} {{barber.last_name}}</a> 
+            <a data-toggle="tooltip" title="View Details" ui-sref="barbersdetail({id:barber._id})" >{{barber.first_name}} {{barber.last_name}}</a> 
         </td>
         <td>{{barber.email}}
         </td>

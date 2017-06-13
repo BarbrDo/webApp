@@ -37,7 +37,7 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: "/modalsAdmin/adminHTml/views/edit-barber.html"
            
         })
-       .state('view_customer_appoint', {
+       .state('detailed_appointment', {
             url: '/appointment/detail',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/appoint-detail.html"
@@ -49,6 +49,13 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/adminBarber.html"
         })
+
+       .state('view_cust_appointment', {
+            url: '/customer/ViewAppointment',
+            controller: "AdminCtrl",
+            templateUrl: "/modalsAdmin/adminHTml/views/ViewAppointment.html"
+        })
+       
 
        .state('editshop', {
             url: '/shop/edit/:id',

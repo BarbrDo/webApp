@@ -1,4 +1,4 @@
-app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log', function($scope, $rootScope, $location, Admin, $filter, $log, $routeParams) {
+app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log','$stateParams', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams) {
 
   $scope.user = {};
   $scope.myobj = {};
@@ -216,11 +216,13 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
      var valfromDelete = $scope.deleteSelected;
      if(valfromActive == 'true')
      {
+      console.log(valfromActive);
       $scope.activateshop(shop);
       
      }
       if(valfromActive == 'false')
      {
+      console.log(valfromActive);
       $scope.deactiveshop(shop);
       
      }
@@ -258,6 +260,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     Admin.barberDetail(barber)
       .then(function(response) {
        $rootScope.barberdetail = response.data.data[0];
+
       });
 
   };
@@ -462,9 +465,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
   };
 
-  $scope.barbdetail = function(barber) {
-    $rootScope.barberdetail = barber;
-  };
   
   $scope.shopdetail = function(shop) {
     // $rootScope.delchair = shop.shopinfo[0];
@@ -552,6 +552,12 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     .then(function(response) {
       $rootScope.totalcustomer = response.data;
     });
+
+    // Admin.barberDetail($stateParams.id)
+    //   .then(function(response) {
+    //     $rootScope.barberdetail = response.data.data[0];
+    //   });
+
 
 
 }]);

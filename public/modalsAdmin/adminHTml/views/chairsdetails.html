@@ -36,21 +36,17 @@
     </thead>
     <tbody>
         <tr data-ng-repeat="chairs in chairdetails  | filter:query | orderBy:sort:reverse | limitTo:quantity " data-ng-class="{danger:!chairs.active}">
-        <td><span ng-if="!chairs.name" data-ng-hide="editMode">NOT SPECIFIED</span>
+        <td>
             <span data-ng-hide="editMode">{{chairs.name}} </span>
-            <input type="text" data-ng-show="editMode" data-ng-model="chairs.name" placeholder="name" data-ng-required />
         </td>
-        <td><span ng-if="!chairs.availability" data-ng-hide="editMode">NOT SPECIFIED</span>
+        <td>
             <span data-ng-hide="editMode">{{chairs.availability}}</span>
-         <input type="text" data-ng-show="editMode" data-ng-model="chairs.availability" placeholder="City" data-ng-required />
         </td>
-         <td><span ng-if="!chairs.type" data-ng-hide="editMode">NO TYPE</span>
+         <td>
            <span data-ng-hide="editMode" >{{chairs.type}} </span>
-            <input type="text"  data-ng-show="editMode" data-ng-model="chairs.type" placeholder="Type Of Chair" data-ng-required />
         </td>
-         <td ><span ng-if="!chairs.amount" data-ng-hide="editMode">NO AMOUNT</span>
+         <td >
            <span data-ng-hide="editMode" data-toggle="modal" data-target="#chairs">{{chairs.amount}} </span>
-            <input type="text"  data-ng-show="editMode" data-ng-model="chairs.amount" placeholder="Amount" data-ng-required />
         </td>
         <td>
            

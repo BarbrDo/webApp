@@ -1,11 +1,12 @@
 <ol class="breadcrumb">
   <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
-  <li class="breadcrumb-item active">Customer Appointments</li>
+  <li class="breadcrumb-item"><a ui-sref="customers">Customers</a></li>
+  <li class="breadcrumb-item active">View Customers's Appointments</li>
 </ol>
 
 <div class="panel" ng-init="custAppoint()">
   <div class="panel-heading">
-     All Customers Appointments
+    {{customerdetail.first_name}}  {{customerdetail.last_name}}'s Appointments 
   </div>
   <div class="panel-body">
                     <!-- RAHUL  CODE -->

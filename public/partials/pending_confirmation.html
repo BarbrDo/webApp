@@ -10,10 +10,10 @@
         <h2>Appointment Booked</h2>
         <div class="row">
             <div class="col-md-4 col-sm-6">
-                <p><i class="fa fa-calendar"> </i> {{pendingData.appointment_date}} </p>
+                <p><i class="fa fa-calendar"> </i> {{pendingData.appointment_date |  date:'MM/dd/yyyy'}} </p>
             </div>
             <div class="col-md-4 col-sm-6">
-                <p><i class="fa  fa-clock-o"> </i> 9:00 AM</p>
+                <p><i class="fa  fa-clock-o"> </i> {{time}}</p>
             </div>
             <!-- <div class="col-md-4"> <a href="#" class="cmbtn">Add to Calendar</a> </div> -->
         </div>
@@ -60,7 +60,9 @@
             <div class="selected_user"> <img src="images/brbr_pic.png" alt=""> </div>
             <div class="namertng">
                 <h3>{{pendingData.barber_id.first_name}} {{pendingData.barber_id.last_name}}</h3>
-                <div class="rtng"><img src="images/rating.png" alt=""> </div>
+                <div class="rtng">
+                     <input-stars max="5" ng-model="ratingBarber" ng-attr-readonly="true"></input-stars>
+                 </div>
             </div>
             <div class="locdis">
                 <p><span>Last Cut :</span> 31 March, 2017</p>

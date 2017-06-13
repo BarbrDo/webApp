@@ -11,7 +11,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" required value="{{profileInfo.email}}" />
+                                        <input type="text" class="form-control" required value="{{profileInfo.email}}" readonly="true"/>
                                         <div class="form-control-placeholder">Email</div>
                                     </div>
                                 </div>
@@ -23,7 +23,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" required value="{{profileInfo.created_date | date}}"/>
+                                        <input type="text" class="form-control" required value="{{profileInfo.created_date | date}}" />
                                         <div class="form-control-placeholder">Member Since</div>
                                     </div>
                                 </div>
@@ -49,7 +49,9 @@
                                     <!-- <td> <span class="lspic"> <img src="images/brbr_pic.png" alt=""> </span> </td> -->
                                     <td>{{res.rated_by_name}}</td>
                                     <td>{{res.appointment_date | date}}</td>
-                                    <td><img src="images/rating.png" alt=""></td>
+                                    <td>
+                                        <input-stars max="5" ng-model="res.score" ng-attr-readonly="true"></input-stars>
+                                    </td>
                                 </tr>
                             </table>
                         </div>

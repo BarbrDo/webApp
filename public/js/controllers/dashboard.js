@@ -187,6 +187,13 @@ angular.module('BarbrDoApp')
 			customer.pendingConfirmation(passingObj)
 				.then(function(response) {
 					$scope.pendingData = response.data.data;
+					$scope.time = response.data.data.appointment_date.substring(11, 19);
+					let sum = 0;
+					let len = response.data.data.barber_id.ratings.length;
+					for(var i=0;i<len;i++){
+						sum+= response.data.data.barber_id.ratings[i].score
+					}
+					$scope.ratingBarber = sum/len
 					var Markers = [{
 						"id": "0",
 						"coords": {
@@ -248,7 +255,6 @@ angular.module('BarbrDoApp')
 			}
 			customer.barberInfo(obj)
 				.then(function(response) {
-					console.log(response.data.user)
 					$scope.profileInfo = response.data.user;
 				})
 		}

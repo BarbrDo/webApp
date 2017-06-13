@@ -49,6 +49,7 @@ exports.shopContainsBarber = function(req, res) {
             });
         } else {
             let resultTantArray = [];
+            console.log(result);
             // add ratings of a barber in result.chairs[i].barber_id.ratings
             // add ratings of a barber in result.chairs[i].barber_id.gallery
             for (let i = 0; i < result.chairs.length; i++) {

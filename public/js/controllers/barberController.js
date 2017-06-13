@@ -2,7 +2,7 @@ angular.module('BarbrDoApp')
 	.controller('barberCtrl', function($scope, $rootScope, $location, barber, $stateParams, $state, $window, toastr) {
 		var objj = JSON.parse($window.localStorage.user);
 		$scope.imgPath = $window.localStorage.imagePath;
-		
+
 		$scope.loaderStart = true;
 		$scope.appointments = function() {
 			barber.appointments()
@@ -28,14 +28,22 @@ angular.module('BarbrDoApp')
 			barber.appointment(obj).then(function(response) {
 				$scope.loaderStart = false;
 				$scope.particularAppointment = response.data.data;
-				$scope.totoalPrice = 0;
+				let price = 0;
+				let sum = 0;
+				let len = response.data.data.customer_id.ratings.length;
+				for (var i = 0; i < len; i++) {
+					sum += response.data.data.customer_id.ratings[i].score
+				}
+				$scope.ratingCus = sum / len
+
 				if (response.data.data.services) {
 					for (var i = 0; i < response.data.data.services.length; i++) {
 						if (response.data.data.services[i].price) {
-							totalPrice += response.data.data.services[i].price
+							price += response.data.data.services[i].price
 						}
 					}
 				}
+				$scope.totoalPrice = price;
 				var Markers = [{
 					"id": "0",
 					"coords": {
@@ -159,19 +167,19 @@ angular.module('BarbrDoApp')
 				toastr.success('Your appointment is successfully canceled.');
 			})
 		}
-		$scope.payNow = function(){
+		$scope.payNow = function() {
 			toastr.warning('Work in progress.')
 		}
 
 
-		if ($state.current.name == 'manageservices' || $state.current.name == 'addservice' ) {
+		if ($state.current.name == 'manageservices' || $state.current.name == 'addservice') {
 			$scope.loaderStart = true;
 			barber.allServices().then(function(response) {
 				$scope.loaderStart = false;
 				$scope.servicesData = response.data.data
 			})
 		}
-		$scope.saveServicesPrice = function(){
+		$scope.saveServicesPrice = function() {
 			toastr.warning("Work in progress.");
 		}
 

@@ -1084,7 +1084,15 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
             console.log(toState.url);
             // Following if will allow only Landing site routes 
-            if (toState.url == '/' || toState.url == '/barber' || toState.url == '/shops' || toState.url == '/forgot' || toState.url == '/reset/:token' || toState.url =='/account/verification/:email/:random') {
+
+            if(toState.url =='/account/verification/:email/:random' || toState.url == '/reset/:token'){
+                setTimeout(function() {
+                        deferred.resolve()
+                        $state.go(toState.url);
+                    }, 0);
+                    return deferred.promise;
+            }
+            else if (toState.url == '/' || toState.url == '/barber' || toState.url == '/shops' || toState.url == '/forgot' ) {
                 var deferred = $q.defer();
                 if ($auth.isAuthenticated()) {
                     setTimeout(function() {

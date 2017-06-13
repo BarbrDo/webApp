@@ -24,6 +24,9 @@ angular.module('BarbrDoApp')
       forgotPassword: function(data) {
         return $http.post('/api/v1/forgot', data);
       },
+      activateAccount: function(data) {
+        return $http.post('/api/v1/activate', data);
+      },
       resetPassword: function(data) {
         return $http.post('/api/v1/reset/'+data.token, data);
       }

@@ -16,11 +16,13 @@
                   <th class="action">Action</th>
                 </tr>
                 <tr ng-repeat = "result in pendingComplete.pending">
-                  <td> <span class="lspic"> <img src="images/brbr_pic.png" alt=""> </span> </td>
+                  <td> <span class="lspic"> 
+                  <img src="{{imgPath+result.customer_id.picture}}" alt=""> 
+                  </span> </td>
                   <td>{{result.customer_id.first_name}} {{result.customer_id.last_name}}</td>
                   <td>{{result.appointment_date | date:'medium'}}</td>
                   <td>{{result.shop_id.name}}</td>
-                  <td class="ac_btn"> <a ui-sref="appointmentDetail({_id:result._id})" class=""  tooltip-placement="top" uib-tooltip="View Detail" > <i class="fa fa-eye"></i> </a> 
+                  <td class="ac_btn"> <a ui-sref="appointmentDetailOfBarber({_id:result._id})" class=""  tooltip-placement="top" uib-tooltip="View Detail" > <i class="fa fa-eye"></i> </a> 
                       <a href="#" class="" tooltip-placement="top" uib-tooltip="Confirmed" ng-click="confirmAppointment(result._id)"> <i class="fa fa-check "></i> </a> <a ui-sref="rescheduleAppointment({_id:result._id})" class="" tooltip-placement="top" uib-tooltip="Reschedule" > <i class="fa fa-repeat "></i> </a> </td>
                 </tr>
               </table>
@@ -39,7 +41,7 @@
                   <th class="action">Action</th>
                 </tr>
                 <tr ng-repeat = "results in pendingComplete.booked">
-                  <td> <span class="lspic"> <img src="images/brbr_pic.png" alt=""> </span> </td>
+                  <td> <span class="lspic"> <img src="{{imgPath+results.customer_id.picture}}" alt=""> </span> </td>
                   <td>{{results.customer_id.first_name}} {{results.customer_id.last_name}}</td>
                   <td>{{results.appointment_date | date:'medium'}}</td>
                   <td>{{results.shop_id.name}}</td>

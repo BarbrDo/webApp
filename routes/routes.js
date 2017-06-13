@@ -37,6 +37,7 @@ module.exports = function(app, express) {
     let barberServices = require('./../controllers/barber');
     let commonObj = require('./../common/common');
     //Users
+    app.post('/api/v1/activate', userController.activate) //Account activate
     app.post('/api/v1/signup', userController.signupPost); //Signup
     app.post('/api/v1/login', userController.loginPost); // Login
     app.post('/api/v1/forgot', userController.forgotPost); //Forgot Password

@@ -386,7 +386,7 @@ exports.postChairToAllBarbers = function(req, res) {
             })
         } else {
             res.status(200).send({
-                "msg": constantObj.messages.userStatusUpdateSuccess
+                "msg": constantObj.messages.chairPostedSuccess
             });
         }
     })

@@ -21,6 +21,8 @@ angular.module('BarbrDoApp')
       }
       Account.activateAccount(obj).then(function(response){
         toastr.success('You have successfully activated your account.Please Login again.');
+        $auth.logout();
+        delete $window.localStorage.user;
         $state.go('home')
       })
     }

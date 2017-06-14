@@ -314,7 +314,8 @@ exports.setChairPercentage = function(req, res) {
         "$set": {
             "chairs.$.shop_percentage": parseInt(req.body.shop_percentage),
             "chairs.$.type": req.body.type,
-            "chairs.$.barber_percentage": parseInt(req.body.barber_percentage)
+            "chairs.$.barber_percentage": parseInt(req.body.barber_percentage),
+            "chairs.$.amount": undefined
         }
     };
     shop.update({
@@ -348,7 +349,9 @@ exports.weeklyMonthlyChair = function(req, res) {
     let updateCollectionData = {
         "$set": {
             "chairs.$.type": req.body.type,
-            "chairs.$.amount": req.body.amount
+            "chairs.$.amount": req.body.amount,
+            "chairs.$.shop_percentage": undefined,
+            "chairs.$.barber_percentage": undefined,
         }
     };
     shop.update({
@@ -381,58 +384,62 @@ exports.postChairToAllBarbers = function(req, res) {
             "chairs.$.availability": "available"
         }
     };
-    shop.update({
+    shop.findOne({
         "user_id": req.headers.user_id,
         "chairs._id": req.body.chair_id
-    }, updateCollectionData, function(err, result) {
-        if (err) {
-            return res.status(400).send({
-                "msg": constantObj.messages.userStatusUpdateFailure
+    }, {
+        "chairs.$": 1
+    }).exec(function(err, data) {
+        if (!data.chairs[0].type) {
+            shop.update({
+                "user_id": req.headers.user_id,
+                "chairs._id": req.body.chair_id
+            }, updateCollectionData, function(err, result) {
+                if (err) {
+                    return res.status(400).send({
+                        "msg": constantObj.messages.userStatusUpdateFailure
+                    })
+                } else {
+                    // chairRequsett(req.headers.user_id, req.body.chair_id)
+                    res.status(200).send({
+                        "msg": constantObj.messages.chairPostedSuccess
+                    });
+                }
             })
-        } else {
-            res.status(200).send({
-                "msg": constantObj.messages.chairPostedSuccess
-            });
+        }
+        else{
+             return res.status(400).send({
+                        "msg": "Please Enter the type of chair."
+                    })
         }
     })
 }
 
-var chairRequsett = function(data, userId, chairId, obj, shop_name) {
-    let len = data.length;
-    console.log(len);
-    console.log(data);
-    var size = Object.keys(obj).length;
-    console.log(size);
-    for (var i = 0; i < data.length; i++) {
-        let saveData = {
-            shop_id: userId,
-            chair_id: chairId,
-            barber_id: data[i]._id,
-            barber_name: data[i].first_name + " " + data[i].last_name,
-            request_by: shop_name,
-            booking_date: new Date(),
-            status: "pending"
-        }
-        if (size == 1) {
-            saveData.type = obj.type;
-        } else {
-            saveData.shop_percentage = obj.shop_percentage;
-            saveData.barber_percentage = obj.barber_percentage
-        }
-        chairRequest(saveData).save(function(err, result) {
-            if (err) {
+// var chairRequsett = function(userId, chair_id) {
+//     console.log("posting chairs")
+//     user.findOne({
+//         _id: userId
+//     }, function(err, shopData) {
+//         console.log("err,result ", err, shopData)
+//         user.find({
+//             "user_type": "barber"
+//         }, function(err, data) {
+//             for (var i = 0; i < data.length; i++) {
+//                 console.log("for loop ");
+//                 let saveData = {
+//                     shop_id: userId,
+//                     chair_id: chair_id,
+//                     barber_id: data[i]._id,
+//                     requested_by: 'shop',
+//                     status: "pending"
+//                 };
+//                 chairRequest(saveData).save(function(err, result) {
 
-            } else {
-                --len;
-                if (len >= 1) {
-                    chairRequset(data, userId, chairId, obj, shop_name)
-                } else {
-                    return true;
-                }
-            }
-        })
-    }
-}
+//                 })
+//             }
+//         })
+//     })
+// }
 
 exports.listshops = function(req, res) {
     var page = parseInt(req.query.page) || 1;

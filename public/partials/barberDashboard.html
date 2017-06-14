@@ -45,7 +45,7 @@
                   <td>{{results.customer_id.first_name}} {{results.customer_id.last_name}}</td>
                   <td>{{results.appointment_date | date:'medium'}}</td>
                   <td>{{results.shop_id.name}}</td>
-                  <td class="ac_btn"> <a href="#" class="" tooltip-placement="top" uib-tooltip="Mark as Complete" > <i class="fa fa-check-square-o "></i> </a> </td>
+                  <td class="ac_btn"> <a ui-sref="markComplete({_id:results._id})" class="" tooltip-placement="top" uib-tooltip="Mark as Complete" > <i class="fa fa-check-square-o "></i> </a> </td>
                 </tr>
               </table>
             </div>

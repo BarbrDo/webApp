@@ -2,9 +2,19 @@ angular.module('BarbrDoApp')
 	.controller('shopCtrl', function($scope, $rootScope, $location, shop, $stateParams,$window,$state,toastr) {
 		// var obj = JSON.parse($window.localStorage.user);
 		$scope.shopData = JSON.parse($window.localStorage.user);
+		$scope.shopInfo = function(){
+			
+		}
 		if($state.current.name == 'barbershopdashboard'){
 			shop.shopInfo().then(function(response){
 				$scope.chairs = response.data.user;
+				$window.localStorage.shop_id = response.data.user.shop[0]._id
+			})
+		}
+		$scope.shopDashboard = function(){
+			shop.shopInfo().then(function(response){
+				$scope.chairs = response.data.user;
+				$window.localStorage.shop_id = response.data.user.shop[0]._id
 			})
 		}
 		if($state.current.name == 'chairaction'){
@@ -19,13 +29,9 @@ angular.module('BarbrDoApp')
 			}
 		};
 		}
-		$scope.addChair = function() {
-			let passObj = {
-				id: obj._id
-			}
-			shop.addChair(passObj).then(function(response) {
-			})
-		}
+		$rootScope.$on("MyEvent", function(evt,data){ 
+			$scope.shopDashboard();
+		})
 		$scope.saveSplitFair = function(){
 			let obj = {
 				shop_percentage :$scope.slider.value,

@@ -197,16 +197,16 @@ exports.signupPost = function(req, res, next) {
     if (req.headers.device_longitude && req.headers.device_latitude) {
       saveData.latLong = [req.headers.device_longitude, req.headers.device_latitude];
     }
-    if(req.body.facebook){
-        saveData.isActive =   true;
-        saveData.is_verified = true;
+    if (req.body.facebook) {
+      saveData.isActive = true;
+      saveData.is_verified = true;
     }
 
     let email_encrypt = commonObj.encrypt(req.body.email);
     let generatedText = commonObj.makeid();
 
     saveData.randomString = generatedText;
-    
+
     User(saveData).save(function(err, data) {
       if (err) {
         return res.status(400).send({
@@ -286,25 +286,25 @@ exports.signupPost = function(req, res, next) {
  * Update profile information OR change password.
  */
 exports.accountPut = function(req, res, next) {
-  
-  console.log("body12222",req.body)
+
+  console.log("body12222", req.body)
   if ('password' in req.body) {
     req.checkHeaders('user_id', 'User ID is missing').notEmpty();
     req.assert('password', 'Password must be at least 6 characters long').len(6);
     req.assert('confirm', 'Passwords must match').equals(req.body.password);
   }
   let errors = req.validationErrors();
-  console.log("errors",errors);
+  console.log("errors", errors);
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",
       err: errors
     });
   }
- console.log("headers",req.headers.user_id);
+  console.log("headers", req.headers.user_id);
   User.findById(req.headers.user_id, function(err, user) {
     console.log(user);
-    console.log("body2",req.body)
+    console.log("body2", req.body)
     if ('password' in req.body) {
       user.password = req.body.password;
     } else {
@@ -747,10 +747,10 @@ exports.addChair = function(req, res) {
       err: errors
     });
   }
-  let validateId = objectID.isValid(req.body._id)
+  let validateId = objectID.isValid(req.body.id)
   if (validateId) {
     Shop.findOne({
-      _id: req.body._id
+      _id: req.body.id
     }, function(err, data) {
       if (err) {
         res.status(400).send({
@@ -768,7 +768,7 @@ exports.addChair = function(req, res) {
           let saveChairData = {};
           saveChairData.chairs = saveChair;
           Shop.update({
-            _id: req.body._id
+            _id: req.body.id
           }, {
             $push: {
               chairs: {
@@ -815,22 +815,43 @@ exports.removeChair = function(req, res) {
   let validateId = objectID.isValid(req.body.shop_id);
   let validateChairId = objectID.isValid(req.body.chair_id)
   if (validateId && validateChairId) {
-    Shop.update({
+    Shop.find({
       _id: req.body.shop_id,
       "chairs._id": req.body.chair_id
     }, {
-      $set: {
-        "chairs.$.isActive": false
-      }
-    }).exec(function(errInDelete, resultInDelete) {
-      if (errInDelete) {
+      "chairs.$": 1
+    }).exec(function(err, result) {
+      if (err) {
         res.status(400).send({
           msg: 'Error in deleting chair.'
         });
       } else {
-        res.status(200).send({
-          msg: 'Chair successfully deleted.'
-        });
+        console.log("response", JSON.stringify(result))
+        console.log(result[0].chairs[0].name)
+        if (result[0].chairs[0].barber_id) {
+          res.status(400).send({
+            msg: "You can't remove this chair.A Barber is already associated with this chair."
+          });
+        } else {
+          Shop.update({
+            _id: req.body.shop_id,
+            "chairs._id": req.body.chair_id
+          }, {
+            $set: {
+              "chairs.$.isActive": false
+            }
+          }).exec(function(errInDelete, resultInDelete) {
+            if (errInDelete) {
+              res.status(400).send({
+                msg: 'Error in deleting chair.'
+              });
+            } else {
+              res.status(200).send({
+                msg: 'Chair successfully deleted.'
+              });
+            }
+          })
+        }
       }
     })
   } else {

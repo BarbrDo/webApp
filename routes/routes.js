@@ -1667,7 +1667,7 @@ module.exports = function(app, express) {
  *    addChair:
  *      type: "object"
  *      properties:
- *       id:
+ *       _id:
  *         type: "string"
  *         default: "591be658b902f60fcc14a9d6"  
  *    deleteChair:

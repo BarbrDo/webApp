@@ -1103,9 +1103,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             restrict: 'A',
             link: function(scope, element, attrs) {
                 attrs.$observe('ngSrc', function(ngSrc) {
-                    console.log("ngSrc", ngSrc);
                     $http.get(ngSrc).success(function(response) {
-                        console.log("response in appjs", response);
                     }).error(function() {
                         // alert('image not exist');
                         element.attr('src', 'http://dhakaprice.com/images/No-image-found.jpg'); // set default image
@@ -1116,7 +1114,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
     })
     .run(['$rootScope', '$q', '$state', '$auth', '$window', 'toastr', function($rootScope, $q, $state, $auth, $window, toastr) {
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-            console.log(toState.url);
+           
             // Following if will allow only Landing site routes 
 
             if(toState.url =='/account/verification/:email/:random' || toState.url == '/reset/:token'){
@@ -1143,15 +1141,11 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 }
             }
             else if ($window.localStorage.user) {
-                console.log($window.localStorage.user);
                 let loggedInUser = JSON.parse($window.localStorage.user);
-                console.log("user_type", loggedInUser.user_type)
-
                 // Following if will allow only customer routes
                 if (toState.url == '/dashboard' || toState.url == '/shopContainsBarbers/:_id' || toState.url == '/home' || toState.url == '/book/:shop_id/:barber_id' || toState.url == '/profile' || toState.url == '/pending-confirmation/:_id' || toState.url == '/gallery' || toState.url == '/appointmentdetail/:_id' || toState.url == '/barber_info/:_id') {
                     var deferred = $q.defer();
                     if (loggedInUser.user_type == 'customer') {
-                        console.log("inside customer");
                         if (!$auth.isAuthenticated()) {
                             setTimeout(function() {
                                 deferred.resolve()
@@ -1181,7 +1175,6 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 if (toState.url == '/dashboardOfBarber' || toState.url == '/searchchair' || toState.url == '/manageservices' || toState.url == '/addservice' || toState.url == '/chairs/:_id' || toState.url == '/reschedule/:_id' || toState.url == '//appointmentdetails/:_id' || toState.url == '/appointmentdetailconfirm' || toState.url == '/sendinvitation' || toState.url == '/barberGallery' || toState.url == '/managerequest') {
                     var deferred = $q.defer();
                     if (loggedInUser.user_type == 'barber') {
-                        console.log("inside barber");
                         if (!$auth.isAuthenticated()) {
                             setTimeout(function() {
                                 deferred.resolve()
@@ -1211,7 +1204,6 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 if (toState.url == '/shopdashboard' || toState.url == '/chairaction/:id/:name' || toState.url == '/financialcenter' || toState.url == '/barbershop_manage_request' || toState.url == '/contactbarbrDO') {
                     var deferred = $q.defer();
                     if (loggedInUser.user_type == 'shop') {
-                        console.log("inside shop");
                         if (!$auth.isAuthenticated()) {
                             setTimeout(function() {
                                 deferred.resolve()

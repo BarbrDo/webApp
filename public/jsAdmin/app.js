@@ -76,7 +76,7 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
         })
 
        .state('editchair', {
-            url: '/chair/edit',
+            url: '/chair/edit/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/editchair.html"
             // resolve: {
@@ -100,7 +100,7 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
         })
 
         .state('barbdetail', {
-            url: '/barbdetail',
+            url: '/barbdetail/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/barberdetails.html"
             // resolve: {

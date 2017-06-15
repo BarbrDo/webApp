@@ -47,7 +47,7 @@
 
          <div class="col-sm-3 form-group">
         <label> New Password</label>
-        <input type="password" class="form-control"  name="password" data-ng-model="password" ng-minlength="5" ng-maxlength="20" maxlength="21"/>
+         <input type="password" class="form-control"  name="password" data-ng-model="password" ng-minlength="5" ng-maxlength="20" maxlength="21"/>
         <div class="validationError" ng-if="!updateButton" ng-show="editForm.password.$error.minlength">
               <span style="color:red ">password too Short (atleast 5 characters)</span>
               </div>
@@ -89,7 +89,7 @@
                  
       </form>
      <div class="clearfix text-center">
-      <button type="submit"  class="btn btn-primary" ng-click="updateshopowner(shopdetailview)" ui-sref="shopdetail">
+      <button type="submit"  class="btn btn-primary" ng-click="updateshopowner(shopdetailview)" ui-sref="shopdetail({id:shopdetailview._id})">
         <i class="fa fa-check" aria-hidden="true"></i>
         Save
       </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -141,7 +141,7 @@
                           
       </form>
      <div class="clearfix text-center">
-      <button type="submit"  class="btn btn-primary" ng-click="updateshop(shopdetailview.shopinfo[0])" ui-sref="shopdetail">
+      <button type="submit"  class="btn btn-primary" ng-click="updateshop(shopdetailview.shopinfo[0])" ui-sref="shopdetail({id:shopdetailview._id})" >
         <i class="fa fa-check" aria-hidden="true"></i>
         Save
       </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

@@ -1,17 +1,10 @@
 angular.module('BarbrDoApp')
-  .controller('HeaderCtrl', function($scope, $location, $window, $auth, $state,$rootScope,$uibModal,toastr) {
+  .controller('HeaderCtrl', function($scope, $location, $window, $auth, $state,$rootScope,$uibModal,toastr,shop) {
     $scope.user = {};
     $scope.messages = {};
     $scope.isActive = function(viewLocation) {
       return viewLocation === $location.path();
     };
-      
-  // $(document).ready(function() {
-  //   $.getJSON("http://jsonip.com/?callback=?", function(data) {
-  //     console.log(data);
-  //     alert("ip" + data.ip);
-  //   });
-  // });
 
     $scope.mainClass = function(){
       if ($auth.isAuthenticated()) {
@@ -21,7 +14,6 @@ angular.module('BarbrDoApp')
         return
       }
     }
-    // console.log($window.localStorage.user);
     if($window.localStorage.user){
       $scope.userInfo = JSON.parse($window.localStorage.user);
       $scope.imgPath = $window.localStorage.imagePath;
@@ -68,10 +60,6 @@ angular.module('BarbrDoApp')
     };
 
     $scope.login = function() {
-      // $('#bs-example-modal-lg').modal('hide');
-      // console.log("login is working");
-      // setTimeout(function(){
-            // },1000)
       $auth.login($scope.user)
         .then(function(response) {
           toastr.success('Welcome');
@@ -110,6 +98,15 @@ angular.module('BarbrDoApp')
           };
         });
     };
+
+    $scope.addChair = function(){
+       var obj = JSON.parse($window.localStorage.user);
+       var passObj = {_id:$window.localStorage.shop_id};
+        shop.addChair(passObj).then(function(response){
+          toastr.success('Chair successfully added.');
+          $rootScope.$emit("MyEvent",response);
+        })
+    }
 
     $scope.modelOpenFunction = function(){
       $rootScope.modalInstance = $uibModal.open({

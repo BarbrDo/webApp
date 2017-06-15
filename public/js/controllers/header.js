@@ -101,7 +101,7 @@ angular.module('BarbrDoApp')
 
     $scope.addChair = function(){
        var obj = JSON.parse($window.localStorage.user);
-       var passObj = {id:$window.localStorage.shop_id};
+       var passObj = {_id:$window.localStorage.shop_id};
         shop.addChair(passObj).then(function(response){
           toastr.success('Chair successfully added.');
           $rootScope.$emit("MyEvent",response);

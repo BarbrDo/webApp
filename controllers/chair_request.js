@@ -290,124 +290,125 @@ exports.acceptRequest = function(req, res) {
 			err: errors
 		});
 	}
-	let updateCollectionData = {};
-	let bookingEndDate = "";
-	let id = mongoose.Types.ObjectId(req.body._id);
-	chairRequest.aggregate([{
-		$match: {
-			_id: id
-		}
-	}, {
-		$lookup: {
-			from: "users",
-			localField: "barber_id",
-			foreignField: "_id",
-			as: "barberInformation"
-		}
-	}]).exec(function(err, result) {
-		if (err) {
-			return res.status(400).send({
-				msg: "error in finding",
-				err: err
-			});
-		} else {
-			if (!result) {
-				res.status(400).send({
-					'msg': "Data for this chair request is not present."
-				})
+	if (req.body.requestType == 'accept') {
+		let updateCollectionData = {};
+		let bookingEndDate = "";
+		let id = mongoose.Types.ObjectId(req.body._id);
+		chairRequest.aggregate([{
+			$match: {
+				_id: id
 			}
-			console.log(JSON.stringify(result))
-			console.log(result[0].chair_type);
-			var currentDate = "";
-			var futureMonth = "";
-			var futureMonthEnd = "";
-			if (result[0].chair_type == 'weekly') {
-				let book_date = ""
-				if (result[0].booking_date) {
-					 book_date = moment(result[0].booking_date).format("YYYY-MM-DD");
-				} else {
-					 book_date = moment().format("YYYY-MM-DD");
+		}, {
+			$lookup: {
+				from: "users",
+				localField: "barber_id",
+				foreignField: "_id",
+				as: "barberInformation"
+			}
+		}]).exec(function(err, result) {
+			if (err) {
+				return res.status(400).send({
+					msg: "error in finding",
+					err: err
+				});
+			} else {
+				if (!result) {
+					res.status(400).send({
+						'msg': "Data for this chair request is not present."
+					})
 				}
-				 bookingEndDate = moment(book_date).add(7, 'day')
-				updateCollectionData = {
-					"$set": {
-						"chairs.$.booking_start": book_date,
-						"chairs.$.booking_end": bookingEndDate,
-						"chairs.$.barber_id": result[0].barber_id,
-						"chairs.$.availability": "booked"
-					}
-				};
-			} else if (result[0].chair_type == 'percentage') {
-				
-				if (result[0].booking_date) {
-					currentDate = moment(result[0].booking_date).format("YYYY-MM-DD");
-					currentDate = moment(currentDate)
-					futureMonth = moment(currentDate).add(1, 'M');
-					futureMonthEnd = moment(futureMonth).endOf('month');
-					if (currentDate.date() != futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
-						futureMonth = futureMonth.add(1, 'd');
-					}
-				} else {
-					currentDate = moment().format("YYYY-MM-DD");
-					currentDate = moment(currentDate)
-					futureMonth = moment(currentDate).add(1, 'M');
-					futureMonthEnd = moment(futureMonth).endOf('month');
-					if (currentDate.date() != futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
-						futureMonth = futureMonth.add(1, 'd');
-					}
-				}
-				console.log("futureMonth",futureMonth);
-				console.log("book start",result[0].booking_date);
-				updateCollectionData = {
-					"$set": {
-						"chairs.$.booking_start": currentDate,
-						"chairs.$.booking_end": futureMonth,
-						"chairs.$.barber_id": result[0].barber_id,
-						"chairs.$.availability": "booked"
-					}
-				}
-			} else if (result[0].chair_type == 'monthly') {
+				console.log(JSON.stringify(result))
+				console.log(result[0].chair_type);
 				var currentDate = "";
 				var futureMonth = "";
 				var futureMonthEnd = "";
-				if (result[0].booking_date) {
-					currentDate = moment(result[0].booking_date).format("YYYY-MM-DD");
-					currentDate = moment(currentDate)
-					futureMonth = moment(currentDate).add(1, 'M');
-					futureMonthEnd = moment(futureMonth).endOf('month');
-					if (currentDate.date() != futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
-						futureMonth = futureMonth.add(1, 'd');
+				if (result[0].chair_type == 'weekly') {
+					let book_date = ""
+					if (result[0].booking_date) {
+						book_date = moment(result[0].booking_date).format("YYYY-MM-DD");
+					} else {
+						book_date = moment().format("YYYY-MM-DD");
+					}
+					bookingEndDate = moment(book_date).add(7, 'day')
+					updateCollectionData = {
+						"$set": {
+							"chairs.$.booking_start": book_date,
+							"chairs.$.booking_end": bookingEndDate,
+							"chairs.$.barber_id": result[0].barber_id,
+							"chairs.$.availability": "booked"
+						}
+					};
+				} else if (result[0].chair_type == 'percentage') {
+
+					if (result[0].booking_date) {
+						currentDate = moment(result[0].booking_date).format("YYYY-MM-DD");
+						currentDate = moment(currentDate)
+						futureMonth = moment(currentDate).add(1, 'M');
+						futureMonthEnd = moment(futureMonth).endOf('month');
+						if (currentDate.date() != futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
+							futureMonth = futureMonth.add(1, 'd');
+						}
+					} else {
+						currentDate = moment().format("YYYY-MM-DD");
+						currentDate = moment(currentDate)
+						futureMonth = moment(currentDate).add(1, 'M');
+						futureMonthEnd = moment(futureMonth).endOf('month');
+						if (currentDate.date() != futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
+							futureMonth = futureMonth.add(1, 'd');
+						}
+					}
+					console.log("futureMonth", futureMonth);
+					console.log("book start", result[0].booking_date);
+					updateCollectionData = {
+						"$set": {
+							"chairs.$.booking_start": currentDate,
+							"chairs.$.booking_end": futureMonth,
+							"chairs.$.barber_id": result[0].barber_id,
+							"chairs.$.availability": "booked"
+						}
+					}
+				} else if (result[0].chair_type == 'monthly') {
+					var currentDate = "";
+					var futureMonth = "";
+					var futureMonthEnd = "";
+					if (result[0].booking_date) {
+						currentDate = moment(result[0].booking_date).format("YYYY-MM-DD");
+						currentDate = moment(currentDate)
+						futureMonth = moment(currentDate).add(1, 'M');
+						futureMonthEnd = moment(futureMonth).endOf('month');
+						if (currentDate.date() != futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
+							futureMonth = futureMonth.add(1, 'd');
+						}
+					} else {
+						currentDate = moment().format("YYYY-MM-DD");
+						currentDate = moment(currentDate)
+						futureMonth = moment(currentDate).add(1, 'M');
+						futureMonthEnd = moment(futureMonth).endOf('month');
+						if (currentDate.date() != futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
+							futureMonth = futureMonth.add(1, 'd');
+						}
+					}
+					console.log("futureMonth", futureMonth);
+					console.log("book start", result[0].booking_date);
+					updateCollectionData = {
+						"$set": {
+							"chairs.$.booking_start": currentDate,
+							"chairs.$.booking_end": futureMonth,
+							"chairs.$.barber_id": result[0].barber_id,
+							"chairs.$.availability": "booked"
+						}
 					}
 				} else {
-					currentDate = moment().format("YYYY-MM-DD");
-					currentDate = moment(currentDate)
-					futureMonth = moment(currentDate).add(1, 'M');
-					futureMonthEnd = moment(futureMonth).endOf('month');
-					if (currentDate.date() != futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
-						futureMonth = futureMonth.add(1, 'd');
-					}
+					return res.status(400).send({
+						msg: "Chair type is not present."
+					})
 				}
-				console.log("futureMonth",futureMonth);
-				console.log("book start",result[0].booking_date);
-				updateCollectionData = {
-					"$set": {
-						"chairs.$.booking_start": currentDate,
-						"chairs.$.booking_end": futureMonth,
-						"chairs.$.barber_id": result[0].barber_id,
-						"chairs.$.availability": "booked"
-					}
-				}
-			} else {
-				return res.status(400).send({
-					msg: "Chair type is not present."
-				})
-			}
 
-			/*
-			1. In case of if type is weekly then booking_end date is one week ahead
-			2. In case of if type is percentage then booking_end date is one month ahead
-			3. In case of if type is monthly then booking_end date is one month ahead
-			*/
+				/*
+				1. In case of if type is weekly then booking_end date is one week ahead
+				2. In case of if type is percentage then booking_end date is one month ahead
+				3. In case of if type is monthly then booking_end date is one month ahead
+				*/
 				async.waterfall([
 					function(done) {
 						var saveData = {
@@ -417,11 +418,11 @@ exports.acceptRequest = function(req, res) {
 							release_date: bookingEndDate,
 							booking_date: result[0].booking_date
 						}
-						if(result[0].chair_type == 'percentage'){
+						if (result[0].chair_type == 'percentage') {
 							saveData.shop_percentage = result[0].shop_percentage
 							saveData.barber_percentage = result[0].barber_percentage
 						}
-						if(result[0].chair_type == 'weekly' || result[0].chair_type == 'monthly' ){
+						if (result[0].chair_type == 'weekly' || result[0].chair_type == 'monthly') {
 							saveData.amount = result[0].amount;
 						}
 						chairBook(saveData).save(function(err, output) {
@@ -474,6 +475,27 @@ exports.acceptRequest = function(req, res) {
 						})
 					}
 				])
-		}
-	})
+			}
+		})
+	}
+	else if(req.body.requestType =='decline'){
+		let id = mongoose.Types.ObjectId(req.body._id);
+		chairRequest.update({
+							_id: id
+						}, {
+							$set: {
+								status: "declined"
+							}
+						}, function(err, outt) {
+							if (err) {
+								return res.status(400).send({
+									msg: "Error in chair request collection."
+								})
+							} else {
+								return res.status(200).send({
+									msg: "Chair request is successfully declined."
+								})
+							}
+						})
+	}	
 }

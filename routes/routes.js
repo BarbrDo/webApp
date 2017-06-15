@@ -59,12 +59,13 @@ module.exports = function(app, express) {
     app.get('/api/v1/shops/chair',shopController.allShopsHavingChairs);// It will show all shops having number of chairs
     app.delete('/api/v1/shops/chair', userController.removeChair); // Remove chair from shop
     app.get('/api/v1/shops/barberchairrequests/:shop_id',chairRequestController.barberChairReqests); //Get all barber's request for chairs
-    app.post('/api/v1/shops/confirmchair', chairRequestController.bookChair);
+    // app.post('/api/v1/shops/confirmchair', chairRequestController.bookChair);
     app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
     app.put('/api/v1/shops/managechair',shopController.manageChair);
     app.put('/api/v1/shops/postchairtoallbarbers',shopController.postChairToAllBarbers);
     app.get('/api/v1/shops/chair/:shop_id',shopController.shopContainsChairs);
     app.put('/api/v1/shops/markchairasbooked/:chair_id',shopController.markChairAsBooked);
+    app.put('/api/v1/shops/acceptRequest',chairRequestController.acceptRequest); 
     
     //Customer
     app.get('/api/v1/allcustomers',customerController.listcustomers);
@@ -92,6 +93,9 @@ module.exports = function(app, express) {
     app.get('/api/v1/barber/services/:barber_id',barberServices.viewAllServiesOfBarber); // Show all services of barbers
     app.delete('/api/v1/barber/services/:barber_service_id',barberServices.deleteBarberService);// Delete barber service
     app.get('/api/v1/barber/particularAppointment/:appointment_id',barberServices.particularAppointment);
+    app.put('/api/v1/barber/accept_reject',barberServices.accept_reject); // Manage reqest in case of barber
+    app.get('/api/v1/barber/shopChairRequest/:barber_id',chairRequestController.shopChairRequest); // Manage request in barber module
+
     //Common
     app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of any customer/barber/shop
     app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);

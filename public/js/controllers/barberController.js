@@ -9,7 +9,6 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.pendingComplete = response.data.data;
-					console.log($scope.pendingComplete);
 				});
 		}
 		$scope.markers = [];
@@ -20,7 +19,7 @@ angular.module('BarbrDoApp')
 			},
 			zoom: 4
 		}
-		if ($state.current.name == 'appointmentDetail' || $state.current.name == 'appointmentDetailOfBarber') {
+		if ($state.current.name == 'appointmentDetail' || $state.current.name == 'appointmentDetailOfBarber' || $state.current.name == 'markComplete') {
 			$scope.loaderStart = true;
 			var obj = {
 				_id: $stateParams._id
@@ -101,8 +100,10 @@ angular.module('BarbrDoApp')
 			myArray.push(date)
 		}
 		$scope.selectDate = myArray;
-		$scope.setSelected = function(prop) {
+		// $scope.selectedDated = 0;
+		$scope.setSelected = function(prop,index) {
 			$scope.selectedDate = prop.toISOString().slice(0, 10);
+			$scope.selecteddd = index;
 		};
 		$scope.changeObject = function(id) {
 			$scope.chairId = id;

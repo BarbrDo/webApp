@@ -488,6 +488,40 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         })
 
+        .state('markComplete', {
+            url: '/markAsComplete/:_id',
+            params: {
+                _id: null,
+            },
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/mark_as_complete.html',
+                    controller: "barberCtrl"
+                },
+                "header": {
+                    templateUrl: 'partials/headerAfterLogin.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/barberSideBar.html'
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/barberController.js',
+                            'js/services/barber.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
+            }
+        })
+
         .state('searchchair', {
             url: '/searchchair',
             views: {
@@ -1103,7 +1137,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 } else {
                     setTimeout(function() {
                         deferred.resolve()
-                        $state.go(toState.url);
+                        $state.go(toState.name);
                     }, 0);
                     return deferred.promise;
                 }
@@ -1125,7 +1159,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         } else {
                             setTimeout(function() {
                                 deferred.resolve()
-                                $state.go(toState.url);
+                                 $state.go(toState.name);
                             }, 0);
                             return deferred.promise;
                         }
@@ -1155,7 +1189,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         } else {
                             setTimeout(function() {
                                 deferred.resolve()
-                                $state.go(toState.url);
+                                 $state.go(toState.name);
                             }, 0);
                             return deferred.promise;
                         }
@@ -1185,7 +1219,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         } else {
                             setTimeout(function() {
                                 deferred.resolve()
-                                $state.go(toState.url);
+                                 $state.go(toState.name);
                             }, 0);
                             return deferred.promise;
                         }

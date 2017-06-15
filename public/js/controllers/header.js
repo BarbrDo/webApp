@@ -23,7 +23,6 @@ angular.module('BarbrDoApp')
     }
     // console.log($window.localStorage.user);
     if($window.localStorage.user){
-      console.log($window.localStorage.user)
       $scope.userInfo = JSON.parse($window.localStorage.user);
       $scope.imgPath = $window.localStorage.imagePath;
     }

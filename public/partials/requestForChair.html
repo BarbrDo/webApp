@@ -19,8 +19,8 @@
         <h2>Select Date</h2>
         <div class="sldt">
             <ul>
-                <li ng-repeat = "dates in selectDate" ng-click="setSelected(dates)">
-                    <a href="">
+                <li ng-repeat = "dates in selectDate" ng-click="setSelected(dates,$index)">
+                    <a href="" ng-class="{active: $index == selecteddd}">
                         <p>{{dates | date: EEEE}}</p>
                         <!-- <p>{{dates | date: dd}}</p> -->
                     </a>

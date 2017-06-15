@@ -4,7 +4,7 @@
   <li class="breadcrumb-item active">Edit Barber</li>
 </ol>
 
-<div class="panel" ng-init="barbdetail(barberdetail)">
+<div class="panel">
   <div class="panel-heading">
     Edit Barber
   </div>
@@ -88,7 +88,7 @@
     
       </form>
      <div class="clearfix text-center">
-      <button type="submit"  class="btn btn-primary" ng-click="updatebarber(barberdetail)"  ui-sref="barbersdetail" >
+      <button type="submit"  class="btn btn-primary" ng-click="updatebarber(barberdetail)"  ui-sref="barbersdetail({id:barberdetail._id})" >
         <i class="fa fa-check" aria-hidden="true"></i>
         <span >Save
       </button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

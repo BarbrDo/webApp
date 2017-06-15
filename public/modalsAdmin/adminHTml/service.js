@@ -24,10 +24,14 @@ angular.module('barbrdo').factory('Admin', function($http) {
       }
     },
     shopDetail: function(data) {
-      return $http.get('/api/v1/shopdetail/' + data._id, data);
+      return $http.get('/api/v1/shopdetail/' + data, data);
     },
-    viewShopDetail: function(data) {
-      return $http.get('/api/v1/viewshopdetail/' + data.user_id, data);
+    chairDetail: function(data) {
+      console.log(data);
+      return $http.get('/api/v1/chairdetail/' + data, data);
+    },
+    custDetail: function(data) {
+      return $http.get('/api/v1/custdetail/' + data, data);
     },
     updateCustomer: function(data) {
       return $http({
@@ -52,7 +56,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
       return $http.put('/api/v1/deactivecust/' + data._id, data);
     },
     barberDetail: function(data) {
-      return $http.get('/api/v1/barberdetail/' + data._id, data);
+      return $http.get('/api/v1/barberdetail/' + data, data);
     },
     activateCustomer: function(data) {
       return $http.put('/api/v1/activatecust/' + data._id, data);
@@ -122,12 +126,23 @@ angular.module('barbrdo').factory('Admin', function($http) {
         },
         data: data
       });
-      return $http.delete('', data);
+    },
+    updateChair: function(data,id) {
+      return $http({
+        method: 'PUT',
+        url: '/api/v1/shops/managechair',
+        headers: {
+          'user_id': id
+        },
+        data: data
+      });
     },
     deleteBarber: function(data) {
+      console.log("data",data)
       return $http.put('/api/v1/deletebarber/' + data._id, data);
     },
     undeleteBarber: function(data) {
+      console.log("data",data)
       return $http.put('/api/v1/undeletebarber/' + data._id, data);
     },
     deleteShop: function(data) {

@@ -1,15 +1,16 @@
 <ol class="breadcrumb">
   <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
-  <li class="breadcrumb-item active">Customer Appointments</li>
+  <li class="breadcrumb-item"><a ui-sref="customers">Customers</a></li>
+  <li class="breadcrumb-item active">View Customers's Appointments</li>
 </ol>
 
 <div class="panel" ng-init="custAppoint()">
   <div class="panel-heading">
-     All Customers Appointments
+    {{customerdetail.first_name}}  {{customerdetail.last_name}}'s Appointments 
   </div>
   <div class="panel-body">
                     <!-- RAHUL  CODE -->
-       <!--  <ul class="nav nav-pills left" style="margin-left: 500px;">
+        <ul class="nav nav-pills left" style="margin-left: 500px;">
           <li class="dropdown active span8" >
             <a class="dropdown-toggle"  data-toggle="dropdown" style="background-color: #000000;">
              Upcoming Appointments<span class="caret"></span></a>
@@ -18,7 +19,7 @@
             <li><a ng-click="showme=false">Upcoming</a></li>                          
                     </ul>
                 </li>
-            </ul> -->
+            </ul>
 <br>
                         <!-- Page Content -->
        <div id="page-content-wrapper" >
@@ -32,7 +33,7 @@
                         <input ng-model="query[queryBy]" placeholder="Search for..." ng-change="shoppageChanged()"/>          
                     </div> 
                 </div>
-            <!--  <span  ng-show="showme">
+             <span  ng-show="showme">
 <table class="table" >
     <thead>
         <tr >
@@ -73,19 +74,19 @@
 </tr>
 </tbody>
 </table>
-</span> -->
+</span>
 
-<!-- 
-<span ng-hide="showme"> -->
+
+<span ng-hide="showme">
 <table class="table" >
     <thead>
         <tr >
-            <th style="font-size: 15px;" ><a ng-click="Sort('customer_name')" class="name" style="color: #ffffff;" >Customer<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-            <th style="font-size: 15px;" ><a ng-click="Sort('barber_name')" class="name" style="color: #ffffff;" >Barber<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-            <th style="font-size: 15px;" ><a ng-click="Sort('shop_name')" class="name" style="color: #ffffff;" >Shop<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-            <th style="font-size: 15px;" ><a ng-click="Sort('payment_status')" class="name" style="color: #ffffff;" >Payment Status<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-            <th style="font-size: 15px;" ><a ng-click="Sort('appointment_status')" class="name" style="color: #ffffff;" >Appointment Status<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-            <th style="font-size: 15px;" ><a ng-click="Sort('appointment_date')" class="name" style="color: #ffffff;" >Appointment Date<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+            <th style="font-size: 15px;" ><a ng-click="Sort('customer_name')" class="name" style="color: #ffffff;" >Customer<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 15px;" ><a ng-click="Sort('barber_name')" class="name" style="color: #ffffff;" >Barber<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 15px;" ><a ng-click="Sort('shop_name')" class="name" style="color: #ffffff;" >Shop<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 15px;" ><a ng-click="Sort('payment_status')" class="name" style="color: #ffffff;" >Payment Status<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 15px;" ><a ng-click="Sort('appointment_status')" class="name" style="color: #ffffff;" >Appointment Status<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 15px;" ><a ng-click="Sort('appointment_date')" class="name" style="color: #ffffff;" >Appointment Date<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
             <th style="font-size: 15px;" >View Detail</th>
 
             
@@ -118,7 +119,7 @@
 </tr>
 </tbody>
 </table>
-<!-- </span> -->
+</span>
 
 </div>
 <div>

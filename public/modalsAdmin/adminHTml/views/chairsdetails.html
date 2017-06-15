@@ -10,10 +10,7 @@
     Chair Details
   </div>
   <div class="panel-body">
-      <div style="margin-left: 900px;">              <!-- RAHUL  CODE -->
-<span class="glyphicon glyphicon-search" style="color:purple"></span>
-<input ng-model="query[queryBy]" placeholder="Search for..."  />        
-     </div>
+     
    <form>
     <!-- Page Content -->
    <span data-toggle="modal" data-target="#added">                    
@@ -26,56 +23,37 @@
 <table class="table"><br>
     <thead>
         <tr >
-            <th style="font-size: 20px;color: #ffffff;"><a ng-click="Sort('name')" class="name"  style="color: #ffffff;">NAME<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
-            <th style="font-size: 20px;"><a ng-click="Sort('city')" class="email"  style="color: #ffffff;">AVAILABILITY<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
-            <th style="font-size: 20px;"><a ng-click="Sort('chairs.length')" class="mobile_number"  style="color: #ffffff;">TYPE <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
-             <th style="font-size: 20px;"><a ng-click="Sort('chairs.length')" class="mobile_number"  style="color: #ffffff;">AMOUNT <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+            <th style="font-size: 20px;color: #ffffff;"><a ng-click="Sort('name')" class="name"  style="color: #ffffff;">NAME<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+            <th style="font-size: 20px;"><a ng-click="Sort('availability')" class="availability"  style="color: #ffffff;">AVAILABILITY<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+            <th style="font-size: 20px;"><a ng-click="Sort('type')" class="type"  style="color: #ffffff;">TYPE <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+             <th style="font-size: 20px;"><a ng-click="Sort('amount')" class="amount"  style="color: #ffffff;">AMOUNT <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
 
             <th style="font-size: 20px;">ACTION</th>
         </tr>
     </thead>
     <tbody>
         <tr data-ng-repeat="chairs in chairdetails  | filter:query | orderBy:sort:reverse | limitTo:quantity " data-ng-class="{danger:!chairs.active}">
-        <td><span ng-if="!chairs.name" data-ng-hide="editMode">NOT SPECIFIED</span>
-            <span data-ng-hide="editMode">{{chairs.name}} </span>
-            <input type="text" data-ng-show="editMode" data-ng-model="chairs.name" placeholder="name" data-ng-required />
+        <td>
+            <a data-toggle="tooltip" title="View, edit chairs detailed info" ui-sref="editchair({id:chairs._id})">{{chairs.name}} </a>
         </td>
-        <td><span ng-if="!chairs.availability" data-ng-hide="editMode">NOT SPECIFIED</span>
+        <td>
             <span data-ng-hide="editMode">{{chairs.availability}}</span>
-         <input type="text" data-ng-show="editMode" data-ng-model="chairs.availability" placeholder="City" data-ng-required />
         </td>
-         <td><span ng-if="!chairs.type" data-ng-hide="editMode">NO TYPE</span>
+         <td>
            <span data-ng-hide="editMode" >{{chairs.type}} </span>
-            <input type="text"  data-ng-show="editMode" data-ng-model="chairs.type" placeholder="Type Of Chair" data-ng-required />
         </td>
-         <td ><span ng-if="!chairs.amount" data-ng-hide="editMode">NO AMOUNT</span>
+         <td >
            <span data-ng-hide="editMode" data-toggle="modal" data-target="#chairs">{{chairs.amount}} </span>
-            <input type="text"  data-ng-show="editMode" data-ng-model="chairs.amount" placeholder="Amount" data-ng-required />
         </td>
         <td>
            
              <span data-toggle="modal" data-target="#confirm">
-             <a type="submit" ng-click="deleteconfirmchair(delchair)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
+             <a type="submit" ng-click="deleteconfirmchair(chair)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
         </td>
 </tr>
 </tbody>
 </table>
  </div>
- <div>
-<div class="col-sm-6">
-     <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="shoppageChanged()"></ul>       
-          </div>
-<br>
-<label>No. of Enteries</label>
-            <select ng-model="quantity">
-              <option value="">All</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select>
-</div>
      </span>    
              <!-- Modal -->
   <div class="modal " id="added" role="dialog">
@@ -91,7 +69,7 @@
           <p> Chair is Added successfully</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" ui-sref="shops">OK</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal"  onClick="history.go(0)">OK</button>
         </div>
       </div>
       
@@ -134,7 +112,7 @@
           </p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deletechair(delchair)" data-toggle="modal" data-target="#myAnotherModal">DELETE</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deletechair(chair)" data-toggle="modal" data-target="#myAnotherModal">DELETE</button>
           <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
         </div>
       </div>

@@ -78,7 +78,6 @@ var shopSchema = new mongoose.Schema({
                 type: Schema.Types.ObjectId,
                 ref: 'users'
             },
-            barber_name: String,
             isActive: {
                 type: Boolean,
                 default: true

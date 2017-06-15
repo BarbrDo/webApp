@@ -6,7 +6,7 @@
   <li class="breadcrumb-item active">View Shop Detail</li>
 </ol>
 
-<div class="container" >
+<div class="container" onload="history.go(0)">
   
   <div>
      <font color="green">
@@ -23,11 +23,11 @@
                     <h4 class="group inner list-group-item-heading" align="center"><b>
                         Shop Details</b></h4>
                     <table class="table table-striped" >
-                    <tr ui-sref="barbdetail" ng-click="shopdetail(shop.shopsdata)" style="cursor:pointer" data-toggle="tooltip" title="View Barbers in the Shop">
+                    <tr ui-sref="barbdetail({id:shopdetailview.shopinfo[0].user_id})"  style="cursor:pointer" data-toggle="tooltip" title="View Barbers in the Shop">
                         <td><h5>BARBERS </h5></td>
                         <td>  {{totalbarbers.totalBarbers}}</td>
                     </tr>
-                    <tr ui-sref="chairs({id:shop.shop_id})" ng-click="shopdetail(shop.shopsdata)" style="cursor:pointer" data-toggle="tooltip" title="View Chairs in the Shop">
+                    <tr ui-sref="chairs({id:shopdetailview.shopinfo[0].user_id})"  style="cursor:pointer" data-toggle="tooltip" title="View Chairs in the Shop">
                         <td><h5>CHAIRS </h5></td>
                         <td>  {{shopdetailview.shopinfo[0].chairs.length}}</td>
                     </tr>
@@ -123,10 +123,10 @@
                       
                        
 
-                    <div class="row">
+                    <div class="row" >
                         
-                        <div class="col-xs-12 col-md-6" style="margin-left: 450px;" n><br><br>
-                            <button class="btn btn-success" ui-sref="editshop({id:shopdetailview._id})" >Edit Details</button>
+                        <div class="col-xs-12 col-md-12" ><br><br>
+                            <button class="btn btn-success" align="center" ui-sref="editshop({id:shopdetailview._id})" >Edit Details</button>
                     </div>
                 </div>
             </div>

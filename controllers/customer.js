@@ -1,12 +1,13 @@
 var User = require('../models/User');
 var shop = require('../models/shop');
-// var constantObj = require('./../constants.js');
+let mongoose = require('mongoose');
 let constantObj = require('./../constants.js');
 
 exports.listcustomers = function(req, res) {
     var page = parseInt(req.query.page) || 1;
     var count = parseInt(req.query.count) || 10;
     var skipNo = (page - 1) * count;
+    console.log("skip",page)
     var query = {};
     query.user_type = "customer"
     var searchStr = ""
@@ -103,35 +104,55 @@ exports.listcustomers = function(req, res) {
         }
     })
     
-    
-    
-    /*
-    User.aggregate([{
-        $match: query
-    }, {
-        "$skip": skipNo
-    }, {
-        "$limit": rcount
-    }]).exec(function(err, result) {
-
-        var length = result.length;
-        if(err){
-                res.status(400).send({
-                "msg": constantObj.messages.errorRetreivingData,
-                "err": err
-            });
-        }else{
-            res.status(200).send({
-                "msg": constantObj.messages.successRetreivingData,
-                "data": result,
-                "count": length
-            })
-        }
-    })*/
 
 };
 
+exports.custdetail = function(req, res) {
+    req.checkParams("cust_id", "cust_id cannot be blank").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    var query = {};
+    query._id = mongoose.Types.ObjectId(req.params.cust_id);
+    console.log("custdet",query._id)
+    query.user_type = "customer";
+            User.aggregate([{
+                $match: query
+            }, {
+                $project: {
+            _id: "$_id",
+            first_name: "$first_name",
+            last_name: "$last_name",
+            email: "$email",
+            mobile_number: "$mobile_number",
+            ratings: "$ratings",
+            created_date: "$created_date",
+            isDeleted: "$isDeleted",
+            isActive: "$isActive",
+            is_verified: "$is_verified",
+            gallery: "$gallery",
+            latLong: "$latLong",
+             picture: "$picture"
+        }
 
+            }]).exec(function(err, result) {
+                if(err){
+                        res.status(400).send({
+                        "msg": constantObj.messages.errorRetreivingData,
+                        "err": err
+                    });
+                }else{
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": result
+                    })
+                }
+            })
+};
 
 exports.countbarber = function(req, res) {
     User.find({
@@ -419,7 +440,7 @@ exports.deletebarber = function(req, res) {
         _id: req.params.barber_id
     }, {
         $set: {
-            isDeleted: false
+            isDeleted: true
         }
     }, function(err, count) {
         User.find({
@@ -437,7 +458,7 @@ exports.undeletebarber = function(req, res) {
         _id: req.params.barber_id
     }, {
         $set: {
-            isDeleted: true
+            isDeleted: false
         }
     }, function(err, count) {
         User.find({

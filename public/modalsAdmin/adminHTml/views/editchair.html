@@ -1,0 +1,91 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+  <li class="breadcrumb-item"><a ui-sref="shops">Shops</a></li>
+   <li class="breadcrumb-item">View chairdet</li>
+  <li class="breadcrumb-item active">Manage chairdet</li>
+</ol>
+
+<div class="panel">
+  <div class="panel-heading">
+    Manage Chair
+  </div>
+  <div class="panel-body">
+     <div class="title">
+      Chair Information
+     </div>
+     <form name="editForm">
+     <div class="clearfix">
+      <div class="col-sm-4 form-group">
+        <label>Name</label>
+        <input type="text" class="form-control" name="name" data-ng-model="chairdet.name" required/>
+         <span style="color:red;" ng-show="editForm.name.$error.required">Chair Name cannot left blank</span>
+      </div>
+      <div class="col-sm-4 form-group">
+        <label>Availability</label>
+        <input type="text" class="form-control" name="availability" data-ng-model="chairdet.availability" required/>
+      </div>
+      <div class="col-sm-4 form-group">
+        <label>Barber </label>
+        <input type="text" class="form-control"  data-ng-model="chairdet.barber_name" required />
+      </div>
+                
+     </div>
+      <div class="clearfix">        
+      <div class="col-sm-4 form-group">
+        <label>Booking Start</label>
+        <input type="text" class="form-control"  data-ng-model="chairdet.booking_start | date: dd/mm/yyyy"/>
+                  </div>
+
+         <div class="col-sm-4 form-group">
+        <label>Bookind End</label>
+        <input  type="text" data-ng-model="chairdet.booking_end | date: dd/mm/yyyy"  class="form-control">
+                  </div>    
+
+           <div class="col-sm-4 form-group">
+        <label>Type</label>
+        <input  type="text" data-ng-model="chairdet.type"  class="form-control">
+                  </div>         
+        
+      </div>
+      
+      <div class="clearfix">        
+         <div class="col-sm-4 form-group">
+        <label>Shop Percentage</label><br>
+        <input type="text" data-ng-model="chairdet.shop_percentage"  class="form-control">
+        </div>  
+        <div class="col-sm-4 form-group">
+        <label>Barber Percentage</label><br>
+        <input type="text" data-ng-model="chairdet.barber_percentage"  class="form-control">
+        </div> 
+        <div class="col-sm-4 form-group">
+        <label>Amount</label><br>
+        <input type="text" data-ng-model="chairdet.amount"  class="form-control" >
+        </div>       
+        
+      </div>
+      <div class="clearfix">   
+      <div class="col-sm-4 form-group">
+        <label>Is Active</label><br>
+        <input type="radio" ng-model="activeSelected" name="active" value="true" ng-checked="chairdet.isActive==true">YES&nbsp;&nbsp;&nbsp;<input type="radio" name="active" value="false" ng-model="activeSelected" ng-checked="chairdet.isActive == false">NO
+        </div>
+        </div>
+ </div>
+    
+                 
+     </div>
+    
+      </form>
+     <div class="clearfix text-center">
+      <button type="submit"  class="btn btn-primary" ng-click="updatechair(chairdet,shopdetailview.shopinfo[0].user_id)">
+        <i class="fa fa-check" aria-hidden="true"></i>
+        <span >Save
+      </button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+       <button type="reset" class="btn btn-grey">
+        <i class="fa fa-times" aria-hidden="true"></i>
+        <span>Cancel</span>
+      </button>
+     </div>
+  </div>
+</div>
+
+

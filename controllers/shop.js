@@ -300,7 +300,7 @@ exports.allShopsHavingChairs = function(req, res) {
 
 exports.setChairPercentage = function(req, res) {
     req.checkHeaders('user_id', 'Shop id is required.').notEmpty();
-    req.assert('chair_id', 'Chair id is required.').notEmpty();
+    req.assert('_id', 'Chair id is required.').notEmpty();
     req.assert('shop_percentage', 'Shop percentage is required.').notEmpty();
     req.assert('barber_percentage', 'Barber percentage is required.').notEmpty();
     let errors = req.validationErrors();
@@ -320,7 +320,7 @@ exports.setChairPercentage = function(req, res) {
     };
     shop.update({
         "user_id": req.headers.user_id,
-        "chairs._id": req.body.chair_id
+        "chairs._id": req.body._id
     }, updateCollectionData, function(err, result) {
         if (err) {
             return res.status(400).send({
@@ -336,9 +336,11 @@ exports.setChairPercentage = function(req, res) {
 
 exports.weeklyMonthlyChair = function(req, res) {
     req.checkHeaders('user_id', 'Shop id is required.').notEmpty();
-    req.assert('chair_id', 'Chair id is required.').notEmpty();
+    req.assert('_id', 'Chair id is required.').notEmpty();
     req.assert('type', 'Type is required.').notEmpty();
     req.assert('amount', 'Amount is required.').notEmpty();
+    console.log("headers1", req.headers.user_id);
+    console.log("chair id1", req.body._id);
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -354,10 +356,13 @@ exports.weeklyMonthlyChair = function(req, res) {
             "chairs.$.barber_percentage": undefined,
         }
     };
+    console.log("headers", req.headers.user_id);
+    console.log("chair id", req.body._id);
     shop.update({
         "user_id": req.headers.user_id,
-        "chairs._id": req.body.chair_id
+        "chairs._id": req.body._id
     }, updateCollectionData, function(err, result) {
+        console.log("result", result);
         if (err) {
             return res.status(400).send({
                 "msg": constantObj.messages.userStatusUpdateFailure
@@ -451,25 +456,24 @@ exports.listshops = function(req, res) {
     if (req.query.search) {
         searchStr = req.query.search;
     }
-
     if (searchStr) {
         query.$or = [{
+            first_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            last_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            email: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
             name: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            city: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            state: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            address: {
                 $regex: searchStr,
                 '$options': 'i'
             }
@@ -516,7 +520,14 @@ exports.listshops = function(req, res) {
 };
 
 exports.shopdetail = function(req, res) {
-
+    req.checkParams("user_id", "user_id cannot be blank").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
     var query = {};
     query._id = mongoose.Types.ObjectId(req.params.user_id);
     user.aggregate([{
@@ -528,8 +539,24 @@ exports.shopdetail = function(req, res) {
             foreignField: "user_id",
             as: "shopinfo"
         }
+    }, {
+        $project: {
+            _id: "$_id",
+            first_name: "$first_name",
+            last_name: "$last_name",
+            email: "$email",
+            mobile_number: "$mobile_number",
+            created_date: "$created_date",
+            ratings: "$ratings",
+            isDeleted: "$isDeleted",
+            isActive: "$isActive",
+            is_verified: "$is_verified",
+            user_type: "$user_type",
+            latLong: "$latLong",
+            picture: "$picture",
+            shopinfo: "$shopinfo"
+        }
     }]).exec(function(err, result) {
-        var length = result.length;
         if (err) {
             res.status(400).send({
                 "msg": constantObj.messages.userStatusUpdateFailure,
@@ -538,29 +565,29 @@ exports.shopdetail = function(req, res) {
         } else {
             res.status(200).send({
                 "msg": constantObj.messages.successRetreivingData,
-                "data": result,
-                "count": length
+                "data": result
             })
         }
     })
 };
 
-exports.viewshopdetail = function(req, res) {
 
-    var query = {};
-    query._id = mongoose.Types.ObjectId(req.params.user_id);
-
-    user.aggregate([{
-        $match: query
+exports.chairdetail = function(req, res) {
+    req.checkParams("chair_id", "chair_id cannot be blank").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    var query = mongoose.Types.ObjectId(req.params.chair_id);
+    console.log("chair id", req.params.chair_id);
+    shop.find({
+        "chairs._id": query
     }, {
-        $lookup: {
-            from: "shops",
-            localField: "_id",
-            foreignField: "user_id",
-            as: "shopinfo"
-        }
-    }]).exec(function(err, result) {
-        var length = result.length;
+        "chairs.$": 1
+    }, function(err, result) {
         if (err) {
             res.status(400).send({
                 "msg": constantObj.messages.userStatusUpdateFailure,
@@ -569,15 +596,21 @@ exports.viewshopdetail = function(req, res) {
         } else {
             res.status(200).send({
                 "msg": constantObj.messages.successRetreivingData,
-                "data": result,
-                "count": length
+                "data": result
             })
         }
     })
 };
 
 exports.barberdetail = function(req, res) {
-
+    req.checkParams("barber_id", "barber_id cannot be blank").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
     var query = {};
     query._id = mongoose.Types.ObjectId(req.params.barber_id);
     query.user_type = "barber";
@@ -625,7 +658,7 @@ exports.barberdetail = function(req, res) {
 
 exports.availableBarber = function(req, res) {
     var page = parseInt(req.query.page) || 1;
-    var count = parseInt(req.query.count) || 10;
+    var count = parseInt(req.query.count) || 30;
     var skipNo = (page - 1) * count;
     var query = {};
     query.user_type = "barber"

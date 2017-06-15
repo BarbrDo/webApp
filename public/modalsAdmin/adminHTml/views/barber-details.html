@@ -21,7 +21,7 @@
                         Shop Associated With</b></h4>
                         <span ng-if="!barberdetail.name[0]" ><br><br><br>Not Assiciated With Any Shop</span>
                     <table class="table table-striped" ng-if="barberdetail.name[0]">
-                    <tr  style="cursor:pointer" data-toggle="tooltip" title="Go on Shop Detail" ng-click="viewshop(barberdetail.shop[0])" ui-sref="shopdetail({id:barberdetail.shop[0]._id})">
+                    <tr  style="cursor:pointer" data-toggle="tooltip" title="Go on Shop Detail"  ui-sref="shopdetail({id:barberdetail.shop[0].user_id})">
                         <td width="50%"><h5>SHOPNAME </h5></td>
                         <td>  {{barberdetail.name[0]}}</td>
                     </tr>

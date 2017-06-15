@@ -1,6 +1,9 @@
 angular.module('BarbrDoApp')
   .factory('shop', function($http,$window) {
-    var obj = JSON.parse($window.localStorage.user);
+    var obj = {};
+    if($window.localStorage.user){
+       obj = JSON.parse($window.localStorage.user);
+    }
     return {
       addChair: function(data) {
         return $http({

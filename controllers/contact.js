@@ -27,13 +27,13 @@ exports.contactPost = function(req, res) {
       err: errors
     });
   }
-  var auth = {
+ let auth = {
     auth: {
       api_key: process.env.MAILGUN_APIKEY,
       domain: process.env.MAILGUN_DOMAIN
     }
   }
-  var nodemailerMailgun = nodemailer.createTransport(mg(auth));
+  let nodemailerMailgun = nodemailer.createTransport(mg(auth));
 
   var mailOptions = {
     from: req.body.name + ' ' + '<' + req.body.email + '>',

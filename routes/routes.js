@@ -61,11 +61,10 @@ module.exports = function(app, express) {
     app.get('/api/v1/shops/barberchairrequests/:shop_id',chairRequestController.barberChairReqests); //Get all barber's request for chairs
     app.post('/api/v1/shops/confirmchair', chairRequestController.bookChair);
     app.get('/api/v1/shops/barbers/:shop_id', shopController.shopContainsBarber);//show all barber related to shop
-    app.put('/api/v1/shops/chairPercentage',shopController.setChairPercentage);
-    app.put('/api/v1/shops/weeklyMonthlyChair',shopController.weeklyMonthlyChair);
+    app.put('/api/v1/shops/managechair',shopController.manageChair);
     app.put('/api/v1/shops/postchairtoallbarbers',shopController.postChairToAllBarbers);
     app.get('/api/v1/shops/chair/:shop_id',shopController.shopContainsChairs);
-    app.put('/api/v1/shops/markChairAsBooked',shopController.markChairAsBooked);
+    app.put('/api/v1/shops/markchairasbooked/:chair_id',shopController.markChairAsBooked);
     
     //Customer
     app.get('/api/v1/allcustomers',customerController.listcustomers);
@@ -262,12 +261,59 @@ module.exports = function(app, express) {
  *       responses:
  *         200:
  *           description: "successful operation"
- *   /shops:
+ *   /allshops:
  *     get:
  *       tags:
  *       - "shop"
- *       summary: "Shops Listing"
- *       description: "List all the shops based on radius search"
+ *       summary: "All shops registered in system"
+ *       description: "All shops registered in system"
+ *       operationId: "allshops"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "query"
+ *         name: "search"
+ *         description: "Search by Shop name"
+ *         required: false
+ *         type: string
+ *         format: string
+ *       - in: "query"
+ *         name: "count"
+ *         description: "Pass number of records want to fetch"
+ *         required: false
+ *         type: number
+ *         format: number
+ *       - in: "query"
+ *         name: "page"
+ *         description: "Pagination"
+ *         required: false
+ *         type: number
+ *         format: number
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *   /shops:          
+ *     get:
+ *       tags:
+ *       - "shop"
+ *       summary: "List barber associated shops only"
+ *       description: "List barber associated shops only"
  *       operationId: "shops"
  *       produces:
  *       - "application/json"
@@ -342,8 +388,8 @@ module.exports = function(app, express) {
  *     post:
  *       tags:
  *       - "shop"
- *       summary: "Add chair"
- *       description: "Add chair to shop"
+ *       summary: "Add chair in shop"
+ *       description: "Add chair in shop"
  *       operationId: "addChair"
  *       produces:
  *       - "application/json"
@@ -383,8 +429,8 @@ module.exports = function(app, express) {
  *     delete:
  *       tags:
  *       - "shop"
- *       summary: "Delete chair"
- *       description: "Delete chair from shop"
+ *       summary: "Remove chair from shop"
+ *       description: "Remove chair from shop"
  *       operationId: "deleteChair"
  *       produces:
  *       - "application/json"
@@ -424,8 +470,8 @@ module.exports = function(app, express) {
  *     get:
  *       tags:
  *       - "shop"
- *       summary: "Barber can see shops having chairs"
- *       description: "Barber can see shops having chairs"
+ *       summary: "It will show all shops having available chairs"
+ *       description: "It will show all shops having available chairs"
  *       operationId: "showShops"
  *       produces:
  *       - "application/json"
@@ -466,8 +512,8 @@ module.exports = function(app, express) {
  *     get:
  *       tags:
  *       - "shop"
- *       summary: "Get Barber's request for chair"
- *       description: "Get Barber's request for chair"
+ *       summary: "Get all barber's request for chairs"
+ *       description: "Get all barber's request for chairs"
  *       operationId: "barberChairReqests"
  *       produces:
  *       - "application/json"
@@ -548,6 +594,133 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"      
+ *   /shops/managechair:
+ *     put:
+ *       tags:
+ *       - "shop"
+ *       summary: "Manage chair"
+ *       description: "Manage chair"
+ *       operationId: "managechair"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be657b902f60fcc14a9d5"
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Created shop object"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/managechair"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *   /shops/postchairtoallbarbers:
+ *     put:
+ *       tags:
+ *       - "shop"
+ *       summary: "Post chair to all barbers"
+ *       description: "Post chair to all barbers"
+ *       operationId: "postchairtoallbarbers"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be657b902f60fcc14a9d5"
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Created shop object"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/postchairtoallbarbers"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *   /shops/markchairasbooked/{chair_id}:
+ *     put:
+ *       tags:
+ *       - "shop"
+ *       summary: "Post chair to all barbers"
+ *       description: "Post chair to all barbers"
+ *       operationId: "postchairtoallbarbers"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591be657b902f60fcc14a9d5"
+ *       - in: "path"
+ *         name: "chair_id"
+ *         description: "Chair ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "591bef92ae46f6126981f8c3"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
  *   /appointment:
  *     post:
  *       tags:
@@ -1502,6 +1675,31 @@ module.exports = function(app, express) {
  *       shop_id:
  *         type: "string"
  *         default: "591be658b902f60fcc14a9d6"
+ *    managechair:
+ *      type: "object"
+ *      properties:
+ *       chair_id:
+ *         type: "string"
+ *         default: "591bef92ae46f6126981f8c3"  
+ *       type:
+ *         type: "string"
+ *         default: "percentage" 
+ *         text: "percentage | weekly | monthly"
+ *       barber_percentage:
+ *         type: "number"
+ *         default: "50"
+ *       shop_percentage:
+ *         type: "number"
+ *         default: "50"
+ *       amount:
+ *         type: "number"
+ *         default: "50"   
+ *    postchairtoallbarbers:
+ *      type: "object"
+ *      properties:
+ *       chair_id:
+ *         type: "string"
+ *         default: "5901f19c42207d26eaefb764"
  *    appointment:
  *      type: "object"
  *      properties:

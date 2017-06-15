@@ -906,8 +906,8 @@ exports.shopAcceptChairRequest = function(req, res) {
 }
 
 exports.markChairAsBooked = function(req, res) {
-    req.checkHeaders('user_id', 'Shop id is required.').notEmpty();
-    req.assert('chair_id', 'Chair id is required.').notEmpty();
+    req.checkHeaders('user_id', 'User id is required.').notEmpty();
+    req.checkParams('chair_id', 'Chair id is required.').notEmpty();
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -916,22 +916,84 @@ exports.markChairAsBooked = function(req, res) {
         });
     }
     let updateCollectionData = {
-        "$set": {
+        $unset: {
+            "chairs.$.shop_percentage": "",
+            "chairs.$.barber_percentage": "",
+            "chairs.$.amount": ""
+        },
+        $set: {
             "chairs.$.type": 'self',
             "chairs.$.availability": 'booked'
         }
     };
     shop.update({
         "user_id": req.headers.user_id,
+        "chairs._id": req.params.chair_id
+    }, updateCollectionData, function(err, result) {
+        if (err) {
+            return res.status(400).send({
+                "msg": constantObj.messages.userStatusUpdateFailure
+            })
+        } else {
+            res.status(200).send({
+                "msg": constantObj.messages.userStatusUpdateSuccess
+            });
+        }
+    })
+}
+
+exports.manageChair = function(req, res) {
+    req.checkHeaders('user_id', 'User id is required.').notEmpty();
+    req.assert('chair_id', 'Chair id is required.').notEmpty();
+    req.assert('type','Chair type is required').notEmpty();
+    console.log(req.body);
+    if(req.body.type == 'weekly' || req.body.type == 'monthly'){
+        req.assert('amount', 'Amount is required.').notEmpty();
+    } else {
+        req.assert('shop_percentage', 'Shop percentage is required.').notEmpty();
+        req.assert('barber_percentage', 'Barber percentage is required.').notEmpty();
+    }
+    if (req.validationErrors()) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: req.validationErrors()
+        });
+    }
+    if (req.body.type == 'percentage'){
+        var updateCollectionData = {
+            $unset: {
+                "chairs.$.amount": ""
+            },
+            $set: {
+                "chairs.$.shop_percentage": parseInt(req.body.shop_percentage),
+                "chairs.$.type": req.body.type,
+                "chairs.$.barber_percentage": parseInt(req.body.barber_percentage)
+            }
+        };
+    } else {
+        var updateCollectionData = {
+            $unset: {
+                "chairs.$.shop_percentage": "",
+                "chairs.$.barber_percentage": "" 
+            },
+            $set: {
+                "chairs.$.type": req.body.type,
+                "chairs.$.amount": req.body.amount
+            }   
+        };
+    }
+    console.log(updateCollectionData);
+    shop.update({
+        "user_id": req.headers.user_id,
         "chairs._id": req.body.chair_id
     }, updateCollectionData, function(err, result) {
         if (err) {
             return res.status(400).send({
-                msg: "Error in updating the shop collection."
+                "msg": constantObj.messages.userStatusUpdateFailure
             })
         } else {
             res.status(200).send({
-                msg: 'shop updated successfully'
+                "msg": constantObj.messages.userStatusUpdateSuccess
             });
         }
     })

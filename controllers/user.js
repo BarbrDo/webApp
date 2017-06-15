@@ -747,10 +747,10 @@ exports.addChair = function(req, res) {
       err: errors
     });
   }
-  let validateId = objectID.isValid(req.body.id)
+  let validateId = objectID.isValid(req.body._id)
   if (validateId) {
     Shop.findOne({
-      _id: req.body.id
+      _id: req.body._id
     }, function(err, data) {
       if (err) {
         res.status(400).send({
@@ -768,7 +768,7 @@ exports.addChair = function(req, res) {
           let saveChairData = {};
           saveChairData.chairs = saveChair;
           Shop.update({
-            _id: req.body.id
+            _id: req.body._id
           }, {
             $push: {
               chairs: {

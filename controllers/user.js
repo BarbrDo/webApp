@@ -738,7 +738,7 @@ exports.authGoogleCallback = function(req, res) {
 };
 
 exports.addChair = function(req, res) {
-  req.assert("id", "id is required")
+  req.assert("id", "id is required").notEmpty();
   let errors = req.validationErrors();
   console.log("req.body", req.body);
   if (errors) {
@@ -747,10 +747,10 @@ exports.addChair = function(req, res) {
       err: errors
     });
   }
-  let validateId = objectID.isValid(req.body._id)
+  let validateId = objectID.isValid(req.body.id)
   if (validateId) {
     Shop.findOne({
-      _id: req.body._id
+      _id: req.body.id
     }, function(err, data) {
       if (err) {
         res.status(400).send({
@@ -768,7 +768,7 @@ exports.addChair = function(req, res) {
           let saveChairData = {};
           saveChairData.chairs = saveChair;
           Shop.update({
-            _id: req.body._id
+            _id: req.body.id
           }, {
             $push: {
               chairs: {

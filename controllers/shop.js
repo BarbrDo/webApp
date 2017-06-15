@@ -3,6 +3,7 @@ let user = require('../models/User');
 let constantObj = require('./../constants.js');
 let chairRequest = require('../models/chair_request');
 let mongoose = require('mongoose');
+let geocoder = require('geocoder');
 
 exports.updateShop = function(req, res) {
     req.assert("_id", "Shop id is required.").notEmpty();
@@ -14,22 +15,33 @@ exports.updateShop = function(req, res) {
         });
     }
     var updateData = JSON.parse(JSON.stringify(req.body));
-    shop.update({
-        _id: req.body._id
-    }, updateData, function(err, data) {
-        if (err) {
-            res.status(400).send({
-                "msg": constantObj.messages.userStatusUpdateFailure,
-                "err": err
-            });
-        } else {
-            res.status(200).send({
-                "msg": constantObj.messages.userStatusUpdateSuccess,
-                "data": data,
-                "shop": shop
-            });
-        }
-    });
+    if (req.body.zip) {
+        geocoder.geocode(req.body.zip, function(errGeo, latlng) {
+            if (errGeo) {
+                return res.status(400).send({
+                    msg: constantObj.messages.errorInSave
+                })
+            } else {
+                updateData.latLong = [latlng.results[0].geometry.location.lng, latlng.results[0].geometry.location.lat];
+                shop.update({
+                    _id: req.body._id
+                }, updateData, function(err, data) {
+                    if (err) {
+                        res.status(400).send({
+                            "msg": constantObj.messages.userStatusUpdateFailure,
+                            "err": err
+                        });
+                    } else {
+                        res.status(200).send({
+                            "msg": constantObj.messages.userStatusUpdateSuccess,
+                            "data": data,
+                            "shop": shop
+                        });
+                    }
+                });
+            }
+        });
+    }
 }
 
 exports.shopContainsBarber = function(req, res) {

@@ -281,8 +281,8 @@ exports.shopChairRequest = function(req, res) {
 
 exports.acceptRequest = function(req, res) {
 	req.checkHeaders("user_id", "User Id is required.").notEmpty();
-	req.assert("_id", "_id is required.").notEmpty() // Chair Request _id is required   
-		// req.assert("barber_name","barber_name is required").notEmpty();
+	req.assert("chair_request_id", "chair_request_id is required.").notEmpty() // Chair Request _id is required   
+	req.assert("request_type","request_type is required").notEmpty();
 	let errors = req.validationErrors();
 	if (errors) {
 		return res.status(400).send({
@@ -290,10 +290,10 @@ exports.acceptRequest = function(req, res) {
 			err: errors
 		});
 	}
-	if (req.body.requestType == 'accept') {
+	if (req.body.request_type == 'accept') {
 		let updateCollectionData = {};
 		let bookingEndDate = "";
-		let id = mongoose.Types.ObjectId(req.body._id);
+		let id = mongoose.Types.ObjectId(req.body.chair_request_id);
 		chairRequest.aggregate([{
 			$match: {
 				_id: id
@@ -478,8 +478,8 @@ exports.acceptRequest = function(req, res) {
 			}
 		})
 	}
-	else if(req.body.requestType =='decline'){
-		let id = mongoose.Types.ObjectId(req.body._id);
+	else if(req.body.request_type =='decline'){
+		let id = mongoose.Types.ObjectId(req.body.chair_request_id);
 		chairRequest.update({
 							_id: id
 						}, {
@@ -497,5 +497,9 @@ exports.acceptRequest = function(req, res) {
 								})
 							}
 						})
-	}	
+	} else {
+            return res.status(400).send({
+                msg: "Error in request"
+            })
+        } 
 }

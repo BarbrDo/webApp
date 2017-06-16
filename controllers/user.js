@@ -1010,7 +1010,7 @@ exports.getProfiles = function(req, res) {
   User.findOne({
     _id: req.params.id
   }, function(err, result) {
-    if (result.user_type) {
+    if (result) {
       switch (result.user_type) {
         case 'shop':
           User.aggregate([{

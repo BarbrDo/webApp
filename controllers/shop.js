@@ -407,7 +407,9 @@ exports.postChairToAllBarbers = function(req, res) {
     }, {
         "chairs.$": 1
     }).exec(function(err, data) {
-        if (!data.chairs[0].type) {
+        console.log(data);
+        console.log('chair---',data.chairs[0].type);
+        if (data.chairs[0].type) {
             shop.update({
                 "user_id": req.headers.user_id,
                 "chairs._id": req.body.chair_id

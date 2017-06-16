@@ -1,4 +1,4 @@
-app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log','$stateParams', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams) {
+app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log', '$stateParams', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams) {
 
   $scope.user = {};
   $scope.myobj = {};
@@ -6,6 +6,52 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   $scope.bigTotalItems = 175;
   $scope.bigCurrentPage = 1;
   $scope.fieldDisabled = false;
+  $scope.today = function() {
+    $scope.dt = new Date();
+  };
+  $scope.today();
+
+
+  // Disable weekend selection
+  function disabled(data) {
+    var date = data.date,
+      mode = data.mode;
+    return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
+  }
+
+
+  $scope.open1 = function() {
+    $scope.popup1.opened = true;
+  };
+
+
+  $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+  $scope.format = $scope.formats[0];
+  // $scope.altInputFormats = ['M!/d!/yyyy'];
+
+  $scope.popup1 = {
+    opened: false
+  };
+
+
+
+  function getDayClass(data) {
+    var date = data.date,
+      mode = data.mode;
+    if (mode === 'day') {
+      var dayToCheck = new Date(date).setHours(0, 0, 0, 0);
+
+      for (var i = 0; i < $scope.events.length; i++) {
+        var currentDay = new Date($scope.events[i].date).setHours(0, 0, 0, 0);
+
+        if (dayToCheck === currentDay) {
+          return $scope.events[i].status;
+        }
+      }
+    }
+
+    return '';
+  }
 
   $scope.pageChanged = function() {
     var passingObj = {
@@ -17,8 +63,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     }
     Admin.barbers(passingObj)
       .then(function(response) {
-        $scope.myobj.totalItems = response.data.count/3;
-        console.log(response.data.count -10)
+        $scope.myobj.totalItems = response.data.count / 3;
         $rootScope.barbers = response.data.data;
       });
 
@@ -41,7 +86,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   };
 
   $scope.appointdetail = function(appointment) {
-  $rootScope.viewappoint = appointment
+    $rootScope.viewappoint = appointment
   };
 
 
@@ -60,7 +105,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     }
     Admin.customersAll(passingObj)
       .then(function(response) {
-        $scope.myobj.totalItems = response.data.count/3;
+        $scope.myobj.totalItems = response.data.count / 3;
         console.log(response.data.count)
         $rootScope.customers = response.data.data;
       });
@@ -100,16 +145,17 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
             }
           }
-           
+
           var objj = {
-            shopsdata : response.data.data[i],
+            shopsdata: response.data.data[i],
             shop_id: response.data.data[i].shopinfo[0]._id,
             totalBarbers: k
           };
-          shp.push(objj);  
+          shp.push(objj);
         }
         $rootScope.shops = shp;
-        $scope.myobj.totalItems = response.data.count/3;
+        $scope.myobj.totalItems = response.data.count / 3;
+        console.log(response)
       });
 
   };
@@ -138,32 +184,26 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     $scope.customer = customer;
 
     var valfromActive = $scope.activeSelected;
-     var valfromVerify = $scope.verifySelected;
-     var valfromdelete = $scope.deleteSelected;
-     if(valfromActive == 'true')
-     {
+    var valfromVerify = $scope.verifySelected;
+    var valfromdelete = $scope.deleteSelected;
+    if (valfromActive == 'true') {
       $scope.activatecust(customer);
-     }
-      if(valfromActive == 'false')
-     {
+    }
+    if (valfromActive == 'false') {
       $scope.deactivecust(customer);
-     }
-      if(valfromVerify == 'true')
-     {
+    }
+    if (valfromVerify == 'true') {
       $scope.verifybarber(customer);
-     }
-      if(valfromVerify == 'false')
-     {
+    }
+    if (valfromVerify == 'false') {
       $scope.disapprovebarber(customer);
-     }
-      if(valfromdelete == 'true')
-     {
-        $scope.deletecustomer(customer);
-     }
-      if(valfromdelete == 'false')
-     {
+    }
+    if (valfromdelete == 'true') {
+      $scope.deletecustomer(customer);
+    }
+    if (valfromdelete == 'false') {
       $scope.undeletecustomer(customer);
-     }
+    }
     Admin.updateCustomer(customer)
       .then(function(response) {
         $rootScope.customers = response.data;
@@ -174,35 +214,29 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   $scope.updatebarber = function(barber) {
     console.log("hello")
     $scope.barber = barber;
-     var valfromActive = $scope.activeSelected;
-     var valfromVerify = $scope.verifySelected;
-     var valfromdelete = $scope.deleteSelected;
-     if(valfromActive == 'true')
-     {
+    var valfromActive = $scope.activeSelected;
+    var valfromVerify = $scope.verifySelected;
+    var valfromdelete = $scope.deleteSelected;
+    if (valfromActive == 'true') {
       $scope.activatebarber(barber);
-     }
-      if(valfromActive == 'false')
-     {
+    }
+    if (valfromActive == 'false') {
       $scope.deactivatebarber(barber);
-     }
-      if(valfromVerify == 'true')
-     {
+    }
+    if (valfromVerify == 'true') {
       $scope.verifybarber(barber);
-     }
-      if(valfromVerify == 'false')
-     {
+    }
+    if (valfromVerify == 'false') {
       $scope.disapprovebarber(barber);
-     }
-      if(valfromdelete == 'true')
-     {
-      console.log("del",valfromdelete)
+    }
+    if (valfromdelete == 'true') {
+      console.log("del", valfromdelete)
       $scope.deletebarber(barber);
-     }
-      if(valfromdelete == 'false')
-     {
-      console.log("del",valfromdelete)
+    }
+    if (valfromdelete == 'false') {
+      console.log("del", valfromdelete)
       $scope.undeletebarber(barber);
-     }
+    }
     Admin.updateBarber(barber)
       .then(function(response) {
         $rootScope.barbers = response.data;
@@ -212,46 +246,41 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
   $scope.updateshopowner = function(shop) {
     $scope.shop = shop;
-     var valfromActive = $scope.activeSelected;
-     var valfromVerify = $scope.verifySelected;
-     var valfromdelete = $scope.deleteSelected;
-     if(valfromActive == 'true')
-     {
+    var valfromActive = $scope.activeSelected;
+    var valfromVerify = $scope.verifySelected;
+    var valfromdelete = $scope.deleteSelected;
+    if (valfromActive == 'true') {
       $scope.activateshop(shop);
-      
-     }
-      if(valfromActive == 'false')
-     {
+
+    }
+    if (valfromActive == 'false') {
       $scope.deactiveshop(shop);
-      
-     }
-      if(valfromVerify == 'true')
-     {
+
+    }
+    if (valfromVerify == 'true') {
       $scope.verifyshop(shop);
-     }
-      if(valfromVerify == 'false')
-     {
+    }
+    if (valfromVerify == 'false') {
       $scope.disapproveshop(shop);
-     }
-      if(valfromdelete == 'true')
-     {
+    }
+    if (valfromdelete == 'true') {
       $scope.deleteshop(shop);
-     }
-      if(valfromdelete == 'false')
-     {
+    }
+    if (valfromdelete == 'false') {
       $scope.undeleteshop(shop);
-     }
+    }
     Admin.updateShop(shop)
-      .then(function(response) {
-      });
+      .then(function(response) {});
   };
 
 
   $scope.updateshop = function(shop) {
     $scope.shop = shop;
+    console.log("upd", shop);
     Admin.updateShopinfo(shop)
       .then(function(response) {
         $rootScope.shops = response.data;
+        console.log("res", response);
       });
 
   };
@@ -293,8 +322,8 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
   };
 
-    $scope.undeleteshop = function(shop) {
-      $scope.shop = shop;
+  $scope.undeleteshop = function(shop) {
+    $scope.shop = shop;
     Admin.undeleteShop(shop)
       .then(function(response) {
         $rootScope.shops = response.data;
@@ -432,38 +461,44 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
       });
   };
 
-      Admin.chairDetail($stateParams.id)
+  $scope.chairdetail = function() {
+    Admin.chairDetail($stateParams.id)
       .then(function(response) {
+        console.log(response);
         $rootScope.chairdet = response.data.data[0].chairs[0];
-        console.log($rootScope.chairdet);
+
       });
+  };
 
+  $scope.shopdetail = function() {
 
+    setTimeout(function() {
       Admin.shopDetail($stateParams.id)
-      .then(function(response) {
-         $rootScope.shopdetailview = response.data.data[0];
-         $rootScope.chairdetails = response.data.data[0].shopinfo[0].chairs;
-         var shopsdet = [];
-        var object = {};
-        var len = response.data.data.length;
-        for (var i = 0; i < len; i++) {
-          var k = 0;
-          for (var j = 0; j < response.data.data[i].shopinfo[0].chairs.length; j++) {
-            if (response.data.data[i].shopinfo[0].chairs[j].barber_id) {
-              k++;
+        .then(function(response) {
+          $rootScope.shopdetailview = response.data.data[0];
+          $rootScope.chairdetails = response.data.data[0].shopinfo[0].chairs;
+          var shopsdet = [];
+          var object = {};
+          var len = response.data.data.length;
+          for (var i = 0; i < len; i++) {
+            var k = 0;
+            for (var j = 0; j < response.data.data[i].shopinfo[0].chairs.length; j++) {
+              if (response.data.data[i].shopinfo[0].chairs[j].barber_id) {
+                k++;
+              }
             }
-          }
-           
-          var object = {
-            totalBarbers: k
-          };
-          shopsdet.push(object);
-          $rootScope.totalbarbers = object;
-          }
-                 
 
-      });
+            var object = {
+              totalBarbers: k
+            };
+            shopsdet.push(object);
+            $rootScope.totalbarbers = object;
+          }
 
+
+        });
+    }, 1000);
+  };
 
 
   $scope.addchair = function(chair) {
@@ -474,43 +509,54 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   };
 
 
-$scope.updatechair = function(chair,id) {
-    Admin.updateChair(chair,id)
-    .then(function(response) {
-    });
+  $scope.updatechair = function(chair, id) {
+    Admin.updateChair(chair, id)
+      .then(function(response) {});
   };
 
-  Admin.countBarber()
-    .then(function(response) {
-      $rootScope.totalbarber = response.data;
-    });
 
 
-  Admin.countAppointment()
-    .then(function(response) {
-      $rootScope.totalappointment = response.data;
-    });
-
-  Admin.countShop()
-    .then(function(response) {
-      $rootScope.totalshop = response.data;
-    });
-
-  Admin.countCustomer()
-    .then(function(response) {
-      $rootScope.totalcustomer = response.data;
-    });
-
-   Admin.barberDetail($stateParams.id)
+  $scope.countall = function() {
+    Admin.countAppointment()
       .then(function(response) {
-        $rootScope.barberdetail = response.data.data[0];
+        $rootScope.totalappointment = response.data;
       });
 
-   Admin.custDetail($stateParams.id)
+    Admin.countShop()
       .then(function(response) {
-        $rootScope.customerdetail  = response.data.data[0];
+        $rootScope.totalshop = response.data;
       });
 
+    Admin.countCustomer()
+      .then(function(response) {
+        $rootScope.totalcustomer = response.data;
+      });
 
+    Admin.countBarber()
+      .then(function(response) {
+        $rootScope.totalbarber = response.data;
+      });
+  };
+
+  $scope.barberdetails = function() {
+    setTimeout(function() {
+      Admin.barberDetail($stateParams.id)
+        .then(function(response) {
+          $rootScope.barberdetail = response.data.data[0];
+        });
+    }, 500);
+  };
+
+  $scope.customerdetails = function() {
+
+    setTimeout(function() {
+      Admin.custDetail($stateParams.id)
+        .then(function(response) {
+          $rootScope.customerdetail = response.data.data[0];
+        });
+    }, 500);
+
+
+  };
 
 }]);

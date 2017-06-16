@@ -1,99 +1,89 @@
 <ol class="breadcrumb">
-  <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
-  <li class="breadcrumb-item"><a ui-sref="customers">Customers</a></li>
-  <li class="breadcrumb-item active">Add Customer</li>
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item"><a ui-sref="customers">Customers</a></li>
+    <li class="breadcrumb-item active">Add Customer</li>
 </ol>
-
-
-
 <div class="panel">
-  <div class="panel-heading">
-    Add Customers
-  </div>
-  <div class="panel-body">
-     <div class="title">
-      Customer Information
-     </div>
-     <form name="signUpForm">
-     <div class="clearfix">
-      <div class="col-sm-4 form-group">
-        <label>First Name</label>
-        <input type="text" class="form-control" ng-model="user.first_name" required />
-      </div>
-      <div class="col-sm-4 form-group">
-        <label>Last Name</label>
-        <input type="text" class="form-control" ng-model="user.last_name" required />
-      </div>
-      <div class="col-sm-4 form-group">
-        <label>Mobile Number</label>
-        <input type="text" class="form-control" name="mobile_number" ng-model="user.mobile_number" required />
-         <span style="color:red" ng-show="signUpForm.mobile_number.$touched && signUpForm.mobile_number.$invalid && signUpForm.mobile_number.$error.required">Mobile number is required.</span>
-                <span style="color:red" ng-show="signUpForm.mobile_number.$error.minlength">Phone have 10-digits minimum.</span>
-      </div>
-               
-     </div>
-     <div class="clearfix">
-      <div class="col-sm-4 form-group">
-        <label>Password</label>
-        <input type="password" class="form-control" name="password" ng-model="user.password" ng-minlength="6" ng-maxlength="20" required/>
-        <div class="validationError" ng-messages="signUpForm.password.$error" ng-show="
+    <div class="panel-heading">
+        Add Customers
+    </div>
+    <div class="panel-body">
+        <div class="title">
+            Customer Information
+        </div>
+        <form name="signUpForm">
+            <div class="clearfix">
+                <div class="col-sm-4 form-group">
+                    <label>First Name</label>
+                    <input type="text" class="form-control" ng-model="user.first_name" required />
+                </div>
+                <div class="col-sm-4 form-group">
+                    <label>Last Name</label>
+                    <input type="text" class="form-control" ng-model="user.last_name" required />
+                </div>
+                <div class="col-sm-4 form-group">
+                    <label>Mobile Number</label>
+                    <input type="text" class="form-control" name="mobile_number" ng-model="user.mobile_number" required />
+                    <span style="color:red" ng-show="signUpForm.mobile_number.$touched && signUpForm.mobile_number.$invalid && signUpForm.mobile_number.$error.required">Mobile number is required.</span>
+                    <span style="color:red" ng-show="signUpForm.mobile_number.$error.minlength">Phone have 10-digits minimum.</span>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="col-sm-4 form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" name="password" ng-model="user.password" ng-minlength="6" ng-maxlength="20" required/>
+                    <div class="validationError" ng-messages="signUpForm.password.$error" ng-show="
                 signUpForm.password.$error.required && signUpForm.password.$touched && signUpForm.password.$invalid" role="alert">
-               <span style="color:red" ng-message="required">password is required</span>
-              </div>
-              <div class="validationError" ng-if="!updateButton" ng-show="signUpForm.password.$error.maxlength && signUpForm.password.$dirty">
-              <span style="color:red ">password maximum length exceeds</span>
-              </div>
-      </div>
-              
-      <div class="col-sm-4 form-group">
-        <label>Confirm Password</label>
-        <input type="password" class="form-control" name="confirmPassword" ng-model="user.confirmPassword" required />
-        <div class="validationError" ng-messages="signUpForm.confirmPassword.$error " ng-show=" signUpForm.confirmPassword.$error.pattern && (!signUpForm.confirmPassword.$pristine || signUpForm.$submitted) " role="alert ">
-              <span style="color:red " ng-if="!updateButton " ng-message="pattern ">password do not match</span>
-              </div>
-              <div ng-if="!updateButton " class="validationError " ng-messages="signUpForm.confirmPassword.$error " ng-show=" signUpForm.confirmPassword.$error.required && signUpForm.confirmPassword.$touched && signUpForm.confirmPassword.$invalid " role="alert ">
-              <span ng-if="!updateButton " style="color:red " ng-message="required " class="error-message ">Confirm password is required</span>
-              </div>
-      </div>
-              
-      <div class="col-sm-4 form-group">
-        <label>Email</label>
-        <input type="text" class="form-control" name="email" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" required/>
-        <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="
+                        <span style="color:red" ng-message="required">password is required</span>
+                    </div>
+                    <div class="validationError" ng-if="!updateButton" ng-show="signUpForm.password.$error.maxlength && signUpForm.password.$dirty">
+                        <span style="color:red ">password maximum length exceeds</span>
+                    </div>
+                </div>
+                <div class="col-sm-4 form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" class="form-control" name="confirmPassword" ng-model="user.confirmPassword" required />
+                    <div class="validationError" ng-messages="signUpForm.confirmPassword.$error " ng-show=" signUpForm.confirmPassword.$error.pattern && (!signUpForm.confirmPassword.$pristine || signUpForm.$submitted) " role="alert ">
+                        <span style="color:red " ng-if="!updateButton " ng-message="pattern ">password do not match</span>
+                    </div>
+                    <div ng-if="!updateButton " class="validationError " ng-messages="signUpForm.confirmPassword.$error " ng-show=" signUpForm.confirmPassword.$error.required && signUpForm.confirmPassword.$touched && signUpForm.confirmPassword.$invalid " role="alert ">
+                        <span ng-if="!updateButton " style="color:red " ng-message="required " class="error-message ">Confirm password is required</span>
+                    </div>
+                </div>
+                <div class="col-sm-4 form-group">
+                    <label>Email</label>
+                    <input type="text" class="form-control" name="email" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" required/>
+                    <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="
                   signUpForm.email.$touched &&signUpForm.email.$invalid && (!signUpForm.email.$pristine || signUpForm.$submitted)" role="alert">
-                  <span style="color:red" ng-message="pattern" class="error-message">Email is not valid</span>
-                  </div>
-                  <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="signUpForm.email.$error.required &&
+                        <span style="color:red" ng-message="pattern" class="error-message">Email is not valid</span>
+                    </div>
+                    <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="signUpForm.email.$error.required &&
                   signUpForm.email.$touched && signUpForm.email.$invalid" role="alert">
-                  <span style="color:red" ng-message="required" class="error-message">Email is required</span>
-                  </div>
-      </div>
-                  
-     </div>
-     <div class="clearfix" ng-hide="{{true}}">
-      <div class="col-sm-12 form-group" >
-      {{user.user_type = "customer"}}
-        <label>User Type</label>
-        <input type="text" id='customer-field' ng-model="user.user_type"/>
-      </div>
-     </div>
-     <div class="clearfix text-center">
-     
-       <button type="submit" id="save" ng-show="signUpForm.$invalid==false" class="btn btn-primary" ng-click="addcustomer()" style="background-color: #97f580;" ui-sref="customers">
-        <i class="fa fa-check" aria-hidden="true" style="color: #000000;"></i>
-        Save
-      </button>
-      
-      <button type="submit" id="save" ng-hide="signUpForm.$invalid==false" ng-disabled="signUpForm.$invalid" class="btn btn-primary" data-toggle="tooltip" title="Invalid Form">
-        <i class="fa fa-check" aria-hidden="true"></i>
-        <span >Save
+                        <span style="color:red" ng-message="required" class="error-message">Email is required</span>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix" ng-hide="{{true}}">
+                <div class="col-sm-12 form-group">
+                    {{user.user_type = "customer"}}
+                    <label>User Type</label>
+                    <input type="text" id='customer-field' ng-model="user.user_type" />
+                </div>
+            </div>
+            <div class="clearfix text-center">
+                <button type="submit" id="save" ng-show="signUpForm.$invalid==false" class="btn btn-primary" ng-click="addcustomer()" style="background-color: #97f580;" ui-sref="customers">
+                    <i class="fa fa-check" aria-hidden="true" style="color: #000000;"></i> Save
+                </button>
+                <button type="submit" id="save" ng-hide="signUpForm.$invalid==false" ng-disabled="signUpForm.$invalid" class="btn btn-primary" data-toggle="tooltip" title="Invalid Form">
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                    <span>Save
       </button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      </form>
-      <button type="reset" class="btn btn-grey">
-        <i class="fa fa-times" aria-hidden="true"></i>
-        <span>Reset</span>
-      </button>
-     </div>
-     </form>
-  </div>
+        </form>
+        <button type="reset" class="btn btn-grey">
+            <i class="fa fa-times" aria-hidden="true"></i>
+            <span>Reset</span>
+        </button>
+        </div>
+        </form>
+    </div>
 </div>

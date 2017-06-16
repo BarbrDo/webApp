@@ -27,7 +27,6 @@ angular.module('barbrdo').factory('Admin', function($http) {
       return $http.get('/api/v1/shopdetail/' + data, data);
     },
     chairDetail: function(data) {
-      console.log(data);
       return $http.get('/api/v1/chairdetail/' + data, data);
     },
     custDetail: function(data) {
@@ -127,7 +126,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
         data: data
       });
     },
-    updateChair: function(data,id) {
+    updateChair: function(data, id) {
       return $http({
         method: 'PUT',
         url: '/api/v1/shops/managechair',
@@ -138,11 +137,10 @@ angular.module('barbrdo').factory('Admin', function($http) {
       });
     },
     deleteBarber: function(data) {
-      console.log("data",data)
       return $http.put('/api/v1/deletebarber/' + data._id, data);
     },
     undeleteBarber: function(data) {
-      console.log("data",data)
+      console.log("data", data)
       return $http.put('/api/v1/undeletebarber/' + data._id, data);
     },
     deleteShop: function(data) {

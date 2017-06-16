@@ -118,7 +118,7 @@ var saveShop = function(saveDataForShop, resetUrl, user, req, res) {
   });
 }
 
-var accountActivateMailFunction = function(req, res, user, resetUrl) {
+let accountActivateMailFunction = function(req, res, user, resetUrl) {
   console.log("accountActivateMailFunction", user);
   let auth = {
     auth: {
@@ -133,18 +133,12 @@ var accountActivateMailFunction = function(req, res, user, resetUrl) {
     subject: '✔ Activate Your Account',
     text: 'Please Activate your account by clicking link \n\n' + resetUrl + '\n\n'
   };
-  if(!user.facebook){
-    nodemailerMailgun.sendMail(mailOptions, function(err, info) {
-      res.send({
-        msg: 'An email has been sent to ' + user.email + ' with further instructions.'
-      });
+
+  nodemailerMailgun.sendMail(mailOptions, function(err, info) {
+    res.send({
+      msg: 'An email has been sent to ' + user.email + ' with further instructions.'
     });
-  } else {
-      res.status(200).send({
-        user: user,
-        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-      });
-  }
+  });
 }
 
 exports.signupPost = function(req, res, next) {
@@ -250,9 +244,19 @@ exports.signupPost = function(req, res, next) {
               })
             } else {
               console.log("else part of barber save");
-              accountActivateMailFunction(req, res, data, resetUrl)
+              let data1 = {};
+              data1.email = data.email;
+              accountActivateMailFunction(req, res, data1, resetUrl)
             }
           })
+        } else if (req.body.facebook) {
+          res.send({
+            msg: "please check your email to verify your account.",
+            link: resetUrl,
+            token: generateToken(data),
+            user: data.toJSON(),
+            "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+          });
         } else {
           accountActivateMailFunction(req, res, data, resetUrl)
         }

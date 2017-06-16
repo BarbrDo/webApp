@@ -419,7 +419,7 @@ exports.postChairToAllBarbers = function(req, res) {
         "chairs.$": 1
     }).exec(function(err, data) {
         console.log(data);
-        console.log('chair---',data.chairs[0].type);
+        console.log('chair---', data.chairs[0].type);
         if (data.chairs[0].type) {
             shop.update({
                 "user_id": req.headers.user_id,
@@ -605,7 +605,6 @@ exports.chairdetail = function(req, res) {
         });
     }
     var query = mongoose.Types.ObjectId(req.params.chair_id);
-    console.log("chair id", req.params.chair_id);
     shop.find({
         "chairs._id": query
     }, {
@@ -617,10 +616,13 @@ exports.chairdetail = function(req, res) {
                 "err": err
             });
         } else {
-            res.status(200).send({
-                "msg": constantObj.messages.successRetreivingData,
-                "data": result
-            })
+            if (result) {
+                console.log("result", result)
+                res.status(200).send({
+                    "msg": constantObj.messages.successRetreivingData,
+                    "data": result
+                })
+            }
         }
     })
 };
@@ -1009,8 +1011,7 @@ exports.manageChair = function(req, res) {
     req.checkHeaders('user_id', 'User id is required.').notEmpty();
     req.assert('chair_id', 'Chair id is required.').notEmpty();
     req.assert('type', 'Chair type is required').notEmpty();
-    console.log(req.body);
-    console.log(req.headers);
+    console.log("rah", req.body);
     if (req.body.type == 'weekly' || req.body.type == 'monthly') {
         req.assert('amount', 'Amount is required.').notEmpty();
     } else {
@@ -1046,7 +1047,7 @@ exports.manageChair = function(req, res) {
             }
         };
     }
-    console.log(updateCollectionData);
+    console.log("updateCollectionData", updateCollectionData);
     shop.update({
         "user_id": req.headers.user_id,
         "chairs._id": req.body.chair_id

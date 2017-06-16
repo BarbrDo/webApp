@@ -133,7 +133,13 @@ angular.module('barbrdo').factory('Admin', function($http) {
         headers: {
           'user_id': id
         },
-        data: data
+        data: {
+          chair_id: data._id,
+          type: data.type,
+          shop_percentage: data.shop_percentage,
+          barber_percentage: data.barber_percentage,
+          amount: data.amount
+        }
       });
     },
     deleteBarber: function(data) {

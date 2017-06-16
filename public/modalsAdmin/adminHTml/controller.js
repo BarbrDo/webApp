@@ -6,10 +6,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   $scope.bigTotalItems = 175;
   $scope.bigCurrentPage = 1;
   $scope.fieldDisabled = false;
-  $scope.today = function() {
-    $scope.dt = new Date();
-  };
-  $scope.today();
+
 
 
   // Disable weekend selection
@@ -466,7 +463,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
       .then(function(response) {
         console.log(response);
         $rootScope.chairdet = response.data.data[0].chairs[0];
-
+        console.log("cahir",$rootScope.chairdet)
       });
   };
 
@@ -510,6 +507,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
 
   $scope.updatechair = function(chair, id) {
+    console.log("id",id);
     Admin.updateChair(chair, id)
       .then(function(response) {});
   };

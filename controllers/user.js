@@ -17,6 +17,7 @@ let commonObj = require('../common/common');
 let mg = require('nodemailer-mailgun-transport');
 let fs = require('fs');
 let path = require('path');
+let stripe = require('stripe')('sk_live_QEXG2OxFtx112WsgJ57mxmgm');
 
 function generateToken(user) {
   let payload = {
@@ -206,77 +207,84 @@ exports.signupPost = function(req, res, next) {
     let generatedText = commonObj.makeid();
 
     saveData.randomString = generatedText;
-
-    User(saveData).save(function(err, data) {
-      if (err) {
-        return res.status(400).send({
-          msg: constantObj.messages.errorInSave,
-          "err": err
-        })
-      } else {
-        let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
-        if (req.body.user_type == 'shop') {
-          let saveDataForShop = {};
-          saveDataForShop.user_id = data._id
-          saveDataForShop.license_number = req.body.license_number;
-          saveDataForShop.name = req.body.name;
-          saveDataForShop.state = req.body.state;
-          saveDataForShop.city = req.body.city;
-          saveDataForShop.zip = req.body.zip;
-
-          if (req.headers.device_longitude && req.headers.device_latitude) {
-            saveDataForShop.latLong = [req.headers.device_longitude, req.headers.device_latitude];
-            saveShop(saveDataForShop, resetUrl, data, req, res);
-          } else if (req.body.zip) {
-            geocoder.geocode(req.body.zip, function(errGeo, latlng) {
-              if (errGeo) {
-                return res.status(400).send({
-                  msg: constantObj.messages.errorInSave
-                })
-              } else {
-                saveDataForShop.latLong = [latlng.results[0].geometry.location.lng, latlng.results[0].geometry.location.lat];
-                saveShop(saveDataForShop, resetUrl, data, req, res);
-              }
-            });
-          } else {
-            saveShop(saveDataForShop, resetUrl, data, req, res);
-          }
-        } else if (req.body.user_type == 'barber') {
-          let saveDataForBarber = {};
-          saveDataForBarber.user_id = data._id
-          saveDataForBarber.license_number = req.body.license_number;
-          Barber(saveDataForBarber).save(function(errSaveBarber, barberData) {
-            if (errSaveBarber) {
+    // Stripe Code to create a customer in stripe
+    stripe.customers.create({
+        email: req.body.email
+      },
+      function(err, customer) {
+        if (err) {
+          return res.status(400).send({
+            msg: "Error occurred on stripe.",
+            "err": err
+          })
+        } else {
+          console.log(customer);
+          saveData.stripe_information = [customer];
+          User(saveData).save(function(err, data) {
+            if (err) {
               return res.status(400).send({
-                msg: constantObj.messages.errorInSave
+                msg: constantObj.messages.errorInSave,
+                "err": err
               })
             } else {
-              // res.status(200).send({
-              //   msg: "please check your email to verify your account.",
-              //   link: resetUrl,
-              //   token: generateToken(barberData),
-              //   user: data,
-              //   "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-              // });
-              console.log("else part of barber save");
-              let data1 = {};
-              data1.email = data.email;
-              accountActivateMailFunction(req, res, data1, resetUrl)
+              let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
+              if (req.body.user_type == 'shop') {
+                let saveDataForShop = {};
+                saveDataForShop.user_id = data._id
+                saveDataForShop.license_number = req.body.license_number;
+                saveDataForShop.name = req.body.name;
+                saveDataForShop.state = req.body.state;
+                saveDataForShop.city = req.body.city;
+                saveDataForShop.zip = req.body.zip;
+
+                if (req.headers.device_longitude && req.headers.device_latitude) {
+                  saveDataForShop.latLong = [req.headers.device_longitude, req.headers.device_latitude];
+                  saveShop(saveDataForShop, resetUrl, data, req, res);
+                } else if (req.body.zip) {
+                  geocoder.geocode(req.body.zip, function(errGeo, latlng) {
+                    if (errGeo) {
+                      return res.status(400).send({
+                        msg: constantObj.messages.errorInSave
+                      })
+                    } else {
+                      saveDataForShop.latLong = [latlng.results[0].geometry.location.lng, latlng.results[0].geometry.location.lat];
+                      saveShop(saveDataForShop, resetUrl, data, req, res);
+                    }
+                  });
+                } else {
+                  saveShop(saveDataForShop, resetUrl, data, req, res);
+                }
+              } else if (req.body.user_type == 'barber') {
+                let saveDataForBarber = {};
+                saveDataForBarber.user_id = data._id
+                saveDataForBarber.license_number = req.body.license_number;
+                Barber(saveDataForBarber).save(function(errSaveBarber, barberData) {
+                  if (errSaveBarber) {
+                    return res.status(400).send({
+                      msg: constantObj.messages.errorInSave
+                    })
+                  } else {
+                    let data1 = {};
+                    data1.email = data.email;
+                    accountActivateMailFunction(req, res, data1, resetUrl)
+                  }
+                })
+              } else if (req.body.facebook) {
+                res.send({
+                  msg: "please check your email to verify your account.",
+                  link: resetUrl,
+                  token: generateToken(data),
+                  user: data.toJSON(),
+                  "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+                });
+              } else {
+                accountActivateMailFunction(req, res, data, resetUrl)
+              }
             }
-          })
-        } else if (req.body.facebook) {
-          res.send({
-            msg: "please check your email to verify your account.",
-            link: resetUrl,
-            token: generateToken(data),
-            user: data.toJSON(),
-            "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
           });
-        } else {
-          accountActivateMailFunction(req, res, data, resetUrl)
         }
       }
-    });
+    );
   });
 };
 

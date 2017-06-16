@@ -65,7 +65,7 @@ module.exports = function(app, express) {
     app.put('/api/v1/shops/postchairtoallbarbers',shopController.postChairToAllBarbers);
     app.get('/api/v1/shops/chair/:shop_id',shopController.shopContainsChairs);
     app.put('/api/v1/shops/markchairasbooked/:chair_id',shopController.markChairAsBooked);
-    app.put('/api/v1/shops/acceptRequest',chairRequestController.acceptRequest); 
+    app.put('/api/v1/shops/acceptrequest',chairRequestController.acceptRequest); 
     
     //Customer
     app.get('/api/v1/allcustomers',customerController.listcustomers);

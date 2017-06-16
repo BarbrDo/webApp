@@ -613,6 +613,3 @@ exports.particularAppointment = function(req,res){
             }
         })
 }
-exports.accept_reject = function(req,res){
-    
-}

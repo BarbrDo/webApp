@@ -12,7 +12,7 @@ let Shop = require('../models/shop');
 let Barber = require('../models/barber');
 let objectID = require('mongodb').ObjectID;
 let constantObj = require('./../constants.js');
-let userTypes = require('../models/user_type');
+//let userTypes = require('../models/user_type');
 let commonObj = require('../common/common');
 let mg = require('nodemailer-mailgun-transport');
 let fs = require('fs');
@@ -841,7 +841,7 @@ exports.removeChair = function(req, res) {
     });
   }
 }
-
+/*
 exports.getUserType = function(req, res) {
   userTypes.find({
     isDeleted: false
@@ -859,7 +859,7 @@ exports.getUserType = function(req, res) {
       });
     }
   })
-}
+}*/
 
 exports.checkFaceBook = function(req, res) {
   req.assert('facebook_id', 'facebook_id is required').notEmpty();

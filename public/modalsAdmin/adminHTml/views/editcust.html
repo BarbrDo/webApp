@@ -25,7 +25,7 @@
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Mobile Number</label>
-                    <input type="text" class="form-control" name="mobile_number" data-ng-model="customerdetail.mobile_number" required />
+                    <input type="text" class="form-control" data-ng-model="customerdetail.mobile_number" name="mobile_number" id="mobile_number" mask="(999)999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="10" ng-maxlength="10" maxlength="10" required />
                     <span style="color:red;" ng-show="editForm.mobile_number.$error.minlength">Phone have 10-digits minimum.</span>
                     <span style="color:red;" ng-show="editForm.mobile_number.$error.required">Mobile cannot left blank</span>
                 </div>

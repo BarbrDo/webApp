@@ -67,11 +67,12 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   };
 
 
-  $scope.custAppoint = function() {
-    Admin.appointments()
+  $scope.custAppoint = function(customer) {
+    $scope.customer = customer;
+    Admin.appointments(customer)
       .then(function(response) {
         $rootScope.upcoming = response.data.data.upcoming;
-        $rootScope.compvare = response.data.data.compvare;
+        $rootScope.complete = response.data.data.complete;
       });
 
   };
@@ -103,7 +104,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     Admin.customersAll(passingObj)
       .then(function(response) {
         $scope.myobj.totalItems = response.data.count / 3;
-        console.log(response.data.count)
         $rootScope.customers = response.data.data;
       });
 
@@ -152,7 +152,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         }
         $rootScope.shops = shp;
         $scope.myobj.totalItems = response.data.count / 3;
-        console.log(response)
       });
 
   };
@@ -209,7 +208,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   };
 
   $scope.updatebarber = function(barber) {
-    console.log("hello")
     $scope.barber = barber;
     var valfromActive = $scope.activeSelected;
     var valfromVerify = $scope.verifySelected;
@@ -227,11 +225,9 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
       $scope.disapprovebarber(barber);
     }
     if (valfromdelete == 'true') {
-      console.log("del", valfromdelete)
       $scope.deletebarber(barber);
     }
     if (valfromdelete == 'false') {
-      console.log("del", valfromdelete)
       $scope.undeletebarber(barber);
     }
     Admin.updateBarber(barber)
@@ -273,21 +269,19 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
   $scope.updateshop = function(shop) {
     $scope.shop = shop;
-    console.log("upd", shop);
     Admin.updateShopinfo(shop)
       .then(function(response) {
         $rootScope.shops = response.data;
-        console.log("res", response);
       });
 
   };
 
-  $scope.deleteconfirmchair = function(chair) {
+  $scope.deleteconfirmchair = function(chair,shop) {
     $scope.chair = chair;
   };
 
-  $scope.deletechair = function(chair) {
-    Admin.deleteChair($scope.chair)
+  $scope.deletechair = function(chair,shop) {
+    Admin.deleteChair($scope.chair,$stateParams.id,shop)
       .then(function(response) {});
 
 
@@ -461,9 +455,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   $scope.chairdetail = function() {
     Admin.chairDetail($stateParams.id)
       .then(function(response) {
-        console.log(response);
         $rootScope.chairdet = response.data.data[0].chairs[0];
-        console.log("cahir",$rootScope.chairdet)
       });
   };
 
@@ -507,7 +499,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
 
   $scope.updatechair = function(chair, id) {
-    console.log("id",id);
     Admin.updateChair(chair, id)
       .then(function(response) {});
   };

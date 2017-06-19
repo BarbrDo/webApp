@@ -28,7 +28,7 @@
         </tr>
         </thead>
         <tbody>
-            <tr data-ng-repeat="chairs in chairdetails  | filter:query | orderBy:sort:reverse | limitTo:quantity " data-ng-class="{danger:!chairs.active}">
+            <tr data-ng-repeat="chairs in chairdetails  | filter:query | orderBy:sort:reverse | limitTo:quantity " data-ng-class="{danger:!chairs.active}" ng-show="chairs.isActive==true">
                 <td>
                     <a data-toggle="tooltip" title="View, edit chairs detailed info" ui-sref="editchair({id:chairs._id})">{{chairs.name}} </a>
                 </td>
@@ -43,7 +43,7 @@
                 </td>
                 <td>
                     <span data-toggle="modal" data-target="#confirm">
-             <a type="submit" ng-click="deleteconfirmchair(chair)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
+             <a type="submit" ng-click="deleteconfirmchair(chairs,shopdetailview.shopinfo[0]._id)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="DELETE RECORD"></a></span>
                 </td>
             </tr>
         </tbody>
@@ -85,7 +85,7 @@
             </div>
         </div>
     </div>
-    <div class="modal" id="confirm" role="dialog">
+    <div class="modal" id="confirm" role="dialog" data-ng-repeat="chairs in chairdetails" ng-show="$first">
         <div class="modal-dialog">
             <!-- Modal content-->
             <div class="modal-content">
@@ -95,7 +95,7 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deletechair(chair)" data-toggle="modal" data-target="#myAnotherModal">DELETE</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deletechair(chairs,shopdetailview.shopinfo[0]._id)" data-toggle="modal" data-target="#myAnotherModal">DELETE</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
                 </div>
             </div>

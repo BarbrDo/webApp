@@ -15,15 +15,17 @@
             <div class="clearfix">
                 <div class="col-sm-4 form-group">
                     <label>First Name</label>
-                    <input type="text" class="form-control" ng-model="user.first_name" required />
+                    <input type="text" class="form-control" ng-model="user.first_name" required name="first_name" />
+                    <span style="color:red;" ng-show="signUpForm.first_name.$touched && signUpForm.first_name.$invalid && signUpForm.first_name.$error.required">First Name is required.</span>
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Last Name</label>
-                    <input type="text" class="form-control" ng-model="user.last_name" required />
+                    <input type="text" class="form-control" ng-model="user.last_name" name="last_name" required />
+                    <span style="color:red;" ng-show="signUpForm.last_name.$touched && signUpForm.last_name.$invalid && signUpForm.last_name.$error.required">Last Name is required.</span>
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Mobile Number</label>
-                    <input type="text" class="form-control" name="mobile_number" ng-model="user.mobile_number" required />
+                    <input type="text" class="form-control" name="mobile_number" ng-model="user.mobile_number" mask="(999)999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="10" ng-maxlength="10" maxlength="10" required  />
                     <span style="color:red" ng-show="signUpForm.mobile_number.$touched && signUpForm.mobile_number.$invalid && signUpForm.mobile_number.$error.required">Mobile number is required.</span>
                     <span style="color:red" ng-show="signUpForm.mobile_number.$error.minlength">Phone have 10-digits minimum.</span>
                 </div>
@@ -36,13 +38,16 @@
                 signUpForm.password.$error.required && signUpForm.password.$touched && signUpForm.password.$invalid" role="alert">
                         <span style="color:red" ng-message="required">password is required</span>
                     </div>
+                    <div class="validationError" ng-if="!updateButton" ng-show="signUpForm.password.$error.minlength">
+                        <span style="color:red ">password too Short (atleast 6 characters)</span>
+                    </div>
                     <div class="validationError" ng-if="!updateButton" ng-show="signUpForm.password.$error.maxlength && signUpForm.password.$dirty">
                         <span style="color:red ">password maximum length exceeds</span>
                     </div>
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Confirm Password</label>
-                    <input type="password" class="form-control" name="confirmPassword" ng-model="user.confirmPassword" required />
+                    <input type="password" class="form-control" name="confirmPassword" ng-model="user.confirmPassword" required ng-pattern="user.password"/>
                     <div class="validationError" ng-messages="signUpForm.confirmPassword.$error " ng-show=" signUpForm.confirmPassword.$error.pattern && (!signUpForm.confirmPassword.$pristine || signUpForm.$submitted) " role="alert ">
                         <span style="color:red " ng-if="!updateButton " ng-message="pattern ">password do not match</span>
                     </div>

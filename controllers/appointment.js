@@ -170,6 +170,7 @@ exports.customerAppointments = function(req, res) {
 					.populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong isActive is_verified isDeleted ratings')
 					.populate('shop_id', 'name address city state gallery latLong created_date user_id')
 					.exec(function(err, data) {
+
 						if (err) {
 							return res.status(400).send({
 								msg: constantObj.messages.errorRetreivingData
@@ -206,7 +207,7 @@ exports.pendingConfiramtion = function(req, res) {
 			if (err) {
 				return res.status(400).send({
 					msg: constantObj.messages.errorRetreivingData,
-					err:err
+					err: err
 				});
 			} else {
 				return res.status(200).send({
@@ -220,9 +221,9 @@ exports.pendingConfiramtion = function(req, res) {
 
 
 exports.countappoint = function(req, res) {
-    appointment.find(function(err, barber) {
-        res.json(barber);
-    });
+	appointment.find(function(err, barber) {
+		res.json(barber);
+	});
 };
 //Delete this function and use customerAppointments function only for both future and completed booking
 

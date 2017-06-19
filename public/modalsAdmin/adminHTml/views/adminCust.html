@@ -40,7 +40,7 @@
                                 {{customer.mobile_number}}
                             </td>
                             <td>
-                                {{customer.created_date}}
+                                {{customer.created_date | date : dd/mm/yyyy}}
                             </td>
                         </tr>
                     </tbody>

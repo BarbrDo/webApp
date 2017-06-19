@@ -42,12 +42,12 @@ angular.module('barbrdo').factory('Admin', function($http) {
         data: data
       });
     },
-    appointments: function() {
+    appointments: function(data) {
       return $http({
         method: 'GET',
         url: '/api/v1/appointment',
         headers: {
-          'user_id': "591be53fb902f60fcc14a9d1"
+          'user_id': data._id
         },
       });
     },
@@ -116,14 +116,17 @@ angular.module('barbrdo').factory('Admin', function($http) {
     addChair: function(data) {
       return $http.post('/api/v1/shops/chair', data);
     },
-    deleteChair: function(data) {
+    deleteChair: function(data, id, shopid) {
       return $http({
         method: 'DELETE',
         url: '/api/v1/shops/chair',
         headers: {
-          'user_id': data._id
+          'user_id': id
         },
-        data: data
+        data: {
+          shop_id: shopid,
+          chair_id: data._id
+        }
       });
     },
     updateChair: function(data, id) {
@@ -146,7 +149,6 @@ angular.module('barbrdo').factory('Admin', function($http) {
       return $http.put('/api/v1/deletebarber/' + data._id, data);
     },
     undeleteBarber: function(data) {
-      console.log("data", data)
       return $http.put('/api/v1/undeletebarber/' + data._id, data);
     },
     deleteShop: function(data) {

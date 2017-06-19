@@ -69,7 +69,7 @@
                                     <td> {{customerdetail.latLong[1]}} </td>
                                 </tr>
                             </table>
-                            <button type="button" class="btn btn-primary" ui-sref="view_cust_appointment">View Appointments</button>
+                            <button type="button" class="btn btn-primary" ui-sref="view_cust_appointment({id:customerdetail._id})" ng-click="custAppoint(customerdetail)">View Appointments</button>
                         </div>
                         <div class="row">
                             <div class="col-xs-12 col-md-6" style="margin-left: 450px;" n>

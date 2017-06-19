@@ -1,89 +1,86 @@
 <ol class="breadcrumb">
-  <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
-  <li class="breadcrumb-item"><a ui-sref="customers">Customers</a></li>
-  <li class="breadcrumb-item active">View Customers</li>
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item"><a ui-sref="customers">Customers</a></li>
+    <li class="breadcrumb-item active">View Customers</li>
 </ol>
-
-
-<div class="container">
-  
-  <div>
-     <font color="green">
-    </font>    
-       <div  class="row list-group">
-        <div class="item  col-xs-12 col-lg-12">
-        <div class="thumbnail">
-        <div class="caption" >
-
-                  
-                     <div class="col-lg-12">
-                       <table class="table table-striped" >
-                    <tr>
-                        <td><h5> Name</h5></td>
-                        <td>  {{customerdetail.first_name}}  {{customerdetail.last_name}} </td>
-                    </tr>
-                    <tr >
-                        <td><h5> MOBILE</h5></td>
-                        <td>  {{customerdetail.mobile_number}} </td>
-                    </tr>
-                    <tr>
-                        <td><h5> EMAIL</h5></td>
-                        <td>  {{customerdetail.email}} </td>
-                    </tr>
-                    <tr>
-                        <td><h5>DATE OF CREATION</h5></td>
-                        <td>  {{customerdetail.created_date | date :dd/mm/yyyy}} </td>
-                    </tr>
-                    <tr>
-                        <td><h5>IS OWNER ACTIVE</h5></td>
-                        <td>  {{customerdetail.isActive}}  </td>
-                    </tr>
-                    <tr>
-                        <td><h5>IS OWNER VERIFIED</h5></td>
-                        <td>  {{customerdetail.is_verified}} </td>
-                    </tr>
-                    <tr>
-                        <td><h5>IS OWNER DELETED</h5></td>
-                        <td>  {{customerdetail.isDeleted}} </td>
-                    </tr>
-                    <tr>
-                        <td><h5>GALARY</h5></td>
-                        <td>  {{customerdetail.gallery[0].name}} </td>
-                    </tr>
-                    <tr>
-                        <td><h5>RATINGS</h5></td>
-                        <td>  {{customerdetail.ratings[0].score}} </td>
-                    </tr>
-                     <tr>
-                        <td><h5>LATTITUDE</h5></td>
-                        <td>  {{customerdetail.latLong[0]}} </td>
-                    </tr>
-                    <tr>
-                        <td><h5>LONGITUDE</h5></td>
-                        <td>  {{customerdetail.latLong[1]}} </td>
-                    </tr>
-                     </table>
-                     <button type="button" class="btn btn-primary" ui-sref="view_cust_appointment">View Appointments</button>
-                     </div>
-                      
-                       
-
-                    <div class="row">
-                        
-                        <div class="col-xs-12 col-md-6" style="margin-left: 450px;" n><br><br>
-                            <button class="btn btn-success" ui-sref="editcust({id:customerdetail._id})" ng-click="custdetails(customerdetail)">Edit Details</button>
+<div class="container" ng-init="customerdetails()">
+    <div>
+        <font color="green">
+        </font>
+        <div class="row list-group">
+            <div class="item  col-xs-12 col-lg-12">
+                <div class="thumbnail">
+                    <div class="caption">
+                        <div class="col-lg-12">
+                            <table class="table table-striped">
+                                <tr>
+                                    <td>
+                                        <h5> Name</h5></td>
+                                    <td> {{customerdetail.first_name}} {{customerdetail.last_name}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5> MOBILE</h5></td>
+                                    <td> {{customerdetail.mobile_number}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5> EMAIL</h5></td>
+                                    <td> {{customerdetail.email}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>DATE OF CREATION</h5></td>
+                                    <td> {{customerdetail.created_date | date :dd/mm/yyyy}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>IS OWNER ACTIVE</h5></td>
+                                    <td> {{customerdetail.isActive}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>IS OWNER VERIFIED</h5></td>
+                                    <td> {{customerdetail.is_verified}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>IS OWNER DELETED</h5></td>
+                                    <td> {{customerdetail.isDeleted}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>GALARY</h5></td>
+                                    <td> {{customerdetail.gallery[0].name}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>RATINGS</h5></td>
+                                    <td> {{customerdetail.ratings[0].score}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>LATTITUDE</h5></td>
+                                    <td> {{customerdetail.latLong[0]}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>LONGITUDE</h5></td>
+                                    <td> {{customerdetail.latLong[1]}} </td>
+                                </tr>
+                            </table>
+                            <button type="button" class="btn btn-primary" ui-sref="view_cust_appointment({id:customerdetail._id})" ng-click="custAppoint(customerdetail)">View Appointments</button>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6" style="margin-left: 450px;" n>
+                                <br>
+                                <br>
+                                <button class="btn btn-success" ui-sref="editcust({id:customerdetail._id})" ng-click="custdetails(customerdetail)">Edit Details</button>
+                            </div>
+                        </div>
                     </div>
+                    <img src="/uploadedFiles/{{customerdetail.picture}}" style="margin-left: 30px;" height="20%" width="20%" />
                 </div>
             </div>
-             <img  src="/uploadedFiles/{{customerdetail.picture}}" style="margin-left: 30px;" height="20%" width="20%" />
-                
-            </div>
-               
-                
-        
+        </div>
     </div>
-</div>
-</div>
-
-
-     

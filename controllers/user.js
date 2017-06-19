@@ -118,7 +118,7 @@ var saveShop = function(saveDataForShop, resetUrl, user, req, res) {
   });
 }
 
-var accountActivateMailFunction = function(req, res, user, resetUrl) {
+let accountActivateMailFunction = function(req, res, user, resetUrl) {
   console.log("accountActivateMailFunction", user);
   let auth = {
     auth: {
@@ -133,18 +133,12 @@ var accountActivateMailFunction = function(req, res, user, resetUrl) {
     subject: '✔ Activate Your Account',
     text: 'Please Activate your account by clicking link \n\n' + resetUrl + '\n\n'
   };
-  if(!user.facebook){
-    nodemailerMailgun.sendMail(mailOptions, function(err, info) {
-      res.send({
-        msg: 'An email has been sent to ' + user.email + ' with further instructions.'
-      });
+
+  nodemailerMailgun.sendMail(mailOptions, function(err, info) {
+    res.send({
+      msg: 'An email has been sent to ' + user.email + ' with further instructions.'
     });
-  } else {
-      res.status(200).send({
-        user: user,
-        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-      });
-  }
+  });
 }
 
 exports.signupPost = function(req, res, next) {
@@ -250,9 +244,19 @@ exports.signupPost = function(req, res, next) {
               })
             } else {
               console.log("else part of barber save");
-              accountActivateMailFunction(req, res, data, resetUrl)
+              let data1 = {};
+              data1.email = data.email;
+              accountActivateMailFunction(req, res, data1, resetUrl)
             }
           })
+        } else if (req.body.facebook) {
+          res.send({
+            msg: "please check your email to verify your account.",
+            link: resetUrl,
+            token: generateToken(data),
+            user: data.toJSON(),
+            "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+          });
         } else {
           accountActivateMailFunction(req, res, data, resetUrl)
         }
@@ -268,28 +272,22 @@ exports.signupPost = function(req, res, next) {
  */
 exports.accountPut = function(req, res, next) {
 
-  console.log("body12222", req.body)
   if ('password' in req.body) {
     req.checkHeaders('user_id', 'User ID is missing').notEmpty();
     req.assert('password', 'Password must be at least 6 characters long').len(6);
     req.assert('confirm', 'Passwords must match').equals(req.body.password);
   }
   let errors = req.validationErrors();
-  console.log("errors", errors);
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",
       err: errors
     });
   }
-  console.log("headers", req.headers.user_id);
   User.findById(req.headers.user_id, function(err, user) {
-    console.log(user);
-    console.log("body2", req.body)
     if ('password' in req.body) {
       user.password = req.body.password;
     } else {
-      console.log("user", user);
       if (req.body.first_name) {
         user.first_name = req.body.first_name;
       }
@@ -721,7 +719,6 @@ exports.authGoogleCallback = function(req, res) {
 exports.addChair = function(req, res) {
   req.assert("_id", "_id is required").notEmpty();
   let errors = req.validationErrors();
-  console.log("req.body", req.body);
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",
@@ -783,83 +780,85 @@ exports.addChair = function(req, res) {
 }
 
 exports.removeChair = function(req, res) {
-  req.assert("shop_id", "Shop ID is required")
-  req.assert("chair_id", "Chair ID is required");
-  let errors = req.validationErrors();
-  console.log("req.body", req.body);
-  if (errors) {
-    return res.status(400).send({
-      msg: "error in your request",
-      err: errors
-    });
-  }
-  let validateId = objectID.isValid(req.body.shop_id);
-  let validateChairId = objectID.isValid(req.body.chair_id)
-  if (validateId && validateChairId) {
-    Shop.find({
-      _id: req.body.shop_id,
-      "chairs._id": req.body.chair_id
-    }, {
-      "chairs.$": 1
-    }).exec(function(err, result) {
-      if (err) {
-        res.status(400).send({
-          msg: 'Error in deleting chair.'
-        });
-      } else {
-        console.log("response", JSON.stringify(result))
-        console.log(result[0].chairs[0].name)
-        if (result[0].chairs[0].barber_id) {
-          res.status(400).send({
-            msg: "You can't remove this chair.A Barber is already associated with this chair."
-          });
-        } else {
-          Shop.update({
-            _id: req.body.shop_id,
-            "chairs._id": req.body.chair_id
-          }, {
-            $set: {
-              "chairs.$.isActive": false
-            }
-          }).exec(function(errInDelete, resultInDelete) {
-            if (errInDelete) {
-              res.status(400).send({
-                msg: 'Error in deleting chair.'
-              });
-            } else {
-              res.status(200).send({
-                msg: 'Chair successfully deleted.'
-              });
-            }
-          })
-        }
-      }
-    })
-  } else {
-    res.status(400).send({
-      msg: 'Please pass correct fields.'
-    });
-  }
-}
-/*
-exports.getUserType = function(req, res) {
-  userTypes.find({
-    isDeleted: false
-  }, {
-    isDeleted: 0
-  }, function(err, data) {
-    if (err) {
-      res.status(400).send({
-        msg: constantObj.messages.errorRetreivingData
-      });
-    } else {
-      res.status(200).send({
-        msg: constantObj.messages.successRetreivingData,
-        data: data
+    req.assert("shop_id", "Shop ID is required")
+    req.assert("chair_id", "Chair ID is required");
+    console.log("req.body1111",req.body);
+    let errors = req.validationErrors();
+    if (errors) {
+      return res.status(400).send({
+        msg: "error in your request",
+        err: errors
       });
     }
-  })
-}*/
+
+    let validateId = objectID.isValid(req.body.shop_id);
+    let validateChairId = objectID.isValid(req.body.chair_id)
+    if (validateId && validateChairId) {
+      Shop.find({
+        _id: req.body.shop_id,
+        "chairs._id": req.body.chair_id
+      }, {
+        "chairs.$": 1
+      }).exec(function(err, result) {
+        if (err) {
+          res.status(400).send({
+            msg: 'Error in deleting chair.'
+          });
+        } else {
+          console.log("response", JSON.stringify(result))
+          console.log(result[0].chairs[0].name)
+          if (result[0].chairs[0].barber_id) {
+            res.status(400).send({
+              msg: "You can't remove this chair.A Barber is already associated with this chair."
+            });
+          } else {
+            Shop.update({
+              _id: req.body.shop_id,
+              "chairs._id": req.body.chair_id
+            }, {
+              $set: {
+                "chairs.$.isActive": false,
+                "chairs.$.availability":"closed"
+              }
+            }).exec(function(errInDelete, resultInDelete) {
+              if (errInDelete) {
+                res.status(400).send({
+                  msg: 'Error in deleting chair.'
+                });
+              } else {
+                res.status(200).send({
+                  msg: 'Chair successfully deleted.'
+                });
+              }
+            })
+          }
+        }
+      })
+    } else {
+      res.status(400).send({
+        msg: 'Please pass correct fields.'
+      });
+    }
+  }
+  /*
+  exports.getUserType = function(req, res) {
+    userTypes.find({
+      isDeleted: false
+    }, {
+      isDeleted: 0
+    }, function(err, data) {
+      if (err) {
+        res.status(400).send({
+          msg: constantObj.messages.errorRetreivingData
+        });
+      } else {
+        res.status(200).send({
+          msg: constantObj.messages.successRetreivingData,
+          data: data
+        });
+      }
+    })
+  }*/
 
 exports.checkFaceBook = function(req, res) {
   req.assert('facebook_id', 'facebook_id is required').notEmpty();

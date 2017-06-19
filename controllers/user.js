@@ -817,7 +817,8 @@ exports.removeChair = function(req, res) {
               "chairs._id": req.body.chair_id
             }, {
               $set: {
-                "chairs.$.isActive": false
+                "chairs.$.isActive": false,
+                "chairs.$.availability":"closed"
               }
             }).exec(function(errInDelete, resultInDelete) {
               if (errInDelete) {

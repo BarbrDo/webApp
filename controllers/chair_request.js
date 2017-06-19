@@ -142,8 +142,9 @@ exports.barberChairReqests = function(req, res) {
 	var shop_id = mongoose.Types.ObjectId(req.params.shop_id);
 	chairRequest.aggregate([{
 		$match: {
-			'shop_id': shop_id,
-			"requested_by": "barber"
+			shop_id: shop_id,
+			requested_by: "barber",
+                        status:"pending"
 		}
 	}, {
 		$lookup: {
@@ -441,7 +442,7 @@ exports.acceptRequest = function(req, res) {
 							_id: id
 						}, {
 							$set: {
-								status: "confirm"
+								status: "accept"
 							}
 						}, function(err, outt) {
 							if (err) {
@@ -484,7 +485,7 @@ exports.acceptRequest = function(req, res) {
 							_id: id
 						}, {
 							$set: {
-								status: "declined"
+								status: "decline"
 							}
 						}, function(err, outt) {
 							if (err) {

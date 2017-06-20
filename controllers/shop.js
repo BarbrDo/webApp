@@ -333,6 +333,7 @@ exports.allShopsHavingChairs = function(req, res) {
                     address:"$address",
                     ratings:"$ratings",
                     payment_method:"$payment_methods",
+                    distance:"$dist.calculated"
                 },
                 'chair-barber': { 
                     $push: {

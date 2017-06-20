@@ -315,23 +315,37 @@ exports.allShopsHavingChairs = function(req, res) {
             }
         },
         {
-            $group:{
-                _id:'$_id',
-                'chairs': { 
-
+            $group:
+            {
+                '_id':{
+                    _id : "$_id",
+                    name:"$name",
+                    user_id : "$user_id",
+                    license_number : "$license_number",
+                    latLong:"$latLong",
+                    rating:"$rating",
+                    payment_methods:"$payment_methods",
+                    modified_date:"$modified_date",           
+                    created_date : "$created_date",
+                    zip:"$zip",
+                    state:"$state",
+                    city:"$city",
+                    address:"$address",
+                    ratings:"$ratings",
+                    payment_method:"$payment_methods",
+                },
+                'chair-barber': { 
                     $push: {
                         chair:"$chairs",
                         barber:"$barberInfo",
-
                     }
                 }
             }
          },
         {
             $project:{
-                _id:1,
-                'chairs':1
-
+                '_id':1,
+                'chair-barber':1
             }
         }
         ]).exec(function(err, result) {

@@ -261,6 +261,7 @@ exports.associatedBarbers = function(req, res) {
                         obj.ratings = data[i].barberInformation.ratings;
                         obj.location = data[i].name;
                         obj.shop_id = data[i]._id;
+                        obj.picture = data[i].barberInformation.picture;
                         resultTantArray.push(obj);
                     }
                 }

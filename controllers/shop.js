@@ -231,43 +231,51 @@ exports.associatedBarbers = function(req, res) {
             $match: {
                 $or: [{
                     "barberInformation.first_name": {
-                        $regex: search,
+                        $regex: "",
                         $options: 'i'
                     }
                 }, {
                     "barberInformation.last_name": {
-                        $regex: search,
+                        $regex: "",
                         $options: 'i'
                     }
                 }]
+            }
+        },{
+          $group:{
+             "_id":"$_id",
+             "first_name":{
+                 "$first":"$barberInformation.first_name"
+             },
+             "last_name":{
+                 "$first":"$barberInformation.last_name"
+             },
+             "picture":{
+                 "$first":"$barberInformation.picture"
+             },
+             "created_date":{
+                 "$first":"$barberInformation.created_date"
+             },
+             "ratings":{
+                 "$first":"$barberInformation.ratings"
+             },
+            "distance":{
+                  "$first":"$dist.calculated"
+             },
+             "location":{
+                    "$first":"$name"
+             },
+             "shop_id":{
+                    "$first":"$_id"
+             }
             }
         }]).exec(function(err, data) {
             if (err) {
                 console.log(err);
             } else {
-
-                let resultTantArray = [];
-                for (let i = 0; i < data.length; i++) {
-                    let obj = {};
-                    if (data[i].barberInformation) {
-                        obj._id = data[i].barberInformation._id;
-                        obj.first_name = data[i].barberInformation.first_name;
-                        obj.last_name = data[i].barberInformation.last_name;
-                        let distt = parseFloat(data[i].dist.calculated)
-                        distt = Math.round(distt * 100) / 100
-                        obj.distance = distt;
-                        obj.units = "miles";
-                        obj.created_date = data[i].barberInformation.created_date;
-                        obj.ratings = data[i].barberInformation.ratings;
-                        obj.location = data[i].name;
-                        obj.shop_id = data[i]._id;
-                        obj.picture = data[i].barberInformation.picture;
-                        resultTantArray.push(obj);
-                    }
-                }
                 res.status(200).send({
                     "msg": constantObj.messages.successRetreivingData,
-                    "data": resultTantArray
+                    "data": data
                 })
             }
         })

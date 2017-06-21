@@ -7,6 +7,8 @@ var async = require('async');
 var moment = require('moment');
 var mongoose = require('mongoose');
 let user = require('../models/User');
+let nodemailer = require('nodemailer');
+let mg = require('nodemailer-mailgun-transport');
 /**
  * Request to a particular chair
  * Input: check code req.assert lines
@@ -97,6 +99,7 @@ exports.requestChair = function(req, res) {
                                                     msg: constantObj.messages.errorInSave
                                                 })
                                             } else {
+                                            	mailChairRequest(data.email)
                                                 res.status(200).send({
                                                     msg: "Your request for shop is successfully registered.",
                                                     data: result
@@ -133,6 +136,7 @@ exports.requestChair = function(req, res) {
                                         msg: constantObj.messages.errorInSave
                                     })
                                 } else {
+                                	mailChairRequest(data.email)
                                     res.status(200).send({
                                         msg: "Your request for shop is successfully registered.",
                                         data: result
@@ -149,6 +153,35 @@ exports.requestChair = function(req, res) {
                 })
             }
         })
+}
+
+/*_________________________________________________
+This function will sent Mail when a barber request to chair
+Barber Request to chair :- to: shop_email, cc : admin
+Shop request to barber for a chair :- to Barber_email,cc : admin
+____________________________________________________
+*/ 
+
+let mailChairRequest = function(email) {
+	let auth = {
+		auth: {
+			api_key: process.env.MAILGUN_APIKEY,
+			domain: process.env.MAILGUN_DOMAIN
+		}
+	}
+	let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+	let mailOptions = {
+		to: email,
+		cc:constantObj.admin.email,
+		from: 'support@barbrdo.com',
+		subject: '✄ New Chair request.',
+		text: 'You have a new chair request.'
+	};
+
+	nodemailerMailgun.sendMail(mailOptions, function(err, info) {
+		console.log("mailSentChairRequest",err,info);
+	});
+
 }
 
 exports.barberChairReqests = function(req, res) {
@@ -426,12 +459,11 @@ exports.acceptRequest = function(req, res) {
 						msg: "Chair type is not present."
 					})
 				}
-
 				/*
 				1. In case of if type is weekly then booking_end date is one week ahead
 				2. In case of if type is percentage then booking_end date is one month ahead
-				3. In case of if type is monthly then booking_end date is one month ahead
-				*/
+				3. In case of if type is monthly then booking_end date is one month ahead */
+				
 				async.waterfall([
 					function(done) {
 						var saveData = {

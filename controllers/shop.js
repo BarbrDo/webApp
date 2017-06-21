@@ -424,8 +424,6 @@ exports.postChairToAllBarbers = function(req, res) {
     }, {
         "chairs.$": 1
     }).exec(function(err, data) {
-        console.log(data);
-        console.log('chair---', data.chairs[0].type);
         if (data.chairs[0].type) {
             shop.update({
                 "user_id": req.headers.user_id,
@@ -1017,7 +1015,7 @@ exports.manageChair = function(req, res) {
     req.checkHeaders('user_id', 'User id is required.').notEmpty();
     req.assert('chair_id', 'Chair id is required.').notEmpty();
     req.assert('type', 'Chair type is required').notEmpty();
-    console.log("rah", req.body);
+
     if (req.body.type == 'weekly' || req.body.type == 'monthly') {
         req.assert('amount', 'Amount is required.').notEmpty();
     } else {
@@ -1030,6 +1028,8 @@ exports.manageChair = function(req, res) {
             err: req.validationErrors()
         });
     }
+
+        console.log("rah", req.body);
     if (req.body.type == 'percentage') {
         var updateCollectionData = {
             $unset: {

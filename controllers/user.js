@@ -158,15 +158,18 @@ exports.signupPost = function(req, res, next) {
   req.sanitize('email').normalizeEmail({
     remove_dots: false
   });
-
+ console.log("req.body",req.body);
   let errors = req.validationErrors();
 
   if (errors) {
-    return res.status(400).send({
+    return 
+    console.log(errors)
+    res.status(400).send({
       msg: "error in your request",
       err: errors
     });
   }
+  console.log("req.bod2355",req.body);
   User.findOne({
     email: req.body.email
   }, function(err, user) {
@@ -782,7 +785,7 @@ exports.addChair = function(req, res) {
 exports.removeChair = function(req, res) {
     req.assert("shop_id", "Shop ID is required")
     req.assert("chair_id", "Chair ID is required");
-    console.log("req.body1111",req.body);
+    
     let errors = req.validationErrors();
     if (errors) {
       return res.status(400).send({
@@ -790,7 +793,7 @@ exports.removeChair = function(req, res) {
         err: errors
       });
     }
-
+    console.log("req.body",req.body);
     let validateId = objectID.isValid(req.body.shop_id);
     let validateChairId = objectID.isValid(req.body.chair_id)
     if (validateId && validateChairId) {
@@ -805,8 +808,6 @@ exports.removeChair = function(req, res) {
             msg: 'Error in deleting chair.'
           });
         } else {
-          console.log("response", JSON.stringify(result))
-          console.log(result[0].chairs[0].name)
           if (result[0].chairs[0].barber_id) {
             res.status(400).send({
               msg: "You can't remove this chair.A Barber is already associated with this chair."

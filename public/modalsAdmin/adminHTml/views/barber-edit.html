@@ -8,6 +8,10 @@
         Edit Barber
     </div>
     <div class="panel-body">
+        <div ng-if="messages" role="alert" class="alert alert-danger">
+            <div>
+                {{messages}}</div>
+        </div>
         <div class="title">
             Barber Information
         </div>
@@ -25,7 +29,7 @@
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Mobile Number</label>
-                    <input type="text" class="form-control" data-ng-model="barberdetail.mobile_number" name="mobile_number" id="mobile_number" mask="(999)999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="10" ng-maxlength="10" maxlength="10" required />
+                    <input type="text" class="form-control" name="mobile_number" id="mobile_number" ng-model="barberdetail.mobile_number" mask="(999) 999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="14" ng-maxlength="14" maxlength="14" required/>
                     <span style="color:red;" ng-show="editForm.mobile_number.$error.minlength">Phone have 10-digits minimum.</span>
                 </div>
             </div>
@@ -81,7 +85,6 @@
             </div>
     </div>
 </div>
-</form>
 <div class="clearfix text-center">
     <button type="submit" class="btn btn-primary" ng-click="updatebarber(barberdetail)" ui-sref="barbersdetail({id:barberdetail._id})">
         <i class="fa fa-check" aria-hidden="true"></i>
@@ -92,5 +95,16 @@
             <span>Cancel</span>
         </button>
 </div>
+</form>
 </div>
 </div>
+<script type="text/javascript">
+window.addEventListener('keydown', function(e) {
+    if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e.keyCode == 13) {
+        if (e.target.nodeName == 'INPUT' && e.target.type == 'text') {
+            e.preventDefault();
+            return false;
+        }
+    }
+}, true);
+</script>

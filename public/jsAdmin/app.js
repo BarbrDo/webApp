@@ -1,6 +1,6 @@
 "use strict";
 
-var app_admin = angular.module('barbrdo', ['ui.router', 'ui.bootstrap', 'angularModalService', 'rzModule', "chart.js"]);
+var app_admin = angular.module('barbrdo', ['ui.router', 'ui.bootstrap', 'angularModalService', 'rzModule', "chart.js",'alexjoffroy.angular-loaders','ngMask']);
 
 app_admin.config(['$locationProvider', function($locationProvider) {
     $locationProvider.hashPrefix('');
@@ -22,7 +22,7 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     .state('cust_appointments', {
         url: '/appointments',
         controller: "AdminCtrl",
-        templateUrl: '/modalsAdmin/adminHTml/views/appointment.html'
+        templateUrl: '/modalsAdmin/adminHTml/views/appointments.html'
     })
 
     // view_companies
@@ -34,33 +34,33 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     .state('edit_barbers', {
             url: '/barbers/edit/:id',
             controller: "AdminCtrl",
-            templateUrl: "/modalsAdmin/adminHTml/views/edit-barber.html"
+            templateUrl: "/modalsAdmin/adminHTml/views/barber-edit.html"
 
         })
         .state('detailed_appointment', {
             url: '/appointment/detail',
             controller: "AdminCtrl",
-            templateUrl: "/modalsAdmin/adminHTml/views/appoint-detail.html"
+            templateUrl: "/modalsAdmin/adminHTml/views/appointment-details.html"
 
         })
 
     .state('barbers', {
         url: '/barbers',
         controller: "AdminCtrl",
-        templateUrl: "/modalsAdmin/adminHTml/views/adminBarber.html"
+        templateUrl: "/modalsAdmin/adminHTml/views/barberAdmin.html"
     })
 
     .state('view_cust_appointment', {
-        url: '/customer/ViewAppointment/:id',
+        url: '/customer/appointment/:id',
         controller: "AdminCtrl",
-        templateUrl: "/modalsAdmin/adminHTml/views/ViewAppointment.html"
+        templateUrl: "/modalsAdmin/adminHTml/views/customer-appointments.html"
     })
 
 
     .state('editshop', {
         url: '/shop/edit/:id',
         controller: "AdminCtrl",
-        templateUrl: "/modalsAdmin/adminHTml/views/editshop.html"
+        templateUrl: "/modalsAdmin/adminHTml/views/shop-edit.html"
             // resolve: {
             //      checklogin: login
             //  }
@@ -69,7 +69,7 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     .state('editcust', {
         url: '/customer/edit/:id',
         controller: "AdminCtrl",
-        templateUrl: "/modalsAdmin/adminHTml/views/editcust.html"
+        templateUrl: "/modalsAdmin/adminHTml/views/customer-edit.html"
             // resolve: {
             //      checklogin: login
             //  }
@@ -78,7 +78,7 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     .state('editchair', {
         url: '/chair/edit/:id',
         controller: "AdminCtrl",
-        templateUrl: "/modalsAdmin/adminHTml/views/editchair.html"
+        templateUrl: "/modalsAdmin/adminHTml/views/chair-edit.html"
             // resolve: {
             //      checklogin: login
             //  }
@@ -87,7 +87,7 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     .state('shops', {
         url: '/shops',
         controller: "AdminCtrl",
-        templateUrl: "/modalsAdmin/adminHTml/views/adminShop.html"
+        templateUrl: "/modalsAdmin/adminHTml/views/shopAdmin.html"
             // resolve: {
             //      checklogin: login
             //  }
@@ -96,13 +96,13 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     .state('chairs', {
         url: '/chairs/:id',
         controller: "AdminCtrl",
-        templateUrl: "/modalsAdmin/adminHTml/views/chairsdetails.html"
+        templateUrl: "/modalsAdmin/adminHTml/views/chairs-details.html"
     })
 
     .state('barbdetail', {
-        url: '/barbdetail/:id',
+        url: '/shop/barbdetail/:id',
         controller: "AdminCtrl",
-        templateUrl: "/modalsAdmin/adminHTml/views/barberdetails.html"
+        templateUrl: "/modalsAdmin/adminHTml/views/shopsHaving-barbers.html"
             // resolve: {
             //      checklogin: login
             //  }
@@ -111,7 +111,7 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     .state('customer_detail', {
         url: '/customer/details/:id',
         controller: "AdminCtrl",
-        templateUrl: "/modalsAdmin/adminHTml/views/customerdetails.html"
+        templateUrl: "/modalsAdmin/adminHTml/views/customer-details.html"
             // resolve: {
             //      checklogin: login
             //  }
@@ -129,35 +129,35 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     .state('customers', {
         url: '/customers',
         controller: "AdminCtrl",
-        templateUrl: "/modalsAdmin/adminHTml/views/adminCust.html"
+        templateUrl: "/modalsAdmin/adminHTml/views/customerAdmin.html"
 
     })
 
     .state('add_barbers', {
         url: '/add_barbers',
         controller: "AdminCtrl",
-        templateUrl: "/modalsAdmin/adminHTml/views/addBarber.html"
+        templateUrl: "/modalsAdmin/adminHTml/views/barber-add.html"
 
     })
 
     .state('add_shops', {
         url: '/add_shops',
         controller: "AdminCtrl",
-        templateUrl: "/modalsAdmin/adminHTml/views/addShop.html"
+        templateUrl: "/modalsAdmin/adminHTml/views/shop-add.html"
 
     })
 
     .state('add_customers', {
         url: '/add_customers',
         controller: "AdminCtrl",
-        templateUrl: "/modalsAdmin/adminHTml/views/addCustomer.html"
+        templateUrl: "/modalsAdmin/adminHTml/views/customer-add.html"
 
     })
 
     .state('shopdetail', {
         url: '/shops/details/:id',
         controller: "AdminCtrl",
-        templateUrl: "/modalsAdmin/adminHTml/views/shopdetail.html"
+        templateUrl: "/modalsAdmin/adminHTml/views/shop-details.html"
 
     })
 

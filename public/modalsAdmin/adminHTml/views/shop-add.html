@@ -1,5 +1,4 @@
 <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
-
 <ol class="breadcrumb">
     <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
     <li class="breadcrumb-item"><a ui-sref="shops">Shops</a></li>
@@ -10,10 +9,10 @@
         Add Shops
     </div>
     <div class="panel-body">
-    <div ng-if="messages" role="alert" class="alert alert-danger">
-        <div>
-            {{messages}}</div>
-     </div>
+        <div ng-if="messages" role="alert" class="alert alert-danger">
+            <div>
+                {{messages}}</div>
+        </div>
         <div class="title">
             Shop Owner Information
         </div>
@@ -31,7 +30,7 @@
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Mobile Number</label>
-                    <input type="text " class="form-control" name="mobile_number" id="mobile_number" ng-model="user.mobile_number" mask="(999)999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="14" ng-maxlength="14" maxlength="14" required />
+                    <input type="text" class="form-control" name="mobile_number" id="mobile_number" ng-model="user.mobile_number" mask="(999) 999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="14" ng-maxlength="14" maxlength="14" required />
                     <span style="color:red;" ng-show="signUpForm.mobile_number.$touched && signUpForm.mobile_number.$invalid && signUpForm.mobile_number.$error.required">Mobile number is required.</span>
                     <span style="color:red;" ng-show="signUpForm.mobile_number.$error.minlength">Phone have 10-digits minimum.</span>
                 </div>
@@ -113,19 +112,29 @@
                     <span style="color:red;" ng-show="signUpForm.license_number.$touched && signUpForm.license_number.$invalid && signUpForm.license_number.$error.required">Licence number is required.</span>
                 </div>
             </div>
-        </form>
-        <div class="clearfix text-center">
-            <button type="submit" id="save" ng-show="signUpForm.$invalid==false" class="btn btn-primary" ng-click="addcustomer('shops')" style="background-color: #97f580;">
-                <i class="fa fa-check" aria-hidden="true" style="color: #000000;"></i> Save
-            </button>
-            <button type="submit" ng-hide="signUpForm.$invalid==false" class="btn btn-primary" ng-disabled="signUpForm.$invalid" data-toggle="tooltip" title="Invalid Form">
-                <i class="fa fa-check" aria-hidden="true"></i>
-                <span>Save
-      </button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button type="reset" class="btn btn-grey">
-                    <i class="fa fa-times" aria-hidden="true"></i>
-                    <span>Reset</span>
+            <div class="clearfix text-center">
+                <button type="submit" id="save" ng-show="signUpForm.$invalid==false" class="btn btn-primary" ng-click="addcustomer('shops')" style="background-color: #97f580;">
+                    <i class="fa fa-check" aria-hidden="true" style="color: #000000;"></i> Save
                 </button>
-        </div>
+                <button type="submit" ng-hide="signUpForm.$invalid==false" class="btn btn-primary" ng-disabled="signUpForm.$invalid" data-toggle="tooltip" title="Invalid Form">
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                    <span>Save
+      </button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button type="reset" class="btn btn-grey">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                        <span>Reset</span>
+                    </button>
+            </div>
+        </form>
     </div>
 </div>
+<script type="text/javascript">
+window.addEventListener('keydown', function(e) {
+    if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e.keyCode == 13) {
+        if (e.target.nodeName == 'INPUT' && e.target.type == 'text') {
+            e.preventDefault();
+            return false;
+        }
+    }
+}, true);
+</script>

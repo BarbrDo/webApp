@@ -1,10 +1,10 @@
 <ol class="breadcrumb">
     <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
-    <li class="breadcrumb-item active">Customers</li>
+    <li class="breadcrumb-item active">Barbers</li>
 </ol>
-<div class="panel" ng-init="custpageChanged()">
+<div class="panel" ng-init="pageChanged()">
     <div class="panel-heading">
-        All Customers
+        All Barbers
     </div>
     <div class="panel-body">
         <!-- RAHUL  CODE -->
@@ -16,31 +16,29 @@
                     </div>
                     <div>
                         <span class="glyphicon glyphicon-search" style="color:purple"></span>
-                        <input ng-model="myobj.search" placeholder="Search for..." ng-change="custpageChanged()" />
+                        <input ng-model="myobj.search" placeholder="Search for..." ng-change="pageChanged()" />
                     </div>
                 </div>
                 <table class="table">
                     <thead>
                         <tr>
-                            <th style="font-size: 15px;" width="20%"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">NAME<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
-                            <th style="font-size: 15px;" width="25%"><a ng-click="Sort('email')" class="email" style="color: #ffffff;">EMAIL<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-                            <th style="font-size: 15px;" width="15%"><a ng-click="Sort('mobile_number')" class="mobile_number" style="color: #ffffff;">MOBILE <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-                            <th style="font-size: 15px;" width="15%"><a ng-click="Sort('mobile_number')" class="mobile_number" style="color: #ffffff;">CREATED DATE <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                            <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                            <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">E-mail<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                            <th style="font-size: 13px;"><a ng-click="Sort('name[0]')" class="name" style="color: #ffffff;">Shop Associated With<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                            <th style="font-size: 13px;" width="20%"><a ng-click="Sort('created_date')" class="created_date" style="color: #ffffff;">Member Since<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr data-ng-repeat="customer in customers | orderBy:sort:reverse | limitTo:quantity" data-ng-class="{danger:!customer.active}">
-                            <td><a data-toggle="tooltip" title="View {{customer.first_name}}'s detailed info" ui-sref="customer_detail({id:customer._id})">
-            {{customer.first_name}} {{customer.last_name}} </a>
+                        <tr data-ng-repeat="barber in barbers| orderBy:sort:reverse " data-ng-class="{danger:!barber.active}">
+                            <td>
+                                <a data-toggle="tooltip" title="View Details" ui-sref="barbersdetail({id:barber._id})">{{barber.first_name}} {{barber.last_name}}</a>
+                            </td>
+                            <td>{{barber.email}}
+                            </td>
+                            <td><a data-toggle="tooltip" title="View {{barber.name[0]}}'s detailed info" ui-sref="shopdetail({id:barber.shop[0].user_id})">{{barber.name[0]}}</a>
                             </td>
                             <td>
-                                {{customer.email}}
-                            </td>
-                            <td>
-                                {{customer.mobile_number}}
-                            </td>
-                            <td>
-                                {{customer.created_date | date : dd/mm/yyyy}}
+                                {{barber.created_date | date:dd/mm/yyyy}}
                             </td>
                         </tr>
                     </tbody>
@@ -48,17 +46,18 @@
             </div>
             <div>
                 <div class="col-sm-6">
-                    <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="custpageChanged()"></ul>
+                    <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="pageChanged()"></ul>
                 </div>
                 <br>
                 <!-- <label>No. of Enteries</label>
-            <select ng-model="quantity">
+            <select  ng-model="quantity">
               <option value="">All</option>
               <option value="1">1</option>
+              <option value="2">2</option>
               <option value="3">3</option>
+              <option value="4">4</option>
               <option value="5">5</option>
-              <option value="7">7</option>
-              <option value="10">10</option>
+              <option value="6">6</option>
             </select> -->
             </div>
             <!-- Modal -->
@@ -105,9 +104,10 @@
                             <h4 class="modal-title">Details</h4>
                         </div>
                         <div class="modal-body">
-                            <p>NAME :{{customerdetail.first_name}} {{customerdetail.last_name}}
-                                <br> EMAIL : {{customerdetail.email}}
-                                <br> PHONE : {{customerdetail.mobile_number}}</p>
+                            <p>
+                                NAME OF THE BARBER : {{barberdetail.first_name}} {{barberdetail.last_name}}
+                                <br> SHOP ACCOSIATED WITH : {{barberdetail.name[0]}}
+                                <br> MEMBER SINCE : {{barberdetail.created_date | date:"dd/mm/yyyy"}}</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
@@ -129,7 +129,7 @@
                             </p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" onClick="history.go(0)">OK</button>
                         </div>
                     </div>
                 </div>
@@ -148,7 +148,7 @@
                             </p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" onClick="history.go(0)">OK</button>
                         </div>
                     </div>
                 </div>
@@ -209,5 +209,21 @@
                 </div>
             </div>
             <!-- RAHUL CODE -->
+            <div class="modal fade" id="confirm" role="dialog" ng-repeat="barber in barbers">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <p>
+                                Are You Sure!!!!!! You want to Delete this Record
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deletebarber(barber)" data-toggle="modal" data-target="#myAnotherModal">DELETE</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>

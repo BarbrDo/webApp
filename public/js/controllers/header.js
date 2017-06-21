@@ -2,6 +2,7 @@ angular.module('BarbrDoApp')
   .controller('HeaderCtrl', function($scope, $location, $window, $auth, $state,$rootScope,$uibModal,toastr,shop) {
     $scope.user = {};
     $scope.messages = {};
+    // alert("working");
     $scope.isActive = function(viewLocation) {
       return viewLocation === $location.path();
     };
@@ -90,7 +91,15 @@ angular.module('BarbrDoApp')
     $scope.signup = function() {
       $auth.signup($scope.user)
         .then(function(response) {
-          toastr.success("Please check your mail to activate your account.")   
+          console.log(response.data)
+          if(response.data.user){
+            $window.localStorage.user = JSON.stringify(response.data.user);
+            $window.localStorage.imagePath = response.data.imagesPath;
+            $state.go('subScription')
+          }
+          else{
+            toastr.success("Please check your mail to activate your account.");
+          }   
         })
         .catch(function(response) {
           $scope.messagess = {
@@ -124,9 +133,6 @@ angular.module('BarbrDoApp')
  function($uibModalInstance, $scope) {
 
    $scope.cancel = function() {
-    //console.log("m heerrerrerer")
     $uibModalInstance.dismiss('cancel');
-
   }
-
  }])

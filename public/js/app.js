@@ -1,4 +1,4 @@
-angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap', 'ngTable', 'alexjoffroy.angular-loaders', 'uiGmapgoogle-maps', 'rzModule', 'ngFileUpload', 'uiSwitch', 'toastr', 'checklist-model', 'angular-input-stars'])
+angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap', 'ngTable', 'alexjoffroy.angular-loaders', 'uiGmapgoogle-maps', 'rzModule', 'ngFileUpload', 'uiSwitch', 'toastr', 'checklist-model', 'angular-input-stars','stripe','angularPayments'])
     .config(
         ['uiGmapGoogleMapApiProvider', function(GoogleMapApiProviders) {
             GoogleMapApiProviders.configure({
@@ -6,6 +6,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             });
         }])
     .config(function($stateProvider, $urlRouterProvider, $locationProvider, $authProvider) {
+        Stripe.setPublishableKey('sk_test_qOMUshSkdRmS82HGI1ZzJzHy');
         $locationProvider.html5Mode({
             enabled: true,
             requireBase: false
@@ -25,10 +26,6 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         controller: 'HeaderCtrl'
                     }
                 }
-                /*,
-                                resolve: {
-                                    skipIfAuthenticated: skipIfAuthenticated
-                                }*/
             })
 
         .state('barberHome', {
@@ -61,6 +58,39 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     }
                 }
             })
+
+            .state('subScription', {
+                url: '/subScribe',
+                views: {
+                    "home": {
+                        templateUrl: 'partials/subScription.html',
+                        controller: 'subScriptionCtrl'
+                    }/*,
+                    "footer": {
+                        templateUrl: 'partials/footer.html'
+                    },
+                    "header": {
+                        templateUrl: 'partials/header.html',
+                        controller: 'HeaderCtrl'
+                    }*/
+                },
+                resolve: {
+                    lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                        var deferred = $q.defer();
+                        $ocLazyLoad.load({
+                            name: 'BarbrDoApp',
+                            files: ['js/controllers/subScription.js',
+                                'js/services/shop.js'
+                            ]
+                        }).then(function() {
+                            deferred.resolve();
+                        });
+                        return deferred.promise;
+                    }]
+                }
+            })
+
+
             // Customer URL's are here
             .state('dashboard', {
                 url: '/dashboard',
@@ -123,8 +153,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         deferred.resolve();
                     });
                     return deferred.promise;
-                }],
-                loginRequired: loginRequired
+                }]
             }
         })
 
@@ -155,8 +184,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                             deferred.resolve();
                         });
                         return deferred.promise;
-                    }],
-                    loginRequired: loginRequired
+                    }]
                 }
             })
             .state('shopContainsBarbers', {
@@ -317,8 +345,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         deferred.resolve();
                     });
                     return deferred.promise;
-                }],
-                loginRequired: loginRequired
+                }]
             }
         })
 
@@ -349,8 +376,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         deferred.resolve();
                     });
                     return deferred.promise;
-                }],
-                loginRequired: loginRequired
+                }]
             }
         })
 
@@ -449,8 +475,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         deferred.resolve();
                     });
                     return deferred.promise;
-                }],
-                loginRequired: loginRequired
+                }]
             }
         })
 
@@ -582,8 +607,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         deferred.resolve();
                     });
                     return deferred.promise;
-                }],
-                loginRequired: loginRequired
+                }]
             }
         })
 
@@ -821,18 +845,12 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
         .state('account', {
                 url: '/account',
                 templateUrl: 'partials/profile.html',
-                controller: 'ProfileCtrl',
-                resolve: {
-                    loginRequired: loginRequired
-                }
+                controller: 'ProfileCtrl'
             })
             .state('shop', {
                 url: '/shop',
                 templateUrl: './../profile.html',
-                controller: 'shopCtrl',
-                resolve: {
-                    loginRequired: loginRequired
-                }
+                controller: 'shopCtrl'
             })
             .state('forgot', {
                 url: '/forgot',
@@ -862,8 +880,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                             deferred.resolve();
                         });
                         return deferred.promise;
-                    }],
-                    skipIfAuthenticated: skipIfAuthenticated
+                    }]
                 }
             })
 
@@ -871,7 +888,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             url: '/account/verification/:email/:random',
             params: {
                 email: null,
-                random:null
+                random: null
             },
             views: {
                 "home": {
@@ -923,8 +940,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                             deferred.resolve();
                         });
                         return deferred.promise;
-                    }],
-                    skipIfAuthenticated: skipIfAuthenticated
+                    }]
                 }
             })
             .state('barberShops', {
@@ -1074,28 +1090,6 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             url: '/auth/google',
             clientId: '73291812238-aekh50otlf7b5duqanlvo2q1p2o8e4m9.apps.googleusercontent.com'
         });
-
-        function skipIfAuthenticated($state, $auth, $q) {
-            var deferred = $q.defer();
-            if ($auth.isAuthenticated()) {
-                setTimeout(function() {
-                    deferred.resolve()
-                    $state.go('dashboard');
-                }, 0);
-                return deferred.promise;
-            }
-        }
-
-        function loginRequired($state, $auth, $q) {
-            var deferred = $q.defer();
-            if (!$auth.isAuthenticated()) {
-                setTimeout(function() {
-                    deferred.resolve()
-                    $state.go('home');
-                }, 0);
-                return deferred.promise;
-            }
-        }
     })
 
 .directive('checkImage', function($http) {
@@ -1103,8 +1097,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             restrict: 'A',
             link: function(scope, element, attrs) {
                 attrs.$observe('ngSrc', function(ngSrc) {
-                    $http.get(ngSrc).success(function(response) {
-                    }).error(function() {
+                    $http.get(ngSrc).success(function(response) {}).error(function() {
                         // alert('image not exist');
                         element.attr('src', 'http://dhakaprice.com/images/No-image-found.jpg'); // set default image
                     });
@@ -1114,17 +1107,15 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
     })
     .run(['$rootScope', '$q', '$state', '$auth', '$window', 'toastr', function($rootScope, $q, $state, $auth, $window, toastr) {
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-           
             // Following if will allow only Landing site routes 
-
-            if(toState.url =='/account/verification/:email/:random' || toState.url == '/reset/:token'){
+            if (toState.url == '/account/verification/:email/:random' || toState.url == '/reset/:token' || toState.url == '/subScribe') {
+                var deferred = $q.defer();
                 setTimeout(function() {
-                        deferred.resolve()
-                        $state.go(toState.url);
-                    }, 0);
-                    return deferred.promise;
-            }
-            else if (toState.url == '/' || toState.url == '/barber' || toState.url == '/shops' || toState.url == '/forgot' ) {
+                    deferred.resolve()
+                    $state.go(toState.name);
+                }, 0);
+                return deferred.promise;
+            } else if (toState.url == '/' || toState.url == '/barber' || toState.url == '/shops' || toState.url == '/forgot') {
                 var deferred = $q.defer();
                 if ($auth.isAuthenticated()) {
                     setTimeout(function() {
@@ -1139,8 +1130,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     }, 0);
                     return deferred.promise;
                 }
-            }
-            else if ($window.localStorage.user) {
+            } else if ($window.localStorage.user) {
                 let loggedInUser = JSON.parse($window.localStorage.user);
                 // Following if will allow only customer routes
                 if (toState.url == '/dashboard' || toState.url == '/shopContainsBarbers/:_id' || toState.url == '/home' || toState.url == '/book/:shop_id/:barber_id' || toState.url == '/profile' || toState.url == '/pending-confirmation/:_id' || toState.url == '/gallery' || toState.url == '/appointmentdetail/:_id' || toState.url == '/barber_info/:_id') {
@@ -1155,7 +1145,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         } else {
                             setTimeout(function() {
                                 deferred.resolve()
-                                 $state.go(toState.name);
+                                $state.go(toState.name);
                             }, 0);
                             return deferred.promise;
                         }
@@ -1184,7 +1174,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         } else {
                             setTimeout(function() {
                                 deferred.resolve()
-                                 $state.go(toState.name);
+                                $state.go(toState.name);
                             }, 0);
                             return deferred.promise;
                         }
@@ -1213,7 +1203,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         } else {
                             setTimeout(function() {
                                 deferred.resolve()
-                                 $state.go(toState.name);
+                                $state.go(toState.name);
                             }, 0);
                             return deferred.promise;
                         }

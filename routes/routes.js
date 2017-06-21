@@ -103,6 +103,9 @@ module.exports = function(app, express) {
     app.get('/api/v1/timeslots',commonObj.viewTimeSlots); //Time slot to book an appointment
     app.get('/api/v1/shops/barbers/:shop_id/:barber_id',shopController.getDataForBookNowPage)
 
+    // Stripe Implementation API
+    app.get('/api/v1/plans', userController.featuringPlans);
+    app.post('/api/v1/subscribe',userController.subscribe);
     app.get('/admin', function(req, res) {
         res.sendFile(path.join(__dirname + './../public/indexAdmin.html'));
     });

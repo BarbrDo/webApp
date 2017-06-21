@@ -14,119 +14,141 @@ let user = require('../models/User');
  * 
  */
 exports.requestChair = function(req, res) {
-	req.checkHeaders("user_id", "User is is required.").notEmpty();
-	req.assert("chair_id", "Chair Id is required.").notEmpty();
-	var errors = req.validationErrors();
-	if (errors) {
-		return res.status(400).send({
-			msg: "error in your request",
-			err: errors
-		});
-	}
-	let saveData = {};
-	user.findOne({
-		_id: req.headers.user_id
-	}, function(err, data) {
-		if (data) {
-			if (data.user_type == 'barber') {
-				req.assert("shop_id", "Shop Id is required.").notEmpty();
-				req.assert("booking_date", "Booking Date is required.").notEmpty();
-				var errors = req.validationErrors();
-				if (errors) {
-					return res.status(400).send({
-						msg: "error in your request",
-						err: errors
-					});
-				}
-				// to check booking date is Under one month or not
-				var currentDate = moment().format("YYYY-MM-DD");
-				currentDate = moment(currentDate)
-				var futureMonth = moment(currentDate).add(1, 'M');
-				var futureMonthEnd = moment(futureMonth).endOf('month');
-				if (currentDate.date() != futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
-					futureMonth = futureMonth.add(1, 'd');
-				}
-				var bookDate = moment(req.body.booking_date);
-				// This will validate that you can't add boooking more then one month
-				if (bookDate < futureMonth && bookDate >= currentDate) {
-					shop.findOne({
-						"_id": req.body.shop_id,
-						"chairs._id": req.body.chair_id
-					}, {
-						"chairs.$": 1
-					}).exec(function(shopErr, shopResult) {
-						console.log("shopResult", shopResult);
-						if (shopResult != null && shopResult.chairs[0].availability == 'available') {
-							saveData.shop_id = req.body.shop_id;
-							saveData.chair_id = req.body.chair_id;
-							saveData.chair_type = shopResult.chairs[0].type
-							if (shopResult.chairs[0].type == 'weekly' || shopResult.chairs[0].type == 'monthly') {
-								saveData.amount = shopResult.chairs[0].amount
-							}
-							if (shopResult.chairs[0].type == 'percentage') {
-								saveData.shop_percentage = shopResult.chairs[0].shop_percentage
-								saveData.barber_percentage = shopResult.chairs[0].barber_percentage
-							}
-							saveData.requested_by = data.user_type
-							saveData.barber_id = req.headers.user_id
-							saveData.booking_date = bookDate
-							saveData.status = "pending";
-							chairRequest(saveData).save(function(err, result) {
-								if (err) {
-									return res.status(400).send({
-										msg: constantObj.messages.errorInSave
-									})
-								} else {
-									res.status(200).send({
-										msg: "Your request for shop is successfully registered.",
-										data: result
-									});
-								}
-							})
-						} else {
-							res.status(400).send({
-								msg: "This shop with this chair either not present not available."
-							});
-						}
-					})
-				} else {
-					res.status(400).send({
-						msg: "You cannot add Booking for more than one month or less then current date."
-					})
-				}
-			} else if (data.user_type == 'shop') {
-				req.assert("barber_id", "Barber Id is required.").notEmpty();
-				var errors = req.validationErrors();
-				if (errors) {
-					return res.status(400).send({
-						msg: "error in your request",
-						err: errors
-					});
-				}
-				saveData = req.body;
-				saveData.shop_id = req.headers.user_id
-				saveData.requested_by = data.user_type
-				saveData.status = "pending";
-				chairRequest(saveData).save(function(err, result) {
-					if (err) {
-						return res.status(400).send({
-							msg: constantObj.messages.errorInSave
-						})
-					} else {
-						res.status(200).send({
-							msg: "Your request for shop is successfully registered.",
-							data: result
-						});
-					}
-				})
-			}
-		} else {
-			res.status(400).send({
-				msg: "User is not present.",
-				data: result
-			});
-		}
-	})
+    req.checkHeaders("user_id", "User is is required.").notEmpty();
+    req.assert("chair_id", "Chair Id is required.").notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    var d = new Date(req.body.booking_date);
+    var bookDate = d.toISOString();
+    chairRequest.find({
+            shop_id: req.body.shop_id,
+            chair_id: req.body.chair_id,
+            barber_id: req.body.barber_id,
+            status: "pending",
+            booking_date: bookDate
+        }).exec(function(err, resultCheck) {
+            if (err) {
+                return res.status(400).send({
+                    msg: "error in your request",
+                    err: errors
+                });
+            } else {
+                if (resultCheck.length>0) {
+                    return res.status(400).send({
+                        msg: "Already requested",
+                        data: resultCheck
+                    });
+                }
+                var saveData = {};
+                user.findOne({
+                    _id: req.headers.user_id
+                }, function(err, data) {
+                    if (data) {
+                        if (data.user_type == 'barber') {
+                            req.assert("shop_id", "Shop Id is required.").notEmpty();
+                            req.assert("booking_date", "Booking Date is required.").notEmpty();
+                            var errors = req.validationErrors();
+                            if (errors) {
+                                return res.status(400).send({
+                                    msg: "error in your request",
+                                    err: errors
+                                });
+                            }
+                            // to check booking date is Under one month or not
+                            var currentDate = moment().format("YYYY-MM-DD");
+                            currentDate = moment(currentDate)
+                            var futureMonth = moment(currentDate).add(1, 'M');
+                            var futureMonthEnd = moment(futureMonth).endOf('month');
+                            if (currentDate.date() != futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
+                                futureMonth = futureMonth.add(1, 'd');
+                            }
+                            var bookDate = moment(req.body.booking_date);
+                            // This will validate that you can't add boooking more then one month
+                            if (bookDate < futureMonth && bookDate >= currentDate) {
+                                shop.findOne({
+                                    "_id": req.body.shop_id,
+                                    "chairs._id": req.body.chair_id
+                                }, {
+                                    "chairs.$": 1
+                                }).exec(function(shopErr, shopResult) {
+                                    if (shopResult != null && shopResult.chairs[0].availability == 'available') {
+                                        saveData.shop_id = req.body.shop_id;
+                                        saveData.chair_id = req.body.chair_id;
+                                        saveData.chair_type = shopResult.chairs[0].type
+                                        if (shopResult.chairs[0].type == 'weekly' || shopResult.chairs[0].type == 'monthly') {
+                                            saveData.amount = shopResult.chairs[0].amount
+                                        }
+                                        if (shopResult.chairs[0].type == 'percentage') {
+                                            saveData.shop_percentage = shopResult.chairs[0].shop_percentage
+                                            saveData.barber_percentage = shopResult.chairs[0].barber_percentage
+                                        }
+                                        saveData.requested_by = data.user_type
+                                        saveData.barber_id = req.headers.user_id
+                                        saveData.booking_date = req.body.booking_date
+                                        saveData.status = "pending";
+                                        chairRequest(saveData).save(function(err, result) {
+                                            if (err) {
+                                                return res.status(400).send({
+                                                    msg: constantObj.messages.errorInSave
+                                                })
+                                            } else {
+                                                res.status(200).send({
+                                                    msg: "Your request for shop is successfully registered.",
+                                                    data: result
+                                                });
+                                            }
+                                        })
+                                    } else {
+                                        res.status(400).send({
+                                            msg: "Booking not available at the moment."
+                                        });
+                                    }
+                                })
+                            } else {
+                                res.status(400).send({
+                                    msg: "You cannot add Booking for more than one month or less then current date."
+                                })
+                            }
+                        } else if (data.user_type == 'shop') {
+                            req.assert("barber_id", "Barber Id is required.").notEmpty();
+                            var errors = req.validationErrors();
+                            if (errors) {
+                                return res.status(400).send({
+                                    msg: "error in your request",
+                                    err: errors
+                                });
+                            }
+                            saveData = req.body;
+                            saveData.shop_id = req.headers.user_id
+                            saveData.requested_by = data.user_type
+                            saveData.status = "pending";
+                            chairRequest(saveData).save(function(err, result) {
+                                if (err) {
+                                    return res.status(400).send({
+                                        msg: constantObj.messages.errorInSave
+                                    })
+                                } else {
+                                    res.status(200).send({
+                                        msg: "Your request for shop is successfully registered.",
+                                        data: result
+                                    });
+                                }
+                            })
+                        }
+                    } else {
+                        res.status(400).send({
+                            msg: "User is not present.",
+                            data: data
+                        });
+                    }
+                })
+            }
+        })
 }
 
 exports.barberChairReqests = function(req, res) {

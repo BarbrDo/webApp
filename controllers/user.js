@@ -118,7 +118,7 @@ var saveShop = function(saveDataForShop, resetUrl, user, req, res) {
   });
 }
 
-let accountActivateMailFunction = function(req, res, user, resetUrl) {
+var accountActivateMailFunction = function(req, res, user, resetUrl) {
   console.log("accountActivateMailFunction", user);
   let auth = {
     auth: {
@@ -133,12 +133,19 @@ let accountActivateMailFunction = function(req, res, user, resetUrl) {
     subject: '✔ Activate Your Account',
     text: 'Please Activate your account by clicking link \n\n' + resetUrl + '\n\n'
   };
-
-  nodemailerMailgun.sendMail(mailOptions, function(err, info) {
-    res.send({
-      msg: 'An email has been sent to ' + user.email + ' with further instructions.'
+  if (!user.facebook) {
+    nodemailerMailgun.sendMail(mailOptions, function(err, info) {
+      res.send({
+        msg: 'An email has been sent to ' + user.email + ' with further instructions.'
+      });
     });
-  });
+  } else {
+    res.status(200).send({
+      user: user,
+      token:generateToken(user),
+      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+    });
+  }
 }
 
 exports.signupPost = function(req, res, next) {

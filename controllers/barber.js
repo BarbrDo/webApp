@@ -613,3 +613,74 @@ exports.particularAppointment = function(req,res){
             }
         })
 }
+exports.rateBarber = function(req,res){
+    req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
+    req.assert("barber_id", "Barber id is required.").notEmpty();
+    req.checkHeaders("user_id", "barber_id is required.").notEmpty();
+    req.assert("score", "score is required.").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    console.log(req.body);
+    console.log(req.headers);
+    let updateData = {
+        "$push": {
+            "ratings": {
+                "rated_by": req.headers.user_id,
+                "rated_by_name":req.body.rated_by_name,
+                "score": parseInt(req.body.score),
+                "comments": req.body.comments,
+                "appointment_date":req.body.appointment_date
+            }
+        }
+    }
+    console.log(updateData);
+    async.waterfall([
+        function (done) {
+            appointment.update({
+                _id: req.params.appointment_id
+            }, {
+                    $set: {
+                        "is_rating_given":true
+                    }
+                }, function (err, result) {
+                    if (err) {
+                        done("some error", err)
+                    } else {
+                        done(err, result)
+                    }
+                })
+        },
+        function (status, done) {
+            user.update({ _id: req.body.barber_id }, updateData, function (err, result) {
+                if (err) {
+                    return res.status(400).send({
+                        msg: constantObj.messages.userStatusUpdateFailure,
+                        err: err
+                    });
+                } else {
+                    return res.status(200).send({
+                        msg: constantObj.messages.userStatusUpdateSuccess
+                    });
+                    done(err);
+                }
+            })
+        }
+    ])
+}
+exports.viewBarberAvailability = function(req,res){
+    let time = constantObj.timeSlots;
+    req.assert("barber_id", "Barber id is required.").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    appointment.find({barber_id:req.body.barber_id})
+}

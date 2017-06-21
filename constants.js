@@ -32,6 +32,9 @@ const distance = {
 	"distanceMultiplierInMiles": 0.000621371,
 	"distanceMultiplierInkm": 0.001
 }
+const admin = {
+	"email":"ankushs.sdei@gmail.com"
+}
 const timeSlots = {
 	"morning": [
 		"9:00",

@@ -20,21 +20,21 @@
                         <input ng-model="myobj.search" placeholder="Search for..." ng-change="shoppageChanged()" />
                     </div>
                 </div>
-                <span ng-if="chairdetails.barber_id==''">No Barbers in the Shop </span>
-                <span ng-if="chairdetails.barber_id!=''">
+             
+
 <table class="table">
     <thead>
         <tr >
          
-            <th style="font-size: 20px;color: #ffffff;"><a ng-click="Sort('name')" class="first_name"  style="color: #ffffff;">NAME<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a>
+            <th style="font-size: 13px;color: #ffffff;"><a ng-click="Sort('barber_name')" class="barber_name"  style="color: #ffffff;">Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a>
                 </th>
-                <th style="font-size: 20px;"><a ng-click="Sort('city')" class="email" style="color: #ffffff;">BARBER PERCENTAGE<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-                <th style="font-size: 20px;"><a ng-click="Sort('chairs.length')" class="mobile_number" style="color: #ffffff;">CHAIRNAME <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-                <th style="font-size: 20px;">ACTION</th>
+                <th style="font-size: 13px;"><a ng-click="Sort('barber_percentage')" class="barber_percentage" style="color: #ffffff;">Barber Percentage<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                <th style="font-size: 13px;"><a ng-click="Sort('name')" class="name" style="color: #ffffff;">Chairname <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                <th style="font-size: 13px;">Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="barbersinshop in chairdetails" ng-hide="!barbersinshop.barber_id">
+                    <tr ng-repeat="barbersinshop in chairdetails | orderBy:sort:reverse" ng-hide="!barbersinshop.barber_id">
                         <td>
                             {{barbersinshop.barber_name}}
                         </td>
@@ -49,7 +49,6 @@
                     </tr>
                 </tbody>
                 </table>
-                </span>
             </div>
             <!-- Modal -->
             <div class="modal fade" id="myAnotherModal" role="dialog">

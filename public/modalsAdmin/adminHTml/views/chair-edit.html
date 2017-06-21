@@ -2,9 +2,13 @@
     <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
     <li class="breadcrumb-item"><a ui-sref="shops">Shops</a></li>
     <li class="breadcrumb-item"><a ui-sref="chairs({id:shopdetailview.shopinfo[0].user_id})">View Chairs</a></li>
-    <li class="breadcrumb-item active">Manage Chairs</li>
+    <li class="breadcrumb-item active">Manage Chairstfik</li>
 </ol>
 <div class="panel" ng-init="chairdetail()">
+    <div ng-if="messages" role="alert" class="alert alert-danger">
+            <div>
+                {{messages}}</div>
+        </div>
     <div class="panel-heading">
         Manage Chair
     </div>
@@ -41,7 +45,6 @@
                     </select>
                 </div>
             </div>
-            
             <div class="clearfix">
                 <div class="col-sm-4 form-group">
                     <label>Shop Percentage</label>
@@ -54,7 +57,7 @@
                     <input type="text" data-ng-model="chairdet.barber_percentage" class="form-control">
                 </div>
                 <div class="col-sm-4 form-group">
-                    <label>Amount</label>
+                    <label>Amount ( $ )</label>
                     <br>
                     <input type="text" data-ng-model="chairdet.amount" class="form-control">
                 </div>
@@ -69,9 +72,9 @@
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Booking End</label>
-                    <input readonly="" type="text" class="form-control" is-open="popup1.opened" datepicker-options="dateOptions" data-ng-model="chairdet.booking_end" />
+                    <input readonly="" type="text" uib-datepicker-popup="{{format}}" class="form-control" is-open="popup2.opened" datepicker-options="dateOptions" data-ng-model="chairdet.booking_end" />
                     <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                        <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
                     </span>
                 </div>
                 <div class="col-sm-4 form-group">
@@ -81,7 +84,6 @@
                     <input type="radio" name="active" value="false" ng-model="activeSelected" ng-checked="chairdet.isActive == false">NO
                 </div>
             </div>
-        </form>
     </div>
 </div>
 <div class="clearfix text-center">
@@ -89,10 +91,21 @@
         <i class="fa fa-check" aria-hidden="true"></i>
         <span>Save
     </button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<button type="reset" class="btn btn-grey" ui-sref="chairs({id:shopdetailview.shopinfo[0].user_id})">
-    <i class="fa fa-times" aria-hidden="true"></i>
-    <span>Cancel</span>
-</button>
+        <button type="reset" class="btn btn-grey" ui-sref="chairs({id:shopdetailview.shopinfo[0].user_id})">
+            <i class="fa fa-times" aria-hidden="true"></i>
+            <span>Cancel</span>
+        </button>
+</div>
+</form>
 </div>
 </div>
-</div>
+<script type="text/javascript">
+window.addEventListener('keydown', function(e) {
+    if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e.keyCode == 13) {
+        if (e.target.nodeName == 'INPUT' && e.target.type == 'text') {
+            e.preventDefault();
+            return false;
+        }
+    }
+}, true);
+</script>

@@ -116,20 +116,38 @@ angular.module('barbrdo').factory('Admin', function($http) {
     addChair: function(data) {
       return $http.post('/api/v1/shops/chair', data);
     },
-    deleteChair: function(data, id, shopid) {
+    deleteChair: function(data) {
+        return $http({
+          method: 'DELETE',
+          url: '/api/v1/shops/chair',
+          data:data,
+          headers: {"Content-Type": "application/json;charset=utf-8"}
+        });
+    },
+    markChairBooked: function(data, id) {
       return $http({
-        method: 'DELETE',
-        url: '/api/v1/shops/chair',
+        method: 'PUT',
+        url: '/api/v1/shops/markchairasbooked/' + data._id,
+        headers: {
+          'user_id': id,
+          'chair_id': data._id
+        }
+      });
+    },
+    postChair: function(data, id) {
+      return $http({
+        method: 'PUT',
+        url: '/api/v1/shops/postchairtoallbarbers',
         headers: {
           'user_id': id
         },
         data: {
-          shop_id: shopid,
           chair_id: data._id
         }
       });
     },
     updateChair: function(data, id) {
+      console.lo
       return $http({
         method: 'PUT',
         url: '/api/v1/shops/managechair',
@@ -141,7 +159,10 @@ angular.module('barbrdo').factory('Admin', function($http) {
           type: data.type,
           shop_percentage: data.shop_percentage,
           barber_percentage: data.barber_percentage,
-          amount: data.amount
+          amount: data.amount,
+          booking_start: data.booking_start ,
+          booking_end: data.booking_end
+          
         }
       });
     },

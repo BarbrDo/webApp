@@ -94,18 +94,17 @@ module.exports = function(app, express) {
     app.delete('/api/v1/barber/services/:barber_service_id',barberServices.deleteBarberService);// Delete barber service
     app.get('/api/v1/barber/particularAppointment/:appointment_id',barberServices.particularAppointment);
     app.get('/api/v1/barber/shopchairrequests/:barber_id',chairRequestController.shopChairRequest); // Manage request in barber module
-    app.post('/api/v1/barber/timeAvailability',barberServices.viewBarberAvailability)
+    app.get('/api/v1/barber/timeavailability/:barber_id',barberServices.viewBarberAvailability)
 
     //Common
     app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of any customer/barber/shop
-    app.get('/api/v1/timeslots',commonObj.viewTimeSlots); //Time slot to book an appointment
+    //app.get('/api/v1/timeslots',commonObj.viewTimeSlots); //Time slot to book an appointment
     //app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
     app.post('/api/v1/contact', contactController.contactPost);
     app.get('/api/v1/shops/barbers/:shop_id/:barber_id',shopController.getDataForBookNowPage)
     
     //Need to delete in sprint-8
     app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber/shop requesting chair to shop
-
     app.get('/admin', function(req, res) {
         res.sendFile(path.join(__dirname + './../public/indexAdmin.html'));
     });
@@ -1613,6 +1612,56 @@ module.exports = function(app, express) {
  *         type: string
  *         format: string
  *         default: '591be608b902f60fcc14a9d3'
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+*   /barber/timeavailability/{barber_id}:
+ *     get:
+ *       tags:
+ *       - "barber"
+ *       summary: "Show barber's availability to customer"
+ *       description: "Show barber's availability to customer"
+ *       operationId: "timeavailability"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5943a470f409f91359e84f47"
+ *       - in: "path"
+ *         name: "barber_id"
+ *         description: "Barber User ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: '5948dcc7c5a04e5004416516'
+ *       - in: "query"
+ *         name: "date"
+ *         description: "Booking Date(YYYY-MM-DD)"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: '2017-12-30'
  *       responses:
  *         200:
  *           description: "successful operation"

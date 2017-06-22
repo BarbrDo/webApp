@@ -170,9 +170,11 @@ let mailChairRequest = function(email) {
 		}
 	}
 	let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+        console.log('email',email);
 	let mailOptions = {
 		to: email,
-		cc:constantObj.admin.email,
+		//cc:constantObj.admin.email,
+                cc:'ankushs.sdei@gmail.com',
 		from: 'support@barbrdo.com',
 		subject: '✄ New Chair request.',
 		text: 'You have a new chair request.'

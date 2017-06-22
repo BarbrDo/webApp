@@ -33,9 +33,7 @@ exports.takeAppointment = function(req, res) {
 	console.log("req.body.appointment_date", req.body.appointment_date);
 	let appointmentdate = removeOffset(req.body.appointment_date);
 	console.log("appointmentdate", appointmentdate);
-	
 	console.log(new Date(appointmentdate));
-	return false;
 	let shopName = "";
 	let customerName = "";
 	let barberName = ""

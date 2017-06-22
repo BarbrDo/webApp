@@ -94,6 +94,7 @@ module.exports = function(app, express) {
     app.delete('/api/v1/barber/services/:barber_service_id',barberServices.deleteBarberService);// Delete barber service
     app.get('/api/v1/barber/particularAppointment/:appointment_id',barberServices.particularAppointment);
     app.get('/api/v1/barber/shopchairrequests/:barber_id',chairRequestController.shopChairRequest); // Manage request in barber module
+    app.post('/api/v1/barber/timeAvailability',barberServices.viewBarberAvailability)
 
     //Common
     app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of any customer/barber/shop

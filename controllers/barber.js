@@ -691,15 +691,12 @@ exports.viewBarberAvailability = function(req, res) {
     }
     let currentDate = req.query.date;
     let endDate = moment(currentDate, "YYYY-MM-DD").add(1, 'days').format("YYYY-MM-DD[T]HH:mm:ss.SSS");
-    console.log(new Date(currentDate).toISOString());
-    console.log(endDate);
-    console.log(endDate.toISOString());
     appointment.find({
         barber_id: req.params.barber_id,
         appointment_status : 'confirm',
         appointment_date: {
             $gte: new Date(currentDate).toISOString(),
-            $lte: endDate.toISOString()
+            $lte: endDate+'Z'
         }
     }).exec(function(err, result) {
         if (err) {

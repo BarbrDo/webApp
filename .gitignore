@@ -46,3 +46,4 @@ db.js
 
 
 *.DS_Store
+/nbproject/private/

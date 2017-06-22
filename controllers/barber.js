@@ -859,7 +859,8 @@ exports.viewBarberAvailability = function(req, res) {
                             x = "8:45";
                             break;
                     }
-                    for (var k = 0; k < timeArray.length; k++) {
+                console.log('x===',x,'time==',time);    
+                for (var k = 0; k < timeArray.length; k++) {
                         var reslt = timeArray[k].split(":");
                         reslt = parseInt(reslt[0]);
                         if (reslt >= 9 && reslt <= 11) {
@@ -908,16 +909,17 @@ exports.viewBarberAvailability = function(req, res) {
                             }
                         }
                     }
-                    let timeSlots = {
-                        morning:morning,
-                        afternoon:afternoon,
-                        evening:evening
-                    }
-                    return res.status(200).send({
-                        msg: "Time slots retrieve.",
-                        data: timeSlots
-                    });
+                    
                 }
+                let timeSlots = {
+                    morning:morning,
+                    afternoon:afternoon,
+                    evening:evening
+                }
+                return res.status(200).send({
+                    msg: "Time slots retrieve.",
+                    data: timeSlots
+                });
             } else {
                 return res.status(200).send({
                     msg: "Time slots are successfully retrieve.",

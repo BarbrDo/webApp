@@ -889,7 +889,8 @@ exports.checkFaceBook = function(req, res) {
         res.status(200).send({
           msg: constantObj.messages.successRetreivingData,
           token: generateToken(response),
-          user: response[0]
+          user: response[0],
+          "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
         });
       } else {
         res.status(400).send({

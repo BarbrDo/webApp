@@ -170,6 +170,7 @@ let mailChairRequest = function(email) {
 		}
 	}
 	let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+        console.log('email',email);
 	let mailOptions = {
 		to: email,
 		cc: constantObj.messages.email,

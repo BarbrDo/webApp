@@ -172,7 +172,7 @@ let mailChairRequest = function(email) {
 	let nodemailerMailgun = nodemailer.createTransport(mg(auth));
 	let mailOptions = {
 		to: email,
-		cc:constantObj.admin.email,
+		cc:constantObj.messages.email,
 		from: 'support@barbrdo.com',
 		subject: '✄ New Chair request.',
 		text: 'You have a new chair request.'

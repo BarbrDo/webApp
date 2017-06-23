@@ -932,7 +932,8 @@ exports.rateBarber = function(req, res) {
                 _id: req.body.appointment_id
             }, {
                 $set: {
-                    is_rating_given: true
+                    is_rating_given: true,
+                    rating_score:parseInt(req.body.score),
                 }
             }, function(err, result) {
                 if (err) {

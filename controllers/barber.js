@@ -932,7 +932,8 @@ exports.rateBarber = function(req, res) {
                 _id: req.body.appointment_id
             }, {
                 $set: {
-                    is_rating_given: true
+                    is_rating_given: true,
+                    rating_score:parseInt(req.body.score),
                 }
             }, function(err, result) {
                 if (err) {
@@ -1008,16 +1009,16 @@ exports.viewBarberAvailability = function(req, res) {
                     var time = moment.utc(result[i].appointment_date).format("HH:mm");
                     let x = "";
                     switch (time) {
-                        case "9:00":
+                        case "09:00":
                             x = time;
                             break;
-                        case "9:15":
+                        case "09:15":
                             x = time;
                             break;
-                        case "9:30":
+                        case "09:30":
                             x = time;
                             break;
-                        case "9:45":
+                        case "09:45":
                             x = time;
                             break;
                         case "10:00":

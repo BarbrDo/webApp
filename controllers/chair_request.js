@@ -542,8 +542,8 @@ exports.acceptRequest = function(req, res) {
 							} else {
 								console.log("third", findalResult)
 								res.send({
-									msg: 'shop updated successfully',
-									'msg1': message,
+									msg: 'Shop chair request accepted successfully',
+                                                                        'msg1': message,
 									'msg2': chairReqeustMessage
 								});
 								done(err)

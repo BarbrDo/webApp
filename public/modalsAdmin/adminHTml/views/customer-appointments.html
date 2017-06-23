@@ -1,11 +1,12 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
 <ol class="breadcrumb">
     <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
     <li class="breadcrumb-item"><a ui-sref="customers">Customers</a></li>
     <li class="breadcrumb-item active">View Customers's Appointments</li>
 </ol>
-<div class="panel" ng-init="custAppoint()">
+<div class="panel" ng-init="viewappointment()">
     <div class="panel-heading">
-        {{customerdetail.first_name}} {{customerdetail.last_name}}'s Appointments
+        {{custname}}'s Appointments
     </div>
     <div class="panel-body">
         <!-- RAHUL  CODE -->
@@ -50,10 +51,10 @@
                         <td><a data-toggle="tooltip" title="View Details" ui-sref="customer_detail({id:appoint.customer_id._id})" ng-click="custdetails(appoint.customer_id)">
             {{appoint.customer_name}} </a>
                         </td>
-                        <td><a data-toggle="tooltip" title="View Details" ui-sref="barbersdetail({id:appoint.barber_id._id})" ng-click="viewbarbdetail(appoint.barber_id)">
+                        <td><a data-toggle="tooltip" title="View Details" ui-sref="barbersdetail({id:appoint.barber_id._id})" >
             {{appoint.barber_name}}</a>
                         </td>
-                        <td><a data-toggle="tooltip" title="View Details" ui-sref="shopdetail({id:appoint.shop_id._id})" ng-click="viewshop(appoint.shop_id)">
+                        <td><a data-toggle="tooltip" title="View Details" ui-sref="shopdetail({id:appoint.shop_id.user_id})" >
             {{appoint.shop_name}}</a>
                         </td>
                         <td>
@@ -91,10 +92,10 @@
                         <td><a data-toggle="tooltip" title="View Details" ui-sref="customer_detail({id:appoint.customer_id._id})" ng-click="custdetails(appoint.customer_id)">
             {{appoint.customer_name}}</a>
                         </td>
-                        <td><a data-toggle="tooltip" title="View Details" ui-sref="barbersdetail({id:appoint.barber_id._id})" ng-click="viewbarbdetail(appoint.barber_id)">
+                        <td><a data-toggle="tooltip" title="View Details" ui-sref="barbersdetail({id:appoint.barber_id._id})" >
             {{appoint.barber_name}} </a>
                         </td>
-                        <td><a data-toggle="tooltip" title="View Details" ui-sref="shopdetail({id:appoint.shop_id._id})" ng-click="viewshop(appoint.shop_id)">
+                        <td><a data-toggle="tooltip" title="View Details" ui-sref="shopdetail({id:appoint.shop_id.user_id})" >
             {{appoint.shop_name}}</a>
                         </td>
                         <td>

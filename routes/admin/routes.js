@@ -3,13 +3,15 @@ module.exports = function(app, express) {
     let customerController = require('./../../controllers/customer');
     let shopController = require('./../../controllers/shop');
     let appointController = require('./../../controllers/appointment');
+    let barberController = require('./../../controllers/barber');
     
-       
-    app.get('/api/v1/countbarber', customerController.countbarber); 
-    app.get('/api/v1/countshop', customerController.countshop); 
+    //Count all Users, appointsments  
+    app.get('/api/v1/countbarber', barberController.countbarber); 
+    app.get('/api/v1/countshop', shopController.countshop); 
     app.get('/api/v1/countcustomer', customerController.countcustomer); 
     app.get('/api/v1/countappoint', appointController.countappoint);
 
+    //Updation Of Customer
     app.put('/api/v1/deletecustomer/:cust_id',customerController.deletecustomer);
     app.put('/api/v1/undeletecustomer/:cust_id',customerController.undeletecustomer);
     app.put('/api/v1/deactivecust/:cust_id',customerController.deactivecustomer);
@@ -17,23 +19,26 @@ module.exports = function(app, express) {
     app.put('/api/v1/disapprovecust/:cust_id',customerController.disapprovecustomer);
     app.put('/api/v1/verifycust/:cust_id',customerController.verifycustomer);
 
-    app.put('/api/v1/deletebarber/:barber_id',customerController.deletebarber);
-    app.put('/api/v1/undeletebarber/:barber_id',customerController.undeletebarber);
-    app.put('/api/v1/activatebarber/:barber_id',customerController.activatebarber);
-    app.put('/api/v1/deactivebarber/:barber_id',customerController.deactivebarber);
-    app.put('/api/v1/disapprovebarber/:barber_id',customerController.disapprovebarber);
-    app.put('/api/v1/verifybarber/:barber_id',customerController.verifybarber);
+    //Updation Of Barber
+    app.put('/api/v1/deletebarber/:barber_id',barberController.deletebarber);
+    app.put('/api/v1/undeletebarber/:barber_id',barberController.undeletebarber);
+    app.put('/api/v1/activatebarber/:barber_id',barberController.activatebarber);
+    app.put('/api/v1/deactivebarber/:barber_id',barberController.deactivebarber);
+    app.put('/api/v1/disapprovebarber/:barber_id',barberController.disapprovebarber);
+    app.put('/api/v1/verifybarber/:barber_id',barberController.verifybarber);
 
+    //Updation Of Shop
     app.put('/api/v1/deleteshop/:shop_id',shopController.deleteshop);
     app.put('/api/v1/undeleteshop/:shop_id',shopController.undeleteshop);
-    app.put('/api/v1/activateshop/:shop_id',customerController.activateshop);
-    app.put('/api/v1/deactiveshop/:shop_id',customerController.deactiveshop);
-    app.put('/api/v1/disapproveshop/:shop_id',customerController.disapproveshop);
-    app.put('/api/v1/verifyshop/:shop_id',customerController.verifyshop);
-
-    app.get('/api/v1/shopdetail/:user_id', shopController.shopdetail);
-    app.get('/api/v1/barberdetail/:barber_id', shopController.barberdetail);
-    app.get('/api/v1/custdetail/:cust_id', customerController.custdetail);
-    app.get('/api/v1/chairdetail/:chair_id', shopController.chairdetail);
+    app.put('/api/v1/activateshop/:shop_id',shopController.activateshop);
+    app.put('/api/v1/deactiveshop/:shop_id',shopController.deactiveshop);
+    app.put('/api/v1/disapproveshop/:shop_id',shopController.disapproveshop);
+    app.put('/api/v1/verifyshop/:shop_id',shopController.verifyshop);
+ 
+    app.get('/api/v1/shopdetail/:user_id', shopController.shopdetail);//get Shopdetails
+    app.get('/api/v1/barberdetail/:barber_id', barberController.barberdetail);//get Barberdetails
+    app.get('/api/v1/custdetail/:cust_id', customerController.custdetail);//get Customerdetails
+    app.get('/api/v1/chairdetail/:chair_id', shopController.chairdetail);//get Chairdetails
+    app.get('/api/v1/customerappointments/:cust_id', customerController.customerappointments);//get customer appointments
     
 }

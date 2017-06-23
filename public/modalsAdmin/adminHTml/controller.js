@@ -1,4 +1,4 @@
-app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log', '$stateParams','$state', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams,$state) {
+app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log', '$stateParams', '$state', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state) {
 
   $scope.user = {};
   $scope.myobj = {};
@@ -56,6 +56,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   }
 
   $scope.pageChanged = function() {
+    $scope.loaderStart = true;
     var passingObj = {
       page: $scope.myobj.currentPage,
       count: 30
@@ -65,6 +66,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     }
     Admin.barbers(passingObj)
       .then(function(response) {
+        $scope.loaderStart = false;
         $scope.myobj.totalItems = response.data.count / 3;
         $rootScope.barbers = response.data.data;
       });
@@ -72,22 +74,88 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   };
 
 
-  $scope.custAppoint = function(customer) {
-    $scope.customer = customer;
-    Admin.appointments(customer)
+  // $scope.custAppoint = function(customer) {
+  //   $scope.customer = customer;
+  //   Admin.appointments(customer)
+  //     .then(function(response) {
+  //       $rootScope.upcoming = response.data.data.upcoming;
+  //       $rootScope.complete = response.data.data.complete;
+  //     });
+
+  // };
+
+  $scope.viewappointment = function() {
+    $scope.loaderStart = true;
+    Admin.custAppoints($stateParams.id)
       .then(function(response) {
+        $scope.loaderStart = false;
         $rootScope.upcoming = response.data.data.upcoming;
         $rootScope.complete = response.data.data.complete;
+        $rootScope.custname = response.data.data.upcoming[0].customer_name;
       });
+  }
 
-  };
+  $scope.barberappoint = function() {
+    $scope.loaderStart = true;
+    $rootScope.showme = true;
+    Admin.barberAppoints($stateParams.id)
+      .then(function(response) {
+        $scope.loaderStart = false;
+        $rootScope.pending = response.data.data.pending;
+        $rootScope.booked = response.data.data.booked;
+      });
+  }
+
+   $scope.barberappointmentsfunc = function(appointment) {
+    $rootScope.appointment = appointment;
+  }
+
+  $scope.confirmappointment = function() {
+    $scope.loaderStart = true;
+    Admin.confirmAppoint($rootScope.appointment)
+      .then(function(response) {
+       $scope.loaderStart = false;
+        history.go(0);
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
+  }
+
+  $scope.markcomplete = function() {
+    $scope.loaderStart = true;
+    Admin.markComplete($rootScope.appointment, $stateParams.id)
+      .then(function(response) {
+      $scope.loaderStart = false;
+        history.go(0);
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
+  }
+
+  $scope.rescheduleappoint = function(time) {
+    $rootScope.time = time
+  }
+
+  $scope.confirmreschedule = function() {
+    $scope.loaderStart = true; 
+    Admin.rescheduleAppoint($rootScope.appointment,$rootScope.time)
+      .then(function(response) {
+        $scope.loaderStart = false;
+        history.go(0);
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
+  }
 
   $scope.addcustomer = function(params) {
     $scope.loaderStart = true;
     Admin.addCustomer($scope.user)
       .then(function(response) {
         $scope.loaderStart = false;
-         $state.go(params);
+        $state.go(params);
       }).catch(function(result) {
         $scope.loaderStart = false;
         $scope.messages = result.data.msg
@@ -105,6 +173,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
 
   $scope.custpageChanged = function() {
+    $scope.loaderStart = true;
     var passingObj = {
       page: $scope.myobj.currentPage,
       count: 30
@@ -114,6 +183,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     }
     Admin.customersAll(passingObj)
       .then(function(response) {
+        $scope.loaderStart = false;
         $scope.myobj.totalItems = response.data.count / 3;
         $rootScope.customers = response.data.data;
       });
@@ -131,6 +201,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
 
   $scope.shoppageChanged = function() {
+    $scope.loaderStart = true;
     var passingObj = {
       page: $scope.myobj.currentPage,
       count: 30
@@ -142,6 +213,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
     Admin.shopsAll(passingObj)
       .then(function(response) {
+        $scope.loaderStart = false;
         var shp = [];
         var objj = {};
         var len = response.data.data.length;
@@ -161,6 +233,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
           };
           shp.push(objj);
         }
+        
         $rootScope.shops = shp;
         $scope.myobj.totalItems = response.data.count / 3;
       });
@@ -173,10 +246,10 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
       //return;
     }
     $scope.sort = val;
-    $('th a i').each(function() {
-      //alert(this.className);
-      $(this).removeClass().addClass('icon-sort');
-    });
+     $('th i').each(function(){
+            // icon reset
+            $(this).removeClass().addClass('icon-sort');
+        });
 
     if ($scope.reverse) {
       $('th .' + val + ' i').removeClass().addClass('icon-chevron-up');
@@ -188,6 +261,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
 
   $scope.updatecustomer = function(customer) {
+    $scope.loaderStart = true;
     $scope.customer = customer;
 
     var valfromActive = $scope.activeSelected;
@@ -213,14 +287,17 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     }
     Admin.updateCustomer(customer)
       .then(function(response) {
+        $scope.loaderStart = false;
         $rootScope.customers = response.data;
       }).catch(function(result) {
+        $scope.loaderStart = false;
         $scope.messages = result.data.msg
       });
 
   };
 
   $scope.updatebarber = function(barber) {
+    $scope.loaderStart = true;
     $scope.barber = barber;
     var valfromActive = $scope.activeSelected;
     var valfromVerify = $scope.verifySelected;
@@ -245,14 +322,17 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     }
     Admin.updateBarber(barber)
       .then(function(response) {
+        $scope.loaderStart = false;
         $rootScope.barbers = response.data;
       }).catch(function(result) {
+        $scope.loaderStart = false;
         $scope.messages = result.data.msg
       });
 
   };
 
   $scope.updateshopowner = function(shop) {
+    $scope.loaderStart = true;
     $scope.shop = shop;
     var valfromActive = $scope.activeSelected;
     var valfromVerify = $scope.verifySelected;
@@ -279,51 +359,64 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     }
     Admin.updateShop(shop)
       .then(function(response) {}).catch(function(result) {
+        $scope.loaderStart = false;
         $scope.messages = result.data.msg
       });
   };
 
 
   $scope.updateshop = function(shop) {
+    $scope.loaderStart = true;
     $scope.shop = shop;
     Admin.updateShopinfo(shop)
       .then(function(response) {
+        $scope.loaderStart = false;
         $rootScope.shops = response.data;
       }).catch(function(result) {
+        $scope.loaderStart = false;
         $scope.messages = result.data.msg
       });
 
   };
 
   $scope.markchairasbooked = function(chair) {
-   $scope.chair = chair ; 
-    Admin.markChairBooked(chair,$stateParams.id)
-      .then(function(response) {});
+    $scope.loaderStart = true;
+    $scope.chair = chair;
+    Admin.markChairBooked(chair, $stateParams.id)
+      .then(function(response) {
+        $scope.loaderStart = false;
+      });
   };
 
   $scope.postchairtoallbarbers = function(chair) {
-   $scope.chair = chair ; 
-    Admin.postChair(chair,$stateParams.id)
-      .then(function(response) {});
+    $scope.loaderStart = true;
+    $scope.chair = chair;
+    Admin.postChair(chair, $stateParams.id)
+      .then(function(response) {
+        $scope.loaderStart = false;
+      });
   };
 
-  $scope.deleteconfirmchair = function(chair,shop) {
+  $scope.deleteconfirmchair = function(chair, shop) {
     $scope.chairdel = chair;
     $scope.chairshopdel = shop;
   };
 
   $scope.deletechair = function() {
+    $scope.loaderStart = true;
     var objec = {
-      chair_id:$scope.chairdel._id,
-      shop_id:$scope.chairshopdel,
-      loggedInUser:$stateParams.id
+      chair_id: $scope.chairdel._id,
+      shop_id: $scope.chairshopdel,
+      loggedInUser: $stateParams.id
     }
     Admin.deleteChair(objec)
       .then(function(response) {
+        $scope.loaderStart = false;
         $rootScope.message = response.data.msg;
         history.go(0);
       }).catch(function(result) {
-          $scope.messages = result.data.msg    
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
       })
   };
 
@@ -381,7 +474,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   };
 
   $scope.deactivecust = function(customer) {
-
     $scope.customer = customer;
     Admin.deactiveCustomer(customer)
       .then(function(response) {
@@ -391,7 +483,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   };
 
   $scope.activatecust = function(customer) {
-
     $scope.customer = customer;
     Admin.activateCustomer(customer)
       .then(function(response) {
@@ -401,7 +492,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   };
 
   $scope.disapprovecust = function(customer) {
-
     $scope.customer = customer;
     Admin.disapproveCustomer(customer)
       .then(function(response) {
@@ -411,7 +501,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   };
 
   $scope.verifycust = function(customer) {
-
     $scope.customer = customer;
     Admin.verifyCustomer(customer)
       .then(function(response) {
@@ -421,7 +510,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   };
 
   $scope.deactiveshop = function(shop) {
-
     $scope.shop = shop;
     Admin.deactiveShop(shop)
       .then(function(response) {
@@ -431,7 +519,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   };
 
   $scope.activateshop = function(shop) {
-
     $scope.shop = shop;
     Admin.activateShop(shop)
       .then(function(response) {
@@ -441,7 +528,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   };
 
   $scope.disapproveshop = function(shop) {
-
     $scope.shop = shop;
     Admin.disapproveShop(shop)
       .then(function(response) {
@@ -493,17 +579,20 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   };
 
   $scope.chairdetail = function() {
+    $scope.loaderStart = true;
     Admin.chairDetail($stateParams.id)
       .then(function(response) {
+        $scope.loaderStart = false;
         $rootScope.chairdet = response.data.data[0].chairs[0];
       });
   };
 
   $scope.shopdetail = function() {
-
+    $scope.loaderStart = true;
     setTimeout(function() {
       Admin.shopDetail($stateParams.id)
         .then(function(response) {
+          $scope.loaderStart = false;
           $rootScope.shopdetailview = response.data.data[0];
           $rootScope.chairdetails = response.data.data[0].shopinfo[0].chairs;
           var shopsdet = [];
@@ -520,27 +609,32 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
             var object = {
               totalBarbers: k
             };
+
             shopsdet.push(object);
             $rootScope.totalbarbers = object;
           }
-
-
         });
     }, 1000);
+
   };
 
 
   $scope.addchair = function(chair) {
+    $scope.loaderStart = true;
     Admin.addChair(chair)
       .then(function(response) {
-
+        $scope.loaderStart = false;
+        history.go(0);
       });
   };
 
 
   $scope.updatechair = function(chair, id) {
+    $scope.loaderStart = true;
     Admin.updateChair(chair, id)
-      .then(function(response) {});
+      .then(function(response) {
+        $scope.loaderStart = false;
+      });
   };
 
 
@@ -568,23 +662,40 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   };
 
   $scope.barberdetails = function() {
+    $scope.loaderStart = true;
     setTimeout(function() {
       Admin.barberDetail($stateParams.id)
         .then(function(response) {
+           $scope.loaderStart = false;
           $rootScope.barberdetail = response.data.data[0];
         });
     }, 500);
+   
   };
 
-  $scope.customerdetails = function() {
+  $scope.cancelappoint = function()
+  {
+    $scope.loaderStart = true;
+    Admin.cancelAppoint($rootScope.appointment)
+    .then(function(response) { 
+      $scope.loaderStart = false;
+        history.go(0);
+    }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
+  }
 
+  $scope.customerdetails = function() {
+    $scope.loaderStart = true;
     setTimeout(function() {
       Admin.custDetail($stateParams.id)
         .then(function(response) {
+          $scope.loaderStart = false;
           $rootScope.customerdetail = response.data.data[0];
         });
     }, 500);
-
+    
 
   };
 

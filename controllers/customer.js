@@ -2,6 +2,9 @@ var User = require('../models/User');
 var shop = require('../models/shop');
 let mongoose = require('mongoose');
 let constantObj = require('./../constants.js');
+var appointment = require('../models/appointment');
+let moment = require('moment');
+
 
 exports.listcustomers = function(req, res) {
     var page = parseInt(req.query.page) || 1;
@@ -107,6 +110,74 @@ exports.listcustomers = function(req, res) {
 
 };
 
+
+exports.customerappointments = function(req, res) {
+    req.checkParams("cust_id", "cust_id cannot be blank").notEmpty();
+    console.log("req.params.cust_id",req.params.cust_id)
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let currentDate = moment().format("YYYY-MM-DD");
+    // below query will give us all those appointments who are pending and rescheduled
+    appointment.find({
+            "customer_id": {
+                $exists: true,
+                $eq: req.params.cust_id
+            },
+            "appointment_status": {
+                $in: ['pending', 'reschedule', 'confirm']
+            },
+            "appointment_date": {
+                $gte: currentDate
+            }
+        }).populate('barber_id', 'first_name last_name ratings picture created_date')
+        .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong isActive is_verified isDeleted ratings')
+        .populate('shop_id', 'name address city state gallery latLong created_date user_id')
+        .exec(function(err, result) {
+            if (err) {
+                return res.status(400).send({
+                    msg: constantObj.messages.errorRetreivingData
+                });
+            } else {
+                // This will give all appointments who are completed
+                console.log("res",result);
+                appointment.find({
+                        "customer_id": {
+                            $exists: true,
+                            $eq: req.params.cust_id
+                        },
+                        "appointment_status": {
+                            $in: ['completed']
+                        }
+                    }).populate('barber_id', 'first_name last_name ratings picture created_date')
+                    .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong isActive is_verified isDeleted ratings')
+                    .populate('shop_id', 'name address city state gallery latLong created_date user_id')
+                    .exec(function(err, data) {
+
+                        if (err) {
+                            return res.status(400).send({
+                                msg: constantObj.messages.errorRetreivingData
+                            });
+                        } else {
+                            console.log("result",data)
+                            return res.status(200).send({
+                                msg: constantObj.messages.successRetreivingData,
+                                data: {
+                                    upcoming: result,
+                                    complete: data
+                                }
+                            });
+                        }
+                    })
+            }
+        })
+};
+
+
 exports.custdetail = function(req, res) {
     req.checkParams("cust_id", "cust_id cannot be blank").notEmpty();
     let errors = req.validationErrors();
@@ -154,21 +225,7 @@ exports.custdetail = function(req, res) {
             })
 };
 
-exports.countbarber = function(req, res) {
-    User.find({
-        user_type: "barber"
-    }, function(err, barber) {
-        res.json(barber);
-    });
-};
 
-exports.countshop = function(req, res) {
-    User.find({
-        user_type: "shop"
-    }, function(err, barber) {
-        res.json(barber);
-    });
-};
 
 exports.countcustomer = function(req, res) {
     User.find({
@@ -288,187 +345,8 @@ exports.verifycustomer = function(req, res) {
 
 };
 
-exports.deactiveshop = function(req, res) {
-    console.log("shopid", req.params.shop_id);
-    User.update({
-        _id: req.params.shop_id
-    }, {
-        $set: {
-            isActive: false
-        }
-    }, function(err, count) {
-        User.find({
-            user_type: "shop"
-        }, function(err, shopss) {
-            res.json(shopss);
-        });
-    });
-
-};
-
-exports.activateshop = function(req, res) {
-    console.log("shopid", req.params.shop_id);
-    User.update({
-        _id: req.params.shop_id
-    }, {
-        $set: {
-            isActive: true
-        }
-    }, function(err, count) {
-        User.find({
-            user_type: "shop"
-        }, function(err, shopss) {
-            res.json(shopss);
-        });
-    });
-
-};
-
-exports.disapproveshop = function(req, res) {
-    console.log("shopid", req.params.shop_id);
-    User.update({
-        _id: req.params.shop_id
-    }, {
-        $set: {
-            is_verified: false
-        }
-    }, function(err, count) {
-        User.find({
-            user_type: "shop"
-        }, function(err, shopss) {
-            res.json(shopss);
-        });
-    });
-
-};
-
-exports.verifyshop = function(req, res) {
-    console.log("shopid", req.params.shop_id);
-    User.update({
-        _id: req.params.shop_id
-    }, {
-        $set: {
-            is_verified: true
-        }
-    }, function(err, count) {
-        User.find({
-            user_type: "shop"
-        }, function(err, shopss) {
-            res.json(shopss);
-        });
-    });
-
-};
-
-exports.deactivebarber = function(req, res) {
-    console.log("barber_id", req.params.barber_id);
-    User.update({
-        _id: req.params.barber_id
-    }, {
-        $set: {
-            isActive: false
-        }
-    }, function(err, count) {
-        User.find({
-            user_type: "barber"
-        }, function(err, shopss) {
-            res.json(shopss);
-        });
-    });
-
-};
 
 
-exports.activatebarber = function(req, res) {
-    console.log("barber_id", req.params.barber_id);
-    User.update({
-        _id: req.params.barber_id
-    }, {
-        $set: {
-            isActive: true
-        }
-    }, function(err, count) {
-        User.find({
-            user_type: "barber"
-        }, function(err, shopss) {
-            res.json(shopss);
-        });
-    });
-
-};
-
-exports.verifybarber = function(req, res) {
-    console.log("barber_id", req.params.barber_id);
-    User.update({
-        _id: req.params.barber_id
-    }, {
-        $set: {
-            is_verified: true
-        }
-    }, function(err, count) {
-        User.find({
-            user_type: "barber"
-        }, function(err, shopss) {
-            res.json(shopss);
-        });
-    });
-
-};
-
-exports.disapprovebarber = function(req, res) {
-    console.log("barber_id", req.params.barber_id);
-    User.update({
-        _id: req.params.barber_id
-    }, {
-        $set: {
-            is_verified: false
-        }
-    }, function(err, count) {
-        User.find({
-            user_type: "barber"
-        }, function(err, shopss) {
-            res.json(shopss);
-        });
-    });
-
-};
-
-
-exports.deletebarber = function(req, res) {
-    console.log("barber_id", req.params.barber_id);
-    User.update({
-        _id: req.params.barber_id
-    }, {
-        $set: {
-            isDeleted: true
-        }
-    }, function(err, count) {
-        User.find({
-            user_type: "barber"
-        }, function(err, shopss) {
-            res.json(shopss);
-        });
-    });
-
-};
-
-exports.undeletebarber = function(req, res) {
-    console.log("barber_id", req.params.barber_id);
-    User.update({
-        _id: req.params.barber_id
-    }, {
-        $set: {
-            isDeleted: false
-        }
-    }, function(err, count) {
-        User.find({
-            user_type: "barber"
-        }, function(err, shopss) {
-            res.json(shopss);
-        });
-    });
-
-};
 
 
 

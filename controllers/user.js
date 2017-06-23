@@ -561,6 +561,7 @@ exports.authFacebook = function(req, res) {
       let name = profile.name;
       let splitName = name.split(" ");
       // Step 3a. Link accounts if user is authenticated.
+      console.log("req.isAuthenticated()",req.isAuthenticated())
       if (req.isAuthenticated()) {
         User.findOne({
           facebook: profile.id
@@ -577,12 +578,11 @@ exports.authFacebook = function(req, res) {
           user.picture = user.picture || 'https://graph.facebook.com/' + profile.id + '/picture?type=large';
           user.facebook = profile.id;
           user.user_type = 'customer';
-          user.save(function() {
-            res.send({
-              token: generateToken(user),
-              user: user
-            });
+          res.send({
+            token: generateToken(user),
+            user: user
           });
+
         });
       } else {
         // Step 3b. Create a new user account or return an existing one.
@@ -592,7 +592,8 @@ exports.authFacebook = function(req, res) {
           if (user) {
             return res.send({
               token: generateToken(user),
-              user: user
+              user: user,
+              err:'Error'
             });
           }
           User.findOne({
@@ -613,12 +614,12 @@ exports.authFacebook = function(req, res) {
               picture: 'https://graph.facebook.com/' + profile.id + '/picture?type=large',
               facebook: profile.id
             });
-            user.save(function(err) {
-              return res.send({
-                token: generateToken(user),
-                user: user
-              });
+
+            return res.send({
+              token: generateToken(user),
+              user: user
             });
+
           });
         });
       }
@@ -682,12 +683,12 @@ exports.authGoogle = function(req, res) {
           user.picture = user.picture || profile.picture.replace('sz=50', 'sz=200');
           user.location = user.location || profile.location;
           user.google = profile.sub;
-          user.save(function() {
-            res.send({
-              token: generateToken(user),
-              user: user
-            });
-          });
+          // user.save(function() {
+          //   res.send({
+          //     token: generateToken(user),
+          //     user: user
+          //   });
+          // });
         });
       } else {
         // Step 3b. Create a new user account or return an existing one.
@@ -708,12 +709,12 @@ exports.authGoogle = function(req, res) {
             location: profile.location,
             google: profile.sub
           });
-          user.save(function(err) {
-            res.send({
-              token: generateToken(user),
-              user: user
-            });
-          });
+          // user.save(function(err) {
+          //   res.send({
+          //     token: generateToken(user),
+          //     user: user
+          //   });
+          // });
         });
       }
     });

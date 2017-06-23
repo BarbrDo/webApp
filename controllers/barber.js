@@ -616,9 +616,9 @@ exports.particularAppointment = function(req, res) {
         })
 }
 exports.rateBarber = function(req, res) {
-    req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
+    req.checkHeaders("user_id", "User id is required.").notEmpty();
+    req.assert("appointment_id", "Appointment _id is required.").notEmpty();
     req.assert("barber_id", "Barber id is required.").notEmpty();
-    req.checkHeaders("user_id", "barber_id is required.").notEmpty();
     req.assert("score", "score is required.").notEmpty();
     let errors = req.validationErrors();
     if (errors) {
@@ -644,10 +644,10 @@ exports.rateBarber = function(req, res) {
     async.waterfall([
         function(done) {
             appointment.update({
-                _id: req.params.appointment_id
+                _id: req.body.appointment_id
             }, {
                 $set: {
-                    "is_rating_given": true
+                    is_rating_given: true
                 }
             }, function(err, result) {
                 if (err) {

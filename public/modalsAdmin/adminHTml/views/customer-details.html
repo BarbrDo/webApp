@@ -1,3 +1,4 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
 <ol class="breadcrumb">
     <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
     <li class="breadcrumb-item"><a ui-sref="customers">Customers</a></li>
@@ -69,10 +70,11 @@
                                     <td> {{customerdetail.latLong[1]}} </td>
                                 </tr>
                             </table>
-                            <button type="button" class="btn btn-primary" ui-sref="view_cust_appointment({id:customerdetail._id})" ng-click="custAppoint(customerdetail)">View Appointments</button>
+                            <button type="button" class="btn btn-primary" ui-sref="view_cust_appointment({id:customerdetail._id})" ng-click="viewappointment(customerdetail)">View Appointments</button>
                         </div>
+                         <div class="clearfix"></div>
                         <div class="row">
-                            <div class="col-xs-12 col-md-6" style="margin-left: 450px;" n>
+                            <div class="col-xs-12 col-md-12 text-center">
                                 <br>
                                 <br>
                                 <button class="btn btn-success" ui-sref="editcust({id:customerdetail._id})" ng-click="custdetails(customerdetail)">Edit Details</button>

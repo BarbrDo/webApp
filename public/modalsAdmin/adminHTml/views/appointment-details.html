@@ -1,3 +1,4 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
 <ol class="breadcrumb">
     <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
     <li class="breadcrumb-item"><a ui-sref="cust_appointments"> Customer Appointments</a></li>
@@ -27,7 +28,7 @@
                                 <tr>
                                     <td>
                                         <h5> Shop</h5></td>
-                                    <td> <a data-toggle="tooltip" title="View Details" ui-sref="shopdetail({id:viewappoint.shop_id._id})" ng-click="viewshop(viewappoint.shop_id)">  {{viewappoint.shop_name}} </a> </td>
+                                    <td> <a data-toggle="tooltip" title="View Details" ui-sref="shopdetail({id:viewappoint.shop_id.user_id})" ng-click="viewshop(viewappoint.shop_id)">  {{viewappoint.shop_name}} </a> </td>
                                 </tr>
                                 <tr>
                                     <td>

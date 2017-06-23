@@ -76,7 +76,7 @@ module.exports = function(app, express) {
     app.get('/api/v1/appointment/pending/:_id',appointmentController.pendingConfiramtion);
     
     //Barber
-    app.get('/api/v1/allbarbers', shopController.availableBarber); //Get all barbers
+    app.get('/api/v1/allbarbers', barberServices.availableBarber); //Get all barbers
     app.get('/api/v1/barbers', shopController.associatedBarbers); //List all barbers
     app.get('/api/v1/barbers/:barber_id',barberServices.viewBarberProfile);//Get barber details like info, rating & comments, galleries
     app.post('/api/v1/barber/gallery',upload.any(), barberServices.uploadBarberGallery);//Upload single or multiple images in Gallery

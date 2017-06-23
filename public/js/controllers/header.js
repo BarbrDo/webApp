@@ -36,17 +36,26 @@ angular.module('BarbrDoApp')
       $state.go('home');
     };
     $scope.authenticate = function(provider) {
+      console.log(provider)
       $auth.authenticate(provider)
         .then(function(response) {
-          toastr.success('Welcome');
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
           if(response.data.imagesPath){
             $window.localStorage.imagePath = response.data.imagesPath;
           }
-          $state.go('upcomingComplete');  
+          if(response.data.err)
+          {
+
+            $state.go('upcomingComplete');
+          }
+          else
+          {
+          $state.go('facebookSignup'); 
+          } 
         })
         .catch(function(response) {
+          console.log(response)
           if (response.error) {
             $scope.messages = {
               error: [{ msg: response.error }]
@@ -91,6 +100,21 @@ angular.module('BarbrDoApp')
       $auth.signup($scope.user)
         .then(function(response) {
           toastr.success("Please check your mail to activate your account.")   
+        })
+        .catch(function(response) {
+          $scope.messagess = {
+            error: Array.isArray(response.data) ? response.data : response.data
+          };
+        });
+    };
+
+    $scope.fbsignup = function(user) {
+      console.log("here")
+      shop.fbSignup(user)
+        .then(function(response) {
+          toastr.success("Please check your mail to activate your account.")
+          $state.go('upcomingComplete') 
+          console.log("response",response)  
         })
         .catch(function(response) {
           $scope.messagess = {

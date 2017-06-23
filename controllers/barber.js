@@ -618,6 +618,7 @@ exports.particularAppointment = function(req, res) {
 exports.rateBarber = function(req, res) {
     req.checkHeaders("user_id", "User id is required.").notEmpty();
     req.assert("appointment_id", "Appointment _id is required.").notEmpty();
+    req.assert("appointment_date", "Appointment date is required").notEmpty();
     req.assert("barber_id", "Barber id is required.").notEmpty();
     req.assert("score", "score is required.").notEmpty();
     let errors = req.validationErrors();
@@ -653,7 +654,14 @@ exports.rateBarber = function(req, res) {
                 if (err) {
                     done("some error", err)
                 } else {
-                    done(err, result)
+                    if(result.nModified == 0){
+                        return res.status(400).send({
+                        msg: "no record found",
+                        err: err
+                        });
+                    }else {
+                        done(err, result);
+                    }
                 }
             })
         },

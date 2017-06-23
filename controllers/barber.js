@@ -623,7 +623,7 @@ exports.particularAppointment = function(req, res) {
             }
         })
 }
-<<<<<<< HEAD
+
 
 
 exports.availableBarber = function(req, res) {

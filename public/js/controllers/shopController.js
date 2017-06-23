@@ -5,16 +5,44 @@ angular.module('BarbrDoApp')
 		$scope.shopInfo = function(){
 			
 		}
+
+		$scope.chairrequest = function() {
+			shop.chairRequest($window.localStorage.shop_id)
+			.then(function(response) {
+				$rootScope.requests = response.data.result;
+			})
+		}
+
+		$scope.rejectrequest = function() {
+			shop.declineRequest(chair).then(function(response) {
+				console.log(response)
+				toastr.success('Request is Declined successfully');
+				$state.go('barbershopdashboard')
+			})
+		}
+
 		if($state.current.name == 'barbershopdashboard'){
 			shop.shopInfo().then(function(response){
 				$scope.chairs = response.data.user;
-				$window.localStorage.shop_id = response.data.user.shop[0]._id
+				$window.localStorage.shop_id = response.data.user.shop[0]._id;
+				$rootScope.shopinfo = response.data.user.shop[0];
 			})
 		}
+
+		$scope.acceptrequest = function(chair) {
+			shop.acceptRequest(chair).then(function(response) {
+				console.log(response)
+				toastr.success('Request is Accepted successfully');
+				$state.go('barbershopdashboard')
+			})
+		}
+
 		$scope.shopDashboard = function(){
 			shop.shopInfo().then(function(response){
 				$scope.chairs = response.data.user;
-				$window.localStorage.shop_id = response.data.user.shop[0]._id
+				$window.localStorage.shop_id = response.data.user.shop[0]._id;
+				$rootScope.shopinfo = response.data.user.shop[0];
+				console.log(response)
 			})
 		}
 		if($state.current.name == 'chairaction'){
@@ -32,8 +60,10 @@ angular.module('BarbrDoApp')
 		$rootScope.$on("MyEvent", function(evt,data){ 
 			$scope.shopDashboard();
 		})
-		$scope.saveSplitFair = function(){
+		$scope.saveSplitFair = function(type){
+			console.log(type)
 			let obj = {
+				type: type,
 				shop_percentage :$scope.slider.value,
 				barber_percentage : 100-$scope.slider.value,
 				chair_id:$stateParams.id
@@ -43,8 +73,9 @@ angular.module('BarbrDoApp')
 				$state.go('barbershopdashboard')
 			})
 		}
-		$scope.saveWeeklyFair = function(){
+		$scope.saveWeeklyFair = function(type){
 			let obj = {
+				type: type,
 				type :$scope.content,
 				amount : $scope.priceValue,
 				chair_id:$stateParams.id
@@ -74,9 +105,10 @@ angular.module('BarbrDoApp')
 		}
 		$scope.deleteChair = function(){
 			let obj = {
-				chair_id:$stateParams.id
+				chair_id:$stateParams.id,
+				shop_id:$window.localStorage.shop_id
 			}
-			shop.deleteChair(passObj).then(function(response){
+			shop.deleteChair(obj).then(function(response){
 				toastr.success('Chair successfully removed.');
 				$state.go('barbershopdashboard')
 			})

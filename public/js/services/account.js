@@ -29,6 +29,10 @@ angular.module('BarbrDoApp')
       },
       resetPassword: function(data) {
         return $http.post('/api/v1/reset/'+data.token, data);
+      },
+      updateShop: function(data) {
+        console.log("shop",data)
+        return $http.put('/api/v1/shops', data);
       }
     };
   });

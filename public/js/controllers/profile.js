@@ -1,8 +1,8 @@
 angular.module('BarbrDoApp')
   .controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account,toastr,$http) {
     $scope.profile= JSON.parse($window.localStorage.user);
-    console.log($scope.profile);
     $scope.imgPath = $window.localStorage.imagePath;
+
     $scope.updateProfile = function() {
       var fs = new FormData();
       fs.append("first_name", $scope.profile.first_name);
@@ -22,7 +22,6 @@ angular.module('BarbrDoApp')
         })
         .success(function(response) {
           if (response) {
-          console.log(response.user);
           $rootScope.currentUser = response.user;
           $window.localStorage.user = JSON.stringify(response.user);
           toastr.success("User profile updated successfully.");
@@ -50,6 +49,19 @@ angular.module('BarbrDoApp')
       //     };
       //   });
     };
+
+    $scope.updateshopinfo = function(data) {
+          console.log("data",data)
+          Account.updateShop(data)
+        .then(function(response) {
+          toastr.success('Shop Information Updated Successfully');
+        })
+        .catch(function(response) {
+          toastr.success('Error in updating Shop.');
+        });
+      
+       };
+
 
     $scope.changePassword = function() {
       Account.changePassword($scope.profile)

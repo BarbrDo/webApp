@@ -379,6 +379,7 @@ exports.setChairPercentage = function(req, res) {
             err: errors
         });
     }
+    console.log(req.body)
     let updateCollectionData = {
         "$set": {
             "chairs.$.shop_percentage": parseInt(req.body.shop_percentage),
@@ -866,7 +867,7 @@ exports.manageChair = function(req, res) {
     req.checkHeaders('user_id', 'User id is required.').notEmpty();
     req.assert('chair_id', 'Chair id is required.').notEmpty();
     req.assert('type', 'Chair type is required').notEmpty();
-
+     console.log("rahulgajkbkjl", req.body);
     if (req.body.type == 'weekly' || req.body.type == 'monthly') {
         req.assert('amount', 'Amount is required.').notEmpty();
     } else {
@@ -880,7 +881,7 @@ exports.manageChair = function(req, res) {
         });
     }
 
-        console.log("rah", req.body);
+        console.log("rahull", req.body);
     if (req.body.type == 'percentage') {
         var updateCollectionData = {
             $unset: {

@@ -46,7 +46,7 @@
                 </div>
                 <div class="col-sm-3 form-group">
                     <label> New Password</label>
-                    <input type="password" class="form-control" name="password" data-ng-model="password" ng-minlength="5" ng-maxlength="20" maxlength="21" />
+                    <input type="password" class="form-control" name="password" data-ng-model="shopdetailview.pass" ng-minlength="5" ng-maxlength="20" maxlength="21" />
                     <div class="validationError" ng-if="!updateButton" ng-show="editForm.password.$error.minlength">
                         <span style="color:red ">password too Short (atleast 5 characters)</span>
                     </div>
@@ -56,7 +56,7 @@
                 </div>
                 <div class="col-sm-3 form-group">
                     <label>Confirm Password</label>
-                    <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" ng-model="confirmPassword" required ng-pattern="password" />
+                    <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" ng-model="shopdetailview.confirmPassword" required ng-pattern="password" />
                     <div class="validationError" ng-messages="editForm.confirmPassword.$error" ng-show=" editForm.confirmPassword.$error.pattern && (!editForm.confirmPassword.$pristine || editForm.$submitted)" role="alert ">
                         <span style="color:red " ng-if="!updateButton" ng-message="pattern">password do not match</span>
                     </div>

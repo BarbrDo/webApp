@@ -39,7 +39,21 @@ angular.module('barbrdo').factory('Admin', function($http) {
         headers: {
           'user_id': data._id
         },
-        data: data
+        data: {
+          created_date:data.created_date,
+          email:data.email,
+          first_name:data.first_name,
+          isActive:data.isActive,
+          isDeleted:data.isDeleted,
+          is_verified:data.is_verified,
+          last_name:data.last_name,
+          mobile_number:data.mobile_number,
+          password:data.pass,
+          ratings:data.ratings,
+          user_type:data.user_type,
+          _id:data._id,
+          confirm:data.confirmPassword
+        }
       });
     },
     appointments: function(data) {
@@ -143,17 +157,47 @@ angular.module('barbrdo').factory('Admin', function($http) {
         headers: {
           'user_id': data._id
         },
-        data: data
+         data: {
+          created_date:data.created_date,
+          email:data.email,
+          first_name:data.first_name,
+          isActive:data.isActive,
+          isDeleted:data.isDeleted,
+          is_verified:data.is_verified,
+          last_name:data.last_name,
+          mobile_number:data.mobile_number,
+          password:data.pass,
+          ratings:data.ratings,
+          user_type:data.user_type,
+          _id:data._id,
+          confirm:data.confirmPassword
+        }
       });
     },
     updateShop: function(data) {
+      console.log(data)
       return $http({
         method: 'PUT',
         url: '/api/v1/account',
         headers: {
           'user_id': data._id
         },
-        data: data
+        data: {
+          created_date:data.created_date,
+          email:data.email,
+          first_name:data.first_name,
+          isActive:data.isActive,
+          isDeleted:data.isDeleted,
+          is_verified:data.is_verified,
+          last_name:data.last_name,
+          mobile_number:data.mobile_number,
+          password:data.confirmPassword,
+          ratings:data.ratings,
+          shopinfo:data.shopinfo,
+          user_type:data.user_type,
+          _id:data._id,
+          confirm:data.confirmPassword
+        }
       });
     },
     updateShopinfo: function(data) {
@@ -236,6 +280,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
       return $http.get('/api/v1/shops/barbers/' + data._id, data);
     },
     addCustomer: function(cust) {
+      console.log(cust)
       return $http.post('/api/v1/signup', cust);
     },
     countBarber: function(data) {

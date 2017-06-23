@@ -340,6 +340,8 @@ exports.acceptRequest = function(req, res) {
 	req.checkHeaders("user_id", "User Id is required.").notEmpty();
 	req.assert("chair_request_id", "chair_request_id is required.").notEmpty() // Chair Request _id is required   
 	req.assert("request_type", "request_type is required").notEmpty();
+	console.log("this is one",req.body)
+
 	let errors = req.validationErrors();
 	if (errors) {
 		return res.status(400).send({
@@ -347,6 +349,7 @@ exports.acceptRequest = function(req, res) {
 			err: errors
 		});
 	}
+	console.log("this is two",req.body)
 	if (req.body.request_type == 'accept') {
 		let updateCollectionData = {};
 		let bookingEndDate = "";
@@ -539,8 +542,8 @@ exports.acceptRequest = function(req, res) {
 							} else {
 								console.log("third", findalResult)
 								res.send({
-									msg: 'shop updated successfully',
-									'msg1': message,
+									msg: 'Shop chair request accepted successfully',
+                                                                        'msg1': message,
 									'msg2': chairReqeustMessage
 								});
 								done(err)

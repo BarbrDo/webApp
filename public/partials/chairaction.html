@@ -10,7 +10,13 @@
                 <div class="range">
                     <rzslider rz-slider-model="slider.value" rz-slider-options="slider.options"></rzslider>
                 </div>
-                <button ng-click="saveSplitFair()" class="btn btn-primary">Save Split Fair</button>
+                 <div class="clearfix">
+                <div class="col-sm-6 form-group" ng-hide="true">
+                    {{chair.type1 = "percentage"}}
+                    <label>Chair Type</label>
+                    <input type="text" class="form-control" ng-model="chair.type1">
+                </div></div>
+                <button ng-click="saveSplitFair(chair.type1)" class="btn btn-primary">Save Split Fair</button>
             </div>
         </div>
         <div class="col-md-6">
@@ -19,14 +25,14 @@
                 <div class="type_selection wekmonth ">
                     <form>
                         <label for="Weekly">
-                            <input id="Weekly" type="radio" value="Weekly" name="content" ng-model="content">
+                            <input id="weekly" type="radio" value="weekly" name="content" ng-model="content">
                             <span>Weekly</span> </label>
-                        <label for="Monthly">
-                            <input id="Monthly" type="radio" value="Monthly" name="content" ng-model="content">
+                        <label for="monthly">
+                            <input id="Monthly" type="radio" value="monthly" name="content" ng-model="content">
                             <span>Monthly</span> </label>
                     </form>
                     <div class="contact-us  pz">
-                        <div class="form-group" ng-show="content == 'Weekly'">
+                        <div class="form-group" ng-show="content == 'weekly'">
                          <form name="myform">
                             <input type="text" class="form-control" required value="" / ng-model="priceValue" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7">
                             <div class="form-control-placeholder">Enter Price for Week</div>
@@ -46,10 +52,10 @@
                              <span style="color:red ">Price maximum length exceeds</span>
                         </div>
 
-                            <button style="margin-top: 15px;" ng-click="saveWeeklyFair()" class="btn btn-primary" ng-disabled="myform.$invalid">Save Rent Fair</button>
+                            <button style="margin-top: 15px;" ng-click="saveWeeklyFair(chair.type)" class="btn btn-primary" ng-disabled="myform.$invalid">Save Rent Fair</button>
                         </div>
                         </form>
-                        <div class="form-group" ng-show="content == 'Monthly'">
+                        <div class="form-group" ng-show="content == 'monthly'">
                         <form name="secondForm">
                             <input type="text" class="form-control" required value="" ng-model="priceValue" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7">
                             <div class="form-control-placeholder">Enter Price for Month</div>
@@ -69,7 +75,7 @@
                              <span style="color:red ">Price maximum length exceeds</span>
                         </div>
 
-                            <button style="margin-top: 15px;" ng-click="saveWeeklyFair()" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair</button>
+                            <button style="margin-top: 15px;" ng-click="saveWeeklyFair(content)" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair</button>
                         </form>
                         </div>
                     </div>
@@ -80,8 +86,29 @@
             <h3 class="actn">Action to this Chair </h3>
             <a href="" ng-click="markBooked()">Mark Booked</a>
             <a href="" ng-click="postToAllBarbers()">Post to All</a>
-            <a href="">Search Barber</a>
+            <a href="" data-toggle="modal" data-target="#searchbarber">Search Barber</a>
             <a href="" ng-click="deleteChair()">Remove Chair</a>
         </div>
     </div>
 </div>
+
+
+ <div class="modal " id="searchbarber" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #c2f7b5;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Search for a specific barber</h4>
+                </div>
+                <div class="modal-body" >
+                    <span class="glyphicon glyphicon-search" style="color:purple"></span>
+                    <input ng-model="myobj.search" placeholder="Search for..." /><br><br>
+                   Work in Progress .....
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>

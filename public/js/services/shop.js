@@ -6,12 +6,13 @@ angular.module('BarbrDoApp')
     }
     return {
       addChair: function(data) {
+        console.log(data)
         return $http({
           method: 'post',
           url: '/api/v1/shops/chair',
           data:data,
           headers: {
-            'user_id': obj._id
+            'user_id': data._id
           }
         },data);
       },

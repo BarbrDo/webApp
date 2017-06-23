@@ -986,10 +986,10 @@ exports.viewBarberAvailability = function(req, res) {
     let endDate = moment(currentDate, "YYYY-MM-DD").add(1, 'days').format("YYYY-MM-DD[T]HH:mm:ss.SSS");
     appointment.find({
         barber_id: req.params.barber_id,
-        appointment_status : 'confirm',
+        appointment_status: 'confirm',
         appointment_date: {
             $gte: new Date(currentDate).toISOString(),
-            $lte: endDate+'Z'
+            $lte: endDate + 'Z'
         }
     }).exec(function(err, result) {
         if (err) {
@@ -1003,6 +1003,7 @@ exports.viewBarberAvailability = function(req, res) {
                 let morning = [];
                 let afternoon = [];
                 let evening = [];
+                let resultTantTime = [];
                 for (var i = 0; i < result.length; i++) {
                     var time = moment.utc(result[i].appointment_date).format("HH:mm");
                     let x = "";
@@ -1152,57 +1153,42 @@ exports.viewBarberAvailability = function(req, res) {
                             x = "8:45";
                             break;
                     }
-                console.log('x===',x,'time==',time);    
-                for (var k = 0; k < timeArray.length; k++) {
-                        var reslt = timeArray[k].split(":");
-                        reslt = parseInt(reslt[0]);
-                        if (reslt >= 9 && reslt <= 11) {
-                            if (x == timeArray[k]) {
-                                let obj = {
-                                    "time": timeArray[k],
-                                    isAvailable: false
-                                }
-                                morning.push(obj);
-                            } else {
-                                let obj = {
-                                    "time": timeArray[k],
-                                    isAvailable: true
-                                }
-                                morning.push(obj);
+                    resultTantTime.push(x);
+                }
+                console.log("resultTantTime",resultTantTime);
+                let newArray = [];
+                for (var i = 0; i < timeArray.length; i++) {
+                    let k = 0;
+                    for (var j = 0; j < resultTantTime.length; j++) {
+                        if (timeArray[i]==resultTantTime[j]){
+                            let obj = {
+                                time:timeArray[i],
+                                isAvailable:false
                             }
-                        }
-                        if (reslt >= 12 || reslt <= 4) {
-                            if (x == timeArray[k]) {
-                                let obj = {
-                                    "time": timeArray[k],
-                                    isAvailable: false
-                                }
-                                afternoon.push(obj);
-                            } else {
-                                let obj = {
-                                    "time": timeArray[k],
-                                    isAvailable: true
-                                }
-                                afternoon.push(obj);
-                            }
-                        }
-                        if (reslt >= 5 && reslt <= 8) {
-                            if (x == timeArray[k]) {
-                                let obj = {
-                                    "time": timeArray[k],
-                                    isAvailable: false
-                                }
-                                evening.push(obj);
-                            } else {
-                                let obj = {
-                                    "time": timeArray[k],
-                                    isAvailable: true
-                                }
-                                evening.push(obj);
-                            }
+                            newArray.push(obj)
+                            k=1;
                         }
                     }
-                    
+                    if(k==0){
+                        let obj = {
+                                time:timeArray[i],
+                                isAvailable:true
+                            }
+                        newArray.push(obj)
+                    }
+                }
+                for (var k = 0; k < newArray.length; k++) {
+                    var reslt = newArray[k].time.split(":");
+                    reslt = parseInt(reslt[0]);
+                    if (reslt >= 9 && reslt <= 11) {
+                            morning.push(newArray[k]);
+                    }
+                    if (reslt >= 12 || reslt <= 4) {
+                            afternoon.push(newArray[k]);
+                    }
+                    if (reslt >= 5 && reslt <= 8) {
+                            evening.push(newArray[k]);
+                    }
                 }
                 let timeSlots = {
                     morning:morning,

@@ -425,7 +425,7 @@ exports.completeAppointment = function(req, res) {
             appointment.update({
                 _id: req.params.appointment_id
             }, {
-<<<<<<< HEAD
+
                     $set: {
                         "appointment_status": "completed"
                     }
@@ -437,18 +437,8 @@ exports.completeAppointment = function(req, res) {
                         console.log(result)
                     }
                 })
-=======
-                $set: {
-                    "appointment_status": "completed"
-                }
-            }, function(err, result) {
-                if (err) {
-                    done("some error", err)
-                } else {
-                    done(err, result)
-                }
-            })
->>>>>>> master
+
+
         },
         function(status, done) {
             user.update({
@@ -864,7 +854,51 @@ exports.undeletebarber = function(req, res) {
 
 exports.barberdetail = function(req, res) {
     req.checkParams("barber_id", "barber_id cannot be blank").notEmpty();
-=======
+    var query = {};
+    query._id = mongoose.Types.ObjectId(req.params.barber_id);
+    query.user_type = "barber";
+    user.aggregate([{
+        $lookup: {
+            from: "shops",
+            "localField": "_id",
+            "foreignField": "chairs.barber_id",
+            "as": "shopdetails"
+        }
+    }, {
+        $project: {
+            _id: "$_id",
+            first_name: "$first_name",
+            last_name: "$last_name",
+            email: "$email",
+            mobile_number: "$mobile_number",
+            created_date: "$created_date",
+            ratings: "$ratings",
+            isDeleted: "$isDeleted",
+            isActive: "$isActive",
+            is_verified: "$is_verified",
+            user_type: "$user_type",
+            latLong: "$latLong",
+            picture: "$picture",
+            name: "$shopdetails.name",
+            shop: "$shopdetails"
+        }
+    }, {
+        $match: query
+    }]).exec(function(err, result) {
+        if (err) {
+            res.status(400).send({
+                "msg": constantObj.messages.userStatusUpdateFailure,
+                "err": err
+            });
+        } else {
+            res.status(200).send({
+                "msg": constantObj.messages.successRetreivingData,
+                "data": result
+            })
+        }
+    })
+};    
+
 exports.rateBarber = function(req, res) {
     req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
     req.assert("barber_id", "Barber id is required.").notEmpty();
@@ -932,7 +966,7 @@ exports.viewBarberAvailability = function(req, res) {
     let timeArray = ["9:00", "9:15", "9:30", "9:45", "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45", "12:00", "12:15", "12:30", "12:45", "1:00", "1:15", "1:30", "1:45", "2:00", "2:15", "2:30", "2:45", "3:00", "3:15", "3:30", "3:45", "4:00", "4:15", "4:30", "4:45", "5:00", "5:15", "5:30", "5:45", "6:00", "6:15", "6:30", "6:45", "7:00", "7:15", "7:30", "7:45", "8:00", "8:15", "8:30", "8:45"];
     req.checkParams("barber_id", "Barber id is required.").notEmpty();
     req.checkQuery("date", "Date is required.").notEmpty();
->>>>>>> master
+
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -940,52 +974,6 @@ exports.viewBarberAvailability = function(req, res) {
             err: errors
         });
     }
-<<<<<<< HEAD
-    var query = {};
-    query._id = mongoose.Types.ObjectId(req.params.barber_id);
-    query.user_type = "barber";
-    user.aggregate([{
-        $lookup: {
-            from: "shops",
-            "localField": "_id",
-            "foreignField": "chairs.barber_id",
-            "as": "shopdetails"
-        }
-    }, {
-        $project: {
-            _id: "$_id",
-            first_name: "$first_name",
-            last_name: "$last_name",
-            email: "$email",
-            mobile_number: "$mobile_number",
-            created_date: "$created_date",
-            ratings: "$ratings",
-            isDeleted: "$isDeleted",
-            isActive: "$isActive",
-            is_verified: "$is_verified",
-            user_type: "$user_type",
-            latLong: "$latLong",
-            picture: "$picture",
-            name: "$shopdetails.name",
-            shop: "$shopdetails"
-        }
-    }, {
-        $match: query
-    }]).exec(function(err, result) {
-        if (err) {
-            res.status(400).send({
-                "msg": constantObj.messages.userStatusUpdateFailure,
-                "err": err
-            });
-        } else {
-            res.status(200).send({
-                "msg": constantObj.messages.successRetreivingData,
-                "data": result
-            })
-        }
-    })
-};
-=======
     let currentDate = req.query.date;
     let endDate = moment(currentDate, "YYYY-MM-DD").add(1, 'days').format("YYYY-MM-DD[T]HH:mm:ss.SSS");
     appointment.find({
@@ -1226,4 +1214,3 @@ exports.viewBarberAvailability = function(req, res) {
         }
     })
 }
->>>>>>> master

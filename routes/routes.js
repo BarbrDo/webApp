@@ -96,6 +96,7 @@ module.exports = function(app, express) {
     app.get('/api/v1/barber/particularAppointment/:appointment_id',barberServices.particularAppointment);
     app.get('/api/v1/barber/shopchairrequests/:barber_id',chairRequestController.shopChairRequest); // Manage request in barber module
     app.get('/api/v1/barber/timeavailability/:barber_id',barberServices.viewBarberAvailability)
+    app.post('/api/v1/barber/contactshop',contactController.contactShop);
 
     //Common
     app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of any customer/barber/shop

@@ -74,7 +74,7 @@ module.exports = function(app, express) {
     app.post('/api/v1/customer/gallery', upload.any(), userController.uploadCustomerGallery); //Upload image in gallery
     app.delete('/api/v1/customer/gallery/:image_id',userController.deleteImages); //Delete image from gallery
     app.get('/api/v1/appointment/pending/:_id',appointmentController.pendingConfiramtion);
-    
+    app.post('/api/v1/rateBarber',barberServices.rateBarber);
     //Barber
     app.get('/api/v1/allbarbers', barberServices.availableBarber); //Get all barbers
     app.get('/api/v1/barbers', shopController.associatedBarbers); //List all barbers
@@ -86,22 +86,25 @@ module.exports = function(app, express) {
     app.put('/api/v1/barber/completeappointment/:appointment_id',barberServices.completeAppointment);//Barber mark appointment as completed
     app.put('/api/v1/barber/cancelappointment/:appointment_id', barberServices.cancelAppointment);//Barber cancelling an appointment
     app.put('/api/v1/barber/rescheduleappointment/:appointment_id',barberServices.rescheduleAppointment);//Barber reschedule an appointment
-    app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber requesting chair to shop
+    app.post('/api/v1/requestchair', chairRequestController.requestChair); //Barber/shop requesting chair to shop
     app.get('/api/v1/barber/services', barberServices.getAllServices); //Get all services
     app.post('/api/v1/barber/services', barberServices.addBarberServices); //Add new service
     app.put('/api/v1/barber/services/:barber_service_id',barberServices.editBarberServices); //Edit Barber services
     app.get('/api/v1/barber/services/:barber_id',barberServices.viewAllServiesOfBarber); // Show all services of barbers
     app.delete('/api/v1/barber/services/:barber_service_id',barberServices.deleteBarberService);// Delete barber service
     app.get('/api/v1/barber/particularAppointment/:appointment_id',barberServices.particularAppointment);
-    app.get('/api/v1/barber/shopChairRequest/:barber_id',chairRequestController.shopChairRequest); // Manage request in barber module
+    app.get('/api/v1/barber/shopchairrequests/:barber_id',chairRequestController.shopChairRequest); // Manage request in barber module
+    app.get('/api/v1/barber/timeavailability/:barber_id',barberServices.viewBarberAvailability)
 
     //Common
     app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of any customer/barber/shop
+    //app.get('/api/v1/timeslots',commonObj.viewTimeSlots); //Time slot to book an appointment
     //app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
     app.post('/api/v1/contact', contactController.contactPost);
-    app.get('/api/v1/timeslots',commonObj.viewTimeSlots); //Time slot to book an appointment
     app.get('/api/v1/shops/barbers/:shop_id/:barber_id',shopController.getDataForBookNowPage)
-
+    
+    //Need to delete in sprint-8
+    app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber/shop requesting chair to shop
     app.get('/admin', function(req, res) {
         res.sendFile(path.join(__dirname + './../public/indexAdmin.html'));
     });
@@ -1318,12 +1321,12 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"  
- *   /barber/requestchair:
+ *   /requestchair:
  *     post:
  *       tags:
  *       - "barber"
- *       summary: "Barber requesting for a chair to shop"
- *       description: "Barber requesting for a chair to shop"
+ *       summary: "Barber or shop requesting for a chair to opposite party"
+ *       description: "Barber or shop requesting for a chair to opposite party"
  *       operationId: "requestChair"
  *       produces:
  *       - "application/json"
@@ -1571,6 +1574,99 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
+ *   /barber/shopchairrequests/{barber_id}:
+ *     get:
+ *       tags:
+ *       - "barber"
+ *       summary: "Get all shop's request to barber for chairs"
+ *       description: "Get all shop's request to barber for chairs"
+ *       operationId: "shopchairrequests"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5943a470f409f91359e84f47"
+ *       - in: "path"
+ *         name: "barber_id"
+ *         description: "Barber User ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: '591be608b902f60fcc14a9d3'
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+*   /barber/timeavailability/{barber_id}:
+ *     get:
+ *       tags:
+ *       - "barber"
+ *       summary: "Show barber's availability to customer"
+ *       description: "Show barber's availability to customer"
+ *       operationId: "timeavailability"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5943a470f409f91359e84f47"
+ *       - in: "path"
+ *         name: "barber_id"
+ *         description: "Barber User ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: '5948dcc7c5a04e5004416516'
+ *       - in: "query"
+ *         name: "date"
+ *         description: "Booking Date(YYYY-MM-DD)"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: '2017-12-30'
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
  *   /userprofile/{id}:
  *     get:
  *       tags:
@@ -1623,6 +1719,49 @@ module.exports = function(app, express) {
  *       operationId: "timeSlot"
  *       produces:
  *       - "application/json"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid username/password supplied"
+ *   /contact:
+ *     post:
+ *       tags:
+ *       - "common"
+ *       summary: "Contact BarbrDo"
+ *       description: "Contact BarbrDo"
+ *       operationId: "contact"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5943a470f409f91359e84f47"
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Contact parameters"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/contact"
+ 
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -1834,6 +1973,18 @@ module.exports = function(app, express) {
  *         type: "number"
  *         default: 15 
  *       appointment_date:
+ *         type: "number"
+ *         default: ""
+ *    contact:
+ *      type: "object"
+ *      properties:
+ *       name:
+ *         type: "string"
+ *         default: "Pop's Barber Shop" 
+ *       email:
+ *         type: "number"
+ *         default: ""
+ *       message:
  *         type: "number"
  *         default: ""
  */

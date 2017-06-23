@@ -133,6 +133,7 @@ var accountActivateMailFunction = function(req, res, user, resetUrl) {
     subject: '✔ Activate Your Account',
     text: 'Please Activate your account by clicking link \n\n' + resetUrl + '\n\n'
   };
+  console.log(user);
   if (!user.facebook) {
     nodemailerMailgun.sendMail(mailOptions, function(err, info) {
       res.send({
@@ -253,10 +254,7 @@ exports.signupPost = function(req, res, next) {
                 msg: constantObj.messages.errorInSave
               })
             } else {
-              console.log("else part of barber save");
-              let data1 = {};
-              data1.email = data.email;
-              accountActivateMailFunction(req, res, data1, resetUrl)
+              accountActivateMailFunction(req, res, data, resetUrl)
             }
           })
         } else if (req.body.facebook) {
@@ -890,7 +888,8 @@ exports.checkFaceBook = function(req, res) {
         res.status(200).send({
           msg: constantObj.messages.successRetreivingData,
           token: generateToken(response),
-          user: response[0]
+          user: response[0],
+          "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
         });
       } else {
         res.status(400).send({

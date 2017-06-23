@@ -23,8 +23,10 @@ const messages = {
 	// for the required fields
 	"requiredFields": "Please pass the required fields.",
         
-        //Others
-        "chairPostedSuccess":"Chair posted successfully"
+     //Others
+    "chairPostedSuccess":"Chair posted successfully",
+    "email":"ankushs.sdei@gmail.com"
+
 }
 
 const distance = {
@@ -32,60 +34,61 @@ const distance = {
 	"distanceMultiplierInMiles": 0.000621371,
 	"distanceMultiplierInkm": 0.001
 }
+
 const timeSlots = {
 	"morning": [
-		"9:00",
-		"9:15",
-		"9:30",
-		"9:45",
-		"10:00",
-		"10:15",
-		"10:30",
-		"10:45",
-		"11:00",
-		"11:15",
-		"11:30",
-		"11:45"
+		{"time":"9:00","isAvailable":true},
+		{"time":"9:15","isAvailable":true},
+		{"time":"9:30","isAvailable":true},
+		{"time":"9:45","isAvailable":true},
+		{"time":"10:00","isAvailable":true},
+		{"time":"10:15","isAvailable":true},
+		{"time":"10:30","isAvailable":true},
+		{"time":"10:45","isAvailable":true},
+		{"time":"11:00","isAvailable":true},
+		{"time":"11:15","isAvailable":true},
+		{"time":"11:30","isAvailable":true},
+		{"time":"11:45","isAvailable":true}
 	],
 	"afternoon": [
-		"12:00",
-		"12:15",
-		"12:30",
-		"12:45",
-		"1:00",
-		"1:15",
-		"1:30",
-		"1:45",
-		"2:00",
-		"2:15",
-		"2:30",
-		"2:45",
-		"3:00",
-		"3:15",
-		"3:30",
-		"3:45",
-		"4:00",
-		"4:15",
-		"4:30",
-		"4:45"
+		{"time":"12:00","isAvailable":true},
+		{"time":"12:15","isAvailable":true},
+		{"time":"12:30","isAvailable":true},
+		{"time":"12:45","isAvailable":true},
+		{"time":"1:00","isAvailable":true},
+		{"time":"1:15","isAvailable":true},
+		{"time":"1:30","isAvailable":true},
+		{"time":"1:45","isAvailable":true},
+		{"time":"2:00","isAvailable":true},
+		{"time":"2:15","isAvailable":true},
+		{"time":"2:30","isAvailable":true},
+		{"time":"2:45","isAvailable":true},
+		{"time":"3:00","isAvailable":true},
+		{"time":"3:15","isAvailable":true},
+		{"time":"3:30","isAvailable":true},
+		{"time":"3:45","isAvailable":true},
+		{"time":"4:00","isAvailable":true},
+		{"time":"4:15","isAvailable":true},
+		{"time":"4:30","isAvailable":true},
+		{"time":"4:45","isAvailable":true}
 	],
 	"evening": [
-		"5:00",
-		"5:15",
-		"5:30",
-		"5:45",
-		"6:00",
-		"6:15",
-		"6:30",
-		"6:45",
-		"7:00",
-		"7:15",
-		"7:30",
-		"7:45",
-		"8:00",
-		"8:15",
-		"8:30",
-		"8:45"
+		{"time":"5:00","isAvailable":true},
+		{"time":"5:15","isAvailable":true},
+		{"time":"5:30","isAvailable":true},
+		{"time":"5:45","isAvailable":true},
+		{"time":"6:00","isAvailable":true},
+		{"time":"6:15","isAvailable":true},
+		{"time":"6:30","isAvailable":true},
+		{"time":"6:45","isAvailable":true},
+		{"time":"7:00","isAvailable":true},
+		{"time":"7:15","isAvailable":true},
+		{"time":"7:30","isAvailable":true},
+		{"time":"7:45","isAvailable":true},
+		{"time":"8:00","isAvailable":true},
+		{"time":"8:15","isAvailable":true},
+		{"time":"8:30","isAvailable":true},
+		{"time":"8:45","isAvailable":true}
 	]
 }
 

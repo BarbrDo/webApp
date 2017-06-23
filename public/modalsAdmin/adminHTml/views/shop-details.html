@@ -1,3 +1,4 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
 <ol class="breadcrumb">
     <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
     <li class="breadcrumb-item"><a ui-sref="shops">Shops</a></li>
@@ -21,12 +22,12 @@
                                 <tr ui-sref="barbdetail({id:shopdetailview.shopinfo[0].user_id})" style="cursor:pointer" data-toggle="tooltip" title="View Barbers in the Shop">
                                     <td>
                                         <h5>BARBERS </h5></td>
-                                    <td> {{totalbarbers.totalBarbers}}</td>
+                                    <td style="color: blue;"> {{totalbarbers.totalBarbers}}</td>
                                 </tr>
                                 <tr ui-sref="chairs({id:shopdetailview.shopinfo[0].user_id})" style="cursor:pointer" data-toggle="tooltip" title="View Chairs in the Shop">
                                     <td>
                                         <h5>CHAIRS </h5></td>
-                                    <td> {{shopdetailview.shopinfo[0].chairs.length}}</td>
+                                    <td style="color: blue;"> {{shopdetailview.shopinfo[0].chairs.length}}</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -136,8 +137,9 @@
                                 </tr>
                             </table>
                         </div>
+                         <div class="clearfix"></div>
                         <div class="row">
-                            <div class="col-xs-12 col-md-12">
+                            <div class="col-xs-12 col-md-12 text-center">
                                 <br>
                                 <br>
                                 <button class="btn btn-success" align="center" ui-sref="editshop({id:shopdetailview._id})">Edit Details</button>

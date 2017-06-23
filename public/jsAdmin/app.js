@@ -1,6 +1,6 @@
 "use strict";
 
-var app_admin = angular.module('barbrdo', ['ui.router', 'ui.bootstrap', 'angularModalService', 'rzModule', "chart.js",'alexjoffroy.angular-loaders','ngMask']);
+var app_admin = angular.module('barbrdo', ['ui.router', 'ui.bootstrap', 'angularModalService', 'rzModule', "chart.js", 'alexjoffroy.angular-loaders', 'ngMask']);
 
 app_admin.config(['$locationProvider', function($locationProvider) {
     $locationProvider.hashPrefix('');
@@ -25,10 +25,18 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
         templateUrl: '/modalsAdmin/adminHTml/views/appointments.html'
     })
 
-    // view_companies
-    .state('view_companies', {
-        url: '/view-companies',
-        templateUrl: 'templatesAdmin/company-list.html'
+    .state('assoc', {
+        url: '/assoc',
+        controller: "AdminCtrl",
+        templateUrl: "/modalsAdmin/adminHTml/views/assoc.html"
+
+    })
+
+    .state('barber-appointments', {
+        url: '/barber/appointments/:id',
+        controller: "AdminCtrl",
+        templateUrl: "/modalsAdmin/adminHTml/views/barber-appointments.html"
+
     })
 
     .state('edit_barbers', {

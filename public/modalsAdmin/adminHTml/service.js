@@ -51,6 +51,52 @@ angular.module('barbrdo').factory('Admin', function($http) {
         },
       });
     },
+    custAppoints: function(data) {
+      return $http.get('/api/v1/customerappointments/' + data, data);
+    },
+    barberAppoints: function(data) {
+      return $http({
+        method: 'GET',
+        url: '/api/v1/barber/appointments',
+        headers: {
+          'user_id': data
+        }
+      });
+    },
+    confirmAppoint: function(data) {
+      console.log(data)
+      return $http.put('/api/v1/barber/confirmappointment/' + data._id);
+    },
+    markComplete: function(data, barberid) {
+      return $http({
+        method: 'PUT',
+        url: '/api/v1/barber/completeappointment/'+data._id,
+        headers: {
+          'user_id': barberid
+        },
+        data: {
+          customer_id: data.customer_id._id,
+          score: data.barber_id.ratings[0].score,
+          rated_by_name: data.barber_id.ratings[0].rated_by_name,
+          comments: data.barber_id.ratings[0].comments,
+          appointment_date: data.appointment_date
+        }
+      });
+    },
+    rescheduleAppoint: function(data,time) {
+       return $http({
+        method: 'PUT',
+        url: '/api/v1/barber/rescheduleappointment/'+data._id,
+        data: {
+          minutes: time,
+          appointment_date: data.appointment_date
+        }
+      });
+    },
+    cancelAppoint: function(data)
+    {
+      return $http.put('/api/v1/barber/cancelappointment/'+data._id)
+    },
     deactiveCustomer: function(data) {
       return $http.put('/api/v1/deactivecust/' + data._id, data);
     },
@@ -117,12 +163,14 @@ angular.module('barbrdo').factory('Admin', function($http) {
       return $http.post('/api/v1/shops/chair', data);
     },
     deleteChair: function(data) {
-        return $http({
-          method: 'DELETE',
-          url: '/api/v1/shops/chair',
-          data:data,
-          headers: {"Content-Type": "application/json;charset=utf-8"}
-        });
+      return $http({
+        method: 'DELETE',
+        url: '/api/v1/shops/chair',
+        data: data,
+        headers: {
+          "Content-Type": "application/json;charset=utf-8"
+        }
+      });
     },
     markChairBooked: function(data, id) {
       return $http({
@@ -160,9 +208,9 @@ angular.module('barbrdo').factory('Admin', function($http) {
           shop_percentage: data.shop_percentage,
           barber_percentage: data.barber_percentage,
           amount: data.amount,
-          booking_start: data.booking_start ,
+          booking_start: data.booking_start,
           booking_end: data.booking_end
-          
+
         }
       });
     },

@@ -224,6 +224,31 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         })
 
+        .state('facebookSignup', {
+            url: '/home',
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/facebook_signup.html',
+                    controller: "dashboardCtrl"
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/dashboard.js',
+                            'js/services/customer.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
+            }
+        })
+        
+
         .state('bookNow', {
             url: '/book/:shop_id/:barber_id',
             params: {

@@ -64,6 +64,10 @@ angular.module('BarbrDoApp')
           }
         },data);
       },
+      fbSignup: function(data) {
+        console.log("data",data)
+       return $http.post('/api/v1/signup', data);
+      },
       deleteChair: function(data) {
         return $http({
           method: 'delete',

@@ -74,9 +74,10 @@ module.exports = function(app, express) {
     app.post('/api/v1/customer/gallery', upload.any(), userController.uploadCustomerGallery); //Upload image in gallery
     app.delete('/api/v1/customer/gallery/:image_id',userController.deleteImages); //Delete image from gallery
     app.get('/api/v1/appointment/pending/:_id',appointmentController.pendingConfiramtion);
-    app.post('/api/v1/rateBarber',barberServices.rateBarber);
+    app.post('/api/v1/ratebarber',barberServices.rateBarber);
+    
     //Barber
-    app.get('/api/v1/allbarbers', shopController.availableBarber); //Get all barbers
+    app.get('/api/v1/allbarbers', barberServices.availableBarber); //Get all barbers
     app.get('/api/v1/barbers', shopController.associatedBarbers); //List all barbers
     app.get('/api/v1/barbers/:barber_id',barberServices.viewBarberProfile);//Get barber details like info, rating & comments, galleries
     app.post('/api/v1/barber/gallery',upload.any(), barberServices.uploadBarberGallery);//Upload single or multiple images in Gallery
@@ -931,6 +932,49 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
+ *   /ratebarber:
+ *     post:
+ *       tags:
+ *       - "customer"
+ *       summary: "Rate to barber"
+ *       description: "Rate to barber"
+ *       operationId: "ratebarber"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5943a0c2f409f91359e84f3e"
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Create rate object"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/ratebarber"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *   
  *   /barbers:
  *     get:
  *       tags:
@@ -1915,6 +1959,24 @@ module.exports = function(app, express) {
  *        appointment_date:
  *          type: "string"
  *          default: "2017-07-10 10:00:00"
+ *    ratebarber:
+ *      type: "object"
+ *      properties:
+ *        appointment_id:
+ *          type: "string"
+ *          default: ""
+ *        appointment_date:
+ *          type: "string"
+ *          default: "2017-07-10 10:00:00"
+ *        barber_id:
+ *          type: "string"
+ *          default: "5943bff1d8130d156721036d"
+ *        score:
+ *          type: "number"
+ *          default: 5
+ *        rated_by_name:
+ *          type: "string"
+ *          default: "Customer One"
  *    requestChair:
  *      type: "object"
  *      properties:

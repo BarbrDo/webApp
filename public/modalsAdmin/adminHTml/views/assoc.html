@@ -1,0 +1,12 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item"><a ui-sref="barbers">Barbers</a></li>
+    <li class="breadcrumb-item active">View Barber</li>
+</ol>
+<ul class="nav nav-tabs">
+    <li ><a ui-sref="barbersdetail({id:barberdetail._id})" style="color: black;font-size: 15px;">View Barber</a></li>
+    <li class="active"><a ui-sref="assoc" style="color: black;font-size: 15px;">Associated Shops-Chairs</a></li>
+    <li><a ui-sref="barber-appointments({id:barberdetail._id})" style="color: black;font-size: 15px;">Appointments</a></li>
+</ul>
+

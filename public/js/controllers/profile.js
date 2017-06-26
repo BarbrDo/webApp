@@ -1,7 +1,26 @@
 angular.module('BarbrDoApp')
-  .controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account,toastr,$http) {
+  .controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account,toastr,$http,shop) {
     $scope.profile= JSON.parse($window.localStorage.user);
     $scope.imgPath = $window.localStorage.imagePath;
+
+
+   $scope.shop = function() {
+    shop.shopInfo().then(function(response){
+      $rootScope.shopinfo = response.data.user.shop[0];
+          var object = {};
+            var k = 0;
+            for (var j = 0; j < response.data.user.shop[0].chairs.length; j++) {
+              if (response.data.user.shop[0].chairs[j].barber_id) {
+                k++;
+              }
+            }
+            var object = {
+              totalBarbers: k
+            };
+            $rootScope.totalbarbers = object.totalBarbers;
+      });
+   };
+   
 
     $scope.updateProfile = function() {
       var fs = new FormData();

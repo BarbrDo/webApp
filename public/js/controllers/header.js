@@ -35,11 +35,18 @@ angular.module('BarbrDoApp')
       delete $window.localStorage.user;
       $state.go('home');
     };
+
+    $scope.check = function()
+    {
+      $state.go('facebookSignup');
+    }
+    
     $scope.authenticate = function(provider) {
       console.log(provider)
       $auth.authenticate(provider)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
+          console.log(response)
           $window.localStorage.user = JSON.stringify(response.data.user);
           if(response.data.imagesPath){
             $window.localStorage.imagePath = response.data.imagesPath;

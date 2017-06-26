@@ -16,7 +16,7 @@
           <th>Chair Split</th>
           <th class="action">Action</th>
         </tr>
-        <tr ng-repeat="chairreq in requests" ng-show="chairreq.status=='pending'">
+        <tr ng-repeat="chairreq in requests"  >
           <td> <span class="lspic"> <img src="images/brbr_pic.png" alt=""> </span> </td>
           <td>{{chairreq.shopChairInfo.chairs.name}} </td>
           <td>{{chairreq.barberInfo[0].first_name}}&nbsp;{{chairreq.barberInfo[0].last_name}}</td>
@@ -27,7 +27,7 @@
               
               <a href="" ng-click="acceptrequest(chairreq)" data-toggle="tooltip" title="Accept Request"> <i class="fa fa-check "></i> </a> 
               
-              <a href="" ng-click="rejectrequest(chairreq)" data-toggle="tooltip" title="Decline Request"> <i class="fa fa-close "></i> </a>
+              <a href="" ng-click="rejectrequest(chairreq)" data-toggle="tooltip" title="Decline Request"> <i class="fa fa-close"></i> </a>
         </td>
         </tr>
         

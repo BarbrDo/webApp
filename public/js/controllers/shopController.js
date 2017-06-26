@@ -9,11 +9,12 @@ angular.module('BarbrDoApp')
 		$scope.chairrequest = function() {
 			shop.chairRequest($window.localStorage.shop_id)
 			.then(function(response) {
+				console.log("here i am ",response)
 				$rootScope.requests = response.data.result;
 			})
 		}
 
-		$scope.rejectrequest = function() {
+		$scope.rejectrequest = function(chair) {
 			shop.declineRequest(chair).then(function(response) {
 				console.log(response)
 				toastr.success('Request is Declined successfully');
@@ -25,7 +26,7 @@ angular.module('BarbrDoApp')
 			shop.shopInfo().then(function(response){
 				$scope.chairs = response.data.user;
 				$window.localStorage.shop_id = response.data.user.shop[0]._id;
-				$rootScope.shopinfo = response.data.user.shop[0];
+				
 			})
 		}
 

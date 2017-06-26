@@ -592,6 +592,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     setTimeout(function() {
       Admin.shopDetail($stateParams.id)
         .then(function(response) {
+          console.log(response)
           $scope.loaderStart = false;
           $rootScope.shopdetailview = response.data.data[0];
           $rootScope.chairdetails = response.data.data[0].shopinfo[0].chairs;

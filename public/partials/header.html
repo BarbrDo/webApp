@@ -201,7 +201,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" name="mobile_number" id="mobile_number" ng-model="user.mobile_number" mask="(999) 999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="10" ng-maxlength="10" maxlength="10" required />
+                                        <input type="text" class="form-control" name="mobile_number" id="mobile_number" ng-model="user.mobile_number" mask="(999) 999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="10" ng-maxlength="15" maxlength="15" required />
                                         <div class="form-control-placeholder">Phone No.</div>
                                         <p class="help-block">
                                             <span style="color:red" ng-show="signUpForm.mobile_number.$touched && signUpForm.mobile_number.$invalid && signUpForm.mobile_number.$error.required">Mobile number is required.</span>
@@ -210,13 +210,12 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12">
-                                    <div ng-if="user.user_type == 'shop ' || user.user_type == 'barber '" class="form-group">
+                                    <div ng-if="user.user_type == 'shop' || user.user_type == 'barber'" class="form-group">
                                         <input type="text" class="form-control" name="license_number" id="license_number" ng-model="user.license_number" required />
                                         <div class="form-control-placeholder">License No.</div>
                                         <div class="validationError" ng-messages="signUpForm.license_number.$error" ng-show="
                                                 signUpForm.license_number.$error.required && signUpForm.license_number.$touched &&
-                                                        signUpForm.license_number.$invalid
-                                            " role="alert">
+                                                        signUpForm.license_number.$invalid" role="alert">
                                             <span style="color:red" ng-message="required">License number is required</span>
                                         </div> 
                                     </div>

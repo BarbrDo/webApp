@@ -187,6 +187,7 @@ let mailChairRequest = function(email) {
 
 exports.barberChairReqests = function(req, res) {
 	req.checkParams("shop_id", "Shop Id is required.").notEmpty();
+	console.log("shop id is",req.params.shop_id)
 	var errors = req.validationErrors();
 	if (errors) {
 		return res.status(400).send({
@@ -251,6 +252,7 @@ exports.barberChairReqests = function(req, res) {
 				'err': err
 			})
 		} else {
+			console.log(chairRequest)
 			res.status(200).send({
 				'msg': constantObj.messages.successRetreivingData,
 				'imagesPath': 'http://' + req.headers.host + '/' + 'uploadedFiles/',

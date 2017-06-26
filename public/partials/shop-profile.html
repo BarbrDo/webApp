@@ -1,0 +1,93 @@
+<div class="crumb"> <span>Shop Profile</span> </div>
+<div class="wrapper">
+    <div class="block">
+        <div class="panel">
+            <div class="panel-body">
+                <div class="container ">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-8">
+                        <img class="img-circle" src="/images/shop.jpg" alt="Cinque Terre" width="304" height="236"></div>
+                    <div class="col-lg-2">
+                        <a ui-sref="editShopProfile">
+                            <span align="right" class="glyphicon glyphicon-pencil" style="font-size: 30px;"></span> </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        Total Barbers : &nbsp;&nbsp;&nbsp; {{totalbarbers}} </div>
+                    <div class="col-sm-6">
+                        Total Cuts : &nbsp;&nbsp;&nbsp; 0 </div>
+                </div>
+                <br>
+                <br>
+                <table class="table table-striped">
+                    <tr ui-sref="barbdetail({id:shopdetailview.shopinfo[0].user_id})" style="cursor:pointer" data-toggle="tooltip" title="View Barbers in the Shop">
+                        <td>
+                            <h5>First Name </h5></td>
+                        <td> {{profile.first_name}}</td>
+                    </tr>
+                    <tr ui-sref="chairs({id:shopdetailview.shopinfo[0].user_id})" style="cursor:pointer" data-toggle="tooltip" title="View Chairs in the Shop">
+                        <td>
+                            <h5>Last Name </h5></td>
+                        <td> {{profile.last_name}}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Email</h5></td>
+                        <td> {{profile.email}} </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Phone</h5></td>
+                        <td> {{profile.mobile_number}} </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Licence Number</h5></td>
+                        <td> {{profile.licence_number}} </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Member Since</h5></td>
+                        <td> {{profile.created_date | date: dd/mm/yyyy}} </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="wrapper" ng-init="shop()">
+    <div class="block">
+        <div class="panel">
+            <div class="panel-body">
+                <table class="table table-striped">
+                    <tr>
+                        <td>
+                            <h5>Shop Name </h5></td>
+                        <td > {{shopinfo.name}}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Address </h5></td>
+                        <td > {{shopinfo.address}}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>City</h5></td>
+                        <td> {{shopinfo.city}} </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>State</h5></td>
+                        <td> {{shopinfo.state}} </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Zip</h5></td>
+                        <td> {{shopinfo.zip}} </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

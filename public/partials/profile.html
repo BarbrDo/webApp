@@ -128,12 +128,12 @@
             </div>
         </div>
 
-        <div class="panel ">
+        <div class="panel" ng-show="profile.user_type=='shop'" ng-init="shop()">
             <div class="panel-body ">
                 <form ng-submit="updateshopinfo(shopinfo)" class="form-horizontal " name="profileForm">
                     <legend>Shop Information</legend>
                     <div class="form-group ">
-                         <label for="name" class="col-sm-3">Shop name</label>
+                         <label for="name" class="col-sm-3">Shop name </label>
                         <div class="col-sm-7">
                             <input type="text" name="name" id="name" class="form-control" ng-model="shopinfo.name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required>
                             <div class="validationError" ng-messages="profileForm.name.$error" ng-show="

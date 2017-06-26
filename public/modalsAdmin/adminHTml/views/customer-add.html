@@ -63,10 +63,7 @@
                 <div class="col-sm-4 form-group">
                     <label>Email</label>
                     <input type="text" class="form-control" name="email" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" required/>
-                    <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="
-                  signUpForm.email.$touched &&signUpForm.email.$invalid && (!signUpForm.email.$pristine || signUpForm.$submitted)" role="alert">
-                        <span style="color:red" ng-message="pattern" class="error-message">Email is not valid</span>
-                    </div>
+                   <span style="color:red" ng-message="pattern" class="error-message" ng-show="signUpForm.email.$invalid && (!signUpForm.email.$pristine || signUpForm.$submitted)">Email is not valid</span>
                     <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="signUpForm.email.$error.required &&
                   signUpForm.email.$touched && signUpForm.email.$invalid" role="alert">
                         <span style="color:red" ng-message="required" class="error-message">Email is required</span>

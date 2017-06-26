@@ -170,8 +170,6 @@ exports.signupPost = function(req, res, next) {
   let errors = req.validationErrors();
 
   if (errors) {
-    return 
-    console.log(errors)
     res.status(400).send({
       msg: "error in your request",
       err: errors

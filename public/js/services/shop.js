@@ -86,6 +86,19 @@ angular.module('BarbrDoApp')
           }
         });
       },
+      declineRequest: function(data) {
+        return $http({
+          method: 'put',
+          url: '/api/v1/shops/acceptrequest',
+          data:{
+            chair_request_id: data._id,
+            request_type: 'accept'
+          },
+          headers: {
+            'user_id' : obj._id
+          }
+        });
+      },
       deleteChair: function(data) {
         return $http({
           method: 'delete',

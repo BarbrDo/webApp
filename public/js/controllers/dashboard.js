@@ -258,5 +258,9 @@ angular.module('BarbrDoApp')
 					$scope.profileInfo = response.data.user;
 				})
 		}
-
+		$scope.goToNextpage = function(id){
+			$state.go('appointmentDetail', {
+				_id: id
+			});
+		}
 	});

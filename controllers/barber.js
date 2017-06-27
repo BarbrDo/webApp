@@ -659,7 +659,7 @@ exports.availableBarber = function(req, res) {
             }
         }]
     }
-
+    console.log(query);
     user.aggregate([{
         $project: {
             _id: "$_id",

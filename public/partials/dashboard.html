@@ -27,7 +27,7 @@
           <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat="data in barbers">
             <div class="barber">
               <div class="cont">
-                <div class="user_pic"> <img src="images/brbr_pic.png" alt="" ng-click="barberInfopage(data._id)"></div>
+                <div class="user_pic"> <img src="{{imgPath+data.picture}}" alt="" ng-click="barberInfopage(data._id)"></div>
                 <h3>{{data.first_name}} {{data.last_name}}</h3>
                 <p><span>Distance</span> : {{data.distance}} {{data.units}}</p>
                 <p><span>Location</span> : {{data.location}}</p>

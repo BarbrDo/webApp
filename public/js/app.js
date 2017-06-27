@@ -340,8 +340,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         deferred.resolve();
                     });
                     return deferred.promise;
-                }],
-                loginRequired: loginRequired
+                }]
             }
         })
 

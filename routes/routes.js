@@ -74,9 +74,10 @@ module.exports = function(app, express) {
     app.post('/api/v1/customer/gallery', upload.any(), userController.uploadCustomerGallery); //Upload image in gallery
     app.delete('/api/v1/customer/gallery/:image_id',userController.deleteImages); //Delete image from gallery
     app.get('/api/v1/appointment/pending/:_id',appointmentController.pendingConfiramtion);
+    app.post('/api/v1/ratebarber',barberServices.rateBarber);
     
     //Barber
-    app.get('/api/v1/allbarbers', shopController.availableBarber); //Get all barbers
+    app.get('/api/v1/allbarbers', barberServices.availableBarber); //Get all barbers
     app.get('/api/v1/barbers', shopController.associatedBarbers); //List all barbers
     app.get('/api/v1/barbers/:barber_id',barberServices.viewBarberProfile);//Get barber details like info, rating & comments, galleries
     app.post('/api/v1/barber/gallery',upload.any(), barberServices.uploadBarberGallery);//Upload single or multiple images in Gallery
@@ -86,26 +87,31 @@ module.exports = function(app, express) {
     app.put('/api/v1/barber/completeappointment/:appointment_id',barberServices.completeAppointment);//Barber mark appointment as completed
     app.put('/api/v1/barber/cancelappointment/:appointment_id', barberServices.cancelAppointment);//Barber cancelling an appointment
     app.put('/api/v1/barber/rescheduleappointment/:appointment_id',barberServices.rescheduleAppointment);//Barber reschedule an appointment
-    app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber requesting chair to shop
+    app.post('/api/v1/requestchair', chairRequestController.requestChair); //Barber/shop requesting chair to shop
     app.get('/api/v1/barber/services', barberServices.getAllServices); //Get all services
     app.post('/api/v1/barber/services', barberServices.addBarberServices); //Add new service
     app.put('/api/v1/barber/services/:barber_service_id',barberServices.editBarberServices); //Edit Barber services
     app.get('/api/v1/barber/services/:barber_id',barberServices.viewAllServiesOfBarber); // Show all services of barbers
     app.delete('/api/v1/barber/services/:barber_service_id',barberServices.deleteBarberService);// Delete barber service
     app.get('/api/v1/barber/particularAppointment/:appointment_id',barberServices.particularAppointment);
-    app.put('/api/v1/barber/accept_reject',barberServices.accept_reject); // Manage reqest in case of barber
-    app.get('/api/v1/barber/shopChairRequest/:barber_id',chairRequestController.shopChairRequest); // Manage request in barber module
+    app.get('/api/v1/barber/shopchairrequests/:barber_id',chairRequestController.shopChairRequest); // Manage request in barber module
+    app.get('/api/v1/barber/timeavailability/:barber_id',barberServices.viewBarberAvailability)
+    app.post('/api/v1/barber/contactshop',contactController.contactShop);
 
     //Common
     app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of any customer/barber/shop
-    app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
+    //app.get('/api/v1/timeslots',commonObj.viewTimeSlots); //Time slot to book an appointment
+    //app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
     app.post('/api/v1/contact', contactController.contactPost);
-    app.get('/api/v1/timeslots',commonObj.viewTimeSlots); //Time slot to book an appointment
     app.get('/api/v1/shops/barbers/:shop_id/:barber_id',shopController.getDataForBookNowPage)
 
     // Stripe Implementation API
     app.get('/api/v1/plans', userController.featuringPlans);
     app.post('/api/v1/subscribe',userController.subscribe);
+    app.post('/api/v1/webhooks',userController.stripeWebhook);
+    
+    //Need to delete in sprint-8
+    app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber/shop requesting chair to shop
     app.get('/admin', function(req, res) {
         res.sendFile(path.join(__dirname + './../public/indexAdmin.html'));
     });
@@ -253,7 +259,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be53fb902f60fcc14a9d1"
+ *         default: "5943a0c2f409f91359e84f3e"
  *       - in: "body"
  *         name: "body"
  *         description: "Created user object"
@@ -379,7 +385,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be657b902f60fcc14a9d5"
+ *         default: "5943a470f409f91359e84f47"
  *       - in: "body"
  *         name: "body"
  *         description: "Created shop object"
@@ -421,7 +427,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be657b902f60fcc14a9d5"
+ *         default: "5943a470f409f91359e84f47"
  *       - in: "body"
  *         name: "body"
  *         description: "Send shop Id"
@@ -545,14 +551,14 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be657b902f60fcc14a9d5"
+ *         default: "5943a470f409f91359e84f47"
  *       - in: "path"
  *         name: "shop_id"
  *         description: "Shop ID"
  *         required: true
  *         type: string
  *         format: string
- *         default: '591be658b902f60fcc14a9d6'
+ *         default: '5943a472f409f91359e84f48'
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -588,14 +594,14 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be53fb902f60fcc14a9d1"
+ *         default: "5943a470f409f91359e84f47"
  *       - in: "path"
  *         name: "shop_id"
  *         description: "Shop ID"
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be658b902f60fcc14a9d6"
+ *         default: "5943a472f409f91359e84f48"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -631,7 +637,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be657b902f60fcc14a9d5"
+ *         default: "5943a470f409f91359e84f47"
  *       - in: "body"
  *         name: "body"
  *         description: "Created shop object"
@@ -673,7 +679,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be657b902f60fcc14a9d5"
+ *         default: "5943a470f409f91359e84f47"
  *       - in: "body"
  *         name: "body"
  *         description: "Created shop object"
@@ -715,14 +721,56 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be657b902f60fcc14a9d5"
+ *         default: "5943a470f409f91359e84f47"
  *       - in: "path"
  *         name: "chair_id"
  *         description: "Chair ID"
  *         required: true
  *         type: string
  *         format: string
- *         default: "591bef92ae46f6126981f8c3"
+ *         default: "5943a6d138f18d1b28d5d5b0"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *   /shops/acceptrequest:
+ *     put:
+ *       tags:
+ *       - "shop"
+ *       summary: "Accept/Decline barber's chair request"
+ *       description: "Accept/Decline barber's chair request"
+ *       operationId: "acceptrequest"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5943a470f409f91359e84f47"
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Created appointment object"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/acceptrequest"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -758,7 +806,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be53fb902f60fcc14a9d1"
+ *         default: "5943a0c2f409f91359e84f3e"
  *       - in: "body"
  *         name: "body"
  *         description: "Created appointment object"
@@ -799,7 +847,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be53fb902f60fcc14a9d1"
+ *         default: "5943a0c2f409f91359e84f3e"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -837,7 +885,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be53fb902f60fcc14a9d1"
+ *         default: "5943a0c2f409f91359e84f3e"
  *       - in: "formData"
  *         name: "file"
  *         description: "file to upload"
@@ -878,7 +926,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be53fb902f60fcc14a9d1"
+ *         default: "5943a0c2f409f91359e84f3e"
  *       - in: "path"
  *         name: "image_id"
  *         description: "image ID"
@@ -890,6 +938,49 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"
+ *   /ratebarber:
+ *     post:
+ *       tags:
+ *       - "customer"
+ *       summary: "Rate to barber"
+ *       description: "Rate to barber"
+ *       operationId: "ratebarber"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5943a0c2f409f91359e84f3e"
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Create rate object"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/ratebarber"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *   
  *   /barbers:
  *     get:
  *       tags:
@@ -920,7 +1011,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be53fb902f60fcc14a9d1"
+ *         default: "5943a0c2f409f91359e84f3e"
  *       - in: "query"
  *         name: "search"
  *         description: "Search by First/last name"
@@ -962,14 +1053,14 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be53fb902f60fcc14a9d1"
+ *         default: "5943bff1d8130d156721036d"
  *       - in: "path"
  *         name: "barber_id"
  *         description: "Barber ID"
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be608b902f60fcc14a9d3"
+ *         default: "5943bff1d8130d156721036d"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -1007,7 +1098,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be608b902f60fcc14a9d3"
+ *         default: "5943bff1d8130d156721036d"
  *       - in: "formData"
  *         name: "file"
  *         description: "file to upload"
@@ -1048,7 +1139,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be608b902f60fcc14a9d3"
+ *         default: "5943bff1d8130d156721036d"
  *       - in: "path"
  *         name: "image_id"
  *         description: "image ID"
@@ -1090,7 +1181,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be608b902f60fcc14a9d3"
+ *         default: "5943bff1d8130d156721036d"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -1126,7 +1217,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be608b902f60fcc14a9d3"
+ *         default: "5943bff1d8130d156721036d"
  *       - in: "path"
  *         name: "appointment_id"
  *         description: "Appointment id"
@@ -1169,7 +1260,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be608b902f60fcc14a9d3"
+ *         default: "5943bff1d8130d156721036d"
  *       - in: "path"
  *         name: "appointment_id"
  *         description: "Appointment id"
@@ -1218,7 +1309,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be608b902f60fcc14a9d3"
+ *         default: "5943bff1d8130d156721036d"
  *       - in: "path"
  *         name: "appointment_id"
  *         description: "Appointment id"
@@ -1261,7 +1352,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be608b902f60fcc14a9d3"
+ *         default: "5943bff1d8130d156721036d"
  *       - in: "path"
  *         name: "appointment_id"
  *         description: "Appointment id"
@@ -1280,12 +1371,12 @@ module.exports = function(app, express) {
  *           description: "successful operation"
  *         400:
  *           description: "Invalid request"  
- *   /barber/requestchair:
+ *   /requestchair:
  *     post:
  *       tags:
  *       - "barber"
- *       summary: "Barber requesting for a chair to shop"
- *       description: "Barber requesting for a chair to shop"
+ *       summary: "Barber or shop requesting for a chair to opposite party"
+ *       description: "Barber or shop requesting for a chair to opposite party"
  *       operationId: "requestChair"
  *       produces:
  *       - "application/json"
@@ -1310,7 +1401,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be608b902f60fcc14a9d3"
+ *         default: "5943bff1d8130d156721036d"
  *       - in: "body"
  *         name: "body"
  *         description: "Requesting a chair object"
@@ -1352,7 +1443,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be608b902f60fcc14a9d3"
+ *         default: "5943bff1d8130d156721036d"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -1387,7 +1478,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be608b902f60fcc14a9d3"
+ *         default: "5943bff1d8130d156721036d"
  *       - in: "body"
  *         name: "body"
  *         description: "Add new barber service"
@@ -1429,7 +1520,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be608b902f60fcc14a9d3"
+ *         default: "5943bff1d8130d156721036d"
  *       - in: "path"
  *         name: "barber_service_id"
  *         description: "Barber-Service_ID"
@@ -1477,7 +1568,7 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be608b902f60fcc14a9d3"
+ *         default: "5943bff1d8130d156721036d"
  *       - in: "path"
  *         name: "barber_service_id"
  *         description: "Barber-Service-ID"
@@ -1520,14 +1611,107 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be53fb902f60fcc14a9d1"
+ *         default: "5943bff1d8130d156721036d"
  *       - in: "path"
  *         name: "barber_id"
  *         description: "Barber ID"
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be608b902f60fcc14a9d3"
+ *         default: "5943bff1d8130d156721036d"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+ *   /barber/shopchairrequests/{barber_id}:
+ *     get:
+ *       tags:
+ *       - "barber"
+ *       summary: "Get all shop's request to barber for chairs"
+ *       description: "Get all shop's request to barber for chairs"
+ *       operationId: "shopchairrequests"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5943a470f409f91359e84f47"
+ *       - in: "path"
+ *         name: "barber_id"
+ *         description: "Barber User ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: '591be608b902f60fcc14a9d3'
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid request"
+*   /barber/timeavailability/{barber_id}:
+ *     get:
+ *       tags:
+ *       - "barber"
+ *       summary: "Show barber's availability to customer"
+ *       description: "Show barber's availability to customer"
+ *       operationId: "timeavailability"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5943a470f409f91359e84f47"
+ *       - in: "path"
+ *         name: "barber_id"
+ *         description: "Barber User ID"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: '5948dcc7c5a04e5004416516'
+ *       - in: "query"
+ *         name: "date"
+ *         description: "Booking Date(YYYY-MM-DD)"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: '2017-12-30'
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -1563,14 +1747,14 @@ module.exports = function(app, express) {
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be53fb902f60fcc14a9d1"
+ *         default: "5943a0c2f409f91359e84f3e"
  *       - in: "path"
  *         name: "id"
  *         description: "Customer Id / Barber Id / Shop Id"
  *         required: true
  *         type: string
  *         format: string
- *         default: "591be53fb902f60fcc14a9d1"
+ *         default: "5943a0c2f409f91359e84f3e"
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -1585,6 +1769,49 @@ module.exports = function(app, express) {
  *       operationId: "timeSlot"
  *       produces:
  *       - "application/json"
+ *       responses:
+ *         200:
+ *           description: "successful operation"
+ *         400:
+ *           description: "Invalid username/password supplied"
+ *   /contact:
+ *     post:
+ *       tags:
+ *       - "common"
+ *       summary: "Contact BarbrDo"
+ *       description: "Contact BarbrDo"
+ *       operationId: "contact"
+ *       produces:
+ *       - "application/json"
+ *       parameters:
+ *       - in: "header"
+ *         name: "device_latitude"
+ *         description: "Device latitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "30.538994"
+ *       - in: "header"
+ *         name: "device_longitude"
+ *         description: "Device Longitude"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "75.955033"
+ *       - in: "header"
+ *         name: "user_id"
+ *         description: "Logged in user's id"
+ *         required: true
+ *         type: string
+ *         format: string
+ *         default: "5943a470f409f91359e84f47"
+ *       - in: "body"
+ *         name: "body"
+ *         description: "Contact parameters"
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/contact"
+ 
  *       responses:
  *         200:
  *           description: "successful operation"
@@ -1648,7 +1875,7 @@ module.exports = function(app, express) {
  *     properties:
  *       _id:
  *         type: "string"
- *         default: "591be658b902f60fcc14a9d6"
+ *         default: "5943a472f409f91359e84f48"
  *       name:
  *         type: "string"
  *         default: "Pop's Barber Shop"
@@ -1672,7 +1899,7 @@ module.exports = function(app, express) {
  *      properties:
  *       _id:
  *         type: "string"
- *         default: "591be658b902f60fcc14a9d6"  
+ *         default: "5943a472f409f91359e84f48"  
  *    deleteChair:
  *      type: "object"
  *      properties:
@@ -1681,13 +1908,13 @@ module.exports = function(app, express) {
  *         default: "5901f19c42207d26eaefb764" 
  *       shop_id:
  *         type: "string"
- *         default: "591be658b902f60fcc14a9d6"
+ *         default: "5943a472f409f91359e84f48"
  *    managechair:
  *      type: "object"
  *      properties:
  *       chair_id:
  *         type: "string"
- *         default: "591bef92ae46f6126981f8c3"  
+ *         default: "5943a6d138f18d1b28d5d5b0"  
  *       type:
  *         type: "string"
  *         default: "percentage" 
@@ -1707,15 +1934,23 @@ module.exports = function(app, express) {
  *       chair_id:
  *         type: "string"
  *         default: "5901f19c42207d26eaefb764"
+ *    acceptrequest:
+ *      type: "object"
+ *      properties:
+ *       chair_request_id:
+ *         type: "string"
+ *       request_type:
+ *         type: "string"
+ *         default: "accept|decline"
  *    appointment:
  *      type: "object"
  *      properties:
  *        shop_id:
  *          type: "string"
- *          default: "591be658b902f60fcc14a9d6"
+ *          default: "5943a472f409f91359e84f48"
  *        barber_id:
  *          type: "string"
- *          default: "591be608b902f60fcc14a9d3"
+ *          default: "5943bff1d8130d156721036d"
  *        payment_method:
  *          type: "string"
  *          default: "cash"
@@ -1730,18 +1965,36 @@ module.exports = function(app, express) {
  *        appointment_date:
  *          type: "string"
  *          default: "2017-07-10 10:00:00"
+ *    ratebarber:
+ *      type: "object"
+ *      properties:
+ *        appointment_id:
+ *          type: "string"
+ *          default: ""
+ *        appointment_date:
+ *          type: "string"
+ *          default: "2017-07-10 10:00:00"
+ *        barber_id:
+ *          type: "string"
+ *          default: "5943bff1d8130d156721036d"
+ *        score:
+ *          type: "number"
+ *          default: 5
+ *        rated_by_name:
+ *          type: "string"
+ *          default: "Customer One"
  *    requestChair:
  *      type: "object"
  *      properties:
  *        shop_id:
  *          type: "string"
- *          default: "591be658b902f60fcc14a9d6"
+ *          default: "5943a472f409f91359e84f48"
  *        chair_id:
  *          type: "string"
- *          default: "591bef92ae46f6126981f8c3"
+ *          default: "5943a6d138f18d1b28d5d5b0"
  *        barber_id:
  *          type: "string"
- *          default: "591be608b902f60fcc14a9d3"
+ *          default: "5943bff1d8130d156721036d"
  *        barber_name:
  *          type: "string"
  *          default: "Barber One"
@@ -1771,7 +2024,7 @@ module.exports = function(app, express) {
  *      properties:
  *       customer_id:
  *         type: "string"
- *         default: "591be53fb902f60fcc14a9d1"
+ *         default: "5943a0c2f409f91359e84f3e"
  *       score:
  *         type: "number"
  *         default: 4
@@ -1788,6 +2041,18 @@ module.exports = function(app, express) {
  *         type: "number"
  *         default: 15 
  *       appointment_date:
+ *         type: "number"
+ *         default: ""
+ *    contact:
+ *      type: "object"
+ *      properties:
+ *       name:
+ *         type: "string"
+ *         default: "Pop's Barber Shop" 
+ *       email:
+ *         type: "number"
+ *         default: ""
+ *       message:
  *         type: "number"
  *         default: ""
  */

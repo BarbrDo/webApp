@@ -1,0 +1,279 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item"><a ui-sref="barbers">Barbers</a></li>
+    <li class="breadcrumb-item active">View Barber Details</li>
+</ol>
+
+<ul class="nav nav-tabs">
+    <li ng-init="barberdetails()"><a ui-sref="barbersdetail({id:barberdetail._id})" style="color: black;font-size: 15px;">View Barber</a></li>
+    <li><a ui-sref="assoc" style="color: black;font-size: 15px;">Associated Shops-Chairs</a></li>
+    <li class="active"><a ui-sref="barber-appointments({id:barberdetail._id})" style="color: black;font-size: 15px;">Appointments</a></li>
+</ul>
+
+<div ng-if="messages" role="alert" class="alert alert-danger">
+    <div>
+        {{messages}}</div>
+</div>
+
+<br>
+<ul class="nav nav-pills left" style="margin-left: 500px;">
+    <li class="dropdown active span8">
+        <a class="dropdown-toggle" data-toggle="dropdown" style="background-color: #000000;">
+             Pending<span class="caret"></span></a>
+        <ul ID="divNewNotifications" class="dropdown-menu">
+            <li><a ng-click="showme=false">Booked</a></li>
+            <li><a ng-click="showme=true">Pending</a></li>
+            <li><a ng-click="showme=true">Completed</a></li>
+        </ul>
+    </li>
+</ul>
+
+<span ng-init="barberappoint()" ng-show="showme">
+ <table class="table" style="margin-top: 20px;">
+    <thead>
+        <tr>
+            <th style="font-size: 13px;color: #ffffff;" width="10%"><a ng-click="Sort('appointment_date')" class="appointment_date" style="color: #ffffff;">Appointment
+                        <br>Date<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a>
+            </th>
+            <th style="font-size: 13px;color: #ffffff;" width="10%"><a ng-click="Sort('appointment_date')" class="appointment_date" style="color: #ffffff;">Appointment
+                        <br>Time<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a>
+            </th>
+            <th style="font-size: 13px;color: #ffffff;" width="10%"><a ng-click="Sort('appointment_status')" class="appointment_status" style="color: #ffffff;">Appointment
+                        <br>Status<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a>
+            </th>
+            <th style="font-size: 13px;color: #ffffff;" width="10%"><a ng-click="Sort('customer_name')" class="name" style="color: #ffffff;">Customer<br>Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a>
+            </th>
+            <th style="font-size: 13px;" width="10%"><a ng-click="Sort('shop_name')" class="shop_name" style="color: #ffffff;">Shop Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+            <th style="font-size: 13px;" width="10%"><a ng-click="Sort('services.name')" class="type" style="color: #ffffff;">Services<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+            <th style="font-size: 13px;" width="10%"><a ng-click="Sort('payment_status')" class="payment_status" style="color: #ffffff;">Payment <br>Status <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+            <th style="font-size: 13px;" width="10%"><a ng-click="Sort('payment_method')" class="payment_method" style="color: #ffffff;">Payment<br>Method <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+            <th style="font-size: 13px;" width="15%">ACTION</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr data-ng-repeat="pendingappoint in pending | orderBy:sort:reverse ">
+            <td>
+                {{pendingappoint.appointment_date | date: dd/mm/yyyy}}
+            </td>
+            <td>
+                {{pendingappoint.appointment_date | date: 'h:mma'}}
+            </td>
+            <td>
+                {{pendingappoint.appointment_status}}
+            </td>
+            <td>
+                {{pendingappoint.customer_name}}
+            </td>
+            <td>
+                {{pendingappoint.shop_name}}
+            </td>
+            <td>
+                <table>
+                    <tr ng-repeat="services in pendingappoint.services">
+                        <td>{{$index + 1}}.</td>
+                        <td>&nbsp;&nbsp; {{services.name}} </td>
+                    </tr>
+                </table>
+            </td>
+            <td>
+                {{pendingappoint.payment_status}}
+            </td>
+            <td>
+                {{pendingappoint.payment_method}}
+            </td>
+            <td>
+                <span data-toggle="modal" data-target="#confirmappoint">
+                            <a type="submit" ng-click="barberappointmentsfunc(pendingappoint)" data-toggle="tooltip" title="Confirm Appointment"><i class="fa fa-check-circle-o" style="font-size: 30px;"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                <span data-toggle="modal" data-target="#reschedule">
+                            <a type="submit" ng-click="barberappointmentsfunc(pendingappoint)" data-toggle="tooltip" title="Reschedule"><i class="fa fa-repeat" style="font-size: 25px;"></i></a>
+                        </span>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+</span>
+<span ng-hide="showme" ng-init="barberappoint()">
+    <table class="table" style="margin-top: 20px;">
+    <thead>
+        <tr>
+            <th style="font-size: 13px;color: #ffffff;" width="10%">Appointment
+                <br>Date
+            </th>
+            <th style="font-size: 13px;color: #ffffff;" width="10%">Appointment
+                <br>Time
+            </th>
+            <th style="font-size: 13px;color: #ffffff;" width="10%">Appointment
+                <br>Status
+            </th>
+            <th style="font-size: 13px;color: #ffffff;" width="10%"><a ng-click="Sort('name')" class="name" style="color: #ffffff;">Customer<br>Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a>
+            </th>
+            <th style="font-size: 13px;" width="10%"><a ng-click="Sort('availability')" class="availability" style="color: #ffffff;">Shop Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+            <th style="font-size: 13px;" width="10%"><a ng-click="Sort('type')" class="type" style="color: #ffffff;">Services<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+            <th style="font-size: 13px;" width="10%"><a ng-click="Sort('amount')" class="amount" style="color: #ffffff;">Payment <br>Status <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+            <th style="font-size: 13px;" width="10%"><a ng-click="Sort('shop_percentage')" class="shop_percentage" style="color: #ffffff;">Payment<br>Method <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+            <th style="font-size: 13px;" width="15%">ACTION</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr data-ng-repeat="bookedappoint in booked | orderBy:sort:reverse ">
+            <td>
+                {{bookedappoint.appointment_date | date: dd/mm/yyyy}}
+            </td>
+            <td>
+                {{bookedappoint.appointment_date | date: 'h:mma'}}
+            </td>
+            <td>
+                {{bookedappoint.appointment_status}}
+            </td>
+            <td>
+                {{bookedappoint.customer_name}}
+            </td>
+            <td>
+                {{bookedappoint.shop_name}}
+            </td>
+            <td>
+                <table>
+                    <tr ng-repeat="services in bookedappoint.services">
+                        <td>{{$index + 1}}.</td>
+                        <td>&nbsp;&nbsp; {{services.name}} </td>
+                    </tr>
+                </table>
+            </td>
+            <td>
+                {{bookedappoint.payment_status}}
+            </td>
+            <td>
+                {{bookedappoint.payment_method}}
+            </td>
+            <td>
+                <span data-toggle="modal" data-target="#markcompleted">
+                    <a type="submit" ng-click="barberappointmentsfunc(bookedappoint)" data-toggle="tooltip" title="Mark as Complete"><i class="fa fa-check" style="font-size: 30px;"></i></a>
+                </span>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+</span>
+<div class="modal " id="confirmappoint" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #c2f7b5;">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Confirm</h4>
+            </div>
+            <div class="modal-body">
+                <p> Are you Sure !! You want to Confirm Appointment</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="confirmappointment()">OK</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal " id="markcompleted" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #c2f7b5;">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Completed</h4>
+            </div>
+            <div class="modal-body">
+                <p> Are you Sure !! You want to Complete Appointment</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="markcomplete()">OK</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="reschedule" role="dialog">
+    <form>
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #c2f7b5;">
+                    <div class="row">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <div class="col-sm-3" style="background-color: #b36a0d;">
+                            <h2> TO </h2></div>
+                        <div class="col-sm-3"><img src="/images/people.png" height="50%" width="50%" alt="customer" /></div>
+                        <div class="col-sm-6">
+                            <h4 class="modal-title">Contact {{appointment.customer_name}}</h4></div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <div class="row">
+                            <div class="col-sm-6">Can we move appointment back by </div>
+                            <div class="col-sm-2">
+                                <div class="id_100">
+                                    <select ng-model="mySelect">
+                                        <option value="">00</option>
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="15">15</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">min</div>
+                        </div>
+                        <br>
+                        <textarea rows="4" cols="70" placeholder="Describe yourself here..." name="comments">
+                       </textarea>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="rescheduleappoint(mySelect)" data-toggle="modal" data-target="#rescheduleappoint">SEND</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#cancelappoint">CANCEL APPOINTMENT</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal " id="rescheduleappoint" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p> Are you Sure !! You want to Reschedule Appointment by {{time}} min</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="confirmreschedule()">OK</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal " id="cancelappoint" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p> Are you Sure !! You want to cancel Appointment</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancelappoint()">OK</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$('.dropdown-toggle').dropdown();
+
+$('.dropdown-menu > li').click(function() {
+    var $toggle = $(this).parent().siblings('.dropdown-toggle');
+    $toggle.html("<i class=\"icon icon-envelope icon-white\"></i> " + $(this).text() + "<span class=\"caret\"></span>")
+});
+</script>
+

@@ -1,5 +1,5 @@
 angular.module('BarbrDoApp')
-  .controller('HeaderCtrl', function($scope, $location, $window, $auth, $state,$rootScope,$uibModal,toastr,shop) {
+  .controller('HeaderCtrl', function($scope, $location, $window, $auth, $state,$rootScope,$uibModal,toastr,shop,geolocation) {
     $scope.user = {};
     $scope.messages = {};
     // alert("working");
@@ -36,18 +36,34 @@ angular.module('BarbrDoApp')
       delete $window.localStorage.user;
       $state.go('home');
     };
+
+    $scope.check = function()
+    {
+      $state.go('facebookSignup');
+    }
+    
     $scope.authenticate = function(provider) {
+      console.log(provider)
       $auth.authenticate(provider)
         .then(function(response) {
-          toastr.success('Welcome');
           $rootScope.currentUser = response.data.user;
+          console.log(response)
           $window.localStorage.user = JSON.stringify(response.data.user);
           if(response.data.imagesPath){
             $window.localStorage.imagePath = response.data.imagesPath;
           }
-          $state.go('upcomingComplete');  
+          if(response.data.err)
+          {
+
+            $state.go('upcomingComplete');
+          }
+          else
+          {
+          $state.go('facebookSignup'); 
+          } 
         })
         .catch(function(response) {
+          console.log(response)
           if (response.error) {
             $scope.messages = {
               error: [{ msg: response.error }]
@@ -61,6 +77,11 @@ angular.module('BarbrDoApp')
     };
 
     $scope.login = function() {
+      $scope.coords = geolocation.getLocation().then(function(data){
+        $window.localStorage.lat = data.coords.latitude;
+        $window.localStorage.long = data.coords.longitude;
+      return {lat:data.coords.latitude, long:data.coords.longitude};
+    });
       $auth.login($scope.user)
         .then(function(response) {
           toastr.success('Welcome');
@@ -100,6 +121,21 @@ angular.module('BarbrDoApp')
           else{
             toastr.success("Please check your mail to activate your account.");
           }   
+        })
+        .catch(function(response) {
+          $scope.messagess = {
+            error: Array.isArray(response.data) ? response.data : response.data
+          };
+        });
+    };
+
+    $scope.fbsignup = function(user) {
+      console.log("here")
+      shop.fbSignup(user)
+        .then(function(response) {
+          toastr.success("Please check your mail to activate your account.")
+          $state.go('upcomingComplete') 
+          console.log("response",response)  
         })
         .catch(function(response) {
           $scope.messagess = {

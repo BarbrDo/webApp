@@ -12,6 +12,11 @@ var appointmentSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'users'
     },
+    is_rating_given: {
+        type: Boolean,
+        default: false
+    },
+    rating_score:Number,
     barber_name: String,
     customer_id: {
         type: Schema.Types.ObjectId,

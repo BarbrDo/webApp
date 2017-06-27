@@ -13,7 +13,7 @@ let Subscription = require('../models/subscription');
 let Barber = require('../models/barber');
 let objectID = require('mongodb').ObjectID;
 let constantObj = require('./../constants.js');
-let userTypes = require('../models/user_type');
+//let userTypes = require('../models/user_type');
 let commonObj = require('../common/common');
 let mg = require('nodemailer-mailgun-transport');
 let fs = require('fs');
@@ -140,6 +140,7 @@ var accountActivateMailFunction = function(req, res, user, resetUrl) {
     subject: '✔ Activate Your Account',
     text: 'Please Activate your account by clicking link \n\n' + resetUrl + '\n\n'
   };
+  console.log(user);
   if (!user.facebook) {
     nodemailerMailgun.sendMail(mailOptions, function(err, info) {
       res.send({
@@ -148,148 +149,12 @@ var accountActivateMailFunction = function(req, res, user, resetUrl) {
     });
   } else {
     res.status(200).send({
-      token:generateToken(user),
       user: user,
+      token:generateToken(user),
       "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
     });
   }
 }
-
-// exports.signupPost = function(req, res, next) {
-//   req.assert('first_name', 'First name cannot be blank.').notEmpty();
-//   req.assert('last_name', 'Last name cannot be blank.').notEmpty();
-//   req.assert('email', 'Email is not valid').isEmail();
-//   req.assert('email', 'Email cannot be blank').notEmpty();
-//   req.assert('mobile_number', 'Mobile number cannot be blank').notEmpty();
-//   if (!req.body.facebook) {
-//     req.assert('password', 'Password must be at least 6 characters long').len(6);
-//   }
-//   req.assert('user_type', 'User type cannot be blank').notEmpty();
-//   if (req.body.user_type == 'shop' || req.body.user_type == 'barber') {
-//     req.assert('license_number', 'License number cannot be blank').notEmpty();
-//   }
-
-//   req.sanitize('email').normalizeEmail({
-//     remove_dots: false
-//   });
-
-//   let errors = req.validationErrors();
-
-//   if (errors) {
-//     return res.status(400).send({
-//       msg: "error in your request",
-//       err: errors
-//     });
-//   }
-//   User.findOne({
-//     email: req.body.email
-//   }, function(err, user) {
-//     if (user) {
-//       return res.status(400).send({
-//         msg: 'The email address you have entered is already associated with another account.',
-//         err: [{
-//           msg: "The email address you have entered is already associated with another account."
-//         }]
-//       });
-//     }
-//     let saveData = req.body;
-
-//     if (req.headers.device_type) {
-//       saveData.device_type = req.headers.device_type;
-//     }
-//     if (req.headers.device_id) {
-//       saveData.device_id = req.headers.device_id;
-//     }
-//     if (req.headers.device_longitude && req.headers.device_latitude) {
-//       saveData.latLong = [req.headers.device_longitude, req.headers.device_latitude];
-//     }
-//     if (req.body.facebook) {
-//       saveData.isActive = true;
-//       saveData.is_verified = true;
-//     }
-
-//     let email_encrypt = commonObj.encrypt(req.body.email);
-//     let generatedText = commonObj.makeid();
-
-//     saveData.randomString = generatedText;
-//     if(req.body.user_type =='customer'){
-
-//     }
-//     stripe.customers.create({
-//         email: req.body.email
-//       },
-//       function(err, customer) {
-//         if (err) {
-//           return res.status(400).send({
-//             msg: "Error occurred on stripe.",
-//             "err": err
-//           })
-//         } else {
-//           console.log(customer);
-//           let saveObj = {
-//             user_id:
-//           }
-//           Subscription.save(function(err,data){
-
-//           })
-//           // saveData.stripe_information = [customer];
-//           User(saveData).save(function(err, data) {
-//             if (err) {
-//               return res.status(400).send({
-//                 msg: constantObj.messages.errorInSave,
-//                 "err": err
-//               })
-//             } else {
-//               let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
-//               if (req.body.user_type == 'shop') {
-//                 let saveDataForShop = {};
-//                 saveDataForShop.user_id = data._id
-//                 saveDataForShop.license_number = req.body.license_number;
-//                 saveDataForShop.name = req.body.name;
-//                 saveDataForShop.state = req.body.state;
-//                 saveDataForShop.city = req.body.city;
-//                 saveDataForShop.zip = req.body.zip;
-
-//                 if (req.headers.device_longitude && req.headers.device_latitude) {
-//                   saveDataForShop.latLong = [req.headers.device_longitude, req.headers.device_latitude];
-//                   saveShop(saveDataForShop, resetUrl, data, req, res);
-//                 } else if (req.body.zip) {
-//                   geocoder.geocode(req.body.zip, function(errGeo, latlng) {
-//                     if (errGeo) {
-//                       return res.status(400).send({
-//                         msg: constantObj.messages.errorInSave
-//                       })
-//                     } else {
-//                       saveDataForShop.latLong = [latlng.results[0].geometry.location.lng, latlng.results[0].geometry.location.lat];
-//                       saveShop(saveDataForShop, resetUrl, data, req, res);
-//                     }
-//                   });
-//                 } else {
-//                   saveShop(saveDataForShop, resetUrl, data, req, res);
-//                 }
-//               } else if (req.body.user_type == 'barber') {
-//                 let saveDataForBarber = {};
-//                 saveDataForBarber.user_id = data._id
-//                 saveDataForBarber.license_number = req.body.license_number;
-//                 Barber(saveDataForBarber).save(function(errSaveBarber, barberData) {
-//                   if (errSaveBarber) {
-//                     return res.status(400).send({
-//                       msg: constantObj.messages.errorInSave
-//                     })
-//                   } else {
-//                     console.log("else part of barber save");
-//                     accountActivateMailFunction(req, res, data, resetUrl)
-//                   }
-//                 })
-//               } else {
-//                 accountActivateMailFunction(req, res, data, resetUrl)
-//               }
-//             }
-//           });
-//         }
-//       })
-//   });
-// };
 
 
 exports.signupPost = function(req, res, next) {
@@ -309,11 +174,11 @@ exports.signupPost = function(req, res, next) {
   req.sanitize('email').normalizeEmail({
     remove_dots: false
   });
-
+ console.log("req.body",req.body);
   let errors = req.validationErrors();
 
   if (errors) {
-    return res.status(400).send({
+    res.status(400).send({
       msg: "error in your request",
       err: errors
     });
@@ -356,9 +221,8 @@ exports.signupPost = function(req, res, next) {
       })
     },
     function(saveData, done) {
-      console.log("second callback.");
       if (req.body.user_type == 'customer') {
-        done(null,saveData)
+          done(null,saveData)
       } else {
         stripe.customers.create({
             email: req.body.email
@@ -370,10 +234,10 @@ exports.signupPost = function(req, res, next) {
                 "err": err
               })
             } else {
-              console.log(customer);
+              console.log("customer created on stripe ",customer);
               saveData.isActive = true;
               saveData.is_verified = true;
-              saveData.stripeInformation = customer;
+              saveData.stripe_information = customer;
               done(err, saveData)
             }
           })
@@ -391,9 +255,9 @@ exports.signupPost = function(req, res, next) {
             if (req.body.user_type != 'customer') {
               let saveObj = {
                 user_id:data._id,
-                stripe_information:saveData.stripeInformation
+                stripe_information:saveData.stripe_information
               }
-              saveSubsctibe(saveObj)
+              saveSubscribe(saveObj)
             }
           if (req.body.user_type == 'shop') {
             let saveDataForShop = {};
@@ -431,11 +295,11 @@ exports.signupPost = function(req, res, next) {
                 })
               } else {
                 console.log("else part of barber save");
-              res.send({
-                token: generateToken(data),
-                user: data.toJSON(),
-                "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-              });
+                res.send({
+                  token: generateToken(data),
+                  user: data.toJSON(),
+                  "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+                });
                 // accountActivateMailFunction(req, res, data, resetUrl)
               }
             })
@@ -449,7 +313,7 @@ exports.signupPost = function(req, res, next) {
   ]);
 }
 
-let saveSubsctibe = function(obj) {
+let saveSubscribe = function(obj) {
   Subscription(obj).save(function(err, data) {
     if (err) {
       console.log("err in saveSubscribtion", err)
@@ -464,29 +328,23 @@ let saveSubsctibe = function(obj) {
  * Update profile information OR change password.
  */
 exports.accountPut = function(req, res, next) {
-
-  console.log("body12222", req.body)
   if ('password' in req.body) {
     req.checkHeaders('user_id', 'User ID is missing').notEmpty();
     req.assert('password', 'Password must be at least 6 characters long').len(6);
     req.assert('confirm', 'Passwords must match').equals(req.body.password);
   }
   let errors = req.validationErrors();
-  console.log("errors", errors);
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",
       err: errors
     });
   }
-  console.log("headers", req.headers.user_id);
+  console.log("two",req.body)
   User.findById(req.headers.user_id, function(err, user) {
-    console.log(user);
-    console.log("body2", req.body)
     if ('password' in req.body) {
       user.password = req.body.password;
     } else {
-      console.log("user", user);
       if (req.body.first_name) {
         user.first_name = req.body.first_name;
       }
@@ -752,6 +610,7 @@ exports.authFacebook = function(req, res) {
       let name = profile.name;
       let splitName = name.split(" ");
       // Step 3a. Link accounts if user is authenticated.
+      console.log("req.isAuthenticated()",req.isAuthenticated())
       if (req.isAuthenticated()) {
         User.findOne({
           facebook: profile.id
@@ -768,12 +627,11 @@ exports.authFacebook = function(req, res) {
           user.picture = user.picture || 'https://graph.facebook.com/' + profile.id + '/picture?type=large';
           user.facebook = profile.id;
           user.user_type = 'customer';
-          user.save(function() {
-            res.send({
-              token: generateToken(user),
-              user: user
-            });
+          res.send({
+            token: generateToken(user),
+            user: user
           });
+
         });
       } else {
         // Step 3b. Create a new user account or return an existing one.
@@ -783,7 +641,8 @@ exports.authFacebook = function(req, res) {
           if (user) {
             return res.send({
               token: generateToken(user),
-              user: user
+              user: user,
+              err:'Error'
             });
           }
           User.findOne({
@@ -804,12 +663,12 @@ exports.authFacebook = function(req, res) {
               picture: 'https://graph.facebook.com/' + profile.id + '/picture?type=large',
               facebook: profile.id
             });
-            user.save(function(err) {
-              return res.send({
-                token: generateToken(user),
-                user: user
-              });
+
+            return res.send({
+              token: generateToken(user),
+              user: user
             });
+
           });
         });
       }
@@ -873,12 +732,12 @@ exports.authGoogle = function(req, res) {
           user.picture = user.picture || profile.picture.replace('sz=50', 'sz=200');
           user.location = user.location || profile.location;
           user.google = profile.sub;
-          user.save(function() {
-            res.send({
-              token: generateToken(user),
-              user: user
-            });
-          });
+          // user.save(function() {
+          //   res.send({
+          //     token: generateToken(user),
+          //     user: user
+          //   });
+          // });
         });
       } else {
         // Step 3b. Create a new user account or return an existing one.
@@ -899,12 +758,12 @@ exports.authGoogle = function(req, res) {
             location: profile.location,
             google: profile.sub
           });
-          user.save(function(err) {
-            res.send({
-              token: generateToken(user),
-              user: user
-            });
-          });
+          // user.save(function(err) {
+          //   res.send({
+          //     token: generateToken(user),
+          //     user: user
+          //   });
+          // });
         });
       }
     });
@@ -918,7 +777,6 @@ exports.authGoogleCallback = function(req, res) {
 exports.addChair = function(req, res) {
   req.assert("_id", "_id is required").notEmpty();
   let errors = req.validationErrors();
-  console.log("req.body", req.body);
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",
@@ -980,83 +838,83 @@ exports.addChair = function(req, res) {
 }
 
 exports.removeChair = function(req, res) {
-  req.assert("shop_id", "Shop ID is required")
-  req.assert("chair_id", "Chair ID is required");
-  let errors = req.validationErrors();
-  console.log("req.body", req.body);
-  if (errors) {
-    return res.status(400).send({
-      msg: "error in your request",
-      err: errors
-    });
-  }
-  let validateId = objectID.isValid(req.body.shop_id);
-  let validateChairId = objectID.isValid(req.body.chair_id)
-  if (validateId && validateChairId) {
-    Shop.find({
-      _id: req.body.shop_id,
-      "chairs._id": req.body.chair_id
-    }, {
-      "chairs.$": 1
-    }).exec(function(err, result) {
-      if (err) {
-        res.status(400).send({
-          msg: 'Error in deleting chair.'
-        });
-      } else {
-        console.log("response", JSON.stringify(result))
-        console.log(result[0].chairs[0].name)
-        if (result[0].chairs[0].barber_id) {
-          res.status(400).send({
-            msg: "You can't remove this chair.A Barber is already associated with this chair."
-          });
-        } else {
-          Shop.update({
-            _id: req.body.shop_id,
-            "chairs._id": req.body.chair_id
-          }, {
-            $set: {
-              "chairs.$.isActive": false
-            }
-          }).exec(function(errInDelete, resultInDelete) {
-            if (errInDelete) {
-              res.status(400).send({
-                msg: 'Error in deleting chair.'
-              });
-            } else {
-              res.status(200).send({
-                msg: 'Chair successfully deleted.'
-              });
-            }
-          })
-        }
-      }
-    })
-  } else {
-    res.status(400).send({
-      msg: 'Please pass correct fields.'
-    });
-  }
-}
-
-exports.getUserType = function(req, res) {
-  userTypes.find({
-    isDeleted: false
-  }, {
-    isDeleted: 0
-  }, function(err, data) {
-    if (err) {
-      res.status(400).send({
-        msg: constantObj.messages.errorRetreivingData
-      });
-    } else {
-      res.status(200).send({
-        msg: constantObj.messages.successRetreivingData,
-        data: data
+    req.assert("shop_id", "Shop ID is required")
+    req.assert("chair_id", "Chair ID is required");
+    
+    let errors = req.validationErrors();
+    if (errors) {
+      return res.status(400).send({
+        msg: "error in your request",
+        err: errors
       });
     }
-  })
-}
+    console.log("req.body",req.body);
+    let validateId = objectID.isValid(req.body.shop_id);
+    let validateChairId = objectID.isValid(req.body.chair_id)
+    if (validateId && validateChairId) {
+      Shop.find({
+        _id: req.body.shop_id,
+        "chairs._id": req.body.chair_id
+      }, {
+        "chairs.$": 1
+      }).exec(function(err, result) {
+        if (err) {
+          res.status(400).send({
+            msg: 'Error in deleting chair.'
+          });
+        } else {
+          if (result[0].chairs[0].barber_id) {
+            res.status(400).send({
+              msg: "You can't remove this chair.A Barber is already associated with this chair."
+            });
+          } else {
+            Shop.update({
+              _id: req.body.shop_id,
+              "chairs._id": req.body.chair_id
+            }, {
+              $set: {
+                "chairs.$.isActive": false,
+                "chairs.$.availability":"closed"
+              }
+            }).exec(function(errInDelete, resultInDelete) {
+              if (errInDelete) {
+                res.status(400).send({
+                  msg: 'Error in deleting chair.'
+                });
+              } else {
+                res.status(200).send({
+                  msg: 'Chair successfully deleted.'
+                });
+              }
+            })
+          }
+        }
+      })
+    } else {
+      res.status(400).send({
+        msg: 'Please pass correct fields.'
+      });
+    }
+  }
+  /*
+  exports.getUserType = function(req, res) {
+    userTypes.find({
+      isDeleted: false
+    }, {
+      isDeleted: 0
+    }, function(err, data) {
+      if (err) {
+        res.status(400).send({
+          msg: constantObj.messages.errorRetreivingData
+        });
+      } else {
+        res.status(200).send({
+          msg: constantObj.messages.successRetreivingData,
+          data: data
+        });
+      }
+    })
+  }*/
 
 exports.checkFaceBook = function(req, res) {
   req.assert('facebook_id', 'facebook_id is required').notEmpty();
@@ -1079,7 +937,8 @@ exports.checkFaceBook = function(req, res) {
         res.status(200).send({
           msg: constantObj.messages.successRetreivingData,
           token: generateToken(response),
-          user: response[0]
+          user: response[0],
+          "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
         });
       } else {
         res.status(400).send({
@@ -1196,6 +1055,7 @@ exports.deleteImages = function(req, res) {
 
 exports.getProfiles = function(req, res) {
   req.checkParams("id", "customer_id can not be blank").notEmpty();
+  console.log("user id",req.params.id)
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -1203,11 +1063,12 @@ exports.getProfiles = function(req, res) {
       err: errors
     });
   }
+  console.log("user id",req.params.id)
   var id = mongoose.Types.ObjectId(req.params.id);
   User.findOne({
     _id: req.params.id
   }, function(err, result) {
-    if (result.user_type) {
+    if (result) {
       switch (result.user_type) {
         case 'shop':
           User.aggregate([{
@@ -1350,7 +1211,9 @@ exports.subscribe = function(req, res) {
         "err": err
       });
     } else {
+      console.log("user_id",data);
       let customerId = data[0].stripe_information[0].id
+      console.log(customerId);
       stripe.customers.createSource(customerId, {
         source: {
           object: 'card',
@@ -1360,6 +1223,7 @@ exports.subscribe = function(req, res) {
           cvc: req.body.cvc
         }
       }).then(function(source) {
+        console.log("stripe.customers.createSource ",source)
         return stripe.subscriptions.create({
           customer: customerId,
           plan: req.body.plan
@@ -1372,11 +1236,16 @@ exports.subscribe = function(req, res) {
           } else {
             console.log("subscription", subscription);
             Subscription.update({user_id:req.headers.user_id},{$set:{stripe_subscribe:subscription}},function(err,result){
-              if(err){
-                console.log(err);
+              if (err) {
+                res.status(400).send({
+                  msg: "Error occurred in subscription.",
+                  "err": err
+                });
               }
               else{
-                console.log(result);
+                 res.status(200).send({
+                  msg: "Successfully done."
+                });
               }
             })
           }
@@ -1408,4 +1277,9 @@ exports.featuringPlans = function(req, res) {
       }
     }
   );
+}
+
+exports.stripeWebhook = function(req,res){
+  console.log("stripeWebhook");
+  console.log(req.body);
 }

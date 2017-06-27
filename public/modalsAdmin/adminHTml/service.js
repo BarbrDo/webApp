@@ -27,7 +27,6 @@ angular.module('barbrdo').factory('Admin', function($http) {
       return $http.get('/api/v1/shopdetail/' + data, data);
     },
     chairDetail: function(data) {
-      console.log(data);
       return $http.get('/api/v1/chairdetail/' + data, data);
     },
     custDetail: function(data) {
@@ -40,17 +39,77 @@ angular.module('barbrdo').factory('Admin', function($http) {
         headers: {
           'user_id': data._id
         },
-        data: data
+        data: {
+          created_date:data.created_date,
+          email:data.email,
+          first_name:data.first_name,
+          isActive:data.isActive,
+          isDeleted:data.isDeleted,
+          is_verified:data.is_verified,
+          last_name:data.last_name,
+          mobile_number:data.mobile_number,
+          password:data.pass,
+          ratings:data.ratings,
+          user_type:data.user_type,
+          _id:data._id,
+          confirm:data.confirmPassword
+        }
       });
     },
-    appointments: function() {
+    appointments: function(data) {
       return $http({
         method: 'GET',
         url: '/api/v1/appointment',
         headers: {
-          'user_id': "591be53fb902f60fcc14a9d1"
+          'user_id': data._id
         },
       });
+    },
+    custAppoints: function(data) {
+      return $http.get('/api/v1/customerappointments/' + data, data);
+    },
+    barberAppoints: function(data) {
+      return $http({
+        method: 'GET',
+        url: '/api/v1/barber/appointments',
+        headers: {
+          'user_id': data
+        }
+      });
+    },
+    confirmAppoint: function(data) {
+      console.log(data)
+      return $http.put('/api/v1/barber/confirmappointment/' + data._id);
+    },
+    markComplete: function(data, barberid) {
+      return $http({
+        method: 'PUT',
+        url: '/api/v1/barber/completeappointment/'+data._id,
+        headers: {
+          'user_id': barberid
+        },
+        data: {
+          customer_id: data.customer_id._id,
+          score: data.barber_id.ratings[0].score,
+          rated_by_name: data.barber_id.ratings[0].rated_by_name,
+          comments: data.barber_id.ratings[0].comments,
+          appointment_date: data.appointment_date
+        }
+      });
+    },
+    rescheduleAppoint: function(data,time) {
+       return $http({
+        method: 'PUT',
+        url: '/api/v1/barber/rescheduleappointment/'+data._id,
+        data: {
+          minutes: time,
+          appointment_date: data.appointment_date
+        }
+      });
+    },
+    cancelAppoint: function(data)
+    {
+      return $http.put('/api/v1/barber/cancelappointment/'+data._id)
     },
     deactiveCustomer: function(data) {
       return $http.put('/api/v1/deactivecust/' + data._id, data);
@@ -98,17 +157,47 @@ angular.module('barbrdo').factory('Admin', function($http) {
         headers: {
           'user_id': data._id
         },
-        data: data
+         data: {
+          created_date:data.created_date,
+          email:data.email,
+          first_name:data.first_name,
+          isActive:data.isActive,
+          isDeleted:data.isDeleted,
+          is_verified:data.is_verified,
+          last_name:data.last_name,
+          mobile_number:data.mobile_number,
+          password:data.pass,
+          ratings:data.ratings,
+          user_type:data.user_type,
+          _id:data._id,
+          confirm:data.confirmPassword
+        }
       });
     },
     updateShop: function(data) {
+      console.log(data)
       return $http({
         method: 'PUT',
         url: '/api/v1/account',
         headers: {
           'user_id': data._id
         },
-        data: data
+        data: {
+          created_date:data.created_date,
+          email:data.email,
+          first_name:data.first_name,
+          isActive:data.isActive,
+          isDeleted:data.isDeleted,
+          is_verified:data.is_verified,
+          last_name:data.last_name,
+          mobile_number:data.mobile_number,
+          password:data.confirmPassword,
+          ratings:data.ratings,
+          shopinfo:data.shopinfo,
+          user_type:data.user_type,
+          _id:data._id,
+          confirm:data.confirmPassword
+        }
       });
     },
     updateShopinfo: function(data) {
@@ -121,28 +210,58 @@ angular.module('barbrdo').factory('Admin', function($http) {
       return $http({
         method: 'DELETE',
         url: '/api/v1/shops/chair',
+        data: data,
         headers: {
-          'user_id': data._id
-        },
-        data: data
+          "Content-Type": "application/json;charset=utf-8"
+        }
       });
     },
-    updateChair: function(data,id) {
+    markChairBooked: function(data, id) {
+      return $http({
+        method: 'PUT',
+        url: '/api/v1/shops/markchairasbooked/' + data._id,
+        headers: {
+          'user_id': id,
+          'chair_id': data._id
+        }
+      });
+    },
+    postChair: function(data, id) {
+      return $http({
+        method: 'PUT',
+        url: '/api/v1/shops/postchairtoallbarbers',
+        headers: {
+          'user_id': id
+        },
+        data: {
+          chair_id: data._id
+        }
+      });
+    },
+    updateChair: function(data, id) {
+      console.lo
       return $http({
         method: 'PUT',
         url: '/api/v1/shops/managechair',
         headers: {
           'user_id': id
         },
-        data: data
+        data: {
+          chair_id: data._id,
+          type: data.type,
+          shop_percentage: data.shop_percentage,
+          barber_percentage: data.barber_percentage,
+          amount: data.amount,
+          booking_start: data.booking_start,
+          booking_end: data.booking_end
+
+        }
       });
     },
     deleteBarber: function(data) {
-      console.log("data",data)
       return $http.put('/api/v1/deletebarber/' + data._id, data);
     },
     undeleteBarber: function(data) {
-      console.log("data",data)
       return $http.put('/api/v1/undeletebarber/' + data._id, data);
     },
     deleteShop: function(data) {
@@ -161,6 +280,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
       return $http.get('/api/v1/shops/barbers/' + data._id, data);
     },
     addCustomer: function(cust) {
+      console.log(cust)
       return $http.post('/api/v1/signup', cust);
     },
     countBarber: function(data) {

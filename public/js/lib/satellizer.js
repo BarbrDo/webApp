@@ -409,7 +409,6 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
         Oauth.authenticate = function(name, userData) {
           var provider = config.providers[name].oauthType === '1.0' ? new Oauth1() : new Oauth2();
           var deferred = $q.defer();
-
           provider.open(config.providers[name], userData || {})
             .then(function(response) {
               // This is for a scenario when someone wishes to opt out from

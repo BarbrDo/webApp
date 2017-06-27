@@ -1,6 +1,6 @@
 
 <div class="crumb"> <span>Book Appointment</span> </div>
-<div class="wrapper">
+<div class="wrapper" ng-init="chairrequest()">
   
     <div class="block">
     
@@ -16,46 +16,18 @@
           <th>Chair Split</th>
           <th class="action">Action</th>
         </tr>
-        <tr>
+        <tr ng-repeat="chairreq in requests"  >
           <td> <span class="lspic"> <img src="images/brbr_pic.png" alt=""> </span> </td>
-          <td>Chair 1</td>
-          <td>Edward Scissor hands</td>
-          <td>40/60</td>
+          <td>{{chairreq.shopChairInfo.chairs.name}} </td>
+          <td>{{chairreq.barberInfo[0].first_name}}&nbsp;{{chairreq.barberInfo[0].last_name}}</td>
+          <td>{{chairreq.shopChairInfo.chairs.shop_percentage}}/{{chairreq.shopChairInfo.chairs.barber_percentage}}</td>
           <td class="ac_btn">
               
-              <a ui-sref=""  tooltip-placement="top" uib-tooltip="View Detail" href="/appointmentdetail"> <i class="fa fa-eye"></i> </a>
+              <a > <i class="fa fa-eye"></i> </a>
               
-              <a href="#" tooltip-placement="top" uib-tooltip="Accept" > <i class="fa fa-check "></i> </a> 
+              <a href="" ng-click="acceptrequest(chairreq)" data-toggle="tooltip" title="Accept Request"> <i class="fa fa-check "></i> </a> 
               
-              <a href="#"  tooltip-placement="top" uib-tooltip="Reject" > <i class="fa fa-close "></i> </a>
-        </td>
-        </tr>
-          <tr>
-          <td> <span class="lspic"> <img src="images/brbr_pic.png" alt=""> </span> </td>
-          <td>Chair 1</td>
-          <td>Edward Scissor hands</td>
-          <td>40/60</td>
-          <td class="ac_btn">
-              
-              <a ui-sref=""  tooltip-placement="top" uib-tooltip="View Detail" href="/appointmentdetail"> <i class="fa fa-eye"></i> </a>
-              
-              <a href="#" tooltip-placement="top" uib-tooltip="Accept" > <i class="fa fa-check "></i> </a> 
-              
-              <a href="#"  tooltip-placement="top" uib-tooltip="Reject" > <i class="fa fa-close "></i> </a>
-        </td>
-        </tr>
-          <tr>
-          <td> <span class="lspic"> <img src="images/brbr_pic.png" alt=""> </span> </td>
-          <td>Chair 1</td>
-          <td>Edward Scissor hands</td>
-          <td>40/60</td>
-          <td class="ac_btn">
-              
-              <a ui-sref=""  tooltip-placement="top" uib-tooltip="View Detail" href="/appointmentdetail"> <i class="fa fa-eye"></i> </a>
-              
-              <a href="#" tooltip-placement="top" uib-tooltip="Accept" > <i class="fa fa-check "></i> </a> 
-              
-              <a href="#"  tooltip-placement="top" uib-tooltip="Reject" > <i class="fa fa-close "></i> </a>
+              <a href="" ng-click="rejectrequest(chairreq)" data-toggle="tooltip" title="Decline Request"> <i class="fa fa-close"></i> </a>
         </td>
         </tr>
         

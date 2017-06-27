@@ -43,90 +43,87 @@
     <!--main-menu-->
 </header>
 <script type="text/ng-template" id="myModalContent.html">
-<div class="">
-    <div class="holder">
-        <div class="half left" ng-init="$root.active = 0">
-            <img src="images/b_chair.png" class="chair">
-            <ul>
-                <li><span><i class="fa fa-check"></i></span> Easy and Convenient Scheduling</li>
-                <li><span><i class="fa fa-check"></i></span> Real-time Communications</li>
-                <li><span><i class="fa fa-check"></i></span> On Demand Services</li>
-                <li><span><i class="fa fa-check"></i></span> Supported on Multiple Platforms</li>
-            </ul>
-        </div>
-        <div class="half right">
-            <div class="ctabs">
-                <uib-tabset active="$root.active">
-                    <uib-tab index="0" heading="Login">
-                        <div class="tab-content contact-us">
-                            <div role="tabpanel" class="tab-pane active" id="login">
-                                <div ng-if="messages.error" role="alert" class="alert alert-danger">
-                                    <div ng-repeat="myerr in messages.error">{{myerr.msg}}</div>
-                                </div>
-                                <div class="text-center">
-                                    <a href="#" ng-click="authenticate('facebook')"><img src="images/fbb.png"></a>
-                                </div>
-                                <form name="loginForm">
-                                    <div class="form-group">
-                                        <input type="text" name="email" id="email" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" class="form-control" required/>
-                                        <div class="form-control-placeholder">Email Address</div>
-                                        <div class="validationError" ng-messages="loginForm.email.$error" ng-show="
+    <div class="">
+        <div class="holder">
+            <div class="half left" ng-init="$root.active = 0">
+                <img src="images/b_chair.png" class="chair">
+                <ul>
+                    <li><span><i class="fa fa-check"></i></span> Easy and Convenient Scheduling</li>
+                    <li><span><i class="fa fa-check"></i></span> Real-time Communications</li>
+                    <li><span><i class="fa fa-check"></i></span> On Demand Services</li>
+                    <li><span><i class="fa fa-check"></i></span> Supported on Multiple Platforms</li>
+                </ul>
+            </div>
+            <div class="half right">
+                <div class="ctabs">
+                    <uib-tabset active="$root.active">
+                        <uib-tab index="0" heading="Login">
+                            <div class="tab-content contact-us">
+                                <div role="tabpanel" class="tab-pane active" id="login">
+                                    <div ng-if="messages.error" role="alert" class="alert alert-danger">
+                                        <div ng-repeat="myerr in messages.error">{{myerr.msg}}</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <a href="#" ng-click="authenticate('facebook')"><img src="images/fbb.png"></a>
+                                    </div>
+                                    <form name="loginForm">
+                                        <div class="form-group">
+                                            <input type="text" name="email" id="email" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" class="form-control" required/>
+                                            <div class="form-control-placeholder">Email Address</div>
+                                            <div class="validationError" ng-messages="loginForm.email.$error" ng-show="
                                                 loginForm.email.$touched && loginForm.email.$invalid && (!loginForm.email.$pristine || loginForm.$submitted)" role="alert">
-                                            <span style="color:red" ng-message="pattern" class="error-message">Email is not valid</span>
-                                        </div>
-                                        <div class="validationError" ng-messages="loginForm.email.$error" ng-show="loginForm.email.$error.required &&
+                                                <span style="color:red" ng-message="pattern" class="error-message">Email is not valid</span>
+                                            </div>
+                                            <div class="validationError" ng-messages="loginForm.email.$error" ng-show="loginForm.email.$error.required &&
                                                         loginForm.email.$touched && loginForm.email.$invalid" role="alert">
-                                            <span style="color:red" ng-message="required" class="error-message">Email is required</span>
+                                                <span style="color:red" ng-message="required" class="error-message">Email is required</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group mbzero">
-                                        <input type="password" name="password" id="password" ng-model="user.password" class="form-control" required />
-                                        <div class="form-control-placeholder">Password</div>
-                                        <!-- <a href="#" class="eye"><i class="fa fa-eye"></i></a> -->
-                                    </div>
-                                    <a ui-sref="forgot" class="forgot">Forgot Password ?</a>
-                                    <button type="submit" class="sb_button" ng-click="login()" ng-disabled="loginForm.$invalid">Login</button>
-                                    <p class="msg">New User? <span>   <button type="button" class="btn btn-default btn-sm" ng-click="$root.active = 1">Signup</button> </span>
-                                    </p>
-                                </form>
-                            </div>
-                        </div>
-                    </uib-tab>
-                    <uib-tab index="1" heading="Signup">
-                        <div role="tabpanel" class="tab-pane contact-us" id="signup" style="margin-top: 0px; padding:0px;">
-                            <div ng-if="messagess.error" role="alert" class="alert alert-danger">
-                                <div ng-repeat="err in messagess.error">
-                                    {{err[0].msg}}</div>
-                            </div>
-                            <form name="signUpForm">
-                                <div class="type_selection">
-                                    <label>
-                                        <input type="radio" name="type" ng-model="user.user_type" value="customer" ng-init="user.user_type = 'customer'"> <span>Customer</span> </label>
-                                    <label>
-                                        <input type="radio" name="type" ng-model="user.user_type" value="barber"> <span>Barber</span> </label>
-                                    <label>
-                                        <input type="radio" name="type" ng-model="user.user_type" value="shop"> <span>Barber Shop</span> </label>
+                                        <div class="form-group mbzero">
+                                            <input type="password" name="password" id="password" ng-model="user.password" class="form-control" required />
+                                            <div class="form-control-placeholder">Password</div>
+                                            <!-- <a href="#" class="eye"><i class="fa fa-eye"></i></a> -->
+                                        </div>
+                                        <a ui-sref="forgot" class="forgot">Forgot Password ?</a>
+                                        <button type="submit" class="sb_button" ng-click="login()" ng-disabled="loginForm.$invalid">Login</button>
+                                        <p class="msg">New User? <span>   <button type="button" class="btn btn-default btn-sm" ng-click="$root.active = 1">Signup</button> </span>
+                                        </p>
+                                    </form>
                                 </div>
-
-                                <div class="col-md-6">
-
-                                    <div class="form-group">
-                                        <input type="text" name="firstname" id="email" class="form-control" ng-model="user.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
-                                        <div class="form-control-placeholder">First Name</div>
-
-                                        <div class="validationError" ng-messages="signUpForm.firstname.$error" ng-show="
+                            </div>
+                        </uib-tab>
+                        <uib-tab index="1" heading="Signup">
+                            <div role="tabpanel" class="tab-pane contact-us" id="signup" style="margin-top: 0px; padding:0px;">
+                                <div ng-if="messagess.error" role="alert" class="alert alert-danger">
+                                    <div ng-repeat="err in messagess.error">
+                                        {{err[0].msg}}</div>
+                                </div>
+                                <form name="signUpForm">
+                                    <div class="type_selection">
+                                        <label>
+                                            <input type="radio" name="type" ng-model="user.user_type" value="customer" ng-init="user.user_type = 'customer'"> <span>Customer</span> </label>
+                                        <label>
+                                            <input type="radio" name="type" ng-model="user.user_type" value="barber"> <span>Barber</span> </label>
+                                        <label>
+                                            <input type="radio" name="type" ng-model="user.user_type" value="shop"> <span>Barber Shop</span> </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" name="firstname" id="email" class="form-control" ng-model="user.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                                            <div class="form-control-placeholder">First Name</div>
+                                            <div class="validationError" ng-messages="signUpForm.firstname.$error" ng-show="
                                                 signUpForm.firstname.$error.required && signUpForm.firstname.$touched &&
                                                         signUpForm.firstname.$invalid
                                             " role="alert">
-                                            <span style="color:red" ng-message="required">First name is required</span>
-                                        </div>
-                                        <div class="validationError" ng-messages="signUpForm.firstname.$error" ng-show="
+                                                <span style="color:red" ng-message="required">First name is required</span>
+                                            </div>
+                                            <div class="validationError" ng-messages="signUpForm.firstname.$error" ng-show="
                                                 signUpForm.firstname.$error.pattern && (!signUpForm.firstname.$pristine || signUpForm.$submitted)" role="alert">
-                                            <span style="color:red" ng-message="pattern">Enter valid character </span>
-                                        </div>
-                                        <div class="validationError"  ng-show="signUpForm.firstname.$error.maxlength && signUpForm.firstname.$dirty"">
+                                                <span style="color:red" ng-message="pattern">Enter valid character </span>
+                                            </div>
+                                            <div class="validationError" ng-show="signUpForm.firstname.$error.maxlength && signUpForm.firstname.$dirty" ">
 
-                                            <span style="color:red">First name maximum length exceeds</span>
+                                            <span style="color:red ">First name maximum length exceeds</span>
                                         </div>
                                     </div>
 
@@ -134,10 +131,10 @@
 
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col-md-6 ">
 
-                                    <div class="form-group">
-                                        <input type="text" name="lastname" id="email" class="form-control" ng-model="user.last_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                                    <div class="form-group ">
+                                        <input type="text " name="lastname " id="email " class="form-control " ng-model="user.last_name " ng-pattern="/^[a-z ,. '-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
                                         <div class="form-control-placeholder">Last Name</div>
 
                                         <div class="validationError" ng-messages="signUpForm.lastname.$error" ng-show="
@@ -204,7 +201,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" name="mobile_number" id="mobile_number" ng-model="user.mobile_number" mask="(999) 999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="14" ng-maxlength="14" maxlength="14" required />
+                                        <input type="text" class="form-control" name="mobile_number" id="mobile_number" ng-model="user.mobile_number" mask="(999) 999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="10" ng-maxlength="15" maxlength="15" required />
                                         <div class="form-control-placeholder">Phone No.</div>
                                         <p class="help-block">
                                             <span style="color:red" ng-show="signUpForm.mobile_number.$touched && signUpForm.mobile_number.$invalid && signUpForm.mobile_number.$error.required">Mobile number is required.</span>
@@ -218,8 +215,7 @@
                                         <div class="form-control-placeholder">License No.</div>
                                         <div class="validationError" ng-messages="signUpForm.license_number.$error" ng-show="
                                                 signUpForm.license_number.$error.required && signUpForm.license_number.$touched &&
-                                                        signUpForm.license_number.$invalid
-                                            " role="alert">
+                                                        signUpForm.license_number.$invalid" role="alert">
                                             <span style="color:red" ng-message="required">License number is required</span>
                                         </div> 
                                     </div>
@@ -237,3 +233,4 @@
 
 </div>
 </script>
+

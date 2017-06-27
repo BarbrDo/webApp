@@ -116,6 +116,63 @@
                 </form>
             </div>
         </div>
+
+        <div class="panel" ng-show="profile.user_type=='shop'" ng-init="shop()">
+            <div class="panel-body ">
+                <form ng-submit="updateshopinfo(shopinfo)" class="form-horizontal " name="profileForm">
+                    <legend>Shop Information</legend>
+                    <div class="form-group ">
+                         <label for="name" class="col-sm-3">Shop name </label>
+                        <div class="col-sm-7">
+                            <input type="text" name="name" id="name" class="form-control" ng-model="shopinfo.name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required>
+                            <div class="validationError" ng-messages="profileForm.name.$error" ng-show="
+                                    profileForm.name.$error.required && profileForm.name.$touched &&
+                                            profileForm.name.$invalid
+                                 " role="alert">
+                                <span style="color:red" ng-message="required">First name is required</span>
+                            </div>
+                            <div class="validationError" ng-messages="profileForm.name.$error" ng-show="
+                                    profileForm.name.$error.pattern && (!profileForm.name.$pristine || profileForm.$submitted)" role="alert">
+                                <span style="color:red" ng-message="pattern">Enter valid character </span>
+                            </div>
+                            <div class="validationError" ng-show="profileForm.name.$error.maxlength && profileForm.name.$dirty" ">
+
+                                <span style="color:red ">First name maximum length exceeds</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <label for="address " class="col-sm-3 ">Address</label>
+                        <div class="col-sm-7 ">
+                            <input type="text " name="address " id="address " class="form-control " ng-model="shopinfo.address">
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <label for="address " class="col-sm-3 ">City</label>
+                        <div class="col-sm-7 ">
+                            <input type="text " name="city " id="city " class="form-control " ng-model="shopinfo.city">
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <label for="address " class="col-sm-3 ">State</label>
+                        <div class="col-sm-7 ">
+                            <input type="text " name="state " id="state " class="form-control " ng-model="shopinfo.state">
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <label for="address " class="col-sm-3 ">Zip</label>
+                        <div class="col-sm-7 ">
+                            <input type="text " name="zip " id="zip " class="form-control " ng-model="shopinfo.zip">
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <div class="col-sm-4 col-sm-offset-3 ">
+                            <button type="submit " class="btn btn-success ">Update Shop Info</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
         <div class="panel ">
             <div class="panel-body ">
                 <form ng-submit="changePassword()" class="form-horizontal ">

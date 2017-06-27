@@ -1,0 +1,214 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item active">Customers</li>
+</ol>
+<div class="panel" ng-init="custpageChanged()">
+    <div class="panel-heading">
+        All Customers
+    </div>
+    <div class="panel-body">
+        <!-- RAHUL  CODE -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-6" style="margin-left: 300px;">
+                    </div>
+                    <div>
+                        <span class="glyphicon glyphicon-search" style="color:purple"></span>
+                        <input ng-model="myobj.search" placeholder="Search for..." ng-change="custpageChanged()" />
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="font-size: 15px;" width="20%"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                            <th style="font-size: 15px;" width="25%"><a ng-click="Sort('email')" class="email" style="color: #ffffff;">Email<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                            <th style="font-size: 15px;" width="15%"><a ng-click="Sort('mobile_number')" class="mobile_number" style="color: #ffffff;">Mobile <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                            <th style="font-size: 15px;" width="15%"><a ng-click="Sort('mobile_number')" class="mobile_number" style="color: #ffffff;">Created Date <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="customer in customers | orderBy:sort:reverse | limitTo:quantity" data-ng-class="{danger:!customer.active}">
+                            <td><a data-toggle="tooltip" title="View {{customer.first_name}}'s detailed info" ui-sref="customer_detail({id:customer._id})">
+            {{customer.first_name}} {{customer.last_name}} </a>
+                            </td>
+                            <td>
+                                {{customer.email}}
+                            </td>
+                            <td>
+                                {{customer.mobile_number}}
+                            </td>
+                            <td>
+                                {{customer.created_date | date : dd/mm/yyyy}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <div class="col-sm-6">
+                    <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="custpageChanged()"></ul>
+                </div>
+                <br>
+                <!-- <label>No. of Enteries</label>
+            <select ng-model="quantity">
+              <option value="">All</option>
+              <option value="1">1</option>
+              <option value="3">3</option>
+              <option value="5">5</option>
+              <option value="7">7</option>
+              <option value="10">10</option>
+            </select> -->
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #c2f7b5;">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Saved</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Your Changes are saved successfully</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="myAnotherModal" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #d6110c;">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Deleted</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Record Deleted successfully</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="viewModal" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #5cfcfa;">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Details</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>NAME :{{customerdetail.first_name}} {{customerdetail.last_name}}
+                                <br> EMAIL : {{customerdetail.email}}
+                                <br> PHONE : {{customerdetail.mobile_number}}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="deactive" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #f52727;">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Deacticvated</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                This Record Is Deactivaed Successfully,
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="active" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #c2f7b5;">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Acticvated</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                The Record Is Activated Successfully,
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="verified" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #c2f7b5;">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Verified</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                The Record Is Verified Successfully,
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- RAHUL CODE -->
+            <div class="modal fade" id="confirm" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <p>
+                                Are You Sure!!!!!! You want to Delete this Record
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deletecustomer(customer)" data-toggle="modal" data-target="#myAnotherModal">DELETE</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="disaproved" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #c2f7b5;">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Disaproved</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                The Record Is Disaproved Successfully,
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- RAHUL CODE -->
+        </div>
+    </div>

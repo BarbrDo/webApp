@@ -1,0 +1,161 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item"><a ui-sref="shops">Shops</a></li>
+    <li class="breadcrumb-item active">View Chairs</li>
+</ol>
+<div class="panel" ng-init="shopdetail()">
+    <div class="panel-heading">
+        Chair Details
+    </div>
+    
+    <div class="panel-body">
+    <div ng-if="messages" role="alert" class="alert alert-danger">
+        <div>
+            {{messages}}</div>
+     </div>
+        <form>
+            <!-- Page Content -->                  
+                <button type="submit"  class='btn btn-default btn-success btn-lg' ng-click="addchair(shopdetailview.shopinfo[0])">Add Chairs</button>
+            <input type="hidden" ng-model="user.id" value="{{shopdetailview.shopinfo[0]._id}}" placeholder="{{shopdetailview.shopinfo[0]._id}}">
+            <input type="hidden" ng-model="user.user_id" value="{{shopdetailview._id}}" placeholder="{{shopdetailview._id}}">
+        </form>
+        <table class="table" style="margin-top: 20px;">
+            <thead>
+                <tr>
+                    <th style="font-size: 13px;color: #ffffff;" width="10%">Chair
+                        <br>Status
+                    </th>
+                    <th style="font-size: 13px;color: #ffffff;" width="10%"><a ng-click="Sort('name')" class="name" style="color: #ffffff;">Chair<br>Title<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a>
+                    </th>
+                    <th style="font-size: 13px;" width="10%"><a ng-click="Sort('availability')" class="availability" style="color: #ffffff;">Is open for booking<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                    <th style="font-size: 13px;" width="10%"><a ng-click="Sort('type')" class="type" style="color: #ffffff;">Chair<br>Type<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                    <th style="font-size: 13px;" width="10%"><a ng-click="Sort('amount')" class="amount" style="color: #ffffff;">Amount<br>(USD) <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                    <th style="font-size: 13px;" width="10%"><a ng-click="Sort('shop_percentage')" class="shop_percentage" style="color: #ffffff;">Shop<br>(%) <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                    <th style="font-size: 13px;" width="10%"><a ng-click="Sort('barber_percentage')" class="barber_percentage" style="color: #ffffff;">Barber<br>(%) <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                    <th style="font-size: 13px;" width="15%">ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="chairs in chairdetails| filter:query | orderBy:sort:reverse | limitTo:quantity ">
+                    <td>
+                        <span ng-if="chairs.isActive==true" data-toggle="tooltip" title="Active Chair"><i class="fa fa-circle" aria-hidden="true" style="color: green;font-size: 20px;"></i></span>
+                        <span ng-if="chairs.isActive==false" data-toggle="tooltip" title="Inactive Chair"><i class="fa fa-circle" aria-hidden="true" style="color: red;font-size: 20px;"></i></span>
+                    </td>
+                    <td>
+                        <a data-toggle="tooltip" title="View, edit chairs detailed info" ui-sref="editchair({id:chairs._id})">{{chairs.name}}</a>
+                    </td>
+                    <td>
+                        {{chairs.availability}}
+                    </td>
+                    <td>
+                        {{chairs.type}}
+                    </td>
+                    <td>
+                        {{chairs.amount}}
+                    </td>
+                    <td>
+                        {{chairs.shop_percentage}}
+                    </td>
+                    <td>
+                        {{chairs.barber_percentage}}
+                    </td>
+                    <td>
+                        <span data-toggle="modal" data-target="#markbooked">
+                            <a type="submit" ng-click="markchairasbooked(chairs)" data-toggle="tooltip" title="Mark Chair as Booked"><i class="fa fa-cart-arrow-down" style="font-size: 30px;"></i></a>&nbsp;&nbsp;
+                        </span>
+                        <span data-toggle="modal" data-target="#postchair">
+                            <a type="submit" ng-click="postchairtoallbarbers(chairs)" data-ng-hide="editMode" data-toggle="tooltip" title="Post chair to all barbers"><i class="fa fa-plus-square" style="font-size: 30px;"></i></a>&nbsp;&nbsp;
+                        </span>
+                        <span data-toggle="modal" data-target="#searchbarber" >
+                        <a type="submit" data-toggle="tooltip" title="Search for specific barber"><i class="fa fa-tencent-weibo" style="font-size: 30px;"></i></a>
+                        </span>
+                        <span data-toggle="modal" data-target="#confirm" >
+                                <a type="submit" ng-click="deleteconfirmchair(chairs, shopdetailview.shopinfo[0]._id)" data-ng-hide="editMode" class="glyphicon glyphicon-trash" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="Remove chair"></a>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Modal -->
+
+
+    <div class="modal " id="markbooked" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #c2f7b5;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Successfull</h4>
+                </div>
+                <div class="modal-body">
+                    <p> Chair is marked Booked</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onClick="history.go(0)">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal " id="postchair" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #c2f7b5;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Successfull</h4>
+                </div>
+                <div class="modal-body">
+                    <p> Chair is Posted</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onClick="history.go(0)">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal" id="confirm" role="dialog" data-ng-repeat="chairs in chairdetails" ng-show="$first">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p>
+                        Are You Sure!!!!!! You want to Delete this Record 
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deletechair()" data-toggle="modal" >DELETE</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal " id="searchbarber" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #c2f7b5;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Search for a specific barber</h4>
+                </div>
+                <div class="modal-body" ng-init="pageChanged()">
+                    <span class="glyphicon glyphicon-search" style="color:purple"></span>
+                    <input ng-model="myobj.search" placeholder="Search for..." ng-change="pageChanged()" />
+                    <table data-ng-repeat="barber in barbers">
+                        <tr>
+                             <td> {{barber.first_name}} {{barber.last_name}} </td>
+                             <td align="center"> <img src="/uploadedFiles/{{barber.picture}}"  height="20%" width="20%" /></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>

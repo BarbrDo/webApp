@@ -14,7 +14,15 @@ angular.module('BarbrDoApp')
         $scope.plans = response.data.data;
       })
     }
+    $scope.content = true;
+    $scope.subScription = function(data){
+      console.log(data);
+      $scope.cardDetails.selectPrice = data.id;
+      $scope.content = false;
+    }
+
     $scope.submitPayment = function() {
+      alert($scope.cardDetails)
       let myobj = {
         card_number:$scope.cardDetails.number,
         month:$scope.cardDetails.month.substr(0,2),

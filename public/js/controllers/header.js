@@ -1,5 +1,5 @@
 angular.module('BarbrDoApp')
-  .controller('HeaderCtrl', function($scope, $location, $window, $auth, $state,$rootScope,$uibModal,toastr,shop) {
+  .controller('HeaderCtrl', function($scope, $location, $window, $auth, $state,$rootScope,$uibModal,toastr,shop,geolocation) {
     $scope.user = {};
     $scope.messages = {};
     $scope.isActive = function(viewLocation) {
@@ -69,6 +69,12 @@ angular.module('BarbrDoApp')
     };
 
     $scope.login = function() {
+      $scope.coords = geolocation.getLocation().then(function(data){
+        alert(data)
+        $window.localStorage.lat = data.coords.latitude;
+        $window.localStorage.long = data.coords.longitude;
+      return {lat:data.coords.latitude, long:data.coords.longitude};
+    });
       $auth.login($scope.user)
         .then(function(response) {
           toastr.success('Welcome');

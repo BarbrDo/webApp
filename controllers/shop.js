@@ -103,6 +103,7 @@ exports.shopContainsBarber = function(req, res) {
                         address: result.address,
                         gallery: result.gallery,
                         barber: resultTantArray,
+                        picture:result.picture,
                         imagesPath: 'http://' + req.headers.host + '/' + 'uploadedFiles/'
                     }
                 })

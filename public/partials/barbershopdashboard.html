@@ -9,7 +9,7 @@
           <h3>Chair {{$index+1}}</h3>
           <p ng-if="res.barber_id"><span>{{res.barber_name}}</span></p>
           <p ng-if="res.shop_percentage"><span>Chair Split</span> : {{res.shop_percentage}}/{{res.barber_percentage}}</p>
-          <p ng-if="res.type=='Weekly' || res.type=='Monthly'"><span>{{res.type}}</span> : ${{res.amount}}</p>
+          <p ng-if="res.type=='weekly' || res.type=='monthly'"><span>{{res.type}}</span> : ${{res.amount}}</p>
           <p ng-if="!res.shop_percentage && !res.type">Empty</p>
         </div>
         <a class="book_nw" ui-sref="chairaction({id:res._id,name:$index+1})"> Manage <i class="fa  fa-angle-right"></i> </a>

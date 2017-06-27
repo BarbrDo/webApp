@@ -27,22 +27,22 @@ angular.module('BarbrDoApp')
       saveSplitFair: function(data) {
         return $http({
           method: 'put',
-          url: '/api/v1/shops/chairPercentage',
+          url: '/api/v1/shops/managechair',
           data:data,
           headers: {
             'user_id': obj._id
           }
-        },data);
+        });
       },
       saveWeeklyFair: function(data) {
         return $http({
           method: 'put',
-          url: '/api/v1/shops/weeklyMonthlyChair',
+          url: '/api/v1/shops/managechair',
           data:data,
           headers: {
             'user_id': obj._id
           }
-        },data);
+        });
       },
       postToAllBarbers: function(data) {
         return $http({
@@ -57,16 +57,34 @@ angular.module('BarbrDoApp')
       markBooked: function(data) {
         return $http({
           method: 'put',
-          url: '/api/v1/shops/markChairAsBooked',
-          data:data,
+          url: '/api/v1/shops/markchairasbooked/'+data.chair_id,
           headers: {
             'user_id': obj._id
           }
-        },data);
+        });
       },
       fbSignup: function(data) {
-        console.log("data",data)
        return $http.post('/api/v1/signup', data);
+      },
+      chairRequest: function(data) {
+         return $http({
+          method: 'get',
+          url: '/api/v1/shops/barberchairrequests/'+data,
+          data:data
+        });
+      },
+      acceptRequest: function(data) {
+        return $http({
+          method: 'put',
+          url: '/api/v1/shops/acceptrequest',
+          data:{
+            chair_request_id: data._id,
+            request_type: 'accept'
+          },
+          headers: {
+            'user_id' : obj._id
+          }
+        });
       },
       deleteChair: function(data) {
         return $http({
@@ -74,9 +92,9 @@ angular.module('BarbrDoApp')
           url: '/api/v1/shops/chair',
           data:data,
           headers: {
-            'user_id': obj._id
-          }
-        },data);
+          "Content-Type": "application/json;charset=utf-8"
+        }
+        });
       }
       }
   });

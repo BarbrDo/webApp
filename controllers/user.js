@@ -170,8 +170,6 @@ exports.signupPost = function(req, res, next) {
   let errors = req.validationErrors();
 
   if (errors) {
-    return 
-    console.log(errors)
     res.status(400).send({
       msg: "error in your request",
       err: errors
@@ -279,7 +277,7 @@ exports.signupPost = function(req, res, next) {
  * Update profile information OR change password.
  */
 exports.accountPut = function(req, res, next) {
-
+console.log(req.body)
   if ('password' in req.body) {
     req.checkHeaders('user_id', 'User ID is missing').notEmpty();
     req.assert('password', 'Password must be at least 6 characters long').len(6);
@@ -292,6 +290,7 @@ exports.accountPut = function(req, res, next) {
       err: errors
     });
   }
+  console.log("two",req.body)
   User.findById(req.headers.user_id, function(err, user) {
     if ('password' in req.body) {
       user.password = req.body.password;
@@ -1006,6 +1005,7 @@ exports.deleteImages = function(req, res) {
 
 exports.getProfiles = function(req, res) {
   req.checkParams("id", "customer_id can not be blank").notEmpty();
+  console.log("user id",req.params.id)
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -1013,6 +1013,7 @@ exports.getProfiles = function(req, res) {
       err: errors
     });
   }
+  console.log("user id",req.params.id)
   var id = mongoose.Types.ObjectId(req.params.id);
   User.findOne({
     _id: req.params.id

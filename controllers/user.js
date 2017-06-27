@@ -275,7 +275,7 @@ exports.signupPost = function(req, res, next) {
  * Update profile information OR change password.
  */
 exports.accountPut = function(req, res, next) {
-console.log(req.body)
+console.log("here",req.body)
   if ('password' in req.body) {
     req.checkHeaders('user_id', 'User ID is missing').notEmpty();
     req.assert('password', 'Password must be at least 6 characters long').len(6);

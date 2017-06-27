@@ -188,8 +188,8 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.pendingData = response.data.data;
 					$scope.time = response.data.data.appointment_date.substring(11, 19);
-					let sum = 0;
-					let len = response.data.data.barber_id.ratings.length;
+					var sum = 0;
+					var len = response.data.data.barber_id.ratings.length;
 					for(var i=0;i<len;i++){
 						sum+= response.data.data.barber_id.ratings[i].score
 					}

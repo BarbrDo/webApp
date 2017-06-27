@@ -1,0 +1,50 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<div class="crumb"> <span>Requester Details</span> </div>
+<div class="wrapper" >
+    <div class="block" >
+        <div class="panel">
+            <div class="panel-body">
+                <div class="container ">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-8">
+                        <img class="img-circle" src="/images/brbr_pic.png" alt="Cinque Terre" width="304" height="236"></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        Total Photos : &nbsp;&nbsp;&nbsp; {{totalbarbers}} </div>
+                    <div class="col-sm-6">
+                        Total Cuts : &nbsp;&nbsp;&nbsp; 0 </div>
+                </div>
+                <br>
+                <br>
+                <table class="table table-striped" ng-init="requesterdetails()">
+                    <tr>
+                        <td>
+                            <h5>First Name </h5></td>
+                        <td> {{requester.first_name}}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Last Name </h5></td>
+                        <td> {{requester.last_name}}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Email</h5></td>
+                        <td> {{requester.email}} </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Phone</h5></td>
+                        <td> {{requester.mobile_number}} </td>
+                    </tr>
+                        <td>
+                            <h5>Member Since</h5></td>
+                        <td> {{requester.created_date | date: dd/mm/yyyy}} </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

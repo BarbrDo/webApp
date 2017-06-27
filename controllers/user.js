@@ -166,7 +166,6 @@ exports.signupPost = function(req, res, next) {
   req.sanitize('email').normalizeEmail({
     remove_dots: false
   });
- console.log("req.body",req.body);
   let errors = req.validationErrors();
 
   if (errors) {
@@ -177,7 +176,6 @@ exports.signupPost = function(req, res, next) {
       err: errors
     });
   }
-  console.log("req.bod2355",req.body);
   User.findOne({
     email: req.body.email
   }, function(err, user) {
@@ -617,7 +615,6 @@ exports.authFacebook = function(req, res) {
             });
 
             return res.send({
-              token: generateToken(user),
               user: user
             });
 

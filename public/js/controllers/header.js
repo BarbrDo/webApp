@@ -70,7 +70,6 @@ angular.module('BarbrDoApp')
 
     $scope.login = function() {
       $scope.coords = geolocation.getLocation().then(function(data){
-        alert(data)
         $window.localStorage.lat = data.coords.latitude;
         $window.localStorage.long = data.coords.longitude;
       return {lat:data.coords.latitude, long:data.coords.longitude};

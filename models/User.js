@@ -30,7 +30,8 @@ var userSchema = new mongoose.Schema({
         enum:["customer","barber","shop"],
         require: true,
     },
-    stripe_information:[],
+    stripe_customer:[],
+    stripe_subscription:[],
     radius_search: Number,
     passwordResetToken: String,
     passwordResetExpires: Date,
@@ -86,7 +87,7 @@ var userSchema = new mongoose.Schema({
         default: Date.now()
     },
     last_login: Date,
-    isDeleted: {
+    is_deleted: {
         type: Boolean,
         default: false
     },
@@ -94,9 +95,13 @@ var userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    isActive: {
+    is_active: {
         type: Boolean,
         default: false
+    },
+    remark :{
+        type:String,
+        default:"You account is not verified yet."
     },
     is_email_marketing: Boolean,
     info_source: String,

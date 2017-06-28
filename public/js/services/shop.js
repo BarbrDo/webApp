@@ -105,7 +105,7 @@ angular.module('BarbrDoApp')
           url: '/api/v1/subscribe',
           data:data,
           headers: {
-            'user_id': obj._id
+            'user_id': data.user_id
           }
         },data);
       }

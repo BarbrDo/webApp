@@ -99,6 +99,11 @@ angular.module('BarbrDoApp')
           }   
         })
         .catch(function(response) {
+          if(response.status==402){
+             $state.go('subScription',{
+              _id: response.data.user._id
+            }) 
+          }
           $scope.messages = {
             error: Array.isArray(response.data) ? response.data : [response.data]
           }; 
@@ -114,9 +119,9 @@ angular.module('BarbrDoApp')
         .then(function(response) {
           console.log(response.data)
           if(response.data.user){
-            $window.localStorage.user = JSON.stringify(response.data.user);
-            $window.localStorage.imagePath = response.data.imagesPath;
-            $state.go('subScription')
+            $state.go('subScription',{
+              _id: response.data.user._id
+            })
           }
           else{
             toastr.success("Please check your mail to activate your account.");

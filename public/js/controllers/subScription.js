@@ -1,5 +1,5 @@
 angular.module('BarbrDoApp')
-  .controller('subScriptionCtrl', function($rootScope, shop, $scope, $location, $stateParams,$state) {
+  .controller('subScriptionCtrl', function($rootScope, shop, $scope, $location, $stateParams,$state,toastr) {
     $scope.cardDetails = {};
     $scope.stripeCallback = function(code, result) {
       if (result.error) {
@@ -22,8 +22,9 @@ angular.module('BarbrDoApp')
     }
 
     $scope.submitPayment = function() {
-      alert($scope.cardDetails)
+      alert(JSON.stringify($scope.cardDetails));
       let myobj = {
+        user_id:$stateParams._id,
         card_number:$scope.cardDetails.number,
         month:$scope.cardDetails.month.substr(0,2),
         year:$scope.cardDetails.month.substr(3,7),
@@ -32,7 +33,9 @@ angular.module('BarbrDoApp')
       }
       alert(JSON.stringify(myobj))
       shop.subScribe(myobj).then(function(response){
-
-      })
+        toastr.success("subscribe successfully.");
+      }).catch(function(response) {
+         toastr.error("Something goes wrong.");
+        });
     }
   });

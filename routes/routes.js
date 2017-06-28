@@ -39,6 +39,7 @@ module.exports = function(app, express) {
     //Users
     app.post('/api/v1/activate', userController.activate) //Account activate
     app.post('/api/v1/signup', userController.signupPost); //Signup
+    app.post('/api/v1/signupWeb', userController.signupPostWeb); //Signup
     app.post('/api/v1/login', userController.loginPost); // Login
     app.post('/api/v1/forgot', userController.forgotPost); //Forgot Password
     app.post('/api/v1/reset/:token', userController.resetPost); //Forgot Password

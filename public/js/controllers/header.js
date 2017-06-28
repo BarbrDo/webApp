@@ -43,12 +43,11 @@ angular.module('BarbrDoApp')
     }
     
     $scope.authenticate = function(provider) {
-      console.log(provider)
       $auth.authenticate(provider)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
-          console.log(response)
           $window.localStorage.user = JSON.stringify(response.data.user);
+           console.log(response.data.user)
           if(response.data.imagesPath){
             $window.localStorage.imagePath = response.data.imagesPath;
           }

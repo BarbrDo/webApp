@@ -32,9 +32,9 @@
                         </div>
                     </div>
                     <div class="form-group ">
-                        <label for="lastname " class="col-sm-3 ">Last Name</label>
+                        <label for="lastname" class="col-sm-3 ">Last Name</label>
                         <div class="col-sm-7 ">
-                            <input type="text " name="lastname " id="last_name " class="form-control " ng-model="profile.last_name" ng-pattern="/^[a-z ,. '-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                            <input type="text" name="lastname" id="last_name" class="form-control" ng-model="profile.last_name" ng-pattern="/^[a-z ,. '-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
 
                             <div class="validationError" ng-messages="profileForm.lastname.$error" ng-show="
                                     profileForm.lastname.$error.required && profileForm.lastname.$touched &&
@@ -52,10 +52,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group ">
-                        <label for="email " class="col-sm-3 ">Email</label>
+                    <div class="form-group">
+                        <label for="email" class="col-sm-3 ">Email</label>
                         <div class="col-sm-7 ">
-                            <input type="email " name="email " id="email " class="form-control " ng-model="profile.email" ng-disabled="true">
+                            <input type="email" name="email" id="email" class="form-control" ng-model="profile.email" ng-disabled="true">
                         </div>
                     </div>
                     <div class="form-group ">
@@ -73,9 +73,9 @@
 
                     </div>
                     <div class="form-group ">
-                        <label for="mobilenumber " class="col-sm-3 ">Mobile Number</label>
+                        <label for="mobilenumber" class="col-sm-3">Mobile Number</label>
                         <div class="col-sm-7 ">
-                            <input type="text " class="form-control " name="mobile_number " id="mobile_number " ng-model="profile.mobile_number" mask="(999) 999-9999 " mask-clean='true ' mask-restrict='reject ' ng-minlength="14 " ng-maxlength="14 " maxlength="14 " required />
+                            <input type="text  class="form-control" name="mobile_number" id="mobile_number" ng-model="profile.mobile_number" mask="(999) 999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="14" ng-maxlength="14" maxlength="14" required />
                             <p class="help-block">
                                 <span ng-show="profileForm.mobile_number.$touched && profileForm.mobile_number.$invalid && profileForm.mobile_number.$error.required">Mobile number is required.</span>
                                 <span ng-show="profileForm.mobile_number.$error.minlength">Phone have 10-digits minimum.</span>
@@ -83,9 +83,9 @@
                         </div>
                     </div>
                     <div class="form-group ">
-                        <label for="Radious Search " class="col-sm-3 ">Radius Search (in miles)</label>
+                        <label for="Radious Search" class="col-sm-3">Radius Search (in miles)</label>
                         <div class="col-sm-7 ">
-                            <input type="text " name="radious " id="radious " class="form-control " ng-model="profile.radius_search">
+                            <input type="text" name="radious" id="radious" class="form-control" ng-model="profile.radius_search">
                         </div>
                     </div>
                    
@@ -108,18 +108,18 @@
                             <input type="file" ngf-select ng-model="profile.file" name="file" ngf-pattern="'image/*'" accept="image/*" ngf-max-size="10MB" class="text-center center-block well well-sm"  >
                         </div>
                     </div>
-                    <div class="form-group ">
-                        <div class="col-sm-offset-3 col-sm-4 ">
-                            <button type="submit " class="btn btn-success ">Update Profile</button>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-4">
+                            <button type="submit" class="btn btn-success">Update Profile</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
 
-        <div class="panel" ng-show="profile.user_type=='shop'" ng-init="shop()">
-            <div class="panel-body ">
-                <form ng-submit="updateshopinfo(shopinfo)" class="form-horizontal " name="profileForm">
+        <div class="panel" ng-show="profile.user_type=='shop'" ng-if="profile.user_type=='shop'" ng-init="shop()">
+            <div class="panel-body">
+                <form ng-submit="updateshopinfo(shopinfo)" class="form-horizontal" name="profileForm">
                     <legend>Shop Information</legend>
                     <div class="form-group ">
                          <label for="name" class="col-sm-3">Shop name </label>
@@ -175,23 +175,23 @@
         </div>
         <div class="panel ">
             <div class="panel-body ">
-                <form ng-submit="changePassword()" class="form-horizontal ">
+                <form ng-submit="changePassword()" class="form-horizontal">
                     <legend>Change Password</legend>
-                    <div class="form-group ">
-                        <label for="password " class="col-sm-3 ">New Password</label>
-                        <div class="col-sm-7 ">
-                            <input type="password " name="password " id="password " class="form-control " ng-model="profile.password">
+                    <div class="form-group">
+                        <label for="password" class="col-sm-3">New Password</label>
+                        <div class="col-sm-7">
+                            <input type="password" name="password" id="password" class="form-control" ng-model="profile.password">
                         </div>
                     </div>
                     <div class="form-group ">
-                        <label for="confirm " class="col-sm-3 ">Confirm Password</label>
+                        <label for="confirm" class="col-sm-3">Confirm Password</label>
                         <div class="col-sm-7 ">
-                            <input type="password " name="confirm " id="confirm " class="form-control " ng-model="profile.confirm">
+                            <input type="password" name="confirm" id="confirm" class="form-control" ng-model="profile.confirm">
                         </div>
                     </div>
-                    <div class="form-group ">
-                        <div class="col-sm-4 col-sm-offset-3 ">
-                            <button type="submit " class="btn btn-success ">Change Password</button>
+                    <div class="form-group">
+                        <div class="col-sm-4 col-sm-offset-3">
+                            <button type="submit" class="btn btn-success">Change Password</button>
                         </div>
                     </div>
                 </form>

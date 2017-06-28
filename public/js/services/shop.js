@@ -13,13 +13,23 @@ angular.module('BarbrDoApp')
           headers: {
             'user_id': obj._id
           }
-        },data);
+        });
       },
+       barbers: function(data) {
+      if (data.search) {
+        return $http.get('/api/v1/allbarbers?search=' + data.search, data);
+      } else {
+        return $http.get('/api/v1/allbarbers');
+      }
+
+
+    },
       shopInfo: function(data) {
         return $http({
           method: 'get',
-          url: '/api/v1/userprofile/'+obj._id,data
-        },data);
+          url: '/api/v1/userprofile/'+obj._id,
+          data:data
+        });
       },
       deleteChair: function(data) {
         return $http.delete('/api/v1/shops/chair', data);
@@ -52,7 +62,7 @@ angular.module('BarbrDoApp')
           headers: {
             'user_id': obj._id
           }
-        },data);
+        });
       },
       markBooked: function(data) {
         return $http({
@@ -73,6 +83,24 @@ angular.module('BarbrDoApp')
           data:data
         });
       },
+      requestBarber: function(shopid,chairid,barber) {
+        return $http({
+          method: 'post',
+          url: '/api/v1/requestchair',
+          headers: {
+             'user_id': obj._id
+          },
+          data: {
+            barber_id : barber._id,
+            chair_id : chairid,
+            shop_id : shopid,
+            booking_date : "2017-07-20"
+          }
+        })
+      },
+      chairDetail: function(data) {
+        return $http.get('/api/v1/chairdetail/' + data, data);
+      },
       acceptRequest: function(data) {
         return $http({
           method: 'put',
@@ -85,6 +113,22 @@ angular.module('BarbrDoApp')
             'user_id' : obj._id
           }
         });
+      },
+      declineRequest: function(data) {
+        return $http({
+          method: 'put',
+          url: '/api/v1/shops/acceptrequest',
+          data:{
+            chair_request_id: data._id,
+            request_type: 'decline'
+          },
+          headers: {
+            'user_id' : obj._id
+          }
+        });
+      },
+      barberDetail: function(data) {
+      return $http.get('/api/v1/barberdetail/' + data, data);
       },
       deleteChair: function(data) {
         return $http({

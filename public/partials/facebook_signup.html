@@ -1,7 +1,5 @@
-
-    <div class="col-md-6">
-        <div class="holder">
-                            <div role="tabpanel" class="tab-pane contact-us" id="signup" style="margin-top: 0px; padding:0px;">
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+    <div role="tabpanel" class="tab-pane contact-us col-md-10 col-md-offset-2" id="signup" style="margin-top: 0px; padding:0px;">
                                 <div ng-if="messagess.error" role="alert" class="alert alert-danger">
                                     <div ng-repeat="err in messagess.error">
                                         {{err[0].msg}}</div>
@@ -81,7 +79,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" name="mobile_number" id="mobile_number" ng-model="currentUser.mobile_number" mask="(999) 999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="14" ng-maxlength="14" maxlength="14" required />
+                                        <input type="text" class="form-control" name="mobile_number" id="mobile_number" ng-model="currentUser.mobile_number" mask="(999) 999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="10" ng-maxlength="15" maxlength="15" required />
                                         <div class="form-control-placeholder">Phone No.</div>
                                         <p class="help-block">
                                             <span style="color:red" ng-show="signUpForm.mobile_number.$touched && signUpForm.mobile_number.$invalid && signUpForm.mobile_number.$error.required">Mobile number is required.</span>
@@ -90,22 +88,19 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12">
-                                    <div ng-if="user.user_type == 'shop ' || user.user_type == 'barber '" class="form-group">
-                                        <input type="text" class="form-control" name="license_number" id="license_number" ng-model="user.license_number" required />
+                                    <div ng-if="currentUser.user_type == 'shop' || currentUser.user_type == 'barber'" class="form-group">
+                                        <input type="text" class="form-control" name="license_number" id="license_number" ng-model="currentUser.license_number" required />
                                         <div class="form-control-placeholder">License No.</div>
                                         <div class="validationError" ng-messages="signUpForm.license_number.$error" ng-show="
                                                 signUpForm.license_number.$error.required && signUpForm.license_number.$touched &&
-                                                        signUpForm.license_number.$invalid
-                                            " role="alert">
+                                                        signUpForm.license_number.$invalid" role="alert">
                                             <span style="color:red" ng-message="required">License number is required</span>
                                         </div> 
                                     </div>
                                     
                                 </div>
-                                <button type="submit" class="sb_button" ng-click="fbsignup(currentUser)" >Sign Up</button>
-                                <p class="msg">Already have an account? <span> <button type="button" class="btn btn-default btn-sm" ng-click="$root.active = 0">Login</button> </span></p>
+                                <button type="submit" class="sb_button" ng-click="signup()" ng-disabled="signUpForm.$invalid">Sign Up</button>
                             </form>
                         </div>
-            </div>
-</div>
+        <br><br>
 

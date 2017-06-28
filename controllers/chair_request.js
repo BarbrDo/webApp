@@ -25,6 +25,7 @@ exports.requestChair = function(req, res) {
 			err: errors
 		});
 	}
+	console.log(req.headers.user_id)
 	var d = new Date(req.body.booking_date);
 	var bookDate = d.toISOString();
 	chairRequest.find({
@@ -34,6 +35,7 @@ exports.requestChair = function(req, res) {
 		status: "pending",
 		booking_date: bookDate
 	}).exec(function(err, resultCheck) {
+		console.log(resultCheck)
 		if (err) {
 			return res.status(400).send({
 				msg: "error in your request",
@@ -46,10 +48,12 @@ exports.requestChair = function(req, res) {
 					data: resultCheck
 				});
 			}
+			console.log("database");
 			var saveData = {};
 			user.findOne({
 				_id: req.headers.user_id
 			}, function(err, data) {
+				console.log("data",data)
 				if (data) {
 					if (data.user_type == 'barber') {
 						req.assert("shop_id", "Shop Id is required.").notEmpty();
@@ -342,7 +346,6 @@ exports.acceptRequest = function(req, res) {
 	req.checkHeaders("user_id", "User Id is required.").notEmpty();
 	req.assert("chair_request_id", "chair_request_id is required.").notEmpty() // Chair Request _id is required   
 	req.assert("request_type", "request_type is required").notEmpty();
-	console.log("this is one",req.body)
 
 	let errors = req.validationErrors();
 	if (errors) {
@@ -351,7 +354,6 @@ exports.acceptRequest = function(req, res) {
 			err: errors
 		});
 	}
-	console.log("this is two",req.body)
 	if (req.body.request_type == 'accept') {
 		let updateCollectionData = {};
 		let bookingEndDate = "";

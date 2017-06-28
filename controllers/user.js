@@ -780,7 +780,6 @@ exports.authFacebook = function(req, res) {
             });
 
             return res.send({
-              token: generateToken(user),
               user: user
             });
 

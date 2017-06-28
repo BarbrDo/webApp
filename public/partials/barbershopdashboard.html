@@ -5,14 +5,17 @@
     <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat = "res in chairs.shop[0].chairs">
       <div class="barber toshop">
         <div class="cont">
-          <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
+          <div class="user_pic"><span ng-if="res.barber_id"><img src="images/people.jpeg"  ui-sref="requester-details({id:res.barber_id})" ng-click="requesterdetails()"> </span> 
+                                <span ng-if="!res.barber_id"><img src="images/chair@4x.png"  ng-click="nobarbers()"> </span></div>
           <h3>Chair {{$index+1}}</h3>
           <p ng-if="res.barber_id"><span>{{res.barber_name}}</span></p>
           <p ng-if="res.shop_percentage"><span>Chair Split</span> : {{res.shop_percentage}}/{{res.barber_percentage}}</p>
           <p ng-if="res.type=='weekly' || res.type=='monthly'"><span>{{res.type}}</span> : ${{res.amount}}</p>
           <p ng-if="!res.shop_percentage && !res.type">Empty</p>
         </div>
-        <a class="book_nw" ui-sref="chairaction({id:res._id,name:$index+1})"> Manage <i class="fa  fa-angle-right"></i> </a>
+          <span ng-if="res.barber_id"><a class="book_nw" ui-sref="chairwithbarber({id:res._id,name:$index+1})"> Manage <i class="fa  fa-angle-right"></i> </a></span>
+          <span ng-if="!res.barber_id"><a class="book_nw" ui-sref="chairaction({id:res._id,name:$index+1})"> Manage <i class="fa  fa-angle-right"></i> </a></span>
+        
      </div>
     </div>  
     <!-- <div class="col-md-4 col-sm-4 col-xs-6 fullb">

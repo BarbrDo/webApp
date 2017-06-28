@@ -77,36 +77,35 @@ exports.loginPost = function(req, res, next) {
         msg: user.remark
       });
     }
-    console.log("user.stripe_subscription.length",user.stripe_subscription.length);
-    if(user.stripe_subscription.length!=1){
+    console.log("user.stripe_subscription.length", user.stripe_subscription.length);
+    if (user.stripe_subscription.length != 1) {
       res.status(402).send({
-        msg:"Please subscribe.",
+        msg: "Please subscribe.",
         user: user.toJSON()
       })
-    }
-    else{
+    } else {
       user.comparePassword(req.body.password, function(err, isMatch) {
-      if (!isMatch) {
-        return res.status(401).send({
-          msg: 'Invalid email or password'
+        if (!isMatch) {
+          return res.status(401).send({
+            msg: 'Invalid email or password'
+          });
+        }
+
+        // var options = {
+        //   headers: {
+        //     'user': user.toJSON(),
+        //     'token': generateToken(user),
+        //     "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+        //   }
+        // };
+        // res.sendFile(path.join(__dirname + './../public/index1.html'), options);
+
+        res.send({
+          token: generateToken(user),
+          user: user.toJSON(),
+          "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
         });
-      }
-
-      // var options = {
-      //   headers: {
-      //     'user': user.toJSON(),
-      //     'token': generateToken(user),
-      //     "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-      //   }
-      // };
-      // res.sendFile(path.join(__dirname + './../public/index1.html'), options);
-
-      res.send({
-        token: generateToken(user),
-        user: user.toJSON(),
-        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
       });
-    });
     }
   });
 };
@@ -156,7 +155,7 @@ var accountActivateMailFunction = function(req, res, user, resetUrl) {
   } else {
     res.status(200).send({
       user: user,
-      token:generateToken(user),
+      token: generateToken(user),
       "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
     });
   }
@@ -299,7 +298,7 @@ exports.signupPostWeb = function(req, res, next) {
   req.sanitize('email').normalizeEmail({
     remove_dots: false
   });
- console.log("req.body",req.body);
+  console.log("req.body", req.body);
   let errors = req.validationErrors();
 
   if (errors) {
@@ -339,24 +338,24 @@ exports.signupPostWeb = function(req, res, next) {
             saveData.is_verified = true;
             saveData.remark = '';
           }
-           email_encrypt = commonObj.encrypt(req.body.email);
-           generatedText = commonObj.makeid();
-           saveData.randomString = generatedText;
-           done(err, saveData)
+          email_encrypt = commonObj.encrypt(req.body.email);
+          generatedText = commonObj.makeid();
+          saveData.randomString = generatedText;
+          done(err, saveData)
         }
       })
     },
     function(saveData, done) {
       if (req.body.user_type == 'customer') {
-          done(null,saveData)
+        done(null, saveData)
       } else {
         stripe.customers.create({
             email: req.body.email,
-            metadata : {
-              user_type:req.body.user_type,
-              first_name:req.body.first_name,
-              last_name:req.body.last_name,
-              mobile_number:req.body.mobile_number
+            metadata: {
+              user_type: req.body.user_type,
+              first_name: req.body.first_name,
+              last_name: req.body.last_name,
+              mobile_number: req.body.mobile_number
             }
           },
           function(err, customer) {
@@ -366,7 +365,7 @@ exports.signupPostWeb = function(req, res, next) {
                 "err": err
               })
             } else {
-              console.log("customer created on stripe ",customer);
+              console.log("customer created on stripe ", customer);
               saveData.isActive = true;
               saveData.is_verified = true;
               saveData.stripe_customer = customer;
@@ -455,7 +454,7 @@ exports.accountPut = function(req, res, next) {
       err: errors
     });
   }
-  console.log("two",req.body)
+  console.log("two", req.body)
   User.findById(req.headers.user_id, function(err, user) {
     if ('password' in req.body) {
       user.password = req.body.password;
@@ -725,7 +724,7 @@ exports.authFacebook = function(req, res) {
       let name = profile.name;
       let splitName = name.split(" ");
       // Step 3a. Link accounts if user is authenticated.
-      console.log("req.isAuthenticated()",req.isAuthenticated())
+      console.log("req.isAuthenticated()", req.isAuthenticated())
       if (req.isAuthenticated()) {
         User.findOne({
           facebook: profile.id
@@ -757,7 +756,7 @@ exports.authFacebook = function(req, res) {
             return res.send({
               token: generateToken(user),
               user: user,
-              err:'Error'
+              err: 'Error'
             });
           }
           User.findOne({
@@ -954,7 +953,7 @@ exports.addChair = function(req, res) {
 exports.removeChair = function(req, res) {
     req.assert("shop_id", "Shop ID is required")
     req.assert("chair_id", "Chair ID is required");
-    
+
     let errors = req.validationErrors();
     if (errors) {
       return res.status(400).send({
@@ -962,7 +961,7 @@ exports.removeChair = function(req, res) {
         err: errors
       });
     }
-    console.log("req.body",req.body);
+    console.log("req.body", req.body);
     let validateId = objectID.isValid(req.body.shop_id);
     let validateChairId = objectID.isValid(req.body.chair_id)
     if (validateId && validateChairId) {
@@ -988,7 +987,7 @@ exports.removeChair = function(req, res) {
             }, {
               $set: {
                 "chairs.$.isActive": false,
-                "chairs.$.availability":"closed"
+                "chairs.$.availability": "closed"
               }
             }).exec(function(errInDelete, resultInDelete) {
               if (errInDelete) {
@@ -1169,7 +1168,7 @@ exports.deleteImages = function(req, res) {
 
 exports.getProfiles = function(req, res) {
   req.checkParams("id", "customer_id can not be blank").notEmpty();
-  console.log("user id",req.params.id)
+  console.log("user id", req.params.id)
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -1177,7 +1176,7 @@ exports.getProfiles = function(req, res) {
       err: errors
     });
   }
-  console.log("user id",req.params.id)
+  console.log("user id", req.params.id)
   var id = mongoose.Types.ObjectId(req.params.id);
   User.findOne({
     _id: req.params.id
@@ -1325,7 +1324,7 @@ exports.subscribe = function(req, res) {
         "err": err
       });
     } else {
-      console.log("user_id",data);
+      console.log("user_id", data);
       let customerId = data.stripe_customer[0].id
       console.log(customerId);
       stripe.customers.createSource(customerId, {
@@ -1337,7 +1336,7 @@ exports.subscribe = function(req, res) {
           cvc: req.body.cvc
         }
       }).then(function(source) {
-        console.log("stripe.customers.createSource ",source)
+        console.log("stripe.customers.createSource ", source)
         return stripe.subscriptions.create({
           customer: customerId,
           plan: req.body.plan
@@ -1349,17 +1348,28 @@ exports.subscribe = function(req, res) {
             });
           } else {
             console.log("subscription", subscription);
-            User.update({_id:req.headers.user_id},{$set:{stripe_subscription:subscription}},function(err,result){
+            User.update({
+              _id: req.headers.user_id
+            }, {
+              $set: {
+                stripe_subscription: subscription
+              }
+            }, function(err, result) {
               if (err) {
                 res.status(400).send({
                   msg: "Error occurred in subscription.",
                   "err": err
                 });
-              }
-              else{
-                 res.status(200).send({
-                  msg: "Successfully done."
-                });
+              } else {
+                User.findOne({
+                  _id: req.headers.user_id
+                }).exec(function(err, user) {
+                  res.send({
+                    token: generateToken(user),
+                    user: user.toJSON(),
+                    "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+                  });
+                })
               }
             })
           }
@@ -1393,7 +1403,7 @@ exports.featuringPlans = function(req, res) {
   );
 }
 
-exports.stripeWebhook = function(req,res){
+exports.stripeWebhook = function(req, res) {
   console.log("stripeWebhook");
   console.log(req.body);
 }

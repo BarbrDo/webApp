@@ -1322,6 +1322,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     }, 0);
                     return deferred.promise;
                 }
+            }
             else if ($window.localStorage.user) {
                 var loggedInUser = JSON.parse($window.localStorage.user);
                 // Following if will allow only customer routes

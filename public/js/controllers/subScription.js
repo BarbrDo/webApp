@@ -34,6 +34,20 @@ angular.module('BarbrDoApp')
       alert(JSON.stringify(myobj))
       shop.subScribe(myobj).then(function(response){
         toastr.success("subscribe successfully.");
+
+        toastr.success('Welcome');
+          $rootScope.currentUser = response.data.user;
+          $window.localStorage.user = JSON.stringify(response.data.user);
+          $window.localStorage.imagePath = response.data.imagesPath;
+          if(response.data.user.user_type =='customer'){  
+            $state.go('upcomingComplete');    
+          }
+          if(response.data.user.user_type =='barber'){
+            $state.go('barberDashboard'); 
+          }
+          if(response.data.user.user_type =='shop'){
+            $state.go('barbershopdashboard')
+          }   
       }).catch(function(response) {
          toastr.error("Something goes wrong.");
         });

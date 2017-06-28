@@ -24,7 +24,6 @@ angular.module('BarbrDoApp').controller('ProfileCtrl', function($scope, $rootSco
 
 
     $scope.updateProfile = function() {
-        console.log($scope.profile);
         var fs = new FormData();
         fs.append("first_name", $scope.profile.first_name);
         fs.append("last_name", $scope.profile.last_name);

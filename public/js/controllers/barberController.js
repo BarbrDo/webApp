@@ -3,8 +3,9 @@ angular.module('BarbrDoApp')
 		var objj = JSON.parse($window.localStorage.user);
 		$scope.imgPath = $window.localStorage.imagePath;
 
-		$scope.loaderStart = true;
+		
 		$scope.appointments = function() {
+			$scope.loaderStart = true;
 			barber.appointments()
 				.then(function(response) {
 					$scope.loaderStart = false;
@@ -27,6 +28,7 @@ angular.module('BarbrDoApp')
 			barber.appointment(obj).then(function(response) {
 				$scope.loaderStart = false;
 				$scope.particularAppointment = response.data.data;
+				console.log(response.data.data)
 				let price = 0;
 				let sum = 0;
 				let len = response.data.data.customer_id.ratings.length;
@@ -81,13 +83,12 @@ angular.module('BarbrDoApp')
 				});
 		}
 		if ($state.current.name == 'shopChairs') {
-			$scope.loaderStart = true;
 			var obj = {
 				_id: $stateParams._id
 			}
 			barber.shopChairs(obj).then(function(response) {
-				$scope.loaderStart = false;
 				$scope.particularShop = response.data.data;
+				console.log(response.data.data)
 			})
 		}
 		var myArray = [];
@@ -109,6 +110,7 @@ angular.module('BarbrDoApp')
 			$scope.chairId = id;
 		}
 		$scope.requestChair = function() {
+			console.log($scope.chairId)
 			if ($scope.chairId) {
 				$scope.loaderStart = true;
 				var passObj = {
@@ -127,16 +129,34 @@ angular.module('BarbrDoApp')
 			}
 
 		}
-		$scope.confirmAppointment = function(id) {
-			console.log(id);
+
+		$scope.barbertasks = function(id,customer){
+			$scope.id = id;
+			$scope.customer = customer._id
+		}
+
+
+		$scope.confirmAppointment = function() {
 			var params = {
-				"appointment_id": id
+				"appointment_id": $scope.id
 			}
 			barber.confirmAppointment(params).then(function(response) {
 				toastr.success('Your have confirmed a request');
 				$scope.appointments();
 			})
 		}
+
+		$scope.completeAppointment = function() {
+			var params = {
+				"appointment_id": $scope.id,
+				"customer_id": $scope.customer
+			}
+			barber.completeAppointment(params).then(function(response) {
+				toastr.success('Your have completed a request');
+				$scope.appointments();
+			})
+		}
+
 		if ($state.current.name == 'rescheduleAppointment') {
 			$scope.loaderStart = true;
 			var obj = {
@@ -147,19 +167,23 @@ angular.module('BarbrDoApp')
 				$scope.appointmentData = response.data.data;
 			})
 		}
+
+
 		$scope.timeReschedule = function(time) {
-			if (time == 15 || time == 30 || time == 45) {
-				var myobj = {
-					minutes: time,
-					appointment_id: $stateParams._id,
-					appointment_date: $scope.appointmentData.appointment_date
-				}
-				console.log(myobj);
-				barber.reschedule(myobj).then(function(response) {
-					toastr.success('Your appointment is successfully rescheduled');
-				})
-			}
-		}
+            if (time == 15 || time == 30 || time == 45) {
+                var myobj = {
+                    minutes: time,
+                    appointment_id: $stateParams._id,
+                    appointment_date: $scope.appointmentData.appointment_date
+                }
+                console.log(myobj);
+                barber.reschedule(myobj).then(function(response) {
+                    toastr.success('Your appointment is successfully rescheduled');
+                })
+            }
+        }
+
+
 		$scope.cancelAppointment = function() {
 			var myobj = {
 				appointment_id: $stateParams._id,

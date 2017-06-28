@@ -10,7 +10,7 @@
                 <div class="rtng"><img src="images/rating.png" alt=""> </div>
             </div>
             <div class="locdis">
-                <p><span>Location :</span> {{particularShop.address}} {{particularShop.address}} {{particularShop.city}} {{particularShop.state}}</p>
+                <p><span>Location :</span> {{particularShop.address}} ,{{particularShop.city}}, {{particularShop.state}}</p>
                <!--  <p><span>Distance :</span> {{particularShop.distance | number}} Miles</p> -->
             </div>
         </div>
@@ -40,7 +40,8 @@
                     <input type="radio" class="select" name="chairs" ng-model="$parent.selectChair" ng-change="changeObject(chair._id)" ng-value="chair._id">{{chair.name}}
                 <!-- </div> -->
                 <!-- <div class="col-md-6"> -->
-                    <span>chairSplit{{chair.barber_percentage}}/{{chair.shop_percentage}}</span>
+                    <span ng-if="chair.type=='percentage'">chairSplit{{chair.barber_percentage}}/{{chair.shop_percentage}}</span>
+                    <span ng-if="chair.type=='weekly' || chair.type=='monthly'">chairAmount{{chair.amount}}</span>
                 </div>
                     <!-- <a href="#" class="select">{{chair.name}} <span>${{services.price}}</span></a> -->
                     <!-- <input type="checkbox"  name="selectedServices[]" value="{{fruitName}}" ng-checked="selection.indexOf(services) > -1" ng-click="toggleSelection(services)">{{chair.name}}<span>chairSplit{{chair.barber_percentage}}/{{chair.shop_percentage}}</span> -->

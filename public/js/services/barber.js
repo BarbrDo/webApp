@@ -22,7 +22,7 @@ angular.module('BarbrDoApp')
             'device_latitude': data.latitude,
             'device_longitude': data.longitude
           }
-        },data);
+        });
       },
       shopChairs: function(data) {
         return $http.get('/api/v1/shops/chair/'+data._id, data);
@@ -39,6 +39,17 @@ angular.module('BarbrDoApp')
       },
       confirmAppointment: function(data) {
         return $http.put('/api/v1/barber/confirmappointment/'+data.appointment_id, data);
+      },
+      completeAppointment: function(data) {
+        console.log(data)
+        return $http({
+          method: 'put',
+          url: '/api/v1/barber/completeappointment/'+data.appointment_id,
+          headers: {
+            'user_id': obj._id
+          },
+          data:data
+        });
       },
       reschedule: function(data) {
         return $http({

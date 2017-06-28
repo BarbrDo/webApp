@@ -337,7 +337,7 @@ exports.allShopsHavingChairs = function(req, res) {
                     payment_method:"$payment_methods",
                     distance:"$dist.calculated"
                 },
-                'chair-barber': { 
+                'chair_barber': { 
                     $push: {
                         chair:"$chairs",
                         barber:"$barberInfo",
@@ -348,7 +348,7 @@ exports.allShopsHavingChairs = function(req, res) {
         {
             $project:{
                 '_id':1,
-                'chair-barber':1
+                'chair_barber':1
             }
         }
         ]).exec(function(err, result) {

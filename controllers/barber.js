@@ -398,7 +398,7 @@ exports.completeAppointment = function(req, res) {
     req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
     req.assert("customer_id", "customer id is required.").notEmpty();
     req.checkHeaders("user_id", "barber_id is required.").notEmpty();
-    req.assert("score", "score is required.").notEmpty();
+
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -406,8 +406,7 @@ exports.completeAppointment = function(req, res) {
             err: errors
         });
     }
-    console.log("req.body",req.body);
-    console.log("req.headers",req.headers);
+
     let updateData = {
         "$push": {
             "ratings": {
@@ -419,7 +418,7 @@ exports.completeAppointment = function(req, res) {
             }
         }
     }
-    console.log(updateData);
+
     async.waterfall([
         function(done) {
             appointment.update({
@@ -433,8 +432,10 @@ exports.completeAppointment = function(req, res) {
                     if (err) {
                         done("some error", err)
                     } else {
-                        done(err, result)
-                        console.log(result)
+                       return res.status(200).send({
+                        msg: constantObj.messages.userStatusUpdateSuccess
+                    });
+                    done(err,result);
                     }
                 })
 
@@ -450,11 +451,10 @@ exports.completeAppointment = function(req, res) {
                         err: err
                     });
                 } else {
-                    console.log(result)
                     return res.status(200).send({
                         msg: constantObj.messages.userStatusUpdateSuccess
                     });
-                    done(err);
+                    done(err,result);
                 }
             })
         }

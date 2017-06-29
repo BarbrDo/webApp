@@ -590,6 +590,7 @@ exports.listshops = function(req, res) {
 
 exports.shopdetail = function(req, res) {
     req.checkParams("user_id", "user_id cannot be blank").notEmpty();
+
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -599,6 +600,7 @@ exports.shopdetail = function(req, res) {
     }
     var query = {};
     query._id = mongoose.Types.ObjectId(req.params.user_id);
+    console.log(req.params.user_id)
     user.aggregate([{
         $match: query
     }, {
@@ -632,6 +634,7 @@ exports.shopdetail = function(req, res) {
                 "err": err
             });
         } else {
+            console.log(result)
             res.status(200).send({
                 "msg": constantObj.messages.successRetreivingData,
                 "data": result

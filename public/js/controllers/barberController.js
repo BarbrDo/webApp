@@ -87,8 +87,7 @@ angular.module('BarbrDoApp')
 				_id: $stateParams._id
 			}
 			barber.shopChairs(obj).then(function(response) {
-				$scope.particularShop = response.data.data;
-				console.log(response.data.data)
+				$rootScope.particularShop = response.data.data;
 			})
 		}
 		var myArray = [];
@@ -100,17 +99,18 @@ angular.module('BarbrDoApp')
 			date.setDate(date.getDate() + i);
 			myArray.push(date)
 		}
-		$scope.selectDate = myArray;
+		$rootScope.selectDate = myArray;
 		// $scope.selectedDated = 0;
 		$scope.setSelected = function(prop,index) {
-			$scope.selectedDate = prop.toISOString().slice(0, 10);
+			$rootScope.selectedDate = prop.toISOString().slice(0, 10);
 			$scope.selecteddd = index;
 		};
-		$scope.changeObject = function(id) {
-			$scope.chairId = id;
+		$scope.changeObject = function(chair) {
+			$scope.chairId = chair._id;
+			$rootScope.chair = chair;
+
 		}
 		$scope.requestChair = function() {
-			console.log($scope.chairId)
 			if ($scope.chairId) {
 				$scope.loaderStart = true;
 				var passObj = {
@@ -118,11 +118,16 @@ angular.module('BarbrDoApp')
 					chair_id: $scope.chairId,
 					barber_id: objj._id,
 					barber_name: objj.first_name,
-					booking_date: $scope.selectedDate
+					booking_date: $rootScope.selectedDate
 				}
+
 				barber.requestChair(passObj).then(function(response) {
 					$scope.loaderStart = false;
 					toastr.success('Your request for chair is successfully saved');
+					$state.go('request-chair');
+				}).catch(function(result) {
+					$scope.loaderStart = false;
+					toastr.error('Chair already requested for the same date');
 				})
 			} else {
 				toastr.error('Please select date and chair');
@@ -192,6 +197,39 @@ angular.module('BarbrDoApp')
 				toastr.success('Your appointment is successfully canceled.');
 			})
 		}
+
+		$scope.managerequests = function() {
+			barber.manageRequest().then(function(response) {
+				console.log(response.data.result);
+				$rootScope.shoprequest = response.data.result ;
+			})
+		}
+
+		$scope.rejectrequest = function(chair) {
+			barber.declineRequest(chair).then(function(response) {
+				console.log(response)
+				toastr.success('Request is Declined successfully');
+				// $state.go('barbershopdashboard')
+			})
+		}
+
+
+		$scope.acceptrequest = function(chair) {
+			barber.acceptRequest(chair).then(function(response) {
+				toastr.success('Request is Accepted successfully');
+				// $state.go('barbershopdashboard')
+
+			})
+		}
+
+
+		$scope.shopdetails = function() {
+			barber.RequesterDetail($stateParams.id).then(function(response) {
+				$rootScope.shoprequesterpic = response.data.data[0];
+				$rootScope.shoprequester = response.data.data[0].shopinfo[0];
+			})
+		}
+
 		$scope.payNow = function() {
 			toastr.warning('Work in progress.')
 		}

@@ -623,6 +623,37 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         })
 
+        
+        .state('shoprequester', {
+                url: '/View-Requests-By-Shop/:id',
+                views: {
+                    "homeDash": {
+                        templateUrl: 'partials/shoprequester.html',
+                        controller: "barberCtrl"
+                    },
+                    "header": {
+                        templateUrl: 'partials/barber_header_manage_services.html',
+                        controller: "HeaderCtrl"
+                    },
+                    "sideBar": {
+                        templateUrl: 'partials/barberSideBar.html'
+                    }
+                },
+                resolve: {
+                    lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                        var deferred = $q.defer();
+                        $ocLazyLoad.load({
+                            name: 'BarbrDoApp',
+                            files: ['js/controllers/barberController.js',
+                                'js/services/barber.js'
+                            ]
+                        }).then(function() {
+                            deferred.resolve();
+                        });
+                        return deferred.promise;
+                    }]
+                }
+            })
 
         .state('manageservices', {
                 url: '/manageservices',
@@ -690,6 +721,37 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             views: {
                 "homeDash": {
                     templateUrl: 'partials/requestForChair.html',
+                    controller: "barberCtrl"
+                },
+                "header": {
+                    templateUrl: 'partials/barber_header_after_login.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/barberSideBar.html'
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/barberController.js',
+                            'js/services/barber.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
+            }
+        })
+
+         .state('request-chair', {
+            url: '/chairs/request',
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/requestConfirm.html',
                     controller: "barberCtrl"
                 },
                 "header": {
@@ -1097,7 +1159,8 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             url: '/managerequest',
             views: {
                 "homeDash": {
-                    templateUrl: 'partials/managerequest.html'
+                    templateUrl: 'partials/managerequest.html',
+                    controller: "barberCtrl"
                 },
                 "header": {
                     templateUrl: 'partials/barber_header_after_login.html',
@@ -1106,6 +1169,20 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 "sideBar": {
                     templateUrl: 'partials/barberSideBar.html'
                 }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/barberController.js',
+                            'js/services/barber.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
             }
         })
 

@@ -25,7 +25,6 @@ exports.requestChair = function(req, res) {
 			err: errors
 		});
 	}
-	console.log(req.headers.user_id)
 	var d = new Date(req.body.booking_date);
 	var bookDate = d.toISOString();
 	chairRequest.find({
@@ -48,7 +47,7 @@ exports.requestChair = function(req, res) {
 					data: resultCheck
 				});
 			}
-			console.log("database");
+
 			var saveData = {};
 			user.findOne({
 				_id: req.headers.user_id
@@ -65,6 +64,7 @@ exports.requestChair = function(req, res) {
 								err: errors
 							});
 						}
+
 						// to check booking date is Under one month or not
 						var currentDate = moment().format("YYYY-MM-DD");
 						currentDate = moment(currentDate)
@@ -82,6 +82,7 @@ exports.requestChair = function(req, res) {
 							}, {
 								"chairs.$": 1
 							}).exec(function(shopErr, shopResult) {
+								console.log("shopResult",shopResult)
 								if (shopResult != null && shopResult.chairs[0].availability == 'available') {
 									saveData.shop_id = req.body.shop_id;
 									saveData.chair_id = req.body.chair_id;
@@ -98,6 +99,7 @@ exports.requestChair = function(req, res) {
 									saveData.booking_date = req.body.booking_date
 									saveData.status = "pending";
 									chairRequest(saveData).save(function(err, result) {
+										console.log("database",result)
 										if (err) {
 											return res.status(400).send({
 												msg: constantObj.messages.errorInSave
@@ -315,7 +317,8 @@ exports.shopChairRequest = function(req, res) {
 			shopChairInfo: {
 				_id: 1,
 				name: 1,
-				chairs: 1
+				chairs: 1,
+				user_id:1
 			},
 			isChairMatching: {
 				$eq: ['$chair_id', '$shopChairInfo.chairs._id']
@@ -343,6 +346,7 @@ exports.shopChairRequest = function(req, res) {
 }
 
 exports.acceptRequest = function(req, res) {
+
 	req.checkHeaders("user_id", "User Id is required.").notEmpty();
 	req.assert("chair_request_id", "chair_request_id is required.").notEmpty() // Chair Request _id is required   
 	req.assert("request_type", "request_type is required").notEmpty();
@@ -354,6 +358,9 @@ exports.acceptRequest = function(req, res) {
 			err: errors
 		});
 	}
+	console.log(req.headers)
+	console.log(req.body)
+
 	if (req.body.request_type == 'accept') {
 		let updateCollectionData = {};
 		let bookingEndDate = "";
@@ -370,6 +377,7 @@ exports.acceptRequest = function(req, res) {
 				as: "barberInformation"
 			}
 		}]).exec(function(err, result) {
+			console.log(result)
 			if (err) {
 				return res.status(400).send({
 					msg: "error in finding",
@@ -381,8 +389,7 @@ exports.acceptRequest = function(req, res) {
 						'msg': "Data for this chair request is not present."
 					})
 				}
-				console.log(JSON.stringify(result))
-				console.log(result[0].chair_type);
+
 				var currentDate = "";
 				var futureMonth = "";
 				var futureMonthEnd = "";
@@ -420,8 +427,6 @@ exports.acceptRequest = function(req, res) {
 							futureMonth = futureMonth.add(1, 'd');
 						}
 					}
-					console.log("futureMonth", futureMonth);
-					console.log("book start", result[0].booking_date);
 					updateCollectionData = {
 						"$set": {
 							"chairs.$.booking_start": currentDate,
@@ -451,8 +456,7 @@ exports.acceptRequest = function(req, res) {
 							futureMonth = futureMonth.add(1, 'd');
 						}
 					}
-					console.log("futureMonth", futureMonth);
-					console.log("book start", result[0].booking_date);
+
 					updateCollectionData = {
 						"$set": {
 							"chairs.$.booking_start": currentDate,
@@ -493,7 +497,7 @@ exports.acceptRequest = function(req, res) {
 									msg: "Error in chair book collection."
 								})
 							} else {
-								console.log("first", output)
+								
 								done(err, "Chair successfully booked.")
 							}
 						})
@@ -511,7 +515,7 @@ exports.acceptRequest = function(req, res) {
 						}
 						bulk.find(query).update(update);
 						bulk.execute(function(error,rlt) {
-							console.log('chair buld update',error,rlt)
+						
 							// callback()
 						});
 						done(err, "all chair updated.")
@@ -529,7 +533,7 @@ exports.acceptRequest = function(req, res) {
 									msg: "Error in chair request collection."
 								})
 							} else {
-								console.log("second", outt)
+								
 								done(err, message, "Chair request successfully updated.")
 							}
 						})
@@ -544,7 +548,6 @@ exports.acceptRequest = function(req, res) {
 									msg: "Error in updating the shop collection."
 								})
 							} else {
-								console.log("third", findalResult)
 								res.send({
 									msg: 'Shop chair request accepted successfully',
                                                                         'msg1': message,

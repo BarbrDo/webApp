@@ -1,25 +1,3 @@
-forever stop 10166
-forever list
-npm start
-forever list
-forever start server.js 
-forever list
-git branch
-git pull
-git pull --no-edit
-forever list
-forever stoop 14725
-forever stop 14725
-forever list
-git pull
-forever start server.js 
-forever list
-git branch
-git pull
-git pull --no-edit
-forever list
-forever stop 30112
-forever list
 forever start server.js 
 git branch
 git pull
@@ -498,3 +476,25 @@ git pull --no-edit
 git branch
 forever start server.js 
 exit
+git branch 
+git pull 
+forever list
+forever stop 0
+forever list
+git pull 
+git status 
+git add .
+git commit -m "rotes and userss"
+git push origin master 
+git pull 
+git branch 
+git pull master
+npm start
+forever start server.js 
+forever list
+forever list
+forever stop 5360
+forever list
+npm start
+forever start server.js 
+forever list

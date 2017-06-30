@@ -17,7 +17,8 @@ let commonObj = require('../common/common');
 let mg = require('nodemailer-mailgun-transport');
 let fs = require('fs');
 let path = require('path');
-let stripe = require('stripe')('sk_test_qOMUshSkdRmS82HGI1ZzJzHy');
+let stripeToken = process.env.STRIPE
+let stripe = require('stripe')(stripeToken);
 
 function generateToken(user) {
   let payload = {

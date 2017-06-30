@@ -22,7 +22,6 @@ angular.module('BarbrDoApp')
     }
 
     $scope.submitPayment = function() {
-      alert(JSON.stringify($scope.cardDetails));
       let myobj = {
         user_id: $stateParams._id,
         card_number: $scope.cardDetails.number,
@@ -31,7 +30,6 @@ angular.module('BarbrDoApp')
         cvc: $scope.cardDetails.cvc,
         plan: $scope.cardDetails.selectPrice
       }
-      alert(JSON.stringify(myobj))
       shop.subScribe(myobj).then(function(response) {
         toastr.success("subscribe successfully.");
         let obj = {

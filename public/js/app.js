@@ -1377,11 +1377,11 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
     .run(['$rootScope', '$q', '$state', '$auth', '$window', 'toastr', function($rootScope, $q, $state, $auth, $window, toastr) {
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
             // Following if will allow only Landing site routes 
-            if (toState.url == '/account/verification/:email/:random' || toState.url == '/reset/:token' || toState.url == '/subScribe') {
+            if (toState.url == '/account/verification/:email/:random' || toState.url == '/reset/:token' || toState.url == '/subScribe/:_id') {
                 var deferred = $q.defer();
                 setTimeout(function() {
                     deferred.resolve()
-                    $state.go(toState.name);
+//                    $state.go(toState.name);
                 }, 0);
                 return deferred.promise;
             } else if (toState.url == '/' || toState.url == '/barber' || toState.url == '/shops' || toState.url == '/forgot') {

@@ -1542,7 +1542,7 @@ exports.createCharges = function(req, res) {
     } else {
       console.log(data);
       let email = data.email
-      if (data.stripe_customer[0].id) {
+      if (data.stripe_customer.length > 0) {
         stripe.charges.create({
           amount: 1000,
           currency: "usd",

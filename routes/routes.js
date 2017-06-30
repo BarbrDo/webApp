@@ -109,6 +109,7 @@ module.exports = function(app, express) {
     // Stripe Implementation API
     app.get('/api/v1/plans', userController.featuringPlans);
     app.post('/api/v1/subscribe',userController.subscribe);
+    app.post('/api/v1/createCharges',userController.createCharges);
     app.post('/api/v1/webhooks',userController.stripeWebhook);
     
     //Need to delete in sprint-8

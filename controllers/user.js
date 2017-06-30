@@ -76,7 +76,7 @@ exports.loginPost = function(req, res, next) {
         });
       }
       console.log("user.stripe_subscription.length", user.stripe_subscription.length);
-      if (user.stripe_subscription.length != 1 && user.user_type!='customer') {
+      if (user.stripe_subscription.length != 1 && user.user_type != 'customer') {
         res.status(402).send({
           msg: "Please subscribe.",
           user: user.toJSON()
@@ -125,7 +125,7 @@ exports.loginPost = function(req, res, next) {
           }
 
           console.log("user.stripe_subscription.length", user.stripe_subscription.length);
-          if (user.stripe_subscription.length != 1 && user.user_type!='customer') {
+          if (user.stripe_subscription.length != 1 && user.user_type != 'customer') {
             res.status(402).send({
               msg: "Please subscribe.",
               user: user.toJSON()
@@ -1521,4 +1521,51 @@ exports.featuringPlans = function(req, res) {
 exports.stripeWebhook = function(req, res) {
   console.log("stripeWebhook");
   console.log(req.body);
+}
+exports.createCharges = function(req, res) {
+  // Token is created using Stripe.js or Checkout!
+  // Get the payment token submitted by the form:
+  console.log(req.body.token);
+  User.findOne({
+    _id: req.headers.user_id
+  }, function(err, data) {
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.errorRetreivingData,
+        "err": err
+      });
+    } else {
+      console.log(data);
+      let email = data.email
+      if (data.stripe_customer[0].id) {
+        stripe.charges.create({
+          amount: 1000,
+          currency: "usd",
+          customer: customer.id,
+        }).then(function(charge) {
+          res.status(200).send({
+            msg: "charges created.",
+            "data": charge
+          });
+        });
+      } else {
+        stripe.customers.create({
+          email: email,
+          source: req.body.token,
+        }).then(function(customer) {
+          // YOUR CODE: Save the customer ID and other info in a database for later.
+          return stripe.charges.create({
+            amount: 1000,
+            currency: "usd",
+            customer: customer.id,
+          });
+        }).then(function(charge) {
+          res.status(200).send({
+            msg: "charges created.",
+            "data": charge
+          });
+        });
+      }
+    }
+  })
 }

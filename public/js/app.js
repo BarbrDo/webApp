@@ -1,4 +1,4 @@
-angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap', 'ngTable', 'alexjoffroy.angular-loaders', 'uiGmapgoogle-maps', 'rzModule', 'ngFileUpload', 'uiSwitch', 'toastr', 'checklist-model', 'angular-input-stars', 'stripe', 'angularPayments', 'geolocation'])
+angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ui.bootstrap', 'ngTable', 'alexjoffroy.angular-loaders', 'uiGmapgoogle-maps', 'rzModule', 'ngFileUpload', 'uiSwitch', 'toastr', 'checklist-model', 'angular-input-stars', 'angularPayments', 'geolocation'])
     .config(
         ['uiGmapGoogleMapApiProvider', function(GoogleMapApiProviders) {
             GoogleMapApiProviders.configure({
@@ -6,7 +6,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             });
         }])
     .config(function($stateProvider, $urlRouterProvider, $locationProvider, $authProvider) {
-        Stripe.setPublishableKey('sk_test_qOMUshSkdRmS82HGI1ZzJzHy');
+        // Stripe.setPublishableKey('sk_test_qOMUshSkdRmS82HGI1ZzJzHy');
         $locationProvider.html5Mode({
             enabled: true,
             requireBase: false

@@ -95,8 +95,38 @@ angular.module('BarbrDoApp')
           }
         });
       },
+      addService: function(data) {
+        return $http({
+          method: 'post',
+          url: '/api/v1/barber/services',
+          headers: {
+            'user_id' : obj._id
+          },
+          data : data
+        })
+      },
+      editService: function(data) {
+         return $http({
+          method: 'put',
+          url: '/api/v1/barber/services/'+data._id,
+          headers: {
+            'user_id' : obj._id
+          },
+          data : data
+        })
+      },
+      deleteService: function(data) {
+         return $http({
+          method: 'delete',
+          url: '/api/v1/barber/services/'+data._id,
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+            'user_id' : obj._id
+          }
+        })
+      },
       allServices: function(data) {
-        return $http.get('/api/v1/barber/services', data);
+        return $http.get('/api/v1/barber/services/'+obj._id);
       }
       }
   });

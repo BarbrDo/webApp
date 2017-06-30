@@ -65,7 +65,7 @@ exports.editBarber = function(req, res) {
 }
 
 exports.getAllServices = function(req, res) {
-    service.find({
+    barber_service.find({
         "status": true
     }, function(err, data) {
         if (err) {
@@ -97,19 +97,32 @@ exports.addBarberServices = function(req, res) {
     saveData.barber_id = req.headers.user_id;
     var barber_id = objectID.isValid(req.headers.user_id)
     if (barber_id) {
-        barber_service(saveData).save(function(err, data) {
-            if (err) {
+        barber_service.find({
+            "barber_id": req.headers.user_id,
+            "name": req.body.name
+        }, function(error, result) {
+            if (result) {
                 res.status(400).send({
                     msg: constantObj.messages.errorInSave,
-                    "err": err
+                    "err": error
                 });
             } else {
-                res.status(200).send({
-                    msg: constantObj.messages.saveSuccessfully,
-                    "data": data
-                });
+                barber_service(saveData).save(function(err, data) {
+                    if (err) {
+                        res.status(400).send({
+                            msg: constantObj.messages.errorInSave,
+                            "err": err
+                        });
+                    } else {
+                        res.status(200).send({
+                            msg: constantObj.messages.saveSuccessfully,
+                            "data": data
+                        });
+                    }
+                })
             }
         })
+
     } else {
         res.status(400).send({
             msg: 'Your input is wrong.'
@@ -371,8 +384,8 @@ exports.rescheduleAppointment = function(req, res) {
         });
     }
     var newDateObj = new Date(req.body.appointment_date);
-    console.log("newDateObj",newDateObj);
-    console.log("body",req.body)
+    console.log("newDateObj", newDateObj);
+    console.log("body", req.body)
     var newDateObj = newDateObj.setMinutes(newDateObj.getMinutes() + req.body.minutes);
     appointment.update({
         _id: req.params.appointment_id
@@ -425,19 +438,19 @@ exports.completeAppointment = function(req, res) {
                 _id: req.params.appointment_id
             }, {
 
-                    $set: {
-                        "appointment_status": "completed"
-                    }
-                }, function (err, result) {
-                    if (err) {
-                        done("some error", err)
-                    } else {
-                       return res.status(200).send({
+                $set: {
+                    "appointment_status": "completed"
+                }
+            }, function(err, result) {
+                if (err) {
+                    done("some error", err)
+                } else {
+                    return res.status(200).send({
                         msg: constantObj.messages.userStatusUpdateSuccess
                     });
-                    done(err,result);
-                    }
-                })
+                    done(err, result);
+                }
+            })
 
 
         },
@@ -454,7 +467,7 @@ exports.completeAppointment = function(req, res) {
                     return res.status(200).send({
                         msg: constantObj.messages.userStatusUpdateSuccess
                     });
-                    done(err,result);
+                    done(err, result);
                 }
             })
         }
@@ -897,7 +910,7 @@ exports.barberdetail = function(req, res) {
             })
         }
     })
-};    
+};
 
 exports.rateBarber = function(req, res) {
     req.checkHeaders("user_id", "User id is required.").notEmpty();
@@ -933,18 +946,18 @@ exports.rateBarber = function(req, res) {
             }, {
                 $set: {
                     is_rating_given: true,
-                    rating_score:parseInt(req.body.score),
+                    rating_score: parseInt(req.body.score),
                 }
             }, function(err, result) {
                 if (err) {
                     done("some error", err)
                 } else {
-                    if(result.nModified == 0){
+                    if (result.nModified == 0) {
                         return res.status(400).send({
-                        msg: "no record found",
-                        err: err
+                            msg: "no record found",
+                            err: err
                         });
-                    }else {
+                    } else {
                         done(err, result);
                     }
                 }
@@ -1156,25 +1169,25 @@ exports.viewBarberAvailability = function(req, res) {
                     }
                     resultTantTime.push(x);
                 }
-                console.log("resultTantTime",resultTantTime);
+                console.log("resultTantTime", resultTantTime);
                 let newArray = [];
                 for (var i = 0; i < timeArray.length; i++) {
                     let k = 0;
                     for (var j = 0; j < resultTantTime.length; j++) {
-                        if (timeArray[i]==resultTantTime[j]){
+                        if (timeArray[i] == resultTantTime[j]) {
                             let obj = {
-                                time:timeArray[i],
-                                isAvailable:false
+                                time: timeArray[i],
+                                isAvailable: false
                             }
                             newArray.push(obj)
-                            k=1;
+                            k = 1;
                         }
                     }
-                    if(k==0){
+                    if (k == 0) {
                         let obj = {
-                                time:timeArray[i],
-                                isAvailable:true
-                            }
+                            time: timeArray[i],
+                            isAvailable: true
+                        }
                         newArray.push(obj)
                     }
                 }
@@ -1182,19 +1195,19 @@ exports.viewBarberAvailability = function(req, res) {
                     var reslt = newArray[k].time.split(":");
                     reslt = parseInt(reslt[0]);
                     if (reslt >= 9 && reslt <= 11) {
-                            morning.push(newArray[k]);
+                        morning.push(newArray[k]);
                     }
                     if (reslt >= 12 || reslt <= 4) {
-                            afternoon.push(newArray[k]);
+                        afternoon.push(newArray[k]);
                     }
                     if (reslt >= 5 && reslt <= 8) {
-                            evening.push(newArray[k]);
+                        evening.push(newArray[k]);
                     }
                 }
                 let timeSlots = {
-                    morning:morning,
-                    afternoon:afternoon,
-                    evening:evening
+                    morning: morning,
+                    afternoon: afternoon,
+                    evening: evening
                 }
                 return res.status(200).send({
                     msg: "Time slots retrieve.",

@@ -209,7 +209,9 @@ angular.module('BarbrDoApp')
 			barber.declineRequest(chair).then(function(response) {
 				console.log(response)
 				toastr.success('Request is Declined successfully');
-				// $state.go('barbershopdashboard')
+				$scope.managerequests();
+			}).catch(function(result) {
+				toastr.warning('Invalid request ! Chair split Required');
 			})
 		}
 
@@ -217,8 +219,9 @@ angular.module('BarbrDoApp')
 		$scope.acceptrequest = function(chair) {
 			barber.acceptRequest(chair).then(function(response) {
 				toastr.success('Request is Accepted successfully');
-				// $state.go('barbershopdashboard')
-
+				$scope.managerequests();
+			}).catch(function(result) {
+				toastr.warning('Invalid request ! Chair split Required');
 			})
 		}
 
@@ -234,6 +237,12 @@ angular.module('BarbrDoApp')
 			toastr.warning('Work in progress.')
 		}
 
+		$scope.cancel = function(index) {
+	      if ($scope.editing !== false) {
+	        $scope.editing = false;
+	      }
+	    };
+
 
 		if ($state.current.name == 'manageservices' || $state.current.name == 'addservice') {
 			$scope.loaderStart = true;
@@ -242,8 +251,39 @@ angular.module('BarbrDoApp')
 				$scope.servicesData = response.data.data
 			})
 		}
-		$scope.saveServicesPrice = function() {
-			toastr.warning("Work in progress.");
+		$scope.addservice = function(service,price) {
+			if(price) {
+				var obj={
+				name : service.name,
+				price: price
+			}
+			barber.addService(obj).then(function(response) {
+			toastr.success("Service Added Successfully");
+			$state.go('manageservices');
+			}).catch(function(result){
+				toastr.error("This service is already added!! You cant add it again");
+			})
+			}
+			else {
+				toastr.error("Please add price");
+
+			}
+			
+		}
+
+		$scope.editservices = function(service) {
+			barber.editService(service).then(function(response) {
+			toastr.success("Service Edited Successfully");
+			})
+		}
+
+		$scope.deleteservice = function(service) {
+			barber.deleteService(service).then(function(response) {
+			// $state.go('manageservices');
+			history.go();
+			toastr.success("Service Deleted Successfully");
+			
+			})
 		}
 
 	});

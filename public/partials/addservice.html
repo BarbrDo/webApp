@@ -13,15 +13,16 @@
         <tr ng-repeat="data in servicesData">
             <td class="sname">{{data.name}}</td>
             <td>
-              <input type="text" class="form-control" required value="$ " />
+              <input type="text" class="form-control" required value="$" ng-model="price" />
             </td>
             <td align="center">
-             <switch name="enabled" ng-model="enabled" class="green"></switch>
+             <!-- <switch name="enabled" ng-model="enabled"  class="green"></switch> -->
+             <button class="adds_Btn" ng-click="addservice(data,price)">Save</button> 
             </td>
          </tr>
         </table>
-     </div> 
+     </div>
 </div>
-       <button class="adds_Btn" ng-click="saveServicesPrice()">Save</button> 
+       <!-- <button class="adds_Btn" ng-click="addservice(data)">Save</button>  -->
   </div>
 </div>

@@ -52,7 +52,6 @@ exports.requestChair = function(req, res) {
 			user.findOne({
 				_id: req.headers.user_id
 			}, function(err, data) {
-				console.log("data",data)
 				if (data) {
 					if (data.user_type == 'barber') {
 						req.assert("shop_id", "Shop Id is required.").notEmpty();
@@ -82,7 +81,7 @@ exports.requestChair = function(req, res) {
 							}, {
 								"chairs.$": 1
 							}).exec(function(shopErr, shopResult) {
-								console.log("shopResult",shopResult)
+
 								if (shopResult != null && shopResult.chairs[0].availability == 'available') {
 									saveData.shop_id = req.body.shop_id;
 									saveData.chair_id = req.body.chair_id;
@@ -99,7 +98,6 @@ exports.requestChair = function(req, res) {
 									saveData.booking_date = req.body.booking_date
 									saveData.status = "pending";
 									chairRequest(saveData).save(function(err, result) {
-										console.log("database",result)
 										if (err) {
 											return res.status(400).send({
 												msg: constantObj.messages.errorInSave
@@ -132,23 +130,46 @@ exports.requestChair = function(req, res) {
 								err: errors
 							});
 						}
-						saveData = req.body;
-						saveData.shop_id = req.headers.user_id
-						saveData.requested_by = data.user_type
-						saveData.status = "pending";
-						chairRequest(saveData).save(function(err, result) {
-							if (err) {
-								return res.status(400).send({
-									msg: constantObj.messages.errorInSave
+						shop.findOne({
+							"_id": req.body.shop_id,
+							"chairs._id": req.body.chair_id
+						}, {
+							"chairs.$": 1
+						}).exec(function(shopErr, result) {
+							saveData = req.body;
+							if (result != null && result.chairs[0].availability == 'available') {
+								
+								if (result.chairs[0].type == 'weekly' || result.chairs[0].type == 'monthly') {
+									saveData.amount = result.chairs[0].amount
+								}
+								if (result.chairs[0].type == 'percentage') {
+									saveData.shop_percentage = result.chairs[0].shop_percentage
+									saveData.barber_percentage = result.chairs[0].barber_percentage
+								}
+								saveData.chair_type = result.chairs[0].type;
+								saveData.shop_id = req.headers.user_id
+								saveData.requested_by = data.user_type
+								saveData.status = "pending";
+								chairRequest(saveData).save(function(err, shop) {
+									if (err) {
+										return res.status(400).send({
+											msg: constantObj.messages.errorInSave
+										})
+									} else {
+										mailChairRequest(data.email)
+										res.status(200).send({
+											msg: "Your request for shop is successfully registered.",
+											data: shop
+										});
+									}
 								})
+
 							} else {
-								mailChairRequest(data.email)
-								res.status(200).send({
-									msg: "Your request for shop is successfully registered.",
-									data: result
+								res.status(400).send({
+									msg: "Booking not available at the moment."
 								});
 							}
-						})
+						});
 					}
 				} else {
 					res.status(400).send({
@@ -176,7 +197,7 @@ let mailChairRequest = function(email) {
 		}
 	}
 	let nodemailerMailgun = nodemailer.createTransport(mg(auth));
-        console.log('email',email);
+	console.log('email', email);
 	let mailOptions = {
 		to: email,
 		cc: constantObj.messages.email,
@@ -193,7 +214,7 @@ let mailChairRequest = function(email) {
 
 exports.barberChairReqests = function(req, res) {
 	req.checkParams("shop_id", "Shop Id is required.").notEmpty();
-	console.log("shop id is",req.params.shop_id)
+	console.log("shop id is", req.params.shop_id)
 	var errors = req.validationErrors();
 	if (errors) {
 		return res.status(400).send({
@@ -318,7 +339,7 @@ exports.shopChairRequest = function(req, res) {
 				_id: 1,
 				name: 1,
 				chairs: 1,
-				user_id:1
+				user_id: 1
 			},
 			isChairMatching: {
 				$eq: ['$chair_id', '$shopChairInfo.chairs._id']
@@ -358,8 +379,6 @@ exports.acceptRequest = function(req, res) {
 			err: errors
 		});
 	}
-	console.log(req.headers)
-	console.log(req.body)
 
 	if (req.body.request_type == 'accept') {
 		let updateCollectionData = {};
@@ -377,7 +396,7 @@ exports.acceptRequest = function(req, res) {
 				as: "barberInformation"
 			}
 		}]).exec(function(err, result) {
-			console.log(result)
+			console.log("here am i  in mongo", result)
 			if (err) {
 				return res.status(400).send({
 					msg: "error in finding",
@@ -497,7 +516,7 @@ exports.acceptRequest = function(req, res) {
 									msg: "Error in chair book collection."
 								})
 							} else {
-								
+
 								done(err, "Chair successfully booked.")
 							}
 						})
@@ -505,7 +524,7 @@ exports.acceptRequest = function(req, res) {
 					function(message, done) {
 						var bulk = chairRequest.collection.initializeUnorderedBulkOp();
 						let query = {
-							"chair_id":mongoose.Types.ObjectId(result[0].chair_id),
+							"chair_id": mongoose.Types.ObjectId(result[0].chair_id),
 							"status": "pending"
 						}
 						let update = {
@@ -514,8 +533,8 @@ exports.acceptRequest = function(req, res) {
 							}
 						}
 						bulk.find(query).update(update);
-						bulk.execute(function(error,rlt) {
-						
+						bulk.execute(function(error, rlt) {
+
 							// callback()
 						});
 						done(err, "all chair updated.")
@@ -533,7 +552,7 @@ exports.acceptRequest = function(req, res) {
 									msg: "Error in chair request collection."
 								})
 							} else {
-								
+
 								done(err, message, "Chair request successfully updated.")
 							}
 						})
@@ -550,7 +569,7 @@ exports.acceptRequest = function(req, res) {
 							} else {
 								res.send({
 									msg: 'Shop chair request accepted successfully',
-                                                                        'msg1': message,
+									'msg1': message,
 									'msg2': chairReqeustMessage
 								});
 								done(err)

@@ -77,6 +77,16 @@ angular.module('BarbrDoApp')
       },
       barberInfo: function(data) {
         return $http.get('/api/v1/userprofile/'+data._id, data);
+      },
+      chargeCustomer:function(data){
+        return $http({
+          method: 'post',
+          url: '/api/v1/createCharges',
+          headers: {
+            'user_id': obj._id//obj._id
+          },
+          data:data,
+        },data);
       }
     };
   });

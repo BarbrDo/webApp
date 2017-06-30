@@ -47,3 +47,5 @@ db.js
 
 *.DS_Store
 /nbproject/private/
+
+/bower_components

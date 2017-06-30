@@ -29,7 +29,12 @@ function generateToken(user) {
   };
   return jwt.sign(payload, process.env.TOKEN_SECRET);
 }
-
+exports.stripeWebhook = function(req,res,next){
+console.log(req.body);
+res.status(200).send({
+      msg:"ok/"
+    });
+}
 /**
  * Login required middleware
  */

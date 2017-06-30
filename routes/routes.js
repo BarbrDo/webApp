@@ -36,6 +36,9 @@ module.exports = function(app, express) {
     let appointmentController = require('./../controllers/appointment');
     let barberServices = require('./../controllers/barber');
     let commonObj = require('./../common/common');
+
+app.post('/api/v1/webhooks',userController.stripeWebhook);
+
     //Users
     app.post('/api/v1/activate', userController.activate) //Account activate
     app.post('/api/v1/signup', userController.signupPost); //Signup

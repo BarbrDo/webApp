@@ -136,9 +136,22 @@ angular.module('BarbrDoApp')
           url: '/api/v1/shops/chair',
           data:data,
           headers: {
-          "Content-Type": "application/json;charset=utf-8"
-        }
-        });
+            'user_id': obj._id
+          }
+        },data);
+      },
+      plans: function(data) {
+        return $http.get('/api/v1/plans', data);
+      },
+      subScribe: function(data) {
+        return $http({
+          method: 'post',
+          url: '/api/v1/subscribe',
+          data:data,
+          headers: {
+            'user_id': data.user_id
+          }
+        },data);
       }
       }
   });

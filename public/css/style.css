@@ -2120,6 +2120,180 @@ ul.csdwon li a {
 }
 }
 
+/*------------27.6.2017-----Himanshu---------*/
+.suscription_tab .panel
+{
+    text-align: center;
+}
+.suscription_tab .panel:hover { box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4), 0 1px 5px rgba(130, 130, 130, 0.35); }
+.suscription_tab .panel-body
+{
+    padding: 0px;
+    text-align: center;
+}
+
+.suscription_tab .the-price
+{
+    background-color: rgba(220,220,220,.17);
+    box-shadow: 0 1px 0 #dcdcdc, inset 0 1px 0 #fff;
+    padding: 20px;
+    margin: 0;
+}
+
+.suscription_tab .the-price h1
+{
+    line-height: 1em;
+    padding: 0;
+    margin: 0;
+}
+
+.suscription_tab .subscript
+{
+    font-size: 25px;
+}
+
+/* CSS-only ribbon styles    */
+.suscription_tab .cnrflash
+{
+    /*Position correctly within container*/
+    position: absolute;
+    top: -9px;
+    right: 4px;
+    z-index: 1; /*Set overflow to hidden, to mask inner square*/
+    overflow: hidden; /*Set size and add subtle rounding        to soften edges*/
+    width: 100px;
+    height: 100px;
+    border-radius: 3px 5px 3px 0;
+}
+.suscription_tab .cnrflash-inner
+{
+    /*Set position, make larger then            container and rotate 45 degrees*/
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 145px;
+    height: 145px;
+    -ms-transform: rotate(45deg); /* IE 9 */
+    -o-transform: rotate(45deg); /* Opera */
+    -moz-transform: rotate(45deg); /* Firefox */
+    -webkit-transform: rotate(45deg); /* Safari and Chrome */
+    -webkit-transform-origin: 100% 100%; /*Purely decorative effects to add texture and stuff*/ /* Safari and Chrome */
+    -ms-transform-origin: 100% 100%;  /* IE 9 */
+    -o-transform-origin: 100% 100%; /* Opera */
+    -moz-transform-origin: 100% 100%; /* Firefox */
+    background-image: linear-gradient(90deg, transparent 50%, rgba(255,255,255,.1) 50%), linear-gradient(0deg, transparent 0%, rgba(1,1,1,.2) 50%);
+    background-size: 4px,auto, auto,auto;
+    background-color: #aa0101;
+    box-shadow: 0 3px 3px 0 rgba(1,1,1,.5), 0 1px 0 0 rgba(1,1,1,.5), inset 0 -1px 8px 0 rgba(255,255,255,.3), inset 0 -1px 0 0 rgba(255,255,255,.2);
+}
+.suscription_tab .cnrflash-inner:before, .suscription_tab .cnrflash-inner:after
+{
+    /*Use the border triangle trick to make                 it look like the ribbon wraps round it's                container*/
+    content: " ";
+    display: block;
+    position: absolute;
+    bottom: -16px;
+    width: 0;
+    height: 0;
+    border: 8px solid #800000;
+}
+.suscription_tab .cnrflash-inner:before
+{
+    left: 1px;
+    border-bottom-color: transparent;
+    border-right-color: transparent;
+}
+.suscription_tab .cnrflash-inner:after
+{
+    right: 0;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+}
+.suscription_tab .cnrflash-label
+{
+    /*Make the label look nice*/
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    padding-bottom: 5px;
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(1,1,1,.8);
+    font-size: 0.95em;
+    font-weight: bold;
+    text-align: center;
+}
+.suscription_tab ,.payment_tab{
+  float: left;
+  width: 100%;
+}
+.suscription_tab div.panel-heading h3.panel-title{font-size: 20px;}
+.suscription_tab div.panel div.panel-body{font-size: 16px;}
+
+
+/*-----------payment---------*/
+.credit-card-box .panel-title {
+    display: inline;
+    font-weight: bold;
+}
+.credit-card-box .form-control.error {
+    border-color: red;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(255,0,0,0.6);
+}
+.credit-card-box label.error {
+  font-weight: bold;
+  color: red;
+  padding: 2px 8px;
+  margin-top: 2px;
+}
+.credit-card-box .payment-errors {
+  font-weight: bold;
+  color: red;
+  padding: 2px 8px;
+  margin-top: 2px;
+}
+.credit-card-box label {
+    display: block;
+}
+/* The old "center div vertically" hack */
+.credit-card-box .display-table {
+    display: table;
+}
+.credit-card-box .display-tr {
+    display: table-row;
+}
+.credit-card-box .display-td {
+    display: table-cell;
+    vertical-align: middle;
+    width: 50%;
+}
+/* Just looks nicer */
+.credit-card-box .panel-heading img {
+    min-width: 180px;
+}
+.inner_payment {
+  float: none;
+  margin: 0 auto;
+  width: 400px;
+}
+form#payment-form button.subscribe.btn,.suscription_tab div.panel-footer a.btn {
+  background: hsl(357, 73%, 47%) none repeat scroll 0 0;
+  border-color: #ce2029;
+}
+.clear_tb{float: left;width: 100%;margin-top: 20px;}
+.suscription_tab .center_div{margin: 0px auto;float: none;}
+.inner_payment .panel-body.contact-us{float: none;padding: 25px 10px;}
+.inner_payment .panel-body.contact-us form{width: auto;}
+.inner_payment .panel-default{border:none;}
+
+@media(max-width: 460px)
+{
+    .inner_payment{width: auto;}
+    .payment_tab .inner_payment div.panel-heading{padding: 10px 9px;}
+}
+
 .funkyradio div {
   clear: both;
   overflow: hidden;
@@ -2228,3 +2402,4 @@ ul.csdwon li a {
   color: #fff;
   background-color: #5bc0de;
 }
+

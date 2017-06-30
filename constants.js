@@ -37,10 +37,10 @@ const distance = {
 
 const timeSlots = {
 	"morning": [
-		{"time":"9:00","isAvailable":true},
-		{"time":"9:15","isAvailable":true},
-		{"time":"9:30","isAvailable":true},
-		{"time":"9:45","isAvailable":true},
+		{"time":"09:00","isAvailable":true},
+		{"time":"09:15","isAvailable":true},
+		{"time":"09:30","isAvailable":true},
+		{"time":"09:45","isAvailable":true},
 		{"time":"10:00","isAvailable":true},
 		{"time":"10:15","isAvailable":true},
 		{"time":"10:30","isAvailable":true},

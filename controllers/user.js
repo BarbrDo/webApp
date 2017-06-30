@@ -46,68 +46,101 @@ exports.ensureAuthenticated = function(req, res, next) {
  * Sign in with email and password
  */
 exports.loginPost = function(req, res, next) {
-  req.assert('email', 'Email is not valid').isEmail();
-  req.assert('email', 'Email cannot be blank').notEmpty();
-  req.assert('password', 'Password cannot be blank').notEmpty();
-  req.sanitize('email').normalizeEmail({
-    remove_dots: false
-  });
+  if (req.body.decrypt) {
+    req.assert('email', 'Email is not valid').isEmail();
+    req.sanitize('email').normalizeEmail({
+      remove_dots: false
+    });
+    let errors = req.validationErrors();
+    if (errors) {
+      return res.status(400).send({
+        msg: "error in your request",
+        err: errors
+      });
+    }
 
-  let errors = req.validationErrors();
+    User.findOne({
+      email: req.body.email
+    }).exec(function(err, user) {
+      if (!user) {
+        return res.status(401).send({
+          msg: 'The email address ' + req.body.email + ' is not associated with any account. ' +
+            'Double-check your email address and try again.'
+        });
+      }
+      /*-- this condition is for check that this account is active or not---- */
+      if (user.is_active == false && user.is_verified == false) {
+        return res.status(401).send({
+          msg: user.remark
+        });
+      }
+      console.log("user.stripe_subscription.length", user.stripe_subscription.length);
+      if (user.stripe_subscription.length != 1) {
+        res.status(402).send({
+          msg: "Please subscribe.",
+          user: user.toJSON()
+        })
+      }
+      res.send({
+        token: generateToken(user),
+        user: user.toJSON(),
+        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+      });
+    })
+  } else {
+    req.assert('email', 'Email is not valid').isEmail();
+    req.assert('email', 'Email cannot be blank').notEmpty();
+    req.assert('password', 'Password cannot be blank').notEmpty();
+    req.sanitize('email').normalizeEmail({
+      remove_dots: false
+    });
+    let errors = req.validationErrors();
+    if (errors) {
+      return res.status(400).send({
+        msg: "error in your request",
+        err: errors
+      });
+    }
+    User.findOne({
+      email: req.body.email
+    }).exec(function(err, user) {
+      if (!user) {
+        return res.status(401).send({
+          msg: 'The email address ' + req.body.email + ' is not associated with any account. ' +
+            'Double-check your email address and try again.'
+        });
+      }
+      /*-- this condition is for check that this account is active or not---- */
+      if (user.is_active == false && user.is_verified == false) {
+        return res.status(401).send({
+          msg: user.remark
+        });
+      } else {
+        user.comparePassword(req.body.password, function(err, isMatch) {
+          if (!isMatch) {
+            return res.status(401).send({
+              msg: 'Invalid email or password'
+            });
+          }
 
-  if (errors) {
-    return res.status(400).send({
-      msg: "error in your request",
-      err: errors
+          console.log("user.stripe_subscription.length", user.stripe_subscription.length);
+          if (user.stripe_subscription.length != 1 && user.user_type!='customer') {
+            res.status(402).send({
+              msg: "Please subscribe.",
+              user: user.toJSON()
+            })
+          } else {
+            res.send({
+              token: generateToken(user),
+              user: user.toJSON(),
+              "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+            });
+          }
+        });
+      }
     });
   }
 
-  User.findOne({
-    email: req.body.email
-  }).exec(function(err, user) {
-    if (!user) {
-      return res.status(401).send({
-        msg: 'The email address ' + req.body.email + ' is not associated with any account. ' +
-          'Double-check your email address and try again.'
-      });
-    }
-    /*-- this condition is for check that this account is active or not---- */
-    if (user.is_active == false && user.is_verified == false) {
-      return res.status(401).send({
-        msg: user.remark
-      });
-    }
-    console.log("user.stripe_subscription.length", user.stripe_subscription.length);
-    if (user.stripe_subscription.length != 1) {
-      res.status(402).send({
-        msg: "Please subscribe.",
-        user: user.toJSON()
-      })
-    } else {
-      user.comparePassword(req.body.password, function(err, isMatch) {
-        if (!isMatch) {
-          return res.status(401).send({
-            msg: 'Invalid email or password'
-          });
-        }
-
-        // var options = {
-        //   headers: {
-        //     'user': user.toJSON(),
-        //     'token': generateToken(user),
-        //     "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-        //   }
-        // };
-        // res.sendFile(path.join(__dirname + './../public/index1.html'), options);
-
-        res.send({
-          token: generateToken(user),
-          user: user.toJSON(),
-          "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-        });
-      });
-    }
-  });
 };
 
 /**
@@ -1325,61 +1358,142 @@ exports.subscribe = function(req, res) {
       });
     } else {
       console.log("user_id", data);
-      let customerId = data.stripe_customer[0].id
-      console.log(customerId);
-      stripe.customers.createSource(customerId, {
-        source: {
-          object: 'card',
-          exp_month: req.body.month,
-          exp_year: req.body.year,
-          number: req.body.card_number,
-          cvc: req.body.cvc
-        }
-      }).then(function(source) {
-        console.log("stripe.customers.createSource ", source)
-        return stripe.subscriptions.create({
-          customer: customerId,
-          plan: req.body.plan
-        }, function(err, subscription) {
-          if (err) {
+      if (data.stripe_customer.length > 0) {
+        let customerId = data.stripe_customer[0].id
+        console.log(customerId);
+        stripe.customers.createSource(customerId, {
+          source: {
+            object: 'card',
+            exp_month: req.body.month,
+            exp_year: req.body.year,
+            number: req.body.card_number,
+            cvc: req.body.cvc
+          }
+        }).then(function(source) {
+          console.log("stripe.customers.createSource ", source)
+          return stripe.subscriptions.create({
+            customer: customerId,
+            plan: req.body.plan
+          }, function(err, subscription) {
+            if (err) {
+              res.status(400).send({
+                msg: "Error occurred in subscription.",
+                "err": err
+              });
+            } else {
+              console.log("subscription", subscription);
+              User.update({
+                _id: req.headers.user_id
+              }, {
+                $set: {
+                  stripe_subscription: subscription
+                }
+              }, function(err, result) {
+                if (err) {
+                  res.status(400).send({
+                    msg: "Error occurred in subscription.",
+                    "err": err
+                  });
+                } else {
+                  User.findOne({
+                    _id: req.headers.user_id
+                  }).exec(function(err, user) {
+                    res.send({
+                      token: generateToken(user),
+                      user: user.toJSON(),
+                      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+                    });
+                  })
+                }
+              })
+            }
+          }).catch(function(err) {
             res.status(400).send({
               msg: "Error occurred in subscription.",
               "err": err
             });
-          } else {
-            console.log("subscription", subscription);
-            User.update({
-              _id: req.headers.user_id
-            }, {
-              $set: {
-                stripe_subscription: subscription
-              }
-            }, function(err, result) {
-              if (err) {
-                res.status(400).send({
-                  msg: "Error occurred in subscription.",
-                  "err": err
-                });
-              } else {
-                User.findOne({
-                  _id: req.headers.user_id
-                }).exec(function(err, user) {
-                  res.send({
-                    token: generateToken(user),
-                    user: user.toJSON(),
-                    "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-                  });
-                })
-              }
-            })
-          }
-        }).catch(function(err) {
-          res.status(400).send({
-            msg: "Error occurred in subscription.",
-            "err": err
           });
+        })
+      } else {
+        stripe.customers.create({
+          email: data.email,
+          metadata: {
+            user_type: data.user_type,
+            first_name: data.first_name,
+            last_name: data.last_name,
+            mobile_number: data.mobile_number
+          }
+        }).then(function(customer) {
+          let updateData = {
+            "$set": {
+              isActive: true,
+              is_verified: true,
+              stripe_customer: customer
+            }
+          }
+          User.update({
+            email: data.email
+          }, updateData, function(err, updateInfo) {
+            console.log("subscription user udpate err,updateInfo", err, updateInfo);
+          })
+          return stripe.customers.createSource(customer.id, {
+            source: {
+              object: 'card',
+              exp_month: req.body.month,
+              exp_year: req.body.year,
+              number: req.body.card_number,
+              cvc: req.body.cvc
+            }
+          });
+        }).then(function(source) {
+          return stripe.subscriptions.create({
+            customer: customerId,
+            plan: req.body.plan
+          }, function(err, subscription) {
+            if (err) {
+              res.status(400).send({
+                msg: "Error occurred in subscription.",
+                "err": err
+              });
+            } else {
+              console.log("subscription", subscription);
+              User.update({
+                _id: req.headers.user_id
+              }, {
+                $set: {
+                  stripe_subscription: subscription
+                }
+              }, function(err, result) {
+                if (err) {
+                  res.status(400).send({
+                    msg: "Error occurred in subscription.",
+                    "err": err
+                  });
+                } else {
+                  User.findOne({
+                    _id: req.headers.user_id
+                  }).exec(function(err, user) {
+                    res.send({
+                      token: generateToken(user),
+                      user: user.toJSON(),
+                      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+                    });
+                  })
+                }
+              })
+            }
+          }).catch(function(err) {
+            res.status(400).send({
+              msg: "Error occurred in subscription.",
+              "err": err
+            });
+          })
+        }).then(function(charge) {
+
+        }).catch(function(err) {
+
         });
-      })
+      }
     }
   })
 }

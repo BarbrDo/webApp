@@ -263,4 +263,10 @@ angular.module('BarbrDoApp')
 				_id: id
 			});
 		}
+
+		// Stripe Implementation
+		var elements = stripe.elements();
+
+
+
 	});

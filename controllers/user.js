@@ -76,7 +76,7 @@ exports.loginPost = function(req, res, next) {
         });
       }
       console.log("user.stripe_subscription.length", user.stripe_subscription.length);
-      if (user.stripe_subscription.length != 1) {
+      if (user.stripe_subscription.length != 1 && user.user_type!='customer') {
         res.status(402).send({
           msg: "Please subscribe.",
           user: user.toJSON()

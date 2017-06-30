@@ -1,0 +1,72 @@
+
+<div class="crumb"> 
+    <!--    <span>Book Appointment</span> -->
+</div>
+<div class="wrapper">
+    <div class="block">
+        <h2>Your Request for Chair</h2>
+        <div class="selected_barber">
+            <img src="images/clndr.png" alt="">
+            <div class="namertng">
+               <h3> Request For </h3>
+                <h2>{{selectedDate | date:'EEEE'}},{{selectedDate |  date:'MMMM dd'}} </h2>
+            </div>
+            
+        </div>
+    </div>
+    <div class="block higlght">
+        <h2>Appointment Booked At</h2>
+        <div class="row">
+            <div class="col-md-4 col-sm-6">
+                <p> {{particularShop.name}}</p> <br>
+                {{particularShop.address}}<br>
+                {{particularShop.city}} , {{particularShop.state}}
+            </div>
+            <!-- <div class="col-md-4 col-sm-6">
+              <p><i class="fa  fa-clock-o"> </i> 9:00 AM</p>
+            </div> -->
+            <!-- <div class="col-md-4"> <a href="#" class="cmbtn">Add to Calendar</a> </div> -->
+        </div>
+    </div>
+    <div class="block higlght">
+        <h2>Chair Details </h2>
+        <div class="row">
+            <div class="col-md-3">
+                <p><img src="/images/2.png" alt="chair"> </p></div>
+            <div class="col-md-9">
+                Name : <p>{{chair.name}}</p><br>
+                <p>{{chair.shop_percentage}}</p>
+               Amount : <p>{{chair.amount}}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="perform_action">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <button class="subtn" data-toggle="modal" data-target="#contactshop" ><i class="fa fa-envelope"></i> Contact Shop</button>
+            </div>
+        </div>
+    </div>
+   
+       <div class="modal " id="contactshop" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #52ebfa;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Contact Shop</h4>
+                </div>
+                <div class="modal-body">
+                <h3> Shop Address</h3>
+                    <p> {{particularShop.name}}</p>
+                {{particularShop.address}}<br>
+                {{particularShop.city}} , {{particularShop.state}}<br>
+                <button class="subtn"><i class="fa fa-phone"></i> Contact Shop : &nbsp;&nbsp;&nbsp; 9876543211</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" >OK</button>
+                </div>
+            </div>
+        </div>
+    </div> 

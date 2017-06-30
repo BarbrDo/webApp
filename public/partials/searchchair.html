@@ -19,13 +19,13 @@
               <div class="above">
                 <div class="dtll shpdtl">
                   <div class="icon"><img src="images/barbr_icon.png" alt="" ></div>
-                  <p>{{result.chairs.length}}</p>
+                  <p>{{result.chair_barber.length}}</p>
                 </div>
                 <div class="dtlr shpdtl">
                   <div class="icon"><img src="images/miles.png" alt="" ></div>
-                  <p>{{result.dist.calculated | number : 2}}</p>
+                  <p>{{result._id.distance | number : 2}} miles</p>
                 </div>
-                <a ui-sref="shopChairs({_id:result._id})" class="byshop" >{{result.name}}<i class="fa  fa-angle-right"></i> </a> </div>
+                <a ui-sref="shopChairs({_id:result._id._id})" class="byshop" >{{result._id.name}}<i class="fa  fa-angle-right"></i> </a> </div>
             </div>
           </div>
         </div>

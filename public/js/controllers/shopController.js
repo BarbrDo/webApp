@@ -67,7 +67,7 @@ angular.module('BarbrDoApp')
 			shop.shopInfo().then(function(response){
 				$scope.chairs = response.data.user;
 				$window.localStorage.shop_id = response.data.user.shop[0]._id;
-				console.log(response.data.user.shop[0])
+				
 			})
 		}
 

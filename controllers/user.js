@@ -29,7 +29,12 @@ function generateToken(user) {
   };
   return jwt.sign(payload, process.env.TOKEN_SECRET);
 }
-
+exports.stripeWebhook = function(req,res,next){
+console.log(req.body);
+res.status(200).send({
+      msg:"ok/"
+    });
+}
 /**
  * Login required middleware
  */
@@ -1537,7 +1542,7 @@ exports.createCharges = function(req, res) {
     } else {
       console.log(data);
       let email = data.email
-      if (data.stripe_customer[0].id) {
+      if (data.stripe_customer.length > 0) {
         stripe.charges.create({
           amount: 1000,
           currency: "usd",

@@ -3,8 +3,9 @@ angular.module('BarbrDoApp')
 		var objj = JSON.parse($window.localStorage.user);
 		$scope.imgPath = $window.localStorage.imagePath;
 
-		$scope.loaderStart = true;
+		
 		$scope.appointments = function() {
+			$scope.loaderStart = true;
 			barber.appointments()
 				.then(function(response) {
 					$scope.loaderStart = false;
@@ -27,6 +28,7 @@ angular.module('BarbrDoApp')
 			barber.appointment(obj).then(function(response) {
 				$scope.loaderStart = false;
 				$scope.particularAppointment = response.data.data;
+				console.log(response.data.data)
 				let price = 0;
 				let sum = 0;
 				let len = response.data.data.customer_id.ratings.length;
@@ -81,13 +83,11 @@ angular.module('BarbrDoApp')
 				});
 		}
 		if ($state.current.name == 'shopChairs') {
-			$scope.loaderStart = true;
 			var obj = {
 				_id: $stateParams._id
 			}
 			barber.shopChairs(obj).then(function(response) {
-				$scope.loaderStart = false;
-				$scope.particularShop = response.data.data;
+				$rootScope.particularShop = response.data.data;
 			})
 		}
 		var myArray = [];
@@ -99,14 +99,16 @@ angular.module('BarbrDoApp')
 			date.setDate(date.getDate() + i);
 			myArray.push(date)
 		}
-		$scope.selectDate = myArray;
+		$rootScope.selectDate = myArray;
 		// $scope.selectedDated = 0;
 		$scope.setSelected = function(prop,index) {
-			$scope.selectedDate = prop.toISOString().slice(0, 10);
+			$rootScope.selectedDate = prop.toISOString().slice(0, 10);
 			$scope.selecteddd = index;
 		};
-		$scope.changeObject = function(id) {
-			$scope.chairId = id;
+		$scope.changeObject = function(chair) {
+			$scope.chairId = chair._id;
+			$rootScope.chair = chair;
+
 		}
 		$scope.requestChair = function() {
 			if ($scope.chairId) {
@@ -116,27 +118,50 @@ angular.module('BarbrDoApp')
 					chair_id: $scope.chairId,
 					barber_id: objj._id,
 					barber_name: objj.first_name,
-					booking_date: $scope.selectedDate
+					booking_date: $rootScope.selectedDate
 				}
+
 				barber.requestChair(passObj).then(function(response) {
 					$scope.loaderStart = false;
 					toastr.success('Your request for chair is successfully saved');
+					$state.go('request-chair');
+				}).catch(function(result) {
+					$scope.loaderStart = false;
+					toastr.error('Chair already requested for the same date');
 				})
 			} else {
 				toastr.error('Please select date and chair');
 			}
 
 		}
-		$scope.confirmAppointment = function(id) {
-			console.log(id);
+
+		$scope.barbertasks = function(id,customer){
+			$scope.id = id;
+			$scope.customer = customer._id
+		}
+
+
+		$scope.confirmAppointment = function() {
 			var params = {
-				"appointment_id": id
+				"appointment_id": $scope.id
 			}
 			barber.confirmAppointment(params).then(function(response) {
 				toastr.success('Your have confirmed a request');
 				$scope.appointments();
 			})
 		}
+
+		$scope.completeAppointment = function() {
+			var params = {
+				"appointment_id": $scope.id,
+				"customer_id": $scope.customer
+			}
+			barber.completeAppointment(params).then(function(response) {
+				toastr.success('Your have completed a request');
+				$scope.appointments();
+			})
+		}
+
 		if ($state.current.name == 'rescheduleAppointment') {
 			$scope.loaderStart = true;
 			var obj = {
@@ -147,19 +172,23 @@ angular.module('BarbrDoApp')
 				$scope.appointmentData = response.data.data;
 			})
 		}
+
+
 		$scope.timeReschedule = function(time) {
-			if (time == 15 || time == 30 || time == 45) {
-				var myobj = {
-					minutes: time,
-					appointment_id: $stateParams._id,
-					appointment_date: $scope.appointmentData.appointment_date
-				}
-				console.log(myobj);
-				barber.reschedule(myobj).then(function(response) {
-					toastr.success('Your appointment is successfully rescheduled');
-				})
-			}
-		}
+            if (time == 15 || time == 30 || time == 45) {
+                var myobj = {
+                    minutes: time,
+                    appointment_id: $stateParams._id,
+                    appointment_date: $scope.appointmentData.appointment_date
+                }
+                console.log(myobj);
+                barber.reschedule(myobj).then(function(response) {
+                    toastr.success('Your appointment is successfully rescheduled');
+                })
+            }
+        }
+
+
 		$scope.cancelAppointment = function() {
 			var myobj = {
 				appointment_id: $stateParams._id,
@@ -168,9 +197,51 @@ angular.module('BarbrDoApp')
 				toastr.success('Your appointment is successfully canceled.');
 			})
 		}
+
+		$scope.managerequests = function() {
+			barber.manageRequest().then(function(response) {
+				console.log(response.data.result);
+				$rootScope.shoprequest = response.data.result ;
+			})
+		}
+
+		$scope.rejectrequest = function(chair) {
+			barber.declineRequest(chair).then(function(response) {
+				console.log(response)
+				toastr.success('Request is Declined successfully');
+				$scope.managerequests();
+			}).catch(function(result) {
+				toastr.warning('Invalid request ! Chair split Required');
+			})
+		}
+
+
+		$scope.acceptrequest = function(chair) {
+			barber.acceptRequest(chair).then(function(response) {
+				toastr.success('Request is Accepted successfully');
+				$scope.managerequests();
+			}).catch(function(result) {
+				toastr.warning('Invalid request ! Chair split Required');
+			})
+		}
+
+
+		$scope.shopdetails = function() {
+			barber.RequesterDetail($stateParams.id).then(function(response) {
+				$rootScope.shoprequesterpic = response.data.data[0];
+				$rootScope.shoprequester = response.data.data[0].shopinfo[0];
+			})
+		}
+
 		$scope.payNow = function() {
 			toastr.warning('Work in progress.')
 		}
+
+		$scope.cancel = function(index) {
+	      if ($scope.editing !== false) {
+	        $scope.editing = false;
+	      }
+	    };
 
 
 		if ($state.current.name == 'manageservices' || $state.current.name == 'addservice') {
@@ -180,8 +251,39 @@ angular.module('BarbrDoApp')
 				$scope.servicesData = response.data.data
 			})
 		}
-		$scope.saveServicesPrice = function() {
-			toastr.warning("Work in progress.");
+		$scope.addservice = function(service,price) {
+			if(price) {
+				var obj={
+				name : service.name,
+				price: price
+			}
+			barber.addService(obj).then(function(response) {
+			toastr.success("Service Added Successfully");
+			$state.go('manageservices');
+			}).catch(function(result){
+				toastr.error("This service is already added!! You cant add it again");
+			})
+			}
+			else {
+				toastr.error("Please add price");
+
+			}
+			
+		}
+
+		$scope.editservices = function(service) {
+			barber.editService(service).then(function(response) {
+			toastr.success("Service Edited Successfully");
+			})
+		}
+
+		$scope.deleteservice = function(service) {
+			barber.deleteService(service).then(function(response) {
+			// $state.go('manageservices');
+			history.go();
+			toastr.success("Service Deleted Successfully");
+			
+			})
 		}
 
 	});

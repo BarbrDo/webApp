@@ -143,6 +143,16 @@ angular.module('BarbrDoApp')
       plans: function(data) {
         return $http.get('/api/v1/plans', data);
       },
+       deleteImage : function(data) {
+        return $http({
+          method: 'delete',
+          url: '/api/v1/barber/gallery/'+ data._id , 
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+            'user_id': obj._id//obj._id
+          }
+        });
+      },
       subScribe: function(data) {
         return $http({
           method: 'post',

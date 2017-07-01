@@ -1,7 +1,7 @@
 angular.module('BarbrDoApp').controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account, toastr, $http, shop) {
     if ($window.localStorage.user) {
         $scope.profile = JSON.parse($window.localStorage.user);
-        console.log("here");
+        console.log($scope.profile)
     }
     $scope.imgPath = $window.localStorage.imagePath;
 

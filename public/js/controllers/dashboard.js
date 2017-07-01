@@ -1,5 +1,5 @@
 angular.module('BarbrDoApp')
-	.controller('dashboardCtrl',function($scope, $rootScope, $location, customer, $stateParams, $state, $window, ngTableParams, $timeout, $http) {
+	.controller('dashboardCtrl', function($scope, $rootScope, $location, customer, $stateParams, $state, $window, ngTableParams, $timeout, $http, toastr) {
 		$scope.dollarAmmount = 0.00;
 		$scope.annualCost = "$" + $scope.dollarAmmount;
 		$scope.search = {};
@@ -22,11 +22,11 @@ angular.module('BarbrDoApp')
 					$scope.shops = response.data.data;
 				});
 		}
-		$scope.dateSelectClass = function(index){
-			if($scope.selectedDate){	
-			 return {
-			  active:index>$scope.selectDate.length / 2 - 1
-			 }
+		$scope.dateSelectClass = function(index) {
+			if ($scope.selectedDate) {
+				return {
+					active: index > $scope.selectDate.length / 2 - 1
+				}
 			}
 		}
 		$scope.allShopsHavingBarbers = function(id) {
@@ -95,9 +95,9 @@ angular.module('BarbrDoApp')
 		$scope.selecteddd = 0;
 		$scope.setSelected = function(prop, index) {
 			$scope.selectedDate = prop.toISOString().slice(0, 10);
-			$scope.selecteddd = index; 
+			$scope.selecteddd = index;
 		};
-		$scope.setSelectedTime = function(prop,index) {
+		$scope.setSelectedTime = function(prop, index) {
 			$scope.choosedTime = prop;
 			$scope.selectedTime = index
 		};
@@ -190,10 +190,10 @@ angular.module('BarbrDoApp')
 					$scope.time = response.data.data.appointment_date.substring(11, 19);
 					var sum = 0;
 					var len = response.data.data.barber_id.ratings.length;
-					for(var i=0;i<len;i++){
-						sum+= response.data.data.barber_id.ratings[i].score
+					for (var i = 0; i < len; i++) {
+						sum += response.data.data.barber_id.ratings[i].score
 					}
-					$scope.ratingBarber = sum/len
+					$scope.ratingBarber = sum / len
 					var Markers = [{
 						"id": "0",
 						"coords": {
@@ -207,15 +207,12 @@ angular.module('BarbrDoApp')
 					$scope.markers = Markers;
 				});
 		}
-		$scope.uploadImage = function() {
+		$scope.uploadImage = function(img) {
 			var fs = new FormData();
-			console.log($scope.uploadedImages);
-			if ($scope.uploadedImages) {
-				fs.append("file", $scope.uploadedImages);
+			if (img) {
+				fs.append("file", img);
 			}
-			// customer.uploadImages(fs)
-			// 	.then(function(response) {
-			// })
+
 			var obj = JSON.parse($window.localStorage.user);
 
 			$http.post("/api/v1/customer/gallery", fs, {
@@ -226,30 +223,70 @@ angular.module('BarbrDoApp')
 					}
 				})
 				.success(function(response) {
-					if (response) {
-						callback(response);
-						//return { response:$q.defer().resolve(response)};
-					} else {
-						$q.reject(response);
-						callback({
-							response: $q.defer().promise
-						});
-						//return { response:$q.defer().promise};
-					}
+					customer.getImages().then(function(res) {
+						toastr.success('Image uploaded in gallery succesfully');
+						$scope.userGallery = res.data.user;
+					})
+
+
 				})
 				.error(function(err) {
-					alert('There was some error uploading your files. Please try Uploading them again.');
+					toastr.error('There was some error uploading your files. Please try Uploading them again.');
 				});
 		}
-		$scope.userGallery = JSON.parse($window.localStorage.user)
+
+		// $scope.userGallery = JSON.parse($window.localStorage.user)
 		$scope.imgPath = $window.localStorage.imagePath;
-		$scope.barberInfopage = function(id){
-			$state.go('barberInfo',{
-						_id: id
-					});
+
+		$scope.showgallery = function() {
+			customer.getImages().then(function(res) {
+				$scope.userGallery = res.data.user;
+				$scope.ratings = res.data.user.ratings;
+				// var shp = [];
+				// var objj = {};
+				// var len = res.data.user.ratings.length;
+				// for (var i = 0; i < len; i++) {
+				// 	var objj = {
+				// 		userid: res.data.user.ratings[i].rated_by
+				// 	};	
+				// 	shp.push(objj);
+				// }
+				// $rootScope.userid = shp;
+				// console.log(shp)		
+			})
 		}
 
-		if($state.current.name =='barberInfo'){
+		// $scope.userprofile = function(userid) {
+		// 	customer.userProfile(userid).then(function(res) {
+		// 		$rootScope.userpic = res.data.user.picture ;
+		// 		console.log(res.data.user.picture)
+		// 			})
+		// }
+
+		$scope.viewimg = function(pic) {
+			$rootScope.pic = pic;
+		}
+
+		$scope.delpic = function(pic) {
+			customer.deleteImage(pic)
+				.then(function(response) {
+					customer.getImages().then(function(res) {
+						toastr.success('Image deleted succesfully');
+						$scope.userGallery = res.data.user;
+					})
+				}).catch(function(result) {
+					toastr.error('Error in deleting Image');
+				})
+		}
+
+		$scope.barberInfopage = function(id) {
+			$state.go('barberInfo', {
+				_id: id
+			});
+		}
+
+
+		if ($state.current.name == 'barberInfo') {
 			var obj = {
 				_id: $stateParams._id
 			}
@@ -258,71 +295,71 @@ angular.module('BarbrDoApp')
 					$scope.profileInfo = response.data.user;
 				})
 		}
-		$scope.goToNextpage = function(id){
+		$scope.goToNextpage = function(id) {
 			$state.go('appointmentDetail', {
 				_id: id
 			});
 		}
 
 		// Stripe Implementation
-		$scope.stripeCall = function(){
-		var stripe = Stripe('pk_test_fswpUdU8DBIKbLz1U637jNF7');
-		var elements = stripe.elements();
-		var card = elements.create('card', {
-		  style: {
-		    base: {
-		      iconColor: '#666EE8',
-		      color: '#31325F',
-		      lineHeight: '40px',
-		      fontWeight: 300,
-		      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-		      fontSize: '15px',
-		      '::placeholder': {
-		        color: '#CFD7E0',
-		      },
-		    },
-		  }
-		});
-		card.mount('#card-element');
+		$scope.stripeCall = function() {
+			var stripe = Stripe('pk_test_fswpUdU8DBIKbLz1U637jNF7');
+			var elements = stripe.elements();
+			var card = elements.create('card', {
+				style: {
+					base: {
+						iconColor: '#666EE8',
+						color: '#31325F',
+						lineHeight: '40px',
+						fontWeight: 300,
+						fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+						fontSize: '15px',
+						'::placeholder': {
+							color: '#CFD7E0',
+						},
+					},
+				}
+			});
+			card.mount('#card-element');
 
-		function setOutcome(result) {
-		  var successElement = document.querySelector('.success');
-		  var errorElement = document.querySelector('.error');
-		  successElement.classList.remove('visible');
-		  errorElement.classList.remove('visible');
+			function setOutcome(result) {
+				var successElement = document.querySelector('.success');
+				var errorElement = document.querySelector('.error');
+				successElement.classList.remove('visible');
+				errorElement.classList.remove('visible');
 
-		  if (result.token) {
-		    // Use the token to create a charge or a customer
-		    // https://stripe.com/docs/charges
-		    console.log("token here",result.token.id);
-		    successElement.querySelector('.token').textContent = result.token.id;
-		    successElement.classList.add('visible');
-		    var obj = {
-		    	token:result.token.id
-		    }
-		    customer.chargeCustomer(obj)
-				.then(function(response) {
-					$scope.profileInfo = response.data.user;
-				})
+				if (result.token) {
+					// Use the token to create a charge or a customer
+					// https://stripe.com/docs/charges
+					console.log("token here", result.token.id);
+					successElement.querySelector('.token').textContent = result.token.id;
+					successElement.classList.add('visible');
+					var obj = {
+						token: result.token.id
+					}
+					customer.chargeCustomer(obj)
+						.then(function(response) {
+							$scope.profileInfo = response.data.user;
+						})
 
-		  } else if (result.error) {
-		    errorElement.textContent = result.error.message;
-		    errorElement.classList.add('visible');
-		  }
-		}
+				} else if (result.error) {
+					errorElement.textContent = result.error.message;
+					errorElement.classList.add('visible');
+				}
+			}
 
-		card.on('change', function(event) {
-		  setOutcome(event);
-		});
+			card.on('change', function(event) {
+				setOutcome(event);
+			});
 
-		document.querySelector('form').addEventListener('submit', function(e) {
-		  e.preventDefault();
-		  var form = document.querySelector('form');
-		  var extraDetails = {
-		    name: form.querySelector('input[name=cardholder-name]').value,
-		  };
-		  stripe.createToken(card, extraDetails).then(setOutcome);
-		});
+			document.querySelector('form').addEventListener('submit', function(e) {
+				e.preventDefault();
+				var form = document.querySelector('form');
+				var extraDetails = {
+					name: form.querySelector('input[name=cardholder-name]').value,
+				};
+				stripe.createToken(card, extraDetails).then(setOutcome);
+			});
 		}
 
 	});

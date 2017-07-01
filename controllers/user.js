@@ -493,7 +493,6 @@ exports.accountPut = function(req, res, next) {
       err: errors
     });
   }
-  console.log("two", req.body)
   User.findById(req.headers.user_id, function(err, user) {
     if ('password' in req.body) {
       user.password = req.body.password;
@@ -1207,7 +1206,6 @@ exports.deleteImages = function(req, res) {
 
 exports.getProfiles = function(req, res) {
   req.checkParams("id", "customer_id can not be blank").notEmpty();
-  console.log("user id", req.params.id)
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -1215,7 +1213,6 @@ exports.getProfiles = function(req, res) {
       err: errors
     });
   }
-  console.log("user id", req.params.id)
   var id = mongoose.Types.ObjectId(req.params.id);
   User.findOne({
     _id: req.params.id
@@ -1241,7 +1238,6 @@ exports.getProfiles = function(req, res) {
                 "err": err
               });
             } else {
-              console.log("data", data);
               res.status(200).send({
                 msg: constantObj.messages.successRetreivingData,
                 user: data[0]

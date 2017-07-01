@@ -1,0 +1,22 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<div class="crumb" ng-init="searchbarber()"> <span>Search Barber</span> </div>
+<div class="wrapper">
+  <div class="block">
+    <div class="col-md-6 col-md-offset-10">
+     <span class="glyphicon glyphicon-search" style="color:purple"></span>
+      <input ng-model="myobj.search" placeholder="Search Barber" ng-change="searchbarber()" /></div><br>
+    <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat = "barber in barbers">
+      <div class="barber toshop">
+        <div class="cont">
+          <div class="user_pic"> <img src="/images/brbr_pic.png" alt="" ui-sref="requester-details({id:barber._id})"></div>
+          <h3>{{barber.first_name}} {{barber.last_name}}</h3>
+          <p >Email : <span>{{barber.email}}</span></p>
+          <p >Member Since : <span>{{barber.created_date | date: dd/mm/yyyy}}</span></p>
+          <p >Mobile Number : <span>{{barber.mobile_number}}</span> </p>
+          <p> Rating : <span> <img src="images/rating.png" alt="" > </span> </p>
+        </div>
+         <a class="book_nw" ng-click="requestbarber(barber)"> Request <i class="fa fa-paper-plane"></i> </a>
+     </div>
+    </div>      
+  </div>
+</div>

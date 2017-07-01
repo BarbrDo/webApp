@@ -1,4 +1,4 @@
-<div class="crumb" ng-init="customerGallery()"> <span>Gallery</span> </div>
+<!-- <div class="crumb" ng-init="customerGallery()"> <span>Gallery</span> </div>
 <div class="wrapper">
     <div class="block higlght">
         <h2>Gallery</h2>
@@ -6,12 +6,7 @@
             <div class="col-md-4 col-sm-6" ng-repeat="pic in userGallery.gallery">
                <img src="{{imgPath+pic.name}}">
             </div>
-           <!--  <div class="col-md-4 col-sm-6">
-                 <img src="http://watchdog.org/wp-content/blogs.dir/1/files/2016/06/barbershop.jpg">
-            </div> -->
-            <!-- <div class="col-md-4 col-sm-6">
-                 <img src="http://watchdog.org/wp-content/blogs.dir/1/files/2016/06/barbershop.jpg">
-            </div> -->
+        
         </div>
     </div>
     <div class="row">
@@ -22,4 +17,52 @@
    <button ng-click="uploadImage()" ng-disabled="imageUploadForm.$invalid"> Upload</button></div>
    </form>
    </div>
+</div> -->
+
+<div class="crumb"> <span>Gallery</span> </div>
+<div class="wrapper">
+    <div class="customtab">
+        <!-- Nav tabs -->
+        <uib-tabset active="activeJustified" justified="true">
+            
+            <uib-tab index="0" heading="No.of cuts">
+                <div class="block">
+                    <!--<h2>No.of cuts</h2>-->
+                    <div class="all_cuts">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <!-- <th>Picture</th> -->
+                                    <th>Name</th>
+                                    <th>Cut Date</th>
+                                    <th>Rating</th>
+                                    <!-- <th class="action">Action</th> -->
+                                </tr>
+                                <tr ng-repeat="res in profileInfo.ratings">
+                                    <!-- <td> <span class="lspic"> <img src="images/brbr_pic.png" alt=""> </span> </td> -->
+                                    <td>{{res.rated_by_name}}</td>
+                                    <td>{{res.appointment_date | date}}</td>
+                                    <td>
+                                        <input-stars max="5" ng-model="res.score" ng-attr-readonly="true"></input-stars>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </uib-tab>
+            <uib-tab index="1" heading="Gallery">
+                <div class="block">
+                    <!-- <h2>Gallery</h2>-->
+                    <div class="allgallery">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-4 " ng-repeat="res in profileInfo.gallery">
+                                <a href="#"><img src="{{imgPath+res.name}}" alt=""></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </uib-tab>
+        </uib-tabset>
+    </div>
 </div>

@@ -1,0 +1,90 @@
+<div class="crumb" ng-init="featuringPlans()"> <span></span> </div>
+<div class="wrapper">
+    <div class="suscription_tab block">
+        <h2>Subscription</h2>
+        <div class="clear_tb">
+            <div class="row">
+                <div class="col-sm-12 center_div">
+                    <div class="col-xs-12 col-md-4" ng-repeat="x in plans.data">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                {{x.name}}</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="the-price">
+                                    <h1>
+                                    ${{x.amount/100}}<span class="subscript">/{{x.interval}}</span></h1>
+                                    <small>{{x.statement_descriptor}}</small>
+                                </div>
+                            </div>
+                            <div class="panel-footer">
+                                <a class="btn btn-success" role="button" ng-click="subScription(x)">Subscribe</a> </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="payment_tab block" ng-hide="content">
+    <h2></h2>
+    <div class="clear_tb">
+        <div class="row">
+            <div class="inner_payment">
+                <!-- CREDIT CARD FORM STARTS HERE -->
+                <div class="panel panel-default credit-card-box">
+                    <div class="panel-body contact-us">
+                        <form role="form" id="payment-form" stripe-form="stripeCallback" name="checkoutForm">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="cardNumber" ng-model="cardDetails.number" placeholder="Valid Card Number" required autofocus payments-format="card" payments-validate="card" name="card" />
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                                        <div class="form-control-placeholder">Card Number</div>
+                                        <div ng-if="checkoutForm.card.$invalid">
+                                            Error: invalid card number!
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-7 col-md-7">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="expityMonth" placeholder="MM/YYYY" required payments-format="expiry" payments-validate="expiry" ng-model="cardDetails.month" />
+                                        <div class="form-control-placeholder">Expiration Date</div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-5 col-md-5 pull-right">
+                                    <div class="form-group">
+                                        <input type="password" class="form-control" id="cvCode" placeholder="CV" required ng-model="cardDetails.cvc" payments-validate="cvc" payments-type-model="type" payments-format="cvc" />
+                                        <div class="form-control-placeholder">CV Code</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <input class="form-control" required="" type="">
+                                            <div class="form-control-placeholder">Coupon Code</div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <button class="subscribe btn btn-success btn-lg btn-block" type="button" ng-click="submitPayment()">Confirm Payment</button>
+                                </div>
+                            </div>
+                            <div class="row" style="display:none;">
+                                <div class="col-xs-12">
+                                    <p class="payment-errors"></p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- CREDIT CARD FORM ENDS HERE -->
+            </div>
+        </div>
+    </div>
+</div>

@@ -65,7 +65,7 @@ exports.editBarber = function(req, res) {
 }
 
 exports.getAllServices = function(req, res) {
-    service.find({
+    barber_service.find({
         "status": true
     }, function(err, data) {
         if (err) {
@@ -97,19 +97,32 @@ exports.addBarberServices = function(req, res) {
     saveData.barber_id = req.headers.user_id;
     var barber_id = objectID.isValid(req.headers.user_id)
     if (barber_id) {
-        barber_service(saveData).save(function(err, data) {
-            if (err) {
+        barber_service.find({
+            "barber_id": req.headers.user_id,
+            "name": req.body.name
+        }, function(error, result) {
+            if (result) {
                 res.status(400).send({
                     msg: constantObj.messages.errorInSave,
-                    "err": err
+                    "err": error
                 });
             } else {
-                res.status(200).send({
-                    msg: constantObj.messages.saveSuccessfully,
-                    "data": data
-                });
+                barber_service(saveData).save(function(err, data) {
+                    if (err) {
+                        res.status(400).send({
+                            msg: constantObj.messages.errorInSave,
+                            "err": err
+                        });
+                    } else {
+                        res.status(200).send({
+                            msg: constantObj.messages.saveSuccessfully,
+                            "data": data
+                        });
+                    }
+                })
             }
         })
+
     } else {
         res.status(400).send({
             msg: 'Your input is wrong.'
@@ -371,8 +384,8 @@ exports.rescheduleAppointment = function(req, res) {
         });
     }
     var newDateObj = new Date(req.body.appointment_date);
-    console.log("newDateObj",newDateObj);
-    console.log("body",req.body)
+    console.log("newDateObj", newDateObj);
+    console.log("body", req.body)
     var newDateObj = newDateObj.setMinutes(newDateObj.getMinutes() + req.body.minutes);
     appointment.update({
         _id: req.params.appointment_id
@@ -398,7 +411,7 @@ exports.completeAppointment = function(req, res) {
     req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
     req.assert("customer_id", "customer id is required.").notEmpty();
     req.checkHeaders("user_id", "barber_id is required.").notEmpty();
-    req.assert("score", "score is required.").notEmpty();
+
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -406,8 +419,7 @@ exports.completeAppointment = function(req, res) {
             err: errors
         });
     }
-    console.log("req.body",req.body);
-    console.log("req.headers",req.headers);
+
     let updateData = {
         "$push": {
             "ratings": {
@@ -419,24 +431,26 @@ exports.completeAppointment = function(req, res) {
             }
         }
     }
-    console.log(updateData);
+
     async.waterfall([
         function(done) {
             appointment.update({
                 _id: req.params.appointment_id
             }, {
 
-                    $set: {
-                        "appointment_status": "completed"
-                    }
-                }, function (err, result) {
-                    if (err) {
-                        done("some error", err)
-                    } else {
-                        done(err, result)
-                        console.log(result)
-                    }
-                })
+                $set: {
+                    "appointment_status": "completed"
+                }
+            }, function(err, result) {
+                if (err) {
+                    done("some error", err)
+                } else {
+                    return res.status(200).send({
+                        msg: constantObj.messages.userStatusUpdateSuccess
+                    });
+                    done(err, result);
+                }
+            })
 
 
         },
@@ -450,11 +464,10 @@ exports.completeAppointment = function(req, res) {
                         err: err
                     });
                 } else {
-                    console.log(result)
                     return res.status(200).send({
                         msg: constantObj.messages.userStatusUpdateSuccess
                     });
-                    done(err);
+                    done(err, result);
                 }
             })
         }
@@ -897,7 +910,7 @@ exports.barberdetail = function(req, res) {
             })
         }
     })
-};    
+};
 
 exports.rateBarber = function(req, res) {
     req.checkHeaders("user_id", "User id is required.").notEmpty();
@@ -933,18 +946,18 @@ exports.rateBarber = function(req, res) {
             }, {
                 $set: {
                     is_rating_given: true,
-                    rating_score:parseInt(req.body.score),
+                    rating_score: parseInt(req.body.score),
                 }
             }, function(err, result) {
                 if (err) {
                     done("some error", err)
                 } else {
-                    if(result.nModified == 0){
+                    if (result.nModified == 0) {
                         return res.status(400).send({
-                        msg: "no record found",
-                        err: err
+                            msg: "no record found",
+                            err: err
                         });
-                    }else {
+                    } else {
                         done(err, result);
                     }
                 }
@@ -972,7 +985,7 @@ exports.rateBarber = function(req, res) {
 exports.viewBarberAvailability = function(req, res) {
     console.log(req.params);
     console.log(req.query);
-    let timeArray = ["9:00", "9:15", "9:30", "9:45", "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45", "12:00", "12:15", "12:30", "12:45", "1:00", "1:15", "1:30", "1:45", "2:00", "2:15", "2:30", "2:45", "3:00", "3:15", "3:30", "3:45", "4:00", "4:15", "4:30", "4:45", "5:00", "5:15", "5:30", "5:45", "6:00", "6:15", "6:30", "6:45", "7:00", "7:15", "7:30", "7:45", "8:00", "8:15", "8:30", "8:45"];
+    let timeArray = ["09:00", "09:15", "09:30", "09:45", "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45", "12:00", "12:15", "12:30", "12:45", "1:00", "1:15", "1:30", "1:45", "2:00", "2:15", "2:30", "2:45", "3:00", "3:15", "3:30", "3:45", "4:00", "4:15", "4:30", "4:45", "5:00", "5:15", "5:30", "5:45", "6:00", "6:15", "6:30", "6:45", "7:00", "7:15", "7:30", "7:45", "8:00", "8:15", "8:30", "8:45"];
     req.checkParams("barber_id", "Barber id is required.").notEmpty();
     req.checkQuery("date", "Date is required.").notEmpty();
 
@@ -1156,45 +1169,50 @@ exports.viewBarberAvailability = function(req, res) {
                     }
                     resultTantTime.push(x);
                 }
-                console.log("resultTantTime",resultTantTime);
+                console.log("resultTantTime", resultTantTime);
                 let newArray = [];
                 for (var i = 0; i < timeArray.length; i++) {
                     let k = 0;
                     for (var j = 0; j < resultTantTime.length; j++) {
+                        console.log(typeof(timeArray[i]),typeof(resultTantTime[j]))
+                        console.log(timeArray[i],resultTantTime[j]);
+                        console.log(timeArray[i]===resultTantTime[j]);
                         if (timeArray[i]==resultTantTime[j]){
+                            console.log("inside");
                             let obj = {
-                                time:timeArray[i],
-                                isAvailable:false
+                                time: timeArray[i],
+                                isAvailable: false
                             }
                             newArray.push(obj)
-                            k=1;
+                            k = 1;
                         }
                     }
-                    if(k==0){
+                    if (k == 0) {
                         let obj = {
-                                time:timeArray[i],
-                                isAvailable:true
-                            }
+                            time: timeArray[i],
+                            isAvailable: true
+                        }
                         newArray.push(obj)
                     }
                 }
+                console.log("newArray",newArray);
                 for (var k = 0; k < newArray.length; k++) {
                     var reslt = newArray[k].time.split(":");
                     reslt = parseInt(reslt[0]);
                     if (reslt >= 9 && reslt <= 11) {
-                            morning.push(newArray[k]);
+                        morning.push(newArray[k]);
                     }
                     if (reslt >= 12 || reslt <= 4) {
-                            afternoon.push(newArray[k]);
+                        afternoon.push(newArray[k]);
                     }
                     if (reslt >= 5 && reslt <= 8) {
-                            evening.push(newArray[k]);
+                        evening.push(newArray[k]);
                     }
                 }
                 let timeSlots = {
-                    morning:morning,
-                    afternoon:afternoon,
-                    evening:evening
+                    morning: morning,
+                    afternoon: afternoon,
+                    evening: evening
                 }
                 return res.status(200).send({
                     msg: "Time slots retrieve.",

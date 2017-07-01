@@ -36,9 +36,13 @@ module.exports = function(app, express) {
     let appointmentController = require('./../controllers/appointment');
     let barberServices = require('./../controllers/barber');
     let commonObj = require('./../common/common');
+
+app.post('/api/v1/webhooks',userController.stripeWebhook);
+
     //Users
     app.post('/api/v1/activate', userController.activate) //Account activate
     app.post('/api/v1/signup', userController.signupPost); //Signup
+    app.post('/api/v1/signupWeb', userController.signupPostWeb); //Signup
     app.post('/api/v1/login', userController.loginPost); // Login
     app.post('/api/v1/forgot', userController.forgotPost); //Forgot Password
     app.post('/api/v1/reset/:token', userController.resetPost); //Forgot Password
@@ -104,6 +108,12 @@ module.exports = function(app, express) {
     //app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
     app.post('/api/v1/contact', contactController.contactPost);
     app.get('/api/v1/shops/barbers/:shop_id/:barber_id',shopController.getDataForBookNowPage)
+
+    // Stripe Implementation API
+    app.get('/api/v1/plans', userController.featuringPlans);
+    app.post('/api/v1/subscribe',userController.subscribe);
+    app.post('/api/v1/createCharges',userController.createCharges);
+    app.post('/api/v1/webhooks',userController.stripeWebhook);
     
     //Need to delete in sprint-8
     app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber/shop requesting chair to shop

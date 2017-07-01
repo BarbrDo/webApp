@@ -1,12 +1,22 @@
 <div class="crumb"> <span>Manage Chair</span> </div>
+
 <div class="wrapper">
     <div class="col-md-12">
-        <h3 class="actn"> Chair {{chairId}}</h3>
+        <h3 class="actn"> Chair {{chairName}}</h3>
     </div>
+     <div class="col-md-6 col-md-offset-5">
+         Please Select a value out of two
+    </div>
+   
     <div class="row">
         <div class="col-md-6">
-            <div class="block">
-                <h2>Chair Split - Shop Percentage</h2>
+                <div class="funkyradio">
+                    <div  class="funkyradio-warning">
+                    <input type="radio" name="radio" value="radio1" ng-model="split" id="radio1" />
+                    <label for="radio1">Chair Split - Shop Percentage</label>
+                    </div>
+                </div>
+            <div class="block" ng-show="split == 'radio1'">
                 <div class="range">
                     <rzslider rz-slider-model="slider.value" rz-slider-options="slider.options"></rzslider>
                 </div>
@@ -20,8 +30,13 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="block">
-                <h2>Rent Chair Weekly/ Monthly</h2>
+                <div class="funkyradio">
+                    <div  class="funkyradio-warning">
+                    <input type="radio" name="radio" id="radio2" value="radio2" ng-model="split"/>
+                    <label for="radio2">Rent Chair Weekly/ Monthly</label>
+                    </div>
+                </div>
+            <div class="block" ng-show="split == 'radio2'">
                 <div class="type_selection wekmonth ">
                     <form>
                         <label for="Weekly">
@@ -82,33 +97,15 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-12 alllnk">
+
+        <div class="col-md-12 alllnk"> <br><br><br>
             <h3 class="actn">Action to this Chair </h3>
             <a href="" ng-click="markBooked()">Mark Booked</a>
             <a href="" ng-click="postToAllBarbers()">Post to All</a>
-            <a href="" data-toggle="modal" data-target="#searchbarber">Search Barber</a>
+            <a href="" ui-sref="search_barber({id:chairId})">Search Barber</a>
             <a href="" ng-click="deleteChair()">Remove Chair</a>
         </div>
     </div>
 </div>
 
 
- <div class="modal " id="searchbarber" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header" style="background-color: #c2f7b5;">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Search for a specific barber</h4>
-                </div>
-                <div class="modal-body" >
-                    <span class="glyphicon glyphicon-search" style="color:purple"></span>
-                    <input ng-model="myobj.search" placeholder="Search for..." /><br><br>
-                   Work in Progress .....
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>

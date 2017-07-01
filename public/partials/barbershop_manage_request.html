@@ -1,4 +1,4 @@
-
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
 <div class="crumb"> <span>Book Appointment</span> </div>
 <div class="wrapper" ng-init="chairrequest()">
   
@@ -13,21 +13,20 @@
           <th>Picture</th>
           <th>Chair</th>
           <th>Requestor</th>
-          <th>Chair Split</th>
+          <th>Chair Split/Amount</th>
           <th class="action">Action</th>
         </tr>
-        <tr ng-repeat="chairreq in requests"  >
+        <tr ng-repeat="chairreq in requests" >
           <td> <span class="lspic"> <img src="images/brbr_pic.png" alt=""> </span> </td>
           <td>{{chairreq.shopChairInfo.chairs.name}} </td>
-          <td>{{chairreq.barberInfo[0].first_name}}&nbsp;{{chairreq.barberInfo[0].last_name}}</td>
-          <td>{{chairreq.shopChairInfo.chairs.shop_percentage}}/{{chairreq.shopChairInfo.chairs.barber_percentage}}</td>
+          <td ><a href="" style="color: #959a26;" ui-sref="requester-details({id:chairreq.barberInfo[0]._id})">{{chairreq.barberInfo[0].first_name}}&nbsp;{{chairreq.barberInfo[0].last_name}}</a></td>
+          <td><span ng-show="chairreq.shopChairInfo.chairs.shop_percentage">{{chairreq.shopChairInfo.chairs.shop_percentage}}/{{chairreq.shopChairInfo.chairs.barber_percentage}}</span>
+              <span ng-show="chairreq.shopChairInfo.chairs.amount">{{chairreq.shopChairInfo.chairs.amount}}</span></td>
           <td class="ac_btn">
+
+              <a href="" ng-click="acceptrequest(chairreq)" data-toggle="tooltip" title="Accept Request" ui-sref="requester-details"> <i class="fa fa-check "></i> </a> 
               
-              <a > <i class="fa fa-eye"></i> </a>
-              
-              <a href="" ng-click="acceptrequest(chairreq)" data-toggle="tooltip" title="Accept Request"> <i class="fa fa-check "></i> </a> 
-              
-              <a href="" ng-click="rejectrequest(chairreq)" data-toggle="tooltip" title="Decline Request"> <i class="fa fa-close"></i> </a>
+              <a href="" ng-click="rejectrequest(chairreq)" data-toggle="tooltip" title="Decline Request" style="background-color: #fb3434;"> <i class="fa fa-close" ></i> </a>
         </td>
         </tr>
         

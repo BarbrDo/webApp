@@ -1,20 +1,20 @@
 angular.module('BarbrDoApp')
-  .controller('HeaderCtrl', function($scope, $location, $window, $auth, $state,$rootScope,$uibModal,toastr,shop,geolocation) {
+  .controller('HeaderCtrl', function($scope, $location, $window, $auth, $state, $rootScope, $uibModal, toastr, shop, geolocation) {
     $scope.user = {};
     $scope.messages = {};
+    // alert("working");
     $scope.isActive = function(viewLocation) {
       return viewLocation === $location.path();
     };
 
-    $scope.mainClass = function(){
+    $scope.mainClass = function() {
       if ($auth.isAuthenticated()) {
         return "bg_grey";
-      }
-      else{
+      } else {
         return
       }
     }
-    if($window.localStorage.user){
+    if ($window.localStorage.user) {
       $scope.userInfo = JSON.parse($window.localStorage.user);
       $scope.imgPath = $window.localStorage.imagePath;
     }
@@ -36,36 +36,33 @@ angular.module('BarbrDoApp')
       $state.go('home');
     };
 
-    $scope.check = function()
-    {
+    $scope.check = function() {
       $state.go('facebookSignup');
     }
-    
+
     $scope.authenticate = function(provider) {
-      console.log(provider)
       $auth.authenticate(provider)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
-          console.log(response)
           $window.localStorage.user = JSON.stringify(response.data.user);
-          if(response.data.imagesPath){
+          console.log(response.data.user)
+          if (response.data.imagesPath) {
             $window.localStorage.imagePath = response.data.imagesPath;
           }
-          if(response.data.err)
-          {
+          if (response.data.err) {
 
             $state.go('upcomingComplete');
+          } else {
+            $state.go('facebookSignup');
           }
-          else
-          {
-          $state.go('facebookSignup'); 
-          } 
         })
         .catch(function(response) {
           console.log(response)
           if (response.error) {
             $scope.messages = {
-              error: [{ msg: response.error }]
+              error: [{
+                msg: response.error
+              }]
             };
           } else if (response.data) {
             $scope.messages = {
@@ -76,42 +73,57 @@ angular.module('BarbrDoApp')
     };
 
     $scope.login = function() {
-      $scope.coords = geolocation.getLocation().then(function(data){
+      $scope.coords = geolocation.getLocation().then(function(data) {
         $window.localStorage.lat = data.coords.latitude;
         $window.localStorage.long = data.coords.longitude;
-      return {lat:data.coords.latitude, long:data.coords.longitude};
-    });
+        return {
+          lat: data.coords.latitude,
+          long: data.coords.longitude
+        };
+      });
       $auth.login($scope.user)
         .then(function(response) {
           toastr.success('Welcome');
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
           $window.localStorage.imagePath = response.data.imagesPath;
-          if(response.data.user.user_type =='customer'){  
-            $state.go('upcomingComplete');    
+          if (response.data.user.user_type == 'customer') {
+            $state.go('upcomingComplete');
           }
-          if(response.data.user.user_type =='barber'){
-            $state.go('barberDashboard'); 
+          if (response.data.user.user_type == 'barber') {
+            $state.go('barberDashboard');
           }
-          if(response.data.user.user_type =='shop'){
+          if (response.data.user.user_type == 'shop') {
             $state.go('barbershopdashboard')
-          }   
+          }
         })
         .catch(function(response) {
+          if (response.status == 402) {
+            $state.go('subScription', {
+              _id: response.data.user._id
+            })
+          }
           $scope.messages = {
             error: Array.isArray(response.data) ? response.data : [response.data]
-          }; 
+          };
         });
     };
 
-    $scope.changeTab = function(tab){
-      console.log('tab',tab);
+    $scope.changeTab = function(tab) {
+      console.log('tab', tab);
       $scope.active.val = tab;
     }
     $scope.signup = function() {
       $auth.signup($scope.user)
         .then(function(response) {
-          toastr.success("Please check your mail to activate your account.")   
+          console.log(response.data)
+          if (response.data.user) {
+            $state.go('subScription', {
+              _id: response.data.user._id
+            })
+          } else {
+            toastr.success("Please check your mail to activate your account.");
+          }
         })
         .catch(function(response) {
           $scope.messagess = {
@@ -125,8 +137,8 @@ angular.module('BarbrDoApp')
       shop.fbSignup(user)
         .then(function(response) {
           toastr.success("Please check your mail to activate your account.")
-          $state.go('upcomingComplete') 
-          console.log("response",response)  
+          $state.go('upcomingComplete')
+          console.log("response", response)
         })
         .catch(function(response) {
           $scope.messagess = {
@@ -135,34 +147,34 @@ angular.module('BarbrDoApp')
         });
     };
 
-    $scope.addChair = function(){
-       var obj = JSON.parse($window.localStorage.user);
-       var passObj = {_id:$window.localStorage.shop_id};
-        shop.addChair(passObj).then(function(response){
-          toastr.success('Chair successfully added.');
-          $rootScope.$emit("MyEvent",response);
-        })
+    $scope.addChair = function() {
+      var obj = JSON.parse($window.localStorage.user);
+      var passObj = {
+        _id: $window.localStorage.shop_id
+      };
+      shop.addChair(passObj).then(function(response) {
+        toastr.success('Chair successfully added.');
+        $rootScope.$emit("MyEvent", response);
+      })
     }
 
-    $scope.modelOpenFunction = function(){
+    $scope.modelOpenFunction = function() {
       $rootScope.modalInstance = $uibModal.open({
         animation: $scope.animationsEnabled,
         templateUrl: 'myModalContent.html',
         controller: 'instanceController12',
         windowClass: 'transmitter_modal',
         scope: $scope,
-        size: ' holder'     
+        size: ' holder'
       });
     }
   })
 
-   .controller('instanceController12', ['$uibModalInstance', '$scope',
- function($uibModalInstance, $scope) {
+.controller('instanceController12', ['$uibModalInstance', '$scope',
+  function($uibModalInstance, $scope) {
 
-   $scope.cancel = function() {
-    //console.log("m heerrerrerer")
-    $uibModalInstance.dismiss('cancel');
-
+    $scope.cancel = function() {
+      $uibModalInstance.dismiss('cancel');
+    }
   }
-
- }])
+])

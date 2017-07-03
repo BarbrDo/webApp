@@ -138,6 +138,13 @@ exports.allShops = function(req, res) {
                 spherical: true
             }
         }, {
+            $match: {
+                "name": {
+                    $regex: search,
+                    $options: 'i'
+                }
+            }
+        }, {
             $lookup: {
                 from: "users",
                 localField: "user_id",
@@ -162,6 +169,7 @@ exports.allShops = function(req, res) {
             payment_methods: 1,
             ratings:1,
             shopOwner:1,
+            chairs:1,
             distance:"$dist.calculated",
             units:{ $literal:  "miles"  },
             barbers: { $size: [ "$chairs.barber_id" ] }

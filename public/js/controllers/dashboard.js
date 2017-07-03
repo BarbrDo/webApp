@@ -208,6 +208,7 @@ angular.module('BarbrDoApp')
 				});
 		}
 		$scope.uploadImage = function(img) {
+			$scope.loaderStart = true;
 			var fs = new FormData();
 			if (img) {
 				fs.append("file", img);
@@ -224,6 +225,7 @@ angular.module('BarbrDoApp')
 				})
 				.success(function(response) {
 					customer.getImages().then(function(res) {
+						$scope.loaderStart = false;
 						toastr.success('Image uploaded in gallery succesfully');
 						$scope.userGallery = res.data.user;
 					})
@@ -231,6 +233,7 @@ angular.module('BarbrDoApp')
 
 				})
 				.error(function(err) {
+						$scope.loaderStart = false;
 					toastr.error('There was some error uploading your files. Please try Uploading them again.');
 				});
 		}
@@ -242,35 +245,19 @@ angular.module('BarbrDoApp')
 			customer.getImages().then(function(res) {
 				$scope.userGallery = res.data.user;
 				$scope.ratings = res.data.user.ratings;
-				// var shp = [];
-				// var objj = {};
-				// var len = res.data.user.ratings.length;
-				// for (var i = 0; i < len; i++) {
-				// 	var objj = {
-				// 		userid: res.data.user.ratings[i].rated_by
-				// 	};	
-				// 	shp.push(objj);
-				// }
-				// $rootScope.userid = shp;
-				// console.log(shp)		
 			})
 		}
-
-		// $scope.userprofile = function(userid) {
-		// 	customer.userProfile(userid).then(function(res) {
-		// 		$rootScope.userpic = res.data.user.picture ;
-		// 		console.log(res.data.user.picture)
-		// 			})
-		// }
 
 		$scope.viewimg = function(pic) {
 			$rootScope.pic = pic;
 		}
 
 		$scope.delpic = function(pic) {
+			$scope.loaderStart = true;
 			customer.deleteImage(pic)
 				.then(function(response) {
 					customer.getImages().then(function(res) {
+						$scope.loaderStart = false;
 						toastr.success('Image deleted succesfully');
 						$scope.userGallery = res.data.user;
 					})

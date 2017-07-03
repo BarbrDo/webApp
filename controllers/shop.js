@@ -306,6 +306,13 @@ exports.allShopsHavingChairs = function(req, res) {
                 spherical: true
             }
         }, {
+            $match: {
+                "name": {
+                    $regex: search,
+                    $options: 'i'
+                }
+            }
+        },{
             $unwind: "$chairs"
         },
         {

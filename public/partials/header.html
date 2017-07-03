@@ -45,7 +45,7 @@
 <script type="text/ng-template" id="myModalContent.html">
     <div class="">
         <div class="holder">
-            <div class="half left" ng-init="$root.active = 0">
+            <div class="half left" >
                 <img src="images/b_chair.png" class="chair">
                 <ul>
                     <li><span><i class="fa fa-check"></i></span> Easy and Convenient Scheduling</li>
@@ -56,7 +56,7 @@
             </div>
             <div class="half right">
                 <div class="ctabs">
-                    <uib-tabset active="$root.active">
+                    <uib-tabset active="active">
                         <uib-tab index="0" heading="Login">
                             <div class="tab-content contact-us">
                                 <div role="tabpanel" class="tab-pane active" id="login">
@@ -86,7 +86,7 @@
                                         </div>
                                         <a ui-sref="forgot" class="forgot">Forgot Password ?</a>
                                         <button type="submit" class="sb_button" ng-click="login()" ng-disabled="loginForm.$invalid">Login</button>
-                                        <p class="msg">New User? <span>   <button type="button" class="btn btn-default btn-sm" ng-click="$root.active = 1">Signup</button> </span>
+                                        <p class="msg">New User? <span>   <button type="button" class="btn btn-default btn-sm" ng-click="active = 1">Signup</button> </span>
                                         </p>
                                     </form>
                                 </div>
@@ -222,7 +222,7 @@
                                     
                                 </div>
                                 <button type="submit" class="sb_button" ng-click="signup()" ng-disabled="signUpForm.$invalid">Sign Up</button>
-                                <p class="msg">Already have an account? <span> <button type="button" class="btn btn-default btn-sm" ng-click="$root.active = 0">Login</button> </span></p>
+                                <p class="msg">Already have an account? <span> <button type="button" class="btn btn-default btn-sm" ng-click="active = 0">Login</button> </span></p>
                             </form>
                         </div>
                     </uib-tab>

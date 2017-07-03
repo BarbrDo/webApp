@@ -130,6 +130,7 @@ exports.requestChair = function(req, res) {
 								err: errors
 							});
 						}
+						
 						shop.findOne({
 							"_id": req.body.shop_id,
 							"chairs._id": req.body.chair_id

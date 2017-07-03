@@ -20,6 +20,7 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.shops = response.data.data;
+					console.log(response.data.data)
 				});
 		}
 		$scope.dateSelectClass = function(index) {

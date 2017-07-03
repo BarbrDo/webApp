@@ -2,6 +2,7 @@ angular.module('BarbrDoApp')
 	.controller('barberCtrl', function($scope, $rootScope, $location, barber, $stateParams, $state, $window, toastr) {
 		var objj = JSON.parse($window.localStorage.user);
 		$scope.imgPath = $window.localStorage.imagePath;
+		$scope.search = {};
 
 		
 		$scope.appointments = function() {
@@ -20,7 +21,7 @@ angular.module('BarbrDoApp')
 			},
 			zoom: 4
 		}
-		if ($state.current.name == 'appointmentDetail' || $state.current.name == 'appointmentDetailOfBarber' || $state.current.name == 'markComplete') {
+		if ($state.current.name == 'appointmentDetail' || $state.current.name == 'appointmentDetailOfBarber' || $state.current.name == 'markComplete' || $state.current.name == 'rescheduleAppointment') {
 			$scope.loaderStart = true;
 			var obj = {
 				_id: $stateParams._id
@@ -28,7 +29,6 @@ angular.module('BarbrDoApp')
 			barber.appointment(obj).then(function(response) {
 				$scope.loaderStart = false;
 				$scope.particularAppointment = response.data.data;
-				console.log(response.data.data)
 				let price = 0;
 				let sum = 0;
 				let len = response.data.data.customer_id.ratings.length;
@@ -75,6 +75,7 @@ angular.module('BarbrDoApp')
 			'longitude': "76.7029445"
 		}
 		$scope.allShopsHavingChairs = function() {
+			obj.search = $scope.search.searchChair;
 			$scope.loaderStart = true;
 			barber.shopsHavingChairs(obj)
 				.then(function(response) {
@@ -88,6 +89,7 @@ angular.module('BarbrDoApp')
 			}
 			barber.shopChairs(obj).then(function(response) {
 				$rootScope.particularShop = response.data.data;
+				console.log(response.data.data)
 			})
 		}
 		var myArray = [];
@@ -138,6 +140,7 @@ angular.module('BarbrDoApp')
 		$scope.barbertasks = function(id,customer){
 			$scope.id = id;
 			$scope.customer = customer._id
+			$rootScope.custname = customer ; 
 		}
 
 
@@ -181,7 +184,7 @@ angular.module('BarbrDoApp')
                     appointment_id: $stateParams._id,
                     appointment_date: $scope.appointmentData.appointment_date
                 }
-                console.log(myobj);
+                
                 barber.reschedule(myobj).then(function(response) {
                     toastr.success('Your appointment is successfully rescheduled');
                 })
@@ -200,14 +203,12 @@ angular.module('BarbrDoApp')
 
 		$scope.managerequests = function() {
 			barber.manageRequest().then(function(response) {
-				console.log(response.data.result);
 				$rootScope.shoprequest = response.data.result ;
 			})
 		}
 
 		$scope.rejectrequest = function(chair) {
 			barber.declineRequest(chair).then(function(response) {
-				console.log(response)
 				toastr.success('Request is Declined successfully');
 				$scope.managerequests();
 			}).catch(function(result) {

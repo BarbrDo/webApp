@@ -65,7 +65,7 @@ exports.editBarber = function(req, res) {
 }
 
 exports.getAllServices = function(req, res) {
-    barber_service.find({
+    tservice.find({
         "status": true
     }, function(err, data) {
         if (err) {
@@ -200,10 +200,12 @@ exports.viewAllServiesOfBarber = function(req, res) {
             err: errors
         });
     }
+    console.log(req.params.barber_id)
     barber_service.find({
         "barber_id": req.params.barber_id,
         "isDeleted": false
     }, function(err, data) {
+        console.log()
         if (err) {
             res.status(400).send({
                 msg: constantObj.messages.errorRetreivingData,

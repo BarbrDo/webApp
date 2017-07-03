@@ -7,7 +7,7 @@
             <div class="selected_user"> <img src="images/brbr_pic.png" alt=""> </div>
             <div class="namertng">
                 <h3>{{particularShop.name}}</h3>
-                <div class="rtng"><img src="images/rating.png" alt=""> </div>
+                <div class="rtng"><input-stars max="5" ng-model="particularShop.ratings[0].score" ng-attr-readonly="true"></input-stars> </div>
             </div>
             <div class="locdis">
                 <p><span>Location :</span> {{particularShop.address}} ,{{particularShop.city}}, {{particularShop.state}}</p>

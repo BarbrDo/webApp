@@ -65,7 +65,9 @@ exports.editBarber = function(req, res) {
 }
 
 exports.getAllServices = function(req, res) {
-    tservice.find({
+
+    service.find({
+
         "status": true
     }, function(err, data) {
         if (err) {

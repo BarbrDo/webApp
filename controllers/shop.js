@@ -138,26 +138,40 @@ exports.allShops = function(req, res) {
                 spherical: true
             }
         }, {
-            $match: {
-                "name": {
-                    $regex: search,
-                    $options: 'i'
-                }
-            }
-        }, {
-            $unwind: "$chairs"
-        }, {
             $lookup: {
                 from: "users",
-                localField: "chairs.barber_id",
+                localField: "user_id",
                 foreignField: "_id",
-                as: "barberInformation"
+                as: "shopOwner"
             }
-        }]).exec(function(err, data) {
+        },
+       {
+         $project: {
+            _id:1,
+            user_id: 1,
+            name: 1,
+            address: 1,
+            city: 1,
+            state: 1,
+            zip: 1,
+            latLong: 1,
+            phone: 1,
+            license_number:1,
+            created_date: 1,
+            modified_date: 1,
+            payment_methods: 1,
+            ratings:1,
+            shopOwner:1,
+            distance:"$dist.calculated",
+            units:{ $literal:  "miles"  },
+            barbers: { $size: [ "$chairs.barber_id" ] }
+         }
+      }
+      ]).exec(function(err, data) {
             if (err) {
                 console.log(err);
             } else {
-                let resultTantArray = [];
+                /*let resultTantArray = [];
                 for (let i = 0; i < data.length; i++) {
                     let obj = {};
                     let totalbarbers = 0;
@@ -181,10 +195,10 @@ exports.allShops = function(req, res) {
                         obj.barbers = totalbarbers
                         resultTantArray.push(obj);
                     }
-                }
+                }*/
                 res.status(200).send({
                     "msg": constantObj.messages.successRetreivingData,
-                    "data": resultTantArray
+                    "data": data
                 })
             }
         })

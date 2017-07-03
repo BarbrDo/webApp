@@ -65,7 +65,7 @@ exports.editBarber = function(req, res) {
 }
 
 exports.getAllServices = function(req, res) {
-    barber_service.find({
+    service.find({
         "status": true
     }, function(err, data) {
         if (err) {

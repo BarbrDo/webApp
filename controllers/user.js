@@ -152,6 +152,7 @@ var accountActivateMailFunction = function(req, res, user, resetUrl) {
 }
 
 exports.signupPost = function(req, res, next) {
+    console.log(req.body);
   req.assert('first_name', 'First name cannot be blank.').notEmpty();
   req.assert('last_name', 'Last name cannot be blank.').notEmpty();
   req.assert('email', 'Email is not valid').isEmail();

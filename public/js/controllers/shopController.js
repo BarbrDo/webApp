@@ -49,9 +49,11 @@ angular.module('BarbrDoApp')
 				shop.requestBarber($window.localStorage.shop_id,$stateParams.id,barber)
 					.then(function(response) {
 						toastr.success('Request is Sended to the barber successfully ! Check Your Mail');
-						$state.go('chairaction');
-						console.log(response)
-					});
+						$state.go('chairaction', { id: $stateParams.id,name: $stateParams.name});					
+					}).catch(function(result) {
+						toastr.error('Sorry!! This Chair is not available');
+
+					})
 
 		};
 
@@ -139,10 +141,41 @@ angular.module('BarbrDoApp')
 				
 			})
 		}
+                
+                $scope.chairdetails = function()
+		{
+			shop.chairDetail($stateParams.id)
+			.then(function(response) {
+				$rootScope.chairs = response.data.data[0].chairs[0];
+                        $rootScope.chair_split = response.data.data[0].chairs[0].shop_percentage;
+			})
+		}
+                
 		if($state.current.name == 'chairaction'){
-			$scope.chairName = $stateParams.name
-			$scope.chairId = $stateParams.id
-			$scope.slider = {
+                    $scope.loaderStart = true;
+                    $scope.chairName = $stateParams.name
+                    $scope.chairId = $stateParams.id
+                        shop.chairDetail($stateParams.id)
+			.then(function(response) {
+                           $scope.loaderStart = false;
+                   if(response.data.data[0].chairs[0].type=='percentage')
+                   {
+                       $scope.slider = {
+                                 
+			value: response.data.data[0].chairs[0].shop_percentage,
+			options: {
+				showSelectionBar: true,
+				floor: 0,
+				ceil: 100,
+				step: 10,
+				ticksArray: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+                                }
+                            };
+                   }
+                   else
+                   {
+                       $scope.slider = {
+                                 
 			value: 0,
 			options: {
 				showSelectionBar: true,
@@ -150,8 +183,11 @@ angular.module('BarbrDoApp')
 				ceil: 100,
 				step: 10,
 				ticksArray: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-			}
-		};
+                                }
+                            };
+                   }
+                            
+			});	
 		}
 
 		if($state.current.name == 'chairwithbarber'){
@@ -160,13 +196,7 @@ angular.module('BarbrDoApp')
 			
 		};
 
-		$scope.chairdetails = function()
-		{
-			shop.chairDetail($stateParams.id)
-			.then(function(response) {
-				$rootScope.chairs = response.data.data[0].chairs[0];
-			})
-		}
+		
 
 		$rootScope.$on("MyEvent", function(evt,data){ 
 			$scope.shopDashboard();
@@ -183,10 +213,11 @@ angular.module('BarbrDoApp')
 				$state.go('barbershopdashboard')
 			})
 		}
-		$scope.saveWeeklyFair = function(type){
+		$scope.saveWeeklyFair = function(type,price){
+                    console.log(price)
+                    console.log(type)
 			var obj = {
 				type: type,
-				type :$scope.content,
 				amount : $scope.priceValue,
 				chair_id:$stateParams.id
 			}

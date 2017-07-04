@@ -34,7 +34,7 @@ exports.requestChair = function(req, res) {
 		status: "pending",
 		booking_date: bookDate
 	}).exec(function(err, resultCheck) {
-		console.log(resultCheck)
+		console.log("databae",resultCheck)
 		if (err) {
 			return res.status(400).send({
 				msg: "error in your request",
@@ -137,6 +137,8 @@ exports.requestChair = function(req, res) {
 						}, {
 							"chairs.$": 1
 						}).exec(function(shopErr, result) {
+							console.log("database222",result)
+							console.log("req.body",req.body)
 							saveData = req.body;
 							if (result != null && result.chairs[0].availability == 'available') {
 								
@@ -151,7 +153,9 @@ exports.requestChair = function(req, res) {
 								saveData.shop_id = req.headers.user_id
 								saveData.requested_by = data.user_type
 								saveData.status = "pending";
+								console.log("savedata",shop)
 								chairRequest(saveData).save(function(err, shop) {
+									console.log(shop)
 									if (err) {
 										return res.status(400).send({
 											msg: constantObj.messages.errorInSave

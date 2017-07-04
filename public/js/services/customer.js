@@ -11,7 +11,7 @@ angular.module('BarbrDoApp')
             'device_latitude': data.latitude,
             'device_longitude': data.longitude
           }
-        },data);
+        });
       },
        barberAll: function(data) {
         return $http({

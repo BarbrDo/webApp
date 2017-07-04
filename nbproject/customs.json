@@ -1,1 +1,32 @@
-{"elements":{"legend":{}},"attributes":{"ng-show":{"context":"div"},"ng-model":{"context":"input"},"ng-message":{"context":"span"},"ng-submit":{"context":"form"},"ng-repeat":{"context":"div"},"ng-if":{"context":"div"},"ng-messages":{"context":"div"}}}
+{
+    "elements": {
+        "legend": {},
+        "rzslider": {}
+    },
+    "attributes": {
+        "ng-show": {
+            "context": "div"
+        },
+        "ng-model": {
+            "context": "input"
+        },
+        "ng-message": {
+            "context": "span"
+        },
+        "ng-submit": {
+            "context": "form"
+        },
+        "ng-repeat": {
+            "context": "div"
+        },
+        "ng-if": {
+            "context": "div"
+        },
+        "ng-messages": {
+            "context": "div"
+        },
+        "ng-hide": {
+            "context": "div"
+        }
+    }
+}

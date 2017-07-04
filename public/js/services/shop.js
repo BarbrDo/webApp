@@ -45,6 +45,7 @@ angular.module('BarbrDoApp')
         });
       },
       saveWeeklyFair: function(data) {
+          console.log("data",data);
         return $http({
           method: 'put',
           url: '/api/v1/shops/managechair',
@@ -84,10 +85,6 @@ angular.module('BarbrDoApp')
         });
       },
       requestBarber: function(shopid,chairid,barber) {
-        console.log(shopid)
-        console.log(chairid)
-        console.log(barber)
-        console.log(obj._id)
         return $http({
           method: 'post',
           url: '/api/v1/requestchair',

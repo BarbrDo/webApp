@@ -179,6 +179,7 @@ exports.allShops = function(req, res) {
             if (err) {
                 console.log(err);
             } else {
+                // console.log("here",data)
                 /*let resultTantArray = [];
                 for (let i = 0; i < data.length; i++) {
                     let obj = {};
@@ -268,7 +269,7 @@ exports.associatedBarbers = function(req, res) {
             if (err) {
                 console.log(err);
             } else {
-
+                
                 let resultTantArray = [];
                 for (let i = 0; i < data.length; i++) {
                     let obj = {};
@@ -288,6 +289,7 @@ exports.associatedBarbers = function(req, res) {
                         resultTantArray.push(obj);
                     }
                 }
+                console.log("database",resultTantArray)
                 res.status(200).send({
                     "msg": constantObj.messages.successRetreivingData,
                     "data": resultTantArray
@@ -519,7 +521,6 @@ exports.postChairToAllBarbers = function(req, res) {
     })
 }
 
-
 exports.listshops = function(req, res) {
     var page = parseInt(req.query.page) || 1;
     var count = parseInt(req.query.count) || 10;
@@ -672,7 +673,6 @@ exports.shopdetail = function(req, res) {
     })
 };
 
-
 exports.chairdetail = function(req, res) {
     req.checkParams("chair_id", "chair_id cannot be blank").notEmpty();
     let errors = req.validationErrors();
@@ -704,10 +704,6 @@ exports.chairdetail = function(req, res) {
         }
     })
 };
-
-
-
-
 
 exports.getDataForBookNowPage = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
@@ -794,8 +790,6 @@ exports.getDataForBookNowPage = function(req, res) {
         })
     }
 }
-
-
 
 exports.shopContainsChairs = function(req, res) {
     req.checkParams('shop_id', 'Shop id is required').notEmpty();

@@ -18,41 +18,41 @@ angular.module('BarbrDoApp')
       }
     }];
 
-    // customer.getEvents().then(function(response) {
-    //   console.log(response);
-    //    vm.events = response.data.data.events;
-    // });
+    customer.getEvents().then(function(response) {
+      console.log(response);
+       vm.events = response.data.data.events;
+    });
     // let date = moment('2017-07-03T13:00:00.000Z').subtract(19800, 'seconds');
-    var d = new Date('2017-07-03T13:00:00.000Z');
-    var olderDate = moment(d).subtract(330, 'minutes').toDate();
-    console.log(olderDate)
+    // var d = new Date('2017-07-03T13:00:00.000Z');
+    // var olderDate = moment(d).subtract(330, 'minutes').toDate();
+    // console.log(olderDate)
     
-    vm.events = [{
-      title: 'An event',
-      color: calendarConfig.colorTypes.warning,
-      startsAt: moment('2017-07-03T13:00:00.000Z').subtract(330, 'minutes').toDate(),
-      endsAt: moment('2017-07-03T14:00:59.000Z').subtract(330, 'minutes').toDate(),
-      draggable: true,
-      resizable: true,
-      actions: actions
-    }/*, {
-      title: '<i class="glyphicon glyphicon-asterisk"></i> <span class="text-primary">Another event</span>, with a <i>html</i> title',
-      color: calendarConfig.colorTypes.info,
-      startsAt: moment().subtract(1, 'day').toDate(),
-      endsAt: moment().add(5, 'days').toDate(),
-      draggable: true,
-      resizable: true,
-      actions: actions
-    }, {
-      title: 'This is a really long event title that occurs on every year',
-      color: calendarConfig.colorTypes.important,
-      startsAt: moment().startOf('day').add(7, 'hours').toDate(),
-      endsAt: moment().startOf('day').add(19, 'hours').toDate(),
-      recursOn: 'year',
-      draggable: true,
-      resizable: true,
-      actions: actions
-    }*/];
+    // vm.events = [{
+    //   title: 'An event',
+    //   color: calendarConfig.colorTypes.warning,
+    //   startsAt: moment('2017-07-05T21:00:00.000Z', 'MM-DD-YYYY HH:mm').utc().format("YYYY-MM-DD HH:mm"),
+    //   endsAt: moment('2017-07-05T23:30:59.000Z', 'MM-DD-YYYY HH:mm').utc().format("YYYY-MM-DD HH:mm"),
+    //   draggable: true,
+    //   resizable: true,
+    //   actions: actions
+    // }, {
+    //   title: '<i class="glyphicon glyphicon-asterisk"></i> <span class="text-primary">Another event</span>, with a <i>html</i> title',
+    //   color: calendarConfig.colorTypes.info,
+    //   startsAt: moment().subtract(1, 'day').toDate(),
+    //   endsAt: moment().add(5, 'days').toDate(),
+    //   draggable: true,
+    //   resizable: true,
+    //   actions: actions
+    // }, {
+    //   title: 'This is a really long event title that occurs on every year',
+    //   color: calendarConfig.colorTypes.important,
+    //   startsAt: moment().startOf('day').add(7, 'hours').toDate(),
+    //   endsAt: moment().startOf('day').add(19, 'hours').toDate(),
+    //   recursOn: 'year',
+    //   draggable: true,
+    //   resizable: true,
+    //   actions: actions
+    // }];
 
     vm.cellIsOpen = true;
 

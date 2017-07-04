@@ -101,6 +101,8 @@ app.post('/api/v1/webhooks',userController.stripeWebhook);
     app.get('/api/v1/barber/shopchairrequests/:barber_id',chairRequestController.shopChairRequest); // Manage request in barber module
     app.get('/api/v1/barber/timeavailability/:barber_id',barberServices.viewBarberAvailability)
     app.post('/api/v1/barber/contactshop',contactController.contactShop);
+    app.post('/api/v1/createEvents',barberServices.createEvents);
+    app.post('/api/v1/getEvents',barberServices.getEvents);
 
     //Common
     app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of any customer/barber/shop

@@ -11,24 +11,6 @@ let async = require('async');
 let nodemailer = require('nodemailer');
 let mg = require('nodemailer-mailgun-transport');
 
-/*
-exports.getBarber = function (req, res) {
-    var maxDistanceToFind = constantObj.ParamValues.radiusSearch;
-    if (req.headers.device_latitude && req.headers.device_longitude) {
-        var long = parseFloat(req.headers.device_longitude);
-        var lati = parseFloat(req.headers.device_latitude);
-        var maxDistanceToFind = 500000;
-        res.status(200).send({
-            "msg": "in progress",
-            "data": "in progress"
-        })
-    } else {
-        res.status(400).send({
-            "msg": constantObj.messages.requiredFields
-        })
-    }
-}
-*/
 exports.editBarber = function(req, res) {
     var updateData = JSON.parse(JSON.stringify(req.body));
     updateData.modified_date = new Date();
@@ -1174,10 +1156,10 @@ exports.viewBarberAvailability = function(req, res) {
                 for (var i = 0; i < timeArray.length; i++) {
                     let k = 0;
                     for (var j = 0; j < resultTantTime.length; j++) {
-                        console.log(typeof(timeArray[i]),typeof(resultTantTime[j]))
-                        console.log(timeArray[i],resultTantTime[j]);
-                        console.log(timeArray[i]===resultTantTime[j]);
-                        if (timeArray[i]==resultTantTime[j]){
+                        console.log(typeof(timeArray[i]), typeof(resultTantTime[j]))
+                        console.log(timeArray[i], resultTantTime[j]);
+                        console.log(timeArray[i] === resultTantTime[j]);
+                        if (timeArray[i] == resultTantTime[j]) {
                             console.log("inside");
                             let obj = {
                                 time: timeArray[i],
@@ -1195,7 +1177,7 @@ exports.viewBarberAvailability = function(req, res) {
                         newArray.push(obj)
                     }
                 }
-                console.log("newArray",newArray);
+                console.log("newArray", newArray);
                 for (var k = 0; k < newArray.length; k++) {
                     var reslt = newArray[k].time.split(":");
                     reslt = parseInt(reslt[0]);
@@ -1224,6 +1206,80 @@ exports.viewBarberAvailability = function(req, res) {
                     data: constantObj.timeSlots
                 });
             }
+        }
+    })
+}
+
+
+
+exports.createEvents = function(req, res) {
+    req.checkHeaders("user_id", "user_id is required").notEmpty();
+    req.assert("title", "Title is required.").notEmpty();
+    req.assert("startsAt", "Start Date is required").notEmpty();
+    req.assert("endsAt", "End Date is required").notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let obj = {};
+    obj.title = req.body.title;
+    obj.startsAt = removeOffset(req.body.startsAt);
+    obj.endsAt = removeOffset(req.body.endsAt);
+    if(req.body.color){
+        obj.color = req.body.color
+    }
+    obj.resizable = true;
+    obj.draggable = true;
+    console.log("obj",obj);
+    barber.update({
+        user_id: req.headers.user_id
+    }, {
+        $push: {
+            events:obj
+        }
+    }).exec(function(err, update) {
+        if (err) {
+            res.status(400).send({
+                msg: 'Error in updating data.',
+                "err": err
+            });
+        } else {
+            res.status(200).send({
+                msg: 'Successfully updated fields.',
+                "data": update
+            });
+        }
+    })
+}
+
+let removeOffset = function(dobFormat) {
+    let userOffset = new Date(dobFormat).getTimezoneOffset();
+    let userOffsetMilli = userOffset * 60 * 1000;
+    let dateInMilli = moment(dobFormat).unix() * 1000;
+    let dateInUtc = dateInMilli - userOffsetMilli;
+    return dateInUtc;
+}
+
+exports.getEvents = function(req, res) {
+    barber.findOne({
+        user_id: req.headers.user_id
+    }, {
+        events: 1
+    }, function(err, data) {
+        if (err) {
+            res.status(400).send({
+                msg: 'Error in Finding this user.',
+                "err": err
+            });
+        } else {
+            console.log("getEvents", data);
+            res.status(200).send({
+                msg: constantObj.messages.successRetreivingData,
+                "data": data
+            });
         }
     })
 }

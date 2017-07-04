@@ -43,6 +43,20 @@ var barberSchema = new mongoose.Schema({
                 default: Date.now()
             }
         }
+    ],
+    events:[
+    {
+        title:String,
+        startsAt:Date,
+        endsAt:Date,
+        color:{
+            primary:String,
+            secondary:String
+        },
+        draggable:Boolean,
+        resizable:Boolean,
+        calendarEventId:Number
+    }
     ]
 });
 

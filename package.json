@@ -26,7 +26,7 @@
     "nodemailer": "^2.3.0",
     "nodemailer-mailgun-transport": "^1.3.5",
     "request": "^2.69.0",
-    "stripe": "^4.22.0",
+    "stripe": "^4.23.1",
     "swagger-jsdoc": "^1.9.3",
     "swagger-ui-express": "^1.0.7"
   },

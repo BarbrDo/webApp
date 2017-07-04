@@ -3,10 +3,16 @@
     <div class="block">
         <div class="panel">
             <div class="panel-body">
-                <div class="container ">
+                <div class="row ">
                     <div class="col-lg-2"></div>
                     <div class="col-lg-8">
-                        <img class="img-circle" src="/images/shop.jpg" alt="Cinque Terre" width="304" height="236"></div>
+                            <div ng-if="profile.picture">
+                                <img ng-src="{{imgPath + profile.picture}} " class="img-circle" width="304" height="236">
+                            </div>
+                            <div ng-if="!profile.picture">
+                                <img ng-src="images/no-image-found.jpg " class="img-circle" width="304" height="236">
+                            </div>
+                    </div>
                     <div class="col-lg-2">
                         <a ui-sref="editShopProfile">
                             <span align="right" class="glyphicon glyphicon-pencil" style="font-size: 30px;"></span> </a>
@@ -16,7 +22,7 @@
                     <div class="col-sm-6">
                         Total Barbers : &nbsp;&nbsp;&nbsp; {{totalbarbers}} </div>
                     <div class="col-sm-6">
-                        Total Cuts : &nbsp;&nbsp;&nbsp; 0 </div>
+                         Total Cuts : &nbsp;&nbsp;&nbsp; <a ui-sref="shopGallery">{{profile.ratings.length}} </a> </div>
                 </div>
                 <br>
                 <br>

@@ -22,7 +22,7 @@ angular.module('BarbrDoApp')
     }
 
     $scope.submitPayment = function() {
-      let myobj = {
+      var myobj = {
         user_id: $stateParams._id,
         card_number: $scope.cardDetails.number,
         month: $scope.cardDetails.month.substr(0, 2),
@@ -32,7 +32,7 @@ angular.module('BarbrDoApp')
       }
       shop.subScribe(myobj).then(function(response) {
         toastr.success("subscribe successfully.");
-        let obj = {
+        var obj = {
           "email":response.data.user.email,
           "decrypt":"decrypt"
         }

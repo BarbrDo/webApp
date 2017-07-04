@@ -667,6 +667,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     setTimeout(function() {
       Admin.barberDetail($stateParams.id)
         .then(function(response) {
+          console.log(response)
            $scope.loaderStart = false;
           $rootScope.barberdetail = response.data.data[0];
         });

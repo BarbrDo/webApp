@@ -178,7 +178,7 @@ exports.deleteBarberService = function(req, res) {
         _id: req.params.barber_service_id
     }, {
         $set: {
-            "isDeleted": true
+            "is_deleted": true
         }
     }, function(err, result) {
         if (err) {
@@ -205,7 +205,7 @@ exports.viewAllServiesOfBarber = function(req, res) {
     console.log(req.params.barber_id)
     barber_service.find({
         "barber_id": req.params.barber_id,
-        "isDeleted": false
+        "is_deleted": false
     }, function(err, data) {
         console.log()
         if (err) {
@@ -686,8 +686,8 @@ exports.availableBarber = function(req, res) {
             mobile_number: "$mobile_number",
             ratings: "$ratings",
             created_date: "$created_date",
-            isDeleted: "$isDeleted",
-            isActive: "$isActive",
+            is_deleted: "$is_deleted",
+            is_active: "$is_active",
             is_verified: "$is_verified",
             user_type: "$user_type",
             picture: "$picture"
@@ -715,8 +715,8 @@ exports.availableBarber = function(req, res) {
                     mobile_number: "$mobile_number",
                     created_date: "$created_date",
                     ratings: "$ratings",
-                    isDeleted: "$isDeleted",
-                    isActive: "$isActive",
+                    is_deleted: "$is_deleted",
+                    is_active: "$is_active",
                     is_verified: "$is_verified",
                     user_type: "$user_type",
                     latLong: "$latLong",
@@ -765,7 +765,7 @@ exports.deactivebarber = function(req, res) {
         _id: req.params.barber_id
     }, {
         $set: {
-            isActive: false
+            is_active: false
         }
     }, function(err, count) {
         user.find({
@@ -784,7 +784,7 @@ exports.activatebarber = function(req, res) {
         _id: req.params.barber_id
     }, {
         $set: {
-            isActive: true
+            is_active: true
         }
     }, function(err, count) {
         user.find({
@@ -839,7 +839,7 @@ exports.deletebarber = function(req, res) {
         _id: req.params.barber_id
     }, {
         $set: {
-            isDeleted: true
+            is_deleted: true
         }
     }, function(err, count) {
         user.find({
@@ -857,7 +857,7 @@ exports.undeletebarber = function(req, res) {
         _id: req.params.barber_id
     }, {
         $set: {
-            isDeleted: false
+            is_deleted: false
         }
     }, function(err, count) {
         user.find({
@@ -890,8 +890,8 @@ exports.barberdetail = function(req, res) {
             mobile_number: "$mobile_number",
             created_date: "$created_date",
             ratings: "$ratings",
-            isDeleted: "$isDeleted",
-            isActive: "$isActive",
+            is_deleted: "$is_deleted",
+            is_active: "$is_active",
             is_verified: "$is_verified",
             user_type: "$user_type",
             latLong: "$latLong",

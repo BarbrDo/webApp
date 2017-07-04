@@ -30,7 +30,6 @@ angular.module('BarbrDoApp').controller('ProfileCtrl', function($scope, $rootSco
         fs.append("gender", $scope.profile.gender);
         fs.append("mobile_number", $scope.profile.mobile_number);
         fs.append("radius_search", $scope.profile.radius_search);
-        console.log("fs",fs)
         if ($scope.profile.file) {
             fs.append("profileImage", $scope.profile.file);
         }
@@ -42,7 +41,6 @@ angular.module('BarbrDoApp').controller('ProfileCtrl', function($scope, $rootSco
             })
             .success(function(response) {
                 if (response) {
-                    console.log(response)
                     $rootScope.currentUser = response.user;
                     $window.localStorage.user = JSON.stringify(response.user);
                     toastr.success("User profile updated successfully.");

@@ -29,8 +29,8 @@ function generateToken(user) {
   };
   return jwt.sign(payload, process.env.TOKEN_SECRET);
 }
+
 exports.stripeWebhook = function(req,res,next){
-console.log(req.body);
 res.status(200).send({
       msg:"ok/"
     });
@@ -80,13 +80,13 @@ exports.loginPost = function(req, res, next) {
           msg: user.remark
         });
       }
-      console.log("user.stripe_subscription.length", user.stripe_subscription.length);
-      if (user.stripe_subscription.length != 1 && user.user_type != 'customer') {
-        res.status(402).send({
-          msg: "Please subscribe.",
-          user: user.toJSON()
-        })
-      }
+      // console.log("user.stripe_subscription.length", user.stripe_subscription.length);
+      // if (user.stripe_subscription.length != 1 && user.user_type != 'customer') {
+      //   res.status(402).send({
+      //     msg: "Please subscribe.",
+      //     user: user.toJSON()
+      //   })
+      // }
       res.send({
         token: generateToken(user),
         user: user.toJSON(),
@@ -129,19 +129,19 @@ exports.loginPost = function(req, res, next) {
             });
           }
 
-          console.log("user.stripe_subscription.length", user.stripe_subscription.length);
-          if (user.stripe_subscription.length != 1 && user.user_type != 'customer') {
-            res.status(402).send({
-              msg: "Please subscribe.",
-              user: user.toJSON()
-            })
-          } else {
+          // console.log("user.stripe_subscription.length", user.stripe_subscription.length);
+          // if (user.stripe_subscription.length != 1 && user.user_type != 'customer') {
+          //   res.status(402).send({
+          //     msg: "Please subscribe.",
+          //     user: user.toJSON()
+          //   })
+          // } else {
             res.send({
               token: generateToken(user),
               user: user.toJSON(),
               "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
             });
-          }
+          // }
         });
       }
     });

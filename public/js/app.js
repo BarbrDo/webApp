@@ -1381,7 +1381,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
 
         $urlRouterProvider.otherwise('pageNotFound');
         $authProvider.loginUrl = '/api/v1/login';
-        $authProvider.signupUrl = '/api/v1/signupWeb';
+        $authProvider.signupUrl = '/api/v1/signup';
         $authProvider.facebook({
             url: '/auth/facebook',
             clientId: '653227411528324'

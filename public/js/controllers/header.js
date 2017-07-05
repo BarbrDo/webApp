@@ -33,6 +33,9 @@ angular.module('BarbrDoApp')
     $scope.logout = function() {
       $auth.logout();
       delete $window.localStorage.user;
+      delete $window.localStorage.lat;
+      delete $window.localStorage.long; 
+      delete $window.localStorage.imagePath;
       $state.go('home');
     };
 

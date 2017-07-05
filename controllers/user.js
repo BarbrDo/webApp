@@ -2,7 +2,7 @@ let async = require('async');
 let crypto = require('crypto');
 let User = require('../models/User');
 let nodemailer = require('nodemailer');
-var geocoder = require('geocoder');
+let geocoder = require('geocoder');
 let jwt = require('jsonwebtoken');
 let moment = require('moment');
 let request = require('request');
@@ -80,7 +80,7 @@ exports.loginPost = function(req, res, next) {
         msg: user.remark
       });
     }
-    
+
     user.comparePassword(req.body.password, function(err, isMatch) {
       if (!isMatch) {
         return res.status(401).send({
@@ -88,28 +88,43 @@ exports.loginPost = function(req, res, next) {
         });
       }
 
-      // var options = {
-      //   headers: {
-      //     'user': user.toJSON(),
-      //     'token': generateToken(user),
-      //     "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-      //   }
-      // };
-      // res.sendFile(path.join(__dirname + './../public/index1.html'), options);
-
-      res.send({
-        token: generateToken(user),
-        user: user.toJSON(),
-        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-      });
+      let currentDate = moment().format("YYYY-MM-DD"),
+        createDate = moment(user.created_date).format("YYYY-MM-DD"),
+        futureMonth = moment(createDate).add(2, 'M');
+      console.log("currentDate,createDate,futureMonth", currentDate, createDate, futureMonth);
+      if (currentDate > futureMonth) {
+        User.update({
+          _id: user._id
+        }, {
+          $set: {
+            "is_active": false,
+            'remark': "Subscription required."
+          }
+        }).exec(function(userErr, userUpdate) {
+          if (userErr) {
+            console.log(userErr)
+          } else {
+            console.log(userUpdate)
+            res.status(402).send({
+              msg: 'Subscription required.',
+            });
+          }
+        })
+      } else {
+        res.status(200).send({
+          token: generateToken(user),
+          user: user.toJSON(),
+          "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+        });
+      }
     });
   });
-};
+}
 
 /**
  * POST /signup
  */
-var saveShop = function(saveDataForShop, resetUrl, user, req, res) {
+let saveShop = function(saveDataForShop, resetUrl, user, req, res) {
   Shop(saveDataForShop).save(function(errSaveShop, shopData) {
     if (errSaveShop) {
       return res.status(400).send({
@@ -121,7 +136,7 @@ var saveShop = function(saveDataForShop, resetUrl, user, req, res) {
   });
 }
 
-var accountActivateMailFunction = function(req, res, user, resetUrl) {
+let accountActivateMailFunction = function(req, res, user, resetUrl) {
   console.log("accountActivateMailFunction", user);
   let auth = {
     auth: {
@@ -991,7 +1006,7 @@ exports.getProfiles = function(req, res) {
       err: errors
     });
   }
-  var id = mongoose.Types.ObjectId(req.params.id);
+  let id = mongoose.Types.ObjectId(req.params.id);
   User.findOne({
     _id: req.params.id
   }, function(err, result) {
@@ -1087,9 +1102,9 @@ exports.getProfiles = function(req, res) {
 exports.activate = function(req, res) {
   console.log("req.body", req.body);
   if (req.body.email) {
-    var email = commonObj.decrypt(req.body.email);
+    let email = commonObj.decrypt(req.body.email);
   }
-  var randomcode = req.body.randomString;
+  let randomcode = req.body.randomString;
   console.log(email, randomcode)
 
   User.findOne({
@@ -1136,7 +1151,19 @@ exports.featuringPlans = function(req, res) {
 exports.createCharges = function(req, res) {
   // Token is created using Stripe.js or Checkout!
   // Get the payment token submitted by the form:
+  req.assert('token', 'Card token is required.').notEmpty();
+  req.assert('amount', 'Amount is required.').notEmpty();
+  req.checkHeaders('user_id', 'user_id is required.').notEmpty();
+  let errors = req.validationErrors();
+
+  if (errors) {
+    res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
   console.log(req.body.token);
+  let chargeAmount = req.body.amount*100;
   User.findOne({
     _id: req.headers.user_id
   }, function(err, data) {
@@ -1150,7 +1177,7 @@ exports.createCharges = function(req, res) {
       let email = data.email
       if (data.stripe_customer.length > 0) {
         stripe.charges.create({
-          amount: 1000,
+          amount: chargeAmount,
           currency: "usd",
           customer: customer.id,
         }).then(function(charge) {

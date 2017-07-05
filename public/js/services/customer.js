@@ -104,6 +104,26 @@ angular.module('BarbrDoApp')
           },
           data:data,
         },data);
+      },
+      createEvent:function(data){
+        return $http({
+          method: 'post',
+          url: '/api/v1/createEvents',
+          headers: {
+            'user_id': obj._id//obj._id
+          },
+          data:data,
+        },data);
+      },
+      getEvents:function (data) {
+        return $http({
+          method: 'post',
+          url: '/api/v1/getEvents',
+          headers: {
+            'user_id': obj._id//obj._id
+          },
+          data:data,
+        },data);
       }
     };
   });

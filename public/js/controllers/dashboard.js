@@ -4,15 +4,13 @@ angular.module('BarbrDoApp')
 		$scope.annualCost = "$" + $scope.dollarAmmount;
 		$scope.search = {};
 		var obj = {
-			'latitude': "30.7038528",
-			'longitude': "76.7076768"
+			'latitude': "30.538994",
+			'longitude': "75.955033"
 		}
 		$scope.callFunctions = function() {
 				$scope.shoplist();
 				$scope.barberList();
 			}
-			// $scope.searchBarber = "";
-			// $scope.searchShop = "";
 		$scope.shoplist = function() {
 			obj.search = $scope.search.searchShop;
 			$scope.loaderStart = true;
@@ -323,7 +321,8 @@ angular.module('BarbrDoApp')
 					successElement.querySelector('.token').textContent = result.token.id;
 					successElement.classList.add('visible');
 					var obj = {
-						token: result.token.id
+						token: result.token.id,
+						amount :$scope.annualCost
 					}
 					customer.chargeCustomer(obj)
 						.then(function(response) {

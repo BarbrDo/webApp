@@ -86,7 +86,8 @@
                                         </div>
                                         <a ui-sref="forgot" class="forgot">Forgot Password ?</a>
                                         <button type="submit" class="sb_button" ng-click="login()" ng-disabled="loginForm.$invalid">Login</button>
-                                        <p class="msg">New User? <span>   <button type="button" class="btn btn-default btn-sm" ng-click="active = 1">Signup</button> </span>
+                                        
+                                        <p class="msg">New User? <span>   <button type="button" class="btn btn-default btn-sm" ng-click="$root.active = '1'">Signup</button> </span>
                                         </p>
                                     </form>
                                 </div>

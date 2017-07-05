@@ -2,7 +2,7 @@ let async = require('async');
 let crypto = require('crypto');
 let User = require('../models/User');
 let nodemailer = require('nodemailer');
-var geocoder = require('geocoder');
+let geocoder = require('geocoder');
 let jwt = require('jsonwebtoken');
 let moment = require('moment');
 let request = require('request');
@@ -47,68 +47,84 @@ exports.ensureAuthenticated = function(req, res, next) {
  * Sign in with email and password
  */
 exports.loginPost = function(req, res, next) {
-    req.assert('email', 'Email is not valid').isEmail();
+  req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('password', 'Password cannot be blank').notEmpty();
-    req.sanitize('email').normalizeEmail({
-      remove_dots: false
+  req.sanitize('email').normalizeEmail({
+    remove_dots: false
+  });
+
+  let errors = req.validationErrors();
+
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
     });
+  }
 
-    let errors = req.validationErrors();
+  User.findOne({
+    email: req.body.email
+  }).exec(function(err, user) {
 
-    if (errors) {
-      return res.status(400).send({
-        msg: "error in your request",
-        err: errors
+    if (!user) {
+      return res.status(401).send({
+        msg: 'The email address ' + req.body.email + ' is not associated with any account. ' +
+          'Double-check your email address and try again.'
       });
     }
 
-    User.findOne({
-      email: req.body.email
-    }).exec(function(err, user) {
+    /*-- this condition is for check that this account is active or not---- */
+    if (user.is_active == false && user.is_verified == false) {
+      return res.status(401).send({
+        msg: user.remark
+      });
+    }
 
-      if (!user) {
+    user.comparePassword(req.body.password, function(err, isMatch) {
+      if (!isMatch) {
         return res.status(401).send({
-          msg: 'The email address ' + req.body.email + ' is not associated with any account. ' +
-            'Double-check your email address and try again.'
+          msg: 'Invalid email or password'
         });
       }
 
-      /*-- this condition is for check that this account is active or not---- */
-      if (user.is_active == false && user.is_verified == false) {
-        return res.status(401).send({
-          msg: user.remark
-        });
-      }
-        user.comparePassword(req.body.password, function(err, isMatch) {
-          if (!isMatch) {
-            return res.status(401).send({
-              msg: 'Invalid email or password'
+      let currentDate = moment().format("YYYY-MM-DD"),
+        createDate = moment(user.created_date).format("YYYY-MM-DD"),
+        futureMonth = moment(createDate).add(2, 'M');
+      console.log("currentDate,createDate,futureMonth", currentDate, createDate, futureMonth);
+      if (currentDate > futureMonth) {
+        User.update({
+          _id: user._id
+        }, {
+          $set: {
+            "is_active": false,
+            'remark': "Subscription required."
+          }
+        }).exec(function(userErr, userUpdate) {
+          if (userErr) {
+            console.log(userErr)
+          } else {
+            console.log(userUpdate)
+            res.status(402).send({
+              msg: 'Subscription required.',
             });
           }
-
-      // var options = {
-      //   headers: {
-      //     'user': user.toJSON(),
-      //     'token': generateToken(user),
-      //     "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-      //   }
-      // };
-      // res.sendFile(path.join(__dirname + './../public/index1.html'), options);
-
-            res.send({
-              token: generateToken(user),
-              user: user.toJSON(),
-              "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-            });
+        })
+      } else {
+        res.status(200).send({
+          token: generateToken(user),
+          user: user.toJSON(),
+          "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
         });
+      }
     });
-};
+  });
+}
 
 /**
  * POST /signup
  */
-var saveShop = function(saveDataForShop, resetUrl, user, req, res) {
+let saveShop = function(saveDataForShop, resetUrl, user, req, res) {
   Shop(saveDataForShop).save(function(errSaveShop, shopData) {
     if (errSaveShop) {
       return res.status(400).send({
@@ -120,7 +136,7 @@ var saveShop = function(saveDataForShop, resetUrl, user, req, res) {
   });
 }
 
-var accountActivateMailFunction = function(req, res, user, resetUrl) {
+let accountActivateMailFunction = function(req, res, user, resetUrl) {
   console.log("accountActivateMailFunction", user);
   let auth = {
     auth: {
@@ -152,7 +168,7 @@ var accountActivateMailFunction = function(req, res, user, resetUrl) {
 }
 
 exports.signupPost = function(req, res, next) {
-    console.log(req.body);
+  console.log(req.body);
   req.assert('first_name', 'First name cannot be blank.').notEmpty();
   req.assert('last_name', 'Last name cannot be blank.').notEmpty();
   req.assert('email', 'Email is not valid').isEmail();
@@ -785,64 +801,64 @@ exports.addChair = function(req, res) {
 }
 
 exports.removeChair = function(req, res) {
-    req.assert("shop_id", "Shop ID is required")
-    req.assert("chair_id", "Chair ID is required");
+  req.assert("shop_id", "Shop ID is required")
+  req.assert("chair_id", "Chair ID is required");
 
-    let errors = req.validationErrors();
-    if (errors) {
-      return res.status(400).send({
-        msg: "error in your request",
-        err: errors
-      });
-    }
-    console.log("req.body", req.body);
-    let validateId = objectID.isValid(req.body.shop_id);
-    let validateChairId = objectID.isValid(req.body.chair_id)
-    if (validateId && validateChairId) {
-      Shop.find({
-        _id: req.body.shop_id,
-        "chairs._id": req.body.chair_id
-      }, {
-        "chairs.$": 1
-      }).exec(function(err, result) {
-        if (err) {
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+  console.log("req.body", req.body);
+  let validateId = objectID.isValid(req.body.shop_id);
+  let validateChairId = objectID.isValid(req.body.chair_id)
+  if (validateId && validateChairId) {
+    Shop.find({
+      _id: req.body.shop_id,
+      "chairs._id": req.body.chair_id
+    }, {
+      "chairs.$": 1
+    }).exec(function(err, result) {
+      if (err) {
+        res.status(400).send({
+          msg: 'Error in deleting chair.'
+        });
+      } else {
+        if (result[0].chairs[0].barber_id) {
           res.status(400).send({
-            msg: 'Error in deleting chair.'
+            msg: "You can't remove this chair.A Barber is already associated with this chair."
           });
         } else {
-          if (result[0].chairs[0].barber_id) {
-            res.status(400).send({
-              msg: "You can't remove this chair.A Barber is already associated with this chair."
-            });
-          } else {
-            Shop.update({
-              _id: req.body.shop_id,
-              "chairs._id": req.body.chair_id
-            }, {
-              $set: {
-                "chairs.$.isActive": false,
-                "chairs.$.availability": "closed"
-              }
-            }).exec(function(errInDelete, resultInDelete) {
-              if (errInDelete) {
-                res.status(400).send({
-                  msg: 'Error in deleting chair.'
-                });
-              } else {
-                res.status(200).send({
-                  msg: 'Chair successfully deleted.'
-                });
-              }
-            })
-          }
+          Shop.update({
+            _id: req.body.shop_id,
+            "chairs._id": req.body.chair_id
+          }, {
+            $set: {
+              "chairs.$.isActive": false,
+              "chairs.$.availability": "closed"
+            }
+          }).exec(function(errInDelete, resultInDelete) {
+            if (errInDelete) {
+              res.status(400).send({
+                msg: 'Error in deleting chair.'
+              });
+            } else {
+              res.status(200).send({
+                msg: 'Chair successfully deleted.'
+              });
+            }
+          })
         }
-      })
-    } else {
-      res.status(400).send({
-        msg: 'Please pass correct fields.'
-      });
-    }
+      }
+    })
+  } else {
+    res.status(400).send({
+      msg: 'Please pass correct fields.'
+    });
   }
+}
 
 exports.checkFaceBook = function(req, res) {
   req.assert('facebook_id', 'facebook_id is required').notEmpty();
@@ -990,7 +1006,7 @@ exports.getProfiles = function(req, res) {
       err: errors
     });
   }
-  var id = mongoose.Types.ObjectId(req.params.id);
+  let id = mongoose.Types.ObjectId(req.params.id);
   User.findOne({
     _id: req.params.id
   }, function(err, result) {
@@ -1086,9 +1102,9 @@ exports.getProfiles = function(req, res) {
 exports.activate = function(req, res) {
   console.log("req.body", req.body);
   if (req.body.email) {
-    var email = commonObj.decrypt(req.body.email);
+    let email = commonObj.decrypt(req.body.email);
   }
-  var randomcode = req.body.randomString;
+  let randomcode = req.body.randomString;
   console.log(email, randomcode)
 
   User.findOne({
@@ -1135,7 +1151,19 @@ exports.featuringPlans = function(req, res) {
 exports.createCharges = function(req, res) {
   // Token is created using Stripe.js or Checkout!
   // Get the payment token submitted by the form:
+  req.assert('token', 'Card token is required.').notEmpty();
+  req.assert('amount', 'Amount is required.').notEmpty();
+  req.checkHeaders('user_id', 'user_id is required.').notEmpty();
+  let errors = req.validationErrors();
+
+  if (errors) {
+    res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
   console.log(req.body.token);
+  let chargeAmount = req.body.amount*100;
   User.findOne({
     _id: req.headers.user_id
   }, function(err, data) {
@@ -1149,7 +1177,7 @@ exports.createCharges = function(req, res) {
       let email = data.email
       if (data.stripe_customer.length > 0) {
         stripe.charges.create({
-          amount: 1000,
+          amount: chargeAmount,
           currency: "usd",
           customer: customer.id,
         }).then(function(charge) {
@@ -1503,9 +1531,11 @@ exports.subscribe = function(req, res) {
 }
 
 */
+
 exports.stripeWebhook = function(req,res,next){
     console.log(req.body);
     res.status(200).send({
       msg:"ok/"
     });
 }
+

@@ -78,6 +78,22 @@ angular.module('BarbrDoApp')
       barberInfo: function(data) {
         return $http.get('/api/v1/userprofile/'+data._id, data);
       },
+      deleteImage : function(data) {
+        return $http({
+          method: 'delete',
+          url: '/api/v1/barber/gallery/'+ data._id , 
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+            'user_id': obj._id//obj._id
+          }
+        });
+      },
+      // userProfile : function(data) {
+      //   return $http.get('/api/v1/userprofile/'+data);
+      // },
+      getImages : function(data) {
+        return $http.get('/api/v1/userprofile/'+obj._id);
+      },
       chargeCustomer:function(data){
         return $http({
           method: 'post',

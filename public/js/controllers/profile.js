@@ -1,13 +1,16 @@
-angular.module('BarbrDoApp').controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account, toastr, $http, shop) {
+angular.module('BarbrDoApp').controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account, toastr, $http, shop,$timeout) {
     if ($window.localStorage.user) {
         $scope.profile = JSON.parse($window.localStorage.user);
-        console.log("here");
+        console.log($scope.profile)
     }
     $scope.imgPath = $window.localStorage.imagePath;
 
     $scope.shop = function() {
-        shop.shopInfo().then(function(response) {
-            $rootScope.shopinfo = response.data.user.shop[0];
+        let obj = {
+                obj:JSON.parse($window.localStorage.user)
+            }
+        shop.shopInfo(obj).then(function(response) {
+            $scope.shopinfo = response.data.user.shop[0];
             var object = {};
             var k = 0;
             for (var j = 0; j < response.data.user.shop[0].chairs.length; j++) {
@@ -18,12 +21,17 @@ angular.module('BarbrDoApp').controller('ProfileCtrl', function($scope, $rootSco
             var object = {
                 totalBarbers: k
             };
-            $rootScope.totalbarbers = object.totalBarbers;
+            $scope.totalbarbers = object.totalBarbers;
         });
     };
 
-
+    $scope.focusOnInput= function () {
+        $timeout(function() {
+       $("#mobile_number").trigger('click');
+    }, 100, false);
+    }
     $scope.updateProfile = function() {
+        console.log($scope.profile);
         var fs = new FormData();
         fs.append("first_name", $scope.profile.first_name);
         fs.append("last_name", $scope.profile.last_name);

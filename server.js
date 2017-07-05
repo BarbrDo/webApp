@@ -10,12 +10,14 @@ let db = require('./db.js');
 let jwt = require('jsonwebtoken');
 let moment = require('moment');
 let request = require('request');
-
-
 let objectID = require('mongodb').ObjectID
-
 // Load environment vaiables from .env file
 dotenv.load();
+
+var cron = require('node-cron');
+var task = cron.schedule('* * * * *', function() {
+  console.log('will execute every minute until stopped');
+});
 
 let app = express();
 let engines = require('consolidate');

@@ -15,8 +15,8 @@ angular.module('BarbrDoApp')
       }
     }
     if ($window.localStorage.user) {
-      $scope.userInfo = JSON.parse($window.localStorage.user);
-      $scope.imgPath = $window.localStorage.imagePath;
+      $rootScope.userInfo = JSON.parse($window.localStorage.user);
+      $rootScope.imgPath = $window.localStorage.imagePath;
     }
 
     $scope.isAuthenticated = function() {
@@ -33,6 +33,9 @@ angular.module('BarbrDoApp')
     $scope.logout = function() {
       $auth.logout();
       delete $window.localStorage.user;
+      delete $window.localStorage.lat;
+      delete $window.localStorage.long; 
+      delete $window.localStorage.imagePath;
       $state.go('home');
     };
 

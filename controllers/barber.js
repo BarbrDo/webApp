@@ -47,7 +47,7 @@ exports.editBarber = function(req, res) {
 }
 
 exports.getAllServices = function(req, res) {
-    barber_service.find({
+    service.find({
         "status": true
     }, function(err, data) {
         if (err) {
@@ -65,6 +65,7 @@ exports.getAllServices = function(req, res) {
 }
 
 exports.addBarberServices = function(req, res) {
+    console.log(req.body);
     req.checkHeaders("user_id", "user_id is required").notEmpty();
     req.assert("name", "name is required").notEmpty();
     req.assert("price", "price is required").notEmpty();
@@ -79,32 +80,20 @@ exports.addBarberServices = function(req, res) {
     saveData.barber_id = req.headers.user_id;
     var barber_id = objectID.isValid(req.headers.user_id)
     if (barber_id) {
-        barber_service.find({
-            "barber_id": req.headers.user_id,
-            "name": req.body.name
-        }, function(error, result) {
-            if (result) {
+        barber_service(saveData).save(function(err, data) {
+            console.log(data);
+            if (err) {
                 res.status(400).send({
                     msg: constantObj.messages.errorInSave,
-                    "err": error
+                    "err": err
                 });
             } else {
-                barber_service(saveData).save(function(err, data) {
-                    if (err) {
-                        res.status(400).send({
-                            msg: constantObj.messages.errorInSave,
-                            "err": err
-                        });
-                    } else {
-                        res.status(200).send({
-                            msg: constantObj.messages.saveSuccessfully,
-                            "data": data
-                        });
-                    }
-                })
+                res.status(200).send({
+                    msg: constantObj.messages.saveSuccessfully,
+                    "data": data
+                });
             }
         })
-
     } else {
         res.status(400).send({
             msg: 'Your input is wrong.'

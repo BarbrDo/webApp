@@ -7,6 +7,11 @@ var barberServicesSchema = new mongoose.Schema({
         ref: 'barbers',
         required: true
     },
+    service_id: {
+        type: Schema.Types.ObjectId,
+        ref: 'services',
+        required: true
+    },
     name: {
         type: String,
         required: true

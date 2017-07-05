@@ -1,5 +1,5 @@
 angular.module('BarbrDoApp')
-	.controller('shopCtrl', function($scope, $rootScope, $location, shop, $stateParams,$window,$state,toastr) {
+	.controller('shopCtrl', function($scope, $rootScope, $location, shop, $http , $stateParams,$window,$state,toastr) {
 		// var obj = JSON.parse($window.localStorage.user);
 		$scope.myobj = {};
 		
@@ -64,12 +64,67 @@ angular.module('BarbrDoApp')
 		}
 
 		if($state.current.name == 'barbershopdashboard'){
-			shop.shopInfo().then(function(response){
+			let obj = {
+				obj:JSON.parse($window.localStorage.user)
+			}
+			shop.shopInfo(obj).then(function(response){
 				$scope.chairs = response.data.user;
 				$window.localStorage.shop_id = response.data.user.shop[0]._id;
-				
+				// console.log(response.data.user)
 			})
 		}
+
+		$scope.uploadImage = function(img) {
+			var fs = new FormData();
+			if (img) {
+				fs.append("file", img);
+			}
+
+			var obj = JSON.parse($window.localStorage.user);
+
+			$http.post("/api/v1/customer/gallery", fs, {
+					//	transformRequest: angular.identity,
+					headers: {
+						'Content-Type': undefined,
+						'user_id': obj._id
+					}
+				})
+				.success(function(response) {
+					shop.shopInfo().then(function(res) {
+						toastr.success('Image uploaded in gallery succesfully');
+						$scope.userGallery = res.data.user;
+					})
+
+
+				})
+				.error(function(err) {
+					toastr.error('There was some error uploading your files. Please try Uploading them again.');
+				});
+		}
+
+		$scope.showgallery = function() {
+			shop.shopInfo().then(function(res) {
+				$scope.userGallery = res.data.user;
+				$scope.ratings = res.data.user.ratings;
+			})
+		}
+
+		$scope.viewimg = function(pic) {
+			$rootScope.pic = pic;
+		}
+
+		$scope.delpic = function(pic) {
+			shop.deleteImage(pic)
+				.then(function(response) {
+					shop.shopInfo().then(function(res) {
+						toastr.success('Image deleted succesfully');
+						$scope.userGallery = res.data.user;
+					})
+				}).catch(function(result) {
+					toastr.error('Error in deleting Image');
+				})
+		}
+
 
 		$scope.acceptrequest = function(chair) {
 			shop.acceptRequest(chair).then(function(response) {

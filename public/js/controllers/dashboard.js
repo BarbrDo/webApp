@@ -4,8 +4,8 @@ angular.module('BarbrDoApp')
 		$scope.annualCost = "$" + $scope.dollarAmmount;
 		$scope.search = {};
 		var obj = {
-			'latitude': "40.658801",
-			'longitude': "-74.1063776"
+			'latitude': "30.7038528",
+			'longitude': "76.7076768"
 		}
 		$scope.callFunctions = function() {
 				$scope.shoplist();

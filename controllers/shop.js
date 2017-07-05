@@ -179,7 +179,7 @@ exports.allShops = function(req, res) {
             if (err) {
                 console.log(err);
             } else {
-                // console.log("here",data)
+               console.log("here",data)
                 /*let resultTantArray = [];
                 for (let i = 0; i < data.length; i++) {
                     let obj = {};
@@ -289,7 +289,7 @@ exports.associatedBarbers = function(req, res) {
                         resultTantArray.push(obj);
                     }
                 }
-                console.log("database",resultTantArray)
+                console.log("database",data)
                 res.status(200).send({
                     "msg": constantObj.messages.successRetreivingData,
                     "data": resultTantArray

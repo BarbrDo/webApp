@@ -15,40 +15,6 @@ let mg = require('nodemailer-mailgun-transport');
  * Output: chair saved success reponse
  * 
  */
-<<<<<<< HEAD
-exports.requestChair = function(req, res) {
-	req.checkHeaders("user_id", "User is is required.").notEmpty();
-	req.assert("chair_id", "Chair Id is required.").notEmpty();
-	var errors = req.validationErrors();
-	if (errors) {
-		return res.status(400).send({
-			msg: "error in your request",
-			err: errors
-		});
-	}
-	var d = new Date(req.body.booking_date);
-	var bookDate = d.toISOString();
-	chairRequest.find({
-		shop_id: req.body.shop_id,
-		chair_id: req.body.chair_id,
-		barber_id: req.body.barber_id,
-		status: "pending",
-		booking_date: bookDate
-	}).exec(function(err, resultCheck) {
-		console.log("databae",resultCheck)
-		if (err) {
-			return res.status(400).send({
-				msg: "error in your request",
-				err: errors
-			});
-		} else {
-			if (resultCheck.length > 0) {
-				return res.status(400).send({
-					msg: "Already requested",
-					data: resultCheck
-				});
-			}
-=======
 exports.requestChair = function (req, res) {
     req.checkHeaders("user_id", "User is is required.").notEmpty();
     req.assert("chair_id", "Chair Id is required.").notEmpty();
@@ -62,102 +28,12 @@ exports.requestChair = function (req, res) {
     console.log(req.body)
     //var d = new Date(req.body.booking_date);
     //var bookDate = d.toISOString();
->>>>>>> master
 
     let book_Date = req.body.booking_date;
     let bookDate = moment(book_Date, "YYYY-MM-DD").add(1, 'days').format("YYYY-MM-DD[T]HH:mm:ss.SSS");
 
 
-<<<<<<< HEAD
-								if (shopResult != null && shopResult.chairs[0].availability == 'available') {
-									saveData.shop_id = req.body.shop_id;
-									saveData.chair_id = req.body.chair_id;
-									saveData.chair_type = shopResult.chairs[0].type
-									if (shopResult.chairs[0].type == 'weekly' || shopResult.chairs[0].type == 'monthly') {
-										saveData.amount = shopResult.chairs[0].amount
-									}
-									if (shopResult.chairs[0].type == 'percentage') {
-										saveData.shop_percentage = shopResult.chairs[0].shop_percentage
-										saveData.barber_percentage = shopResult.chairs[0].barber_percentage
-									}
-									saveData.requested_by = data.user_type
-									saveData.barber_id = req.headers.user_id
-									saveData.booking_date = req.body.booking_date
-									saveData.status = "pending";
-									chairRequest(saveData).save(function(err, result) {
-										if (err) {
-											return res.status(400).send({
-												msg: constantObj.messages.errorInSave
-											})
-										} else {
-											mailChairRequest(data.email)
-											res.status(200).send({
-												msg: "Your request for shop is successfully registered.",
-												data: result
-											});
-										}
-									})
-								} else {
-									res.status(400).send({
-										msg: "Booking not available at the moment."
-									});
-								}
-							})
-						} else {
-							res.status(400).send({
-								msg: "You cannot add Booking for more than one month or less then current date."
-							})
-						}
-					} else if (data.user_type == 'shop') {
-						req.assert("barber_id", "Barber Id is required.").notEmpty();
-						var errors = req.validationErrors();
-						if (errors) {
-							return res.status(400).send({
-								msg: "error in your request",
-								err: errors
-							});
-						}
-						
-						shop.findOne({
-							"_id": req.body.shop_id,
-							"chairs._id": req.body.chair_id
-						}, {
-							"chairs.$": 1
-						}).exec(function(shopErr, result) {
-							console.log("database222",result)
-							console.log("req.body",req.body)
-							saveData = req.body;
-							if (result != null && result.chairs[0].availability == 'available') {
-								
-								if (result.chairs[0].type == 'weekly' || result.chairs[0].type == 'monthly') {
-									saveData.amount = result.chairs[0].amount
-								}
-								if (result.chairs[0].type == 'percentage') {
-									saveData.shop_percentage = result.chairs[0].shop_percentage
-									saveData.barber_percentage = result.chairs[0].barber_percentage
-								}
-								saveData.chair_type = result.chairs[0].type;
-								saveData.shop_id = req.headers.user_id
-								saveData.requested_by = data.user_type
-								saveData.status = "pending";
-								console.log("savedata",shop)
-								chairRequest(saveData).save(function(err, shop) {
-									console.log(shop)
-									if (err) {
-										return res.status(400).send({
-											msg: constantObj.messages.errorInSave
-										})
-									} else {
-										mailChairRequest(data.email)
-										res.status(200).send({
-											msg: "Your request for shop is successfully registered.",
-											data: shop
-										});
-									}
-								})
-=======
     console.log("bookDate", bookDate);
->>>>>>> master
 
     chairBook.find({
         shop_id: req.body.shop_id,
@@ -165,7 +41,6 @@ exports.requestChair = function (req, res) {
         booking_date: {$lte: bookDate + 'Z'},
         release_date: {$gte: bookDate + 'Z'}
     }).exec(function (bookerr, bookresult) {
-        console.log(bookresult.length);
         if (bookresult.length > 0) {
             return res.status(400).send({
                 msg: "You are already associated with this shop",

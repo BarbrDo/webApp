@@ -61,12 +61,9 @@
                         {{chairs.barber_percentage}}
                     </td>
                     <td>
-                        <span data-toggle="modal" data-target="#markbooked">
                             <a type="submit" ng-click="markchairasbooked(chairs)" data-toggle="tooltip" title="Mark Chair as Booked"><i class="fa fa-cart-arrow-down" style="font-size: 30px;"></i></a>&nbsp;&nbsp;
-                        </span>
-                        <span data-toggle="modal" data-target="#postchair">
+                 
                             <a type="submit" ng-click="postchairtoallbarbers(chairs)" data-ng-hide="editMode" data-toggle="tooltip" title="Post chair to all barbers"><i class="fa fa-plus-square" style="font-size: 30px;"></i></a>&nbsp;&nbsp;
-                        </span>
                         <span data-toggle="modal" data-target="#searchbarber" >
                         <a type="submit" data-toggle="tooltip" title="Search for specific barber"><i class="fa fa-tencent-weibo" style="font-size: 30px;"></i></a>
                         </span>
@@ -79,44 +76,6 @@
         </table>
     </div>
     <!-- Modal -->
-
-
-    <div class="modal " id="markbooked" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header" style="background-color: #c2f7b5;">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Successfull</h4>
-                </div>
-                <div class="modal-body">
-                    <p> Chair is marked Booked</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" onClick="history.go(0)">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal " id="postchair" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header" style="background-color: #c2f7b5;">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Successfull</h4>
-                </div>
-                <div class="modal-body">
-                    <p> Chair is Posted</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" onClick="history.go(0)">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     <div class="modal" id="confirm" role="dialog" data-ng-repeat="chairs in chairdetails" ng-show="$first">
         <div class="modal-dialog">

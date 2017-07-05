@@ -158,11 +158,12 @@ angular.module('BarbrDoApp')
                     $scope.loaderStart = true;
                     $scope.chairName = $stateParams.name
                     $scope.chairId = $stateParams.id
+                    setTimeout(function() {
                         shop.chairDetail($stateParams.id)
 			.then(function(response) {
                            $scope.loaderStart = false;
                    if(response.data.data[0].chairs[0].type=='percentage')
-                   {
+                   { 
                        $scope.slider = {
                                  
 			value: response.data.data[0].chairs[0].shop_percentage,
@@ -190,7 +191,8 @@ angular.module('BarbrDoApp')
                             };
                    }
                             
-			});	
+			});
+                        }, 500);
 		}
 
 		if($state.current.name == 'chairwithbarber'){

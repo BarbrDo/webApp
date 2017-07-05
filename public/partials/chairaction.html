@@ -5,38 +5,38 @@
     <div class="col-md-12">
         <h3 class="actn"> Chair {{chairName}}</h3>
     </div>
-     <div class="col-md-6 col-md-offset-5">
-         Please Select a value out of two
+    <div class="col-md-6 col-md-offset-5">
+        Please Select a value out of two
     </div>
-   
+
     <div class="row" ng-init="chairdetails()">
         <div class="col-md-6">
-                <div class="funkyradio">
-                    <div  class="funkyradio-warning">
+            <div class="funkyradio">
+                <div  class="funkyradio-warning">
                     <input type="radio" name="radio" value="radio1" ng-model="split" id="radio1" ng-checked="chairs.type=='percentage'"/>
                     <label for="radio1">Chair Split - Shop Percentage</label>
-                    </div>
                 </div>
+            </div>
             <div class="block" ng-show="split == 'radio1' || chairs.type=='percentage'">
                 <div class="range">
                     <rzslider rz-slider-model="slider.value" rz-slider-options="slider.options"></rzslider>
                 </div>
-                 <div class="clearfix">
-                <div class="col-sm-6 form-group" ng-hide="true">
-                    {{chair.type1 = "percentage"}}
-                    <label>Chair Type</label>
-                    <input type="text" class="form-control" ng-model="chair.type1">
-                </div></div>
+                <div class="clearfix">
+                    <div class="col-sm-6 form-group" ng-hide="true">
+                        {{chair.type1 = "percentage"}}
+                        <label>Chair Type</label>
+                        <input type="text" class="form-control" ng-model="chair.type1">
+                    </div></div>
                 <button ng-click="saveSplitFair(chair.type1)" class="btn btn-primary">Save Split Fair</button>
             </div>
         </div>
         <div class="col-md-6">
-                <div class="funkyradio">
-                    <div  class="funkyradio-warning">
+            <div class="funkyradio">
+                <div  class="funkyradio-warning">
                     <input type="radio" name="radio" id="radio2" value="radio2" ng-model="split" ng-checked="chairs.type=='monthly' || chairs.type=='weekly'"/>
                     <label for="radio2">Rent Chair Weekly/ Monthly</label>
-                    </div>
                 </div>
+            </div>
             <div class="block" ng-show="split == 'radio2' || chairs.type=='monthly' || chairs.type=='weekly'">
                 <div class="type_selection wekmonth ">
                     <form>
@@ -48,49 +48,49 @@
                             <span>Monthly</span> </label>
                     </form>
                     <div class="contact-us  pz">
-                        <div class="form-group" ng-show="content == 'weekly' || chairs.type=='weekly'" ng-hide="content == 'monthly' || chairs.type=='monthly'">
-                         <form name="myform">
-                             <span ng-if="chairs.type=='weekly'"><input type="text" class="form-control" required value=""  ng-model="chairs.amount" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"></span>
-                             <span ng-if="chairs.type!='monthly' && chairs.type!='weekly'" ng-show="content == 'weekly'"><input type="text" class="form-control" required   ng-model="priceValue" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"><div class="form-control-placeholder">Enter Price for Week</div></span>
-                             <div class="validationError" ng-messages="myform.priceVal.$error" ng-show="
-                            myform.priceVal.$error.required && myform.priceVal.$touched &&
-                            myform.priceVal.$invalid 
-                           " role="alert">
-                                <span style="color:red" ng-message="required">Price is required</span>
-                            </div>
-                            <div class="validationError" ng-messages="myform.priceVal.$error" ng-show="
-                                                           myform.priceVal.$error.pattern && (!myform.priceVal.$pristine || myform.$submitted)" role="alert">
-                                <span style="color:red" ng-message="pattern">Enter valid character </span>
-                            </div>
-                            <div class="validationError" ng-show="myform.priceVal.$error.maxlength && myform.priceVal.$dirty" ">
+                        <div class="form-group" ng-show="content == 'weekly' || chairs.type=='weekly'" >
+                            <form name="myform">
+                                <span ng-if="chairs.type=='weekly'" ng-hide="content == 'monthly'"><input type="text" class="form-control" required value=""  ng-model="chairs.amount" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"></span>
+                                <span ng-if="chairs.type!='weekly'" ng-show="content == 'weekly'"><input type="text" class="form-control" required   ng-model="priceValue" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"><div class="form-control-placeholder">Enter Price for Week</div></span>
+                                <div class="validationError" ng-messages="myform.priceVal.$error" ng-show="
+                                     myform.priceVal.$error.required && myform.priceVal.$touched &&
+                                     myform.priceVal.$invalid 
+                                     " role="alert">
+                                    <span style="color:red" ng-message="required">Price is required</span>
+                                </div>
+                                <div class="validationError" ng-messages="myform.priceVal.$error" ng-show="
+                                     myform.priceVal.$error.pattern && (!myform.priceVal.$pristine || myform.$submitted)" role="alert">
+                                    <span style="color:red" ng-message="pattern">Enter valid character </span>
+                                </div>
+                                <div class="validationError" ng-show="myform.priceVal.$error.maxlength && myform.priceVal.$dirty" ">
 
-                             <span style="color:red ">Price maximum length exceeds</span>
-                        </div>
-                            <span ng-if="chairs.type=='monthly' || chairs.type=='weekly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(chairs)" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair</button></span>
-                            <span ng-if="chairs.type!='monthly' || chairs.type!='weekly'" ng-show="content == 'weekly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(content,priceValue)" class="btn btn-primary" ng-disabled="myform.$invalid">Save Rent Fair</button></span>
+                                    <span style="color:red ">Price maximum length exceeds</span>
+                                </div>
+                                <span ng-if="chairs.type=='monthly' || chairs.type=='weekly'" ng-hide="content == 'monthly' || chairs.type=='monthly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(chairs)" class="btn btn-primary" ng-disabled="myform.$invalid">Save Rent Fair33</button></span>
+                                <span ng-if="chairs.type!='monthly' || chairs.type!='weekly'" ng-hide="chairs.type=='weekly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(content,priceValue)" class="btn btn-primary" ng-disabled="myform.$invalid">Save Rent Fair44</button></span>
                         </div>
                         </form>
-                        <div class="form-group" ng-show="content == 'monthly' || chairs.type=='monthly'" ng-hide="content == 'weekly' || chairs.type=='weekly'">
-                        <form name="secondForm">
-                            <span ng-if="chairs.type=='monthly'"> <input type="text" class="form-control" required value="" ng-model="chairs.amount" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"></span>
-                            <span ng-if="chairs.type!='monthly' && chairs.type!='weekly'" ng-show="content == 'monthly'">  <input type="text" class="form-control" required value="" ng-model="priceValue" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"><div class="form-control-placeholder">Enter Price for Month</div></span>
-                            <div class="validationError" ng-messages="secondForm.priceVal.$error" ng-show="
-                            secondForm.priceVal.$error.required && secondForm.priceVal.$touched &&
-                            secondForm.priceVal.$invalid 
-                           " role="alert">
-                                <span style="color:red" ng-message="required">Price is required</span>
-                            </div>
-                            <div class="validationError" ng-messages="secondForm.priceVal.$error" ng-show="
-                                                           secondForm.priceVal.$error.pattern && (!secondForm.priceVal.$pristine || secondForm.$submitted)" role="alert">
-                                <span style="color:red" ng-message="pattern">Enter valid character </span>
-                            </div>
-                            <div class="validationError" ng-show="secondForm.priceVal.$error.maxlength && secondForm.priceVal.$dirty" ">
+                        <div class="form-group" ng-show="content == 'monthly' || chairs.type=='monthly'" >
+                            <form name="secondForm">
+                                <span ng-if="chairs.type=='monthly'" ng-hide="content == 'weekly'"> <input type="text" class="form-control" required value="" ng-model="chairs.amount" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"></span>
+                                <span ng-if="chairs.type!='monthly'" ng-show="content == 'monthly'">  <input type="text" class="form-control" required value="" ng-model="priceValue" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"><div class="form-control-placeholder">Enter Price for Month</div></span>
+                                <div class="validationError" ng-messages="secondForm.priceVal.$error" ng-show="
+                                     secondForm.priceVal.$error.required && secondForm.priceVal.$touched &&
+                                     secondForm.priceVal.$invalid 
+                                     " role="alert">
+                                    <span style="color:red" ng-message="required">Price is required</span>
+                                </div>
+                                <div class="validationError" ng-messages="secondForm.priceVal.$error" ng-show="
+                                     secondForm.priceVal.$error.pattern && (!secondForm.priceVal.$pristine || secondForm.$submitted)" role="alert">
+                                    <span style="color:red" ng-message="pattern">Enter valid character </span>
+                                </div>
+                                <div class="validationError" ng-show="secondForm.priceVal.$error.maxlength && secondForm.priceVal.$dirty" ">
 
-                             <span style="color:red ">Price maximum length exceeds</span>
-                        </div>
-                            <span ng-if="chairs.type=='monthly' || chairs.type=='weekly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(chairs)" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair</button></span>
-                            <span ng-if="chairs.type!='monthly' || chairs.type!='weekly'" ng-show="content == 'monthly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(content,priceValue)" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair</button></span>
-                        </form>
+                                    <span style="color:red ">Price maximum length exceeds</span>
+                                </div>
+                                <span ng-if="chairs.type=='monthly' || chairs.type=='weekly'" ng-hide="content == 'weekly' || chairs.type=='weekly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(chairs)" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair1</button></span>
+                                <span ng-if="chairs.type!='monthly' || chairs.type!='weekly'" ng-hide="chairs.type=='monthly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(content,priceValue)" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair2</button></span>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -101,7 +101,7 @@
             <h3 class="actn">Action to this Chair </h3>
             <a href="" ng-click="markBooked()">Mark Booked</a>
             <a href="" ng-click="postToAllBarbers()">Post to All</a>
-            <a href="" ui-sref="search_barber({id:chairId})">Search Barber</a>
+            <a href="" ui-sref="search_barber({id:chairId,name:chairName})">Search Barber</a>
             <a href="" ng-click="deleteChair()">Remove Chair</a>
         </div>
     </div>

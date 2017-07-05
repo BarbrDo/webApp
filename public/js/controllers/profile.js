@@ -30,6 +30,8 @@ angular.module('BarbrDoApp').controller('ProfileCtrl', function($scope, $rootSco
        $("#mobile_number").trigger('click');
     }, 100, false);
     }
+    
+    
     $scope.updateProfile = function() {
         console.log($scope.profile);
         var fs = new FormData();

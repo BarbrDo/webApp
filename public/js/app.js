@@ -1456,7 +1456,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                             deferred.resolve()
                             $auth.logout();
                             delete $window.localStorage.user;
-                            toastr.error('Please Login again');
+                            toastr.info('Please Login');
                             $state.go('home');
                             // $state.go('pageNotFound')
                         }, 0);
@@ -1485,7 +1485,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                             deferred.resolve()
                             $auth.logout();
                             delete $window.localStorage.user;
-                            toastr.error('Please Login again');
+                            toastr.info('Please Login');
                             $state.go('home');
                             // $state.go('pageNotFound')
                         }, 0);
@@ -1514,7 +1514,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                             deferred.resolve()
                             $auth.logout();
                             delete $window.localStorage.user;
-                            toastr.error('Please Login again');
+                            toastr.info('Please Login');
                             $state.go('home');
                             // $state.go('pageNotFound')
                         }, 0);

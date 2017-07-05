@@ -6,8 +6,10 @@
 </ol>
 <div class="container" ng-init="shopdetail()">
     <div>
-        <font color="green">
-        </font>
+        <div ng-if="messages" role="alert" class="alert alert-danger">
+            <div>
+                {{messages}}</div>
+        </div>
         <div class="row list-group">
             <div class="item  col-xs-12 col-lg-12">
                 <div class="thumbnail">

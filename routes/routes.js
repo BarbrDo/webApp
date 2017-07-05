@@ -80,7 +80,7 @@ module.exports = function(app, express) {
     
     //Barber
     app.get('/api/v1/allbarbers', barberServices.availableBarber); //Get all barbers
-    app.get('/api/v1/barbers', shopController.associatedBarbers); //List all barbers
+    app.get('/api/v1/barbers', shopController.associatedBarbers); //List all associated barbers
     app.get('/api/v1/barbers/:barber_id',barberServices.viewBarberProfile);//Get barber details like info, rating & comments, galleries
     app.post('/api/v1/barber/gallery',upload.any(), barberServices.uploadBarberGallery);//Upload single or multiple images in Gallery
     app.delete('/api/v1/barber/gallery/:image_id',barberServices.deleteImages); //Delete image from gallery

@@ -1,4 +1,4 @@
-app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log', '$stateParams', '$state', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state) {
+app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log', '$stateParams', '$state' ,'toastr', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state,toastr) {
 
   $scope.user = {};
   $scope.myobj = {};
@@ -69,7 +69,10 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         $scope.loaderStart = false;
         $scope.myobj.totalItems = response.data.count / 3;
         $rootScope.barbers = response.data.data;
-      });
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
 
   };
 
@@ -88,11 +91,16 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     $scope.loaderStart = true;
     Admin.custAppoints($stateParams.id)
       .then(function(response) {
+        console.log(response)
         $scope.loaderStart = false;
         $rootScope.upcoming = response.data.data.upcoming;
         $rootScope.complete = response.data.data.complete;
         $rootScope.custname = response.data.data.upcoming[0].customer_name;
-      });
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        console.log(result)
+        $scope.messages = result.data.msg
+      })
   }
 
   $scope.barberappoint = function() {
@@ -103,7 +111,10 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         $scope.loaderStart = false;
         $rootScope.pending = response.data.data.pending;
         $rootScope.booked = response.data.data.booked;
-      });
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
   }
 
    $scope.barberappointmentsfunc = function(appointment) {
@@ -115,6 +126,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     Admin.confirmAppoint($rootScope.appointment)
       .then(function(response) {
        $scope.loaderStart = false;
+       toastr.success('Your appointment is confirmed Successfully');
         history.go(0);
       }).catch(function(result) {
         $scope.loaderStart = false;
@@ -127,6 +139,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     Admin.markComplete($rootScope.appointment, $stateParams.id)
       .then(function(response) {
       $scope.loaderStart = false;
+      toastr.success('Your appointment is completed Successfully');
         history.go(0);
       }).catch(function(result) {
         $scope.loaderStart = false;
@@ -143,6 +156,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     Admin.rescheduleAppoint($rootScope.appointment,$rootScope.time)
       .then(function(response) {
         $scope.loaderStart = false;
+        toastr.success('Your appointment is Reschedule Successfully');
         history.go(0);
       }).catch(function(result) {
         $scope.loaderStart = false;
@@ -156,6 +170,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
       .then(function(response) {
         $scope.loaderStart = false;
         $state.go(params);
+        toastr.success(params + '' + 'is Added Successfully');
       }).catch(function(result) {
         $scope.loaderStart = false;
         $scope.messages = result.data.msg
@@ -186,7 +201,10 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         $scope.loaderStart = false;
         $scope.myobj.totalItems = response.data.count / 3;
         $rootScope.customers = response.data.data;
-      });
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
 
 
   };
@@ -236,7 +254,10 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         
         $rootScope.shops = shp;
         $scope.myobj.totalItems = response.data.count / 3;
-      });
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
 
   };
 
@@ -288,6 +309,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     Admin.updateCustomer(customer)
       .then(function(response) {
         $scope.loaderStart = false;
+        toastr.success('Customer is updated Succesfully');
         $rootScope.customers = response.data;
       }).catch(function(result) {
         $scope.loaderStart = false;
@@ -323,6 +345,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     Admin.updateBarber(barber)
       .then(function(response) {
         $scope.loaderStart = false;
+        toastr.success('Barber is updated Succesfully');
         $rootScope.barbers = response.data;
       }).catch(function(result) {
         $scope.loaderStart = false;
@@ -360,8 +383,12 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     Admin.updateShop(shop)
       .then(function(response) {}).catch(function(result) {
         $scope.loaderStart = false;
+        toastr.success('Shop is updated Succesfully');
         $scope.messages = result.data.msg
-      });
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
   };
 
 
@@ -371,6 +398,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     Admin.updateShopinfo(shop)
       .then(function(response) {
         $scope.loaderStart = false;
+        toastr.success('Shop is updated Succesfully');
         $rootScope.shops = response.data;
       }).catch(function(result) {
         $scope.loaderStart = false;
@@ -385,7 +413,11 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     Admin.markChairBooked(chair, $stateParams.id)
       .then(function(response) {
         $scope.loaderStart = false;
-      });
+        toastr.success('Chair is booked Succesfully');
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
   };
 
   $scope.postchairtoallbarbers = function(chair) {
@@ -394,7 +426,11 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     Admin.postChair(chair, $stateParams.id)
       .then(function(response) {
         $scope.loaderStart = false;
-      });
+        toastr.success('Chair successfully posted to all barbers');
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
   };
 
   $scope.deleteconfirmchair = function(chair, shop) {
@@ -413,6 +449,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
       .then(function(response) {
         $scope.loaderStart = false;
         $rootScope.message = response.data.msg;
+        toastr.success('Chair Succesfully Deleted');
         history.go(0);
       }).catch(function(result) {
         $scope.loaderStart = false;
@@ -584,7 +621,10 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
       .then(function(response) {
         $scope.loaderStart = false;
         $rootScope.chairdet = response.data.data[0].chairs[0];
-      });
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
   };
 
   $scope.shopdetail = function() {
@@ -596,6 +636,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
           $scope.loaderStart = false;
           $rootScope.shopdetailview = response.data.data[0];
           $rootScope.chairdetails = response.data.data[0].shopinfo[0].chairs;
+          console.log(response.data.data[0].shopinfo[0].chairs)
           var shopsdet = [];
           var object = {};
           var len = response.data.data.length;
@@ -614,7 +655,10 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
             shopsdet.push(object);
             $rootScope.totalbarbers = object;
           }
-        });
+        }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
     }, 1000);
 
   };
@@ -624,9 +668,13 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     $scope.loaderStart = true;
     Admin.addChair(chair)
       .then(function(response) {
+       $scope.shopdetail();
+       toastr.success('Chair added Succesfully')
+      }).catch(function(result) {
         $scope.loaderStart = false;
-        history.go(0);
-      });
+        $scope.messages = result.data.msg
+        console.log(result)
+      })
   };
 
 
@@ -635,7 +683,12 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     Admin.updateChair(chair, id)
       .then(function(response) {
         $scope.loaderStart = false;
-      });
+        toastr.success('Chair updated Succesfully');
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+        console.log(result)
+      })
   };
 
 
@@ -670,7 +723,10 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
           console.log(response)
            $scope.loaderStart = false;
           $rootScope.barberdetail = response.data.data[0];
-        });
+        }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
     }, 500);
    
   };
@@ -682,6 +738,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     .then(function(response) { 
       $scope.loaderStart = false;
         history.go(0);
+        toastr.success('Appointment is Canceled');
     }).catch(function(result) {
         $scope.loaderStart = false;
         $scope.messages = result.data.msg
@@ -695,7 +752,10 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         .then(function(response) {
           $scope.loaderStart = false;
           $rootScope.customerdetail = response.data.data[0];
-        });
+        }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
     }, 500);
     
 

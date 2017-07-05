@@ -1,6 +1,6 @@
 "use strict";
 
-var app_admin = angular.module('barbrdo', ['ui.router', 'ui.bootstrap', 'angularModalService', 'rzModule', "chart.js", 'alexjoffroy.angular-loaders', 'ngMask']);
+var app_admin = angular.module('barbrdo', ['ui.router', 'ui.bootstrap', 'angularModalService', 'rzModule', "chart.js", 'alexjoffroy.angular-loaders', 'ngMask','toastr']);
 
 app_admin.config(['$locationProvider', function($locationProvider) {
     $locationProvider.hashPrefix('');

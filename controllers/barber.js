@@ -1272,3 +1272,67 @@ exports.getEvents = function(req, res) {
         }
     })
 }
+
+exports.getEventOnDate = function(req, res) {
+    
+    let event_Date = req.params.date;
+    let eventdate = moment(event_Date, "YYYY-MM-DD").add(1, 'days').format("YYYY-MM-DD[T]HH:mm:ss.SSS");
+    console.log(eventdate);
+    barber.find({
+        'user_id': req.headers.user_id,
+        'events.startsAt': {$lte: eventdate + 'Z'},
+        'events.endsAt': {$gte: eventdate + 'Z'}
+    }, {
+        'events.$': 1
+    }, function(err, data) {
+        if (err) {
+            res.status(400).send({
+                msg: 'Error in Finding this user.',
+                "err": err
+            });
+        } else {
+            console.log("getEvents", data);
+            
+            var currentDate = moment().format("YYYY-MM-DD");
+    appointment.find({
+            "barber_id": {
+                $exists: true,
+                $eq: req.headers.user_id
+            },
+            "appointment_date": {
+                $gte: eventdate
+            }
+
+        }).sort({
+            'created_date': -1
+        }).populate('barber_id', 'first_name last_name ratings picture')
+        .populate('customer_id', 'first_name last_name ratings picture')
+        .populate('shop_id', 'name address city state gallery latLong')
+        .exec(function(err, result) {
+            if (err) {
+                return res.status(400).send({
+                    msg: constantObj.messages.errorRetreivingData
+                });
+            } else {
+                let pendingAppointments = [];
+                let bookedAppointments = [];
+                for (var i = 0; i < result.length; i++) {
+                    if (result[i].appointment_status == 'confirm') {
+                        bookedAppointments.push(result[i])
+                    }
+                }
+
+                return res.status(200).send({
+                    msg: constantObj.messages.successRetreivingData,
+                    data: {
+                        "booked": bookedAppointments,
+                        "events":data[0].events
+                    }
+                });
+            }
+        })
+        }
+    })
+}
+
+

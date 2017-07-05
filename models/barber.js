@@ -18,12 +18,12 @@ var barberSchema = new mongoose.Schema({
         type: Date,
         default: Date.now()
     },
-    subscription:[
+    subscription: [
         {
-            
+
         }
     ],
-    short_description:String,
+    short_description: String,
     payment_methods: [
         {
             method: String,
@@ -44,19 +44,24 @@ var barberSchema = new mongoose.Schema({
             }
         }
     ],
-    events:[
-    {
-        title:String,
-        startsAt:Date,
-        endsAt:Date,
-        color:{
-            primary:String,
-            secondary:String
-        },
-        draggable:Boolean,
-        resizable:Boolean,
-        calendarEventId:Number
-    }
+    events: [
+        {
+            title: String,
+            startsAt: Date,
+            endsAt: Date,
+            color: {
+                primary: String,
+                secondary: String
+            },
+            draggable: Boolean,
+            resizable: Boolean,
+            calendarEventId: Number,
+            dayoff: {
+                type: Boolean,
+                default: false
+            },
+            repeat: []
+        }
     ]
 });
 

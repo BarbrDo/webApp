@@ -64,10 +64,13 @@ angular.module('BarbrDoApp')
 		}
 
 		if($state.current.name == 'barbershopdashboard'){
-			shop.shopInfo().then(function(response){
+			let obj = {
+				obj:JSON.parse($window.localStorage.user)
+			}
+			shop.shopInfo(obj).then(function(response){
 				$scope.chairs = response.data.user;
 				$window.localStorage.shop_id = response.data.user.shop[0]._id;
-				console.log(response.data.user)
+				// console.log(response.data.user)
 			})
 		}
 

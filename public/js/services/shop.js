@@ -23,15 +23,22 @@ angular.module('BarbrDoApp')
           return $http.get('/api/v1/allbarbers');
         }
       },
-      shopInfo: function(data) {
+      shopInfo: function() {
         return $http({
           method: 'get',
-          url: '/api/v1/userprofile/' + data.obj._id,
-          data: data
+          url: '/api/v1/userprofile/' + obj._id
         });
       },
       deleteChair: function(data) {
-        return $http.delete('/api/v1/shops/chair', data);
+          console.log(data)
+         return $http({
+        method: 'DELETE',
+        url: '/api/v1/shops/chair',
+        data: data,
+        headers: {
+          "Content-Type": "application/json;charset=utf-8"
+        }
+      });
       },
       saveSplitFair: function(data) {
         return $http({
@@ -129,16 +136,6 @@ angular.module('BarbrDoApp')
       },
       barberDetail: function(data) {
         return $http.get('/api/v1/barberdetail/' + data, data);
-      },
-      deleteChair: function(data) {
-        return $http({
-          method: 'delete',
-          url: '/api/v1/shops/chair',
-          data: data,
-          headers: {
-            'user_id': obj._id
-          }
-        }, data);
       },
       plans: function(data) {
         return $http.get('/api/v1/plans', data);

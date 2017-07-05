@@ -9,7 +9,7 @@
                                 <span ng-if="!res.barber_id"><img src="images/chair@4x.png"  ng-click="nobarbers()"> </span></div>
           <h3>Chair {{$index+1}}</h3>
           <p ng-if="res.barber_id"><span>{{res.barber_name}}</span></p>
-          <p ng-if="res.shop_percentage"><span>Chair Split</span> : {{res.shop_percentage}}/{{res.barber_percentage}}</p>
+          <p ng-if="res.type == 'percentage'"><span>Chair Split</span> : {{res.shop_percentage}}/{{res.barber_percentage}}</p>
           <p ng-if="res.type=='weekly' || res.type=='monthly'"><span>{{res.type}}</span> : ${{res.amount}}</p>
           <p ng-if="!res.shop_percentage && !res.type">Empty</p>
         </div>

@@ -166,6 +166,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
   $scope.addcustomer = function(params) {
     $scope.loaderStart = true;
+    console.log($scope.user)
     Admin.addCustomer($scope.user)
       .then(function(response) {
         $scope.loaderStart = false;

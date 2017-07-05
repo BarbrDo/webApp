@@ -51,7 +51,7 @@
                         <div class="form-group" ng-show="content == 'weekly' || chairs.type=='weekly'" >
                             <form name="myform">
                                 <span ng-if="chairs.type=='weekly'" ng-hide="content == 'monthly'"><input type="text" class="form-control" required value=""  ng-model="chairs.amount" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"></span>
-                                <span ng-if="chairs.type!='weekly'" ng-show="content == 'weekly'"><input type="text" class="form-control" required   ng-model="priceValue" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"><div class="form-control-placeholder">Enter Price for Week</div></span>
+                                <span ng-if="chairs.type!='weekly'" ng-show="content == 'weekly'"><input type="text" class="form-control" required   ng-model="myobj.priceValue" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"><div class="form-control-placeholder">Enter Price for Week</div></span>
                                 <div class="validationError" ng-messages="myform.priceVal.$error" ng-show="
                                      myform.priceVal.$error.required && myform.priceVal.$touched &&
                                      myform.priceVal.$invalid 
@@ -66,14 +66,14 @@
 
                                     <span style="color:red ">Price maximum length exceeds</span>
                                 </div>
-                                <span ng-if="chairs.type=='monthly' || chairs.type=='weekly'" ng-hide="content == 'monthly' || chairs.type=='monthly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(chairs)" class="btn btn-primary" ng-disabled="myform.$invalid">Save Rent Fair33</button></span>
-                                <span ng-if="chairs.type!='monthly' || chairs.type!='weekly'" ng-hide="chairs.type=='weekly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(content,priceValue)" class="btn btn-primary" ng-disabled="myform.$invalid">Save Rent Fair44</button></span>
+                                <span ng-if="chairs.type=='monthly' || chairs.type=='weekly'" ng-hide="content == 'monthly' || chairs.type=='monthly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(chairs)" class="btn btn-primary" ng-disabled="myform.$invalid">Save Rent Fair</button></span>
+                                <span ng-if="chairs.type!='monthly' || chairs.type!='weekly'" ng-hide="chairs.type=='weekly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(content,price.priceValue)" class="btn btn-primary" ng-disabled="myform.$invalid">Save Rent Fair11</button></span>
                         </div>
                         </form>
                         <div class="form-group" ng-show="content == 'monthly' || chairs.type=='monthly'" >
                             <form name="secondForm">
                                 <span ng-if="chairs.type=='monthly'" ng-hide="content == 'weekly'"> <input type="text" class="form-control" required value="" ng-model="chairs.amount" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"></span>
-                                <span ng-if="chairs.type!='monthly'" ng-show="content == 'monthly'">  <input type="text" class="form-control" required value="" ng-model="priceValue" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"><div class="form-control-placeholder">Enter Price for Month</div></span>
+                                <span ng-if="chairs.type!='monthly'" ng-show="content == 'monthly'">  <input type="text" class="form-control"  ng-model="myobj.priceValue" ng-pattern="/^[0-9]*$/" name="priceVal" required ng-maxlength="6" maxlength="7"><div class="form-control-placeholder">Enter Price for Month</div></span>
                                 <div class="validationError" ng-messages="secondForm.priceVal.$error" ng-show="
                                      secondForm.priceVal.$error.required && secondForm.priceVal.$touched &&
                                      secondForm.priceVal.$invalid 
@@ -88,8 +88,8 @@
 
                                     <span style="color:red ">Price maximum length exceeds</span>
                                 </div>
-                                <span ng-if="chairs.type=='monthly' || chairs.type=='weekly'" ng-hide="content == 'weekly' || chairs.type=='weekly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(chairs)" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair1</button></span>
-                                <span ng-if="chairs.type!='monthly' || chairs.type!='weekly'" ng-hide="chairs.type=='monthly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(content,priceValue)" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair2</button></span>
+                                <span ng-if="chairs.type=='monthly' || chairs.type=='weekly'" ng-hide="content == 'weekly' || chairs.type=='weekly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(chairs)" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair</button></span>
+                                <span ng-if="chairs.type!='monthly' || chairs.type!='weekly'" ng-hide="chairs.type=='monthly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(content)" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair</button></span>
                             </form>
                         </div>
                     </div>

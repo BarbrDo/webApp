@@ -14,7 +14,10 @@ angular.module('BarbrDoApp')
 			.then(function(response) {
 				$scope.loaderStart = false;
 				$rootScope.requests = response.data.result;
-			})
+			}).catch (function(result) {
+                            console.log(result)
+                           toastr.error('Error');
+                        }) 
 		}
 
 		$scope.searchbarber = function() {
@@ -27,7 +30,10 @@ angular.module('BarbrDoApp')
 		      .then(function(response) {
 		      	$scope.loaderStart = false;
 		        $rootScope.barbers = response.data.data;
-		      });
+		      }).catch (function(result) {
+                            console.log(result)
+                           toastr.error('Error');
+                        })
 		}
 
 		$scope.requesterdetails = function() {
@@ -36,7 +42,10 @@ angular.module('BarbrDoApp')
 					.then(function(response) {
 						$scope.loaderStart = false;
 						$rootScope.requester = response.data.data[0];
-					});
+					}).catch (function(result) {
+                            console.log(result)
+                           toastr.error('Error');
+                        })
 
 		};
 
@@ -62,7 +71,10 @@ angular.module('BarbrDoApp')
 				console.log(response)
 				toastr.success('Request is Declined successfully');
 				$state.go('barbershopdashboard')
-			})
+			}).catch (function(result) {
+                            console.log(result)
+                           toastr.error('Error');
+                        })
 		}
 
 		if($state.current.name == 'barbershopdashboard'){
@@ -108,7 +120,10 @@ angular.module('BarbrDoApp')
 			shop.shopInfo().then(function(res) {
 				$scope.userGallery = res.data.user;
 				$scope.ratings = res.data.user.ratings;
-			})
+			}).catch (function(result) {
+                            console.log(result)
+                           toastr.error('Error');
+                        })
 		}
 
 		$scope.viewimg = function(pic) {
@@ -133,7 +148,10 @@ angular.module('BarbrDoApp')
 				toastr.success('Request is Accepted successfully');
 				$state.go('barbershopdashboard')
 
-			})
+			}).catch (function(result) {
+                            console.log(result)
+                           toastr.error('Error');
+                        })
 		}
 
 		$scope.shopDashboard = function(){
@@ -151,7 +169,10 @@ angular.module('BarbrDoApp')
 			.then(function(response) {
 				$rootScope.chairs = response.data.data[0].chairs[0];
                         $rootScope.chair_split = response.data.data[0].chairs[0].shop_percentage;
-			})
+			}).catch (function(result) {
+                            console.log(result)
+                           toastr.error('Error');
+                        })
 		}
                 
 		if($state.current.name == 'chairaction'){
@@ -171,7 +192,7 @@ angular.module('BarbrDoApp')
 				showSelectionBar: true,
 				floor: 0,
 				ceil: 100,
-				step: 10,
+				step: 5,
 				ticksArray: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
                                 }
                             };
@@ -216,21 +237,28 @@ angular.module('BarbrDoApp')
 			shop.saveSplitFair(obj).then(function(response){
 				toastr.success('Split fair successfully saved.');
 				$state.go('barbershopdashboard')
-			})
+			}).catch (function(result) {
+                            console.log(result)
+                           toastr.error('Amount is required');
+                        })
 		}
-		$scope.saveWeeklyFair = function(type,price){
-                    console.log(price)
-                    console.log(type)
+                
+                
+		$scope.saveWeeklyFair = function(type){
 			var obj = {
 				type: type,
-				amount : $scope.priceValue,
+				amount : $scope.myobj.priceValue,
 				chair_id:$stateParams.id
 			}
 			shop.saveWeeklyFair(obj).then(function(response){
-				toastr.success('Weekly fair successfully saved.');
+				toastr.success(obj.type + '  ' + ' fair successfully saved.');
 				$state.go('barbershopdashboard')
-			})
-		}
+			}).catch (function(result) {
+                           toastr.error('Amount is required');
+                        }) 
+        
+        }
+
 		$scope.postToAllBarbers = function(){
 			var obj = {
 				chair_id:$stateParams.id
@@ -238,7 +266,10 @@ angular.module('BarbrDoApp')
 			shop.postToAllBarbers(obj).then(function(response){
 				toastr.success('Chair successfully posted to all barbers.');
 				$state.go('barbershopdashboard')
-			})
+			}).catch (function(result) {
+                            console.log(result)
+                           toastr.error('Chair Type is Required');
+                        })
 		}
 		$scope.markBooked = function(){
 			var obj = {
@@ -247,7 +278,10 @@ angular.module('BarbrDoApp')
 			shop.markBooked(obj).then(function(response){
 				toastr.success('Chair successfully Booked to non-barberdo barber.');
 				$state.go('barbershopdashboard')
-			})
+			}).catch (function(result) {
+                            console.log(result)
+                           toastr.error('Error');
+                        })
 		}
 		$scope.deleteChair = function(){
 			var obj = {
@@ -257,6 +291,9 @@ angular.module('BarbrDoApp')
 			shop.deleteChair(obj).then(function(response){
 				toastr.success('Chair successfully removed.');
 				$state.go('barbershopdashboard')
-			})
+			}).catch (function(result) {
+                            console.log(result)
+                           toastr.error('Error in deleting');
+                        })
 		}
 	});

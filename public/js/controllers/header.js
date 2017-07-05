@@ -86,7 +86,7 @@ angular.module('BarbrDoApp')
       });
       $auth.login($scope.user)
         .then(function(response) {
-          toastr.success('Welcome');
+          toastr.success('Welcome'+response.data.user.first_name);
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
           $window.localStorage.imagePath = response.data.imagesPath;

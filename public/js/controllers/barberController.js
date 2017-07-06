@@ -81,6 +81,7 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.shopChairs = response.data.data;
+					console.log(response)
 				});
 		}
 		if ($state.current.name == 'shopChairs') {
@@ -129,7 +130,8 @@ angular.module('BarbrDoApp')
 					$state.go('request-chair');
 				}).catch(function(result) {
 					$scope.loaderStart = false;
-					toastr.error('Chair already requested for the same date');
+                                        console.log(result)
+					toastr.error(result.data.msg);
 				})
 			} else {
 				toastr.error('Please select date and chair');

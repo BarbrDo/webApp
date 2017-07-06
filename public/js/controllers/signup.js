@@ -9,6 +9,7 @@ angular.module('BarbrDoApp')
     $scope.signup = function() {
       $auth.signup($scope.user)
         .then(function(response) {
+          console.log(response.data.user)
           $auth.setToken(response);
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);

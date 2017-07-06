@@ -1,4 +1,4 @@
-angular.module('BarbrDoApp')
+ angular.module('BarbrDoApp')
 	.controller('shopCtrl', function($scope, $rootScope, $location, shop, $http , $stateParams,$window,$state,toastr) {
 		// var obj = JSON.parse($window.localStorage.user);
 		$scope.myobj = {};
@@ -14,6 +14,7 @@ angular.module('BarbrDoApp')
 			.then(function(response) {
 				$scope.loaderStart = false;
 				$rootScope.requests = response.data.result;
+				console.log(response.data.result)
 			}).catch (function(result) {
                             console.log(result)
                            toastr.error('Error');
@@ -40,11 +41,12 @@ angular.module('BarbrDoApp')
 			$scope.loaderStart = true;
 				shop.barberDetail($stateParams.id)
 					.then(function(response) {
+						console.log(response)
 						$scope.loaderStart = false;
 						$rootScope.requester = response.data.data[0];
 					}).catch (function(result) {
                             console.log(result)
-                           toastr.error('Error');
+                           toastr.error('Errorregh3');
                         })
 
 		};
@@ -68,9 +70,8 @@ angular.module('BarbrDoApp')
 
 		$scope.rejectrequest = function(chair) {
 			shop.declineRequest(chair).then(function(response) {
-				console.log(response)
 				toastr.success('Request is Declined successfully');
-				$state.go('barbershopdashboard')
+				$scope.chairrequest();
 			}).catch (function(result) {
                             console.log(result)
                            toastr.error('Error');
@@ -84,7 +85,6 @@ angular.module('BarbrDoApp')
 			shop.shopInfo(obj).then(function(response){
 				$scope.chairs = response.data.user;
 				$window.localStorage.shop_id = response.data.user.shop[0]._id;
-				// console.log(response.data.user)
 			})
 		}
 
@@ -146,8 +146,7 @@ angular.module('BarbrDoApp')
 		$scope.acceptrequest = function(chair) {
 			shop.acceptRequest(chair).then(function(response) {
 				toastr.success('Request is Accepted successfully');
-				$state.go('barbershopdashboard')
-
+				$scope.chairrequest();
 			}).catch (function(result) {
                             console.log(result)
                            toastr.error('Error');
@@ -155,7 +154,13 @@ angular.module('BarbrDoApp')
 		}
 
 		$scope.shopDashboard = function(){
-			shop.shopInfo().then(function(response){
+			console.log("here")
+            $scope.loaderStart = true;
+			let obj = {
+				obj:JSON.parse($window.localStorage.user)
+			}
+			shop.shopInfo(obj).then(function(response){
+				$scope.loaderStart = false;
 				$scope.chairs = response.data.user;
 				$window.localStorage.shop_id = response.data.user.shop[0]._id;
 				$rootScope.shopinfo = response.data.user.shop[0];
@@ -179,41 +184,38 @@ angular.module('BarbrDoApp')
                     $scope.loaderStart = true;
                     $scope.chairName = $stateParams.name
                     $scope.chairId = $stateParams.id
-                    setTimeout(function() {
-                        shop.chairDetail($stateParams.id)
-			.then(function(response) {
-                           $scope.loaderStart = false;
+            setTimeout(function() {
+                shop.chairDetail($stateParams.id)
+				.then(function(response) {
+                    $scope.loaderStart = false;
                    if(response.data.data[0].chairs[0].type=='percentage')
                    { 
-                       $scope.slider = {
-                                 
-			value: response.data.data[0].chairs[0].shop_percentage,
-			options: {
-				showSelectionBar: true,
-				floor: 0,
-				ceil: 100,
-				step: 5,
-				ticksArray: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-                                }
+                       $scope.slider = {                                
+								value: response.data.data[0].chairs[0].shop_percentage,
+								options: {
+									showSelectionBar: true,
+									floor: 0,
+									ceil: 100,
+									step: 5,
+									ticksArray: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+					                }
                             };
                    }
                    else
                    {
-                       $scope.slider = {
-                                 
-			value: 0,
-			options: {
-				showSelectionBar: true,
-				floor: 0,
-				ceil: 100,
-				step: 10,
-				ticksArray: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-                                }
+                       $scope.slider = {                                 
+							value: 0,
+							options: {
+								showSelectionBar: true,
+								floor: 0,
+								ceil: 100,
+								step: 5,
+								ticksArray: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+				                    }
                             };
-                   }
-                            
-			});
-                        }, 500);
+                   }                            
+				});
+            }, 500);
 		}
 
 		if($state.current.name == 'chairwithbarber'){

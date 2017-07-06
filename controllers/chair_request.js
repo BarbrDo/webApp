@@ -302,7 +302,7 @@ exports.barberChairReqests = function (req, res) {
                 'err': err
             })
         } else {
-            console.log(chairRequest)
+            console.log("this is request by barber",chairRequest)
             res.status(200).send({
                 'msg': constantObj.messages.successRetreivingData,
                 'imagesPath': 'http://' + req.headers.host + '/' + 'uploadedFiles/',

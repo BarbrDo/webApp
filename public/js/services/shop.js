@@ -1,7 +1,6 @@
 angular.module('BarbrDoApp')
   .factory('shop', function($http, $window, $rootScope) {
     var obj = {};
-    // console.log("$rootScope.currentUser", $rootScope.currentUser);
     if ($window.localStorage.user) {
       obj = JSON.parse($window.localStorage.user);
     }
@@ -17,17 +16,46 @@ angular.module('BarbrDoApp')
         });
       },
       barbers: function(data) {
+        console.log(data)
         if (data.search) {
-          return $http.get('/api/v1/allbarbers?search=' + data.search, data);
+          return $http({
+          method: 'get',
+          url: '/api/v1/barbers?search=' + data.search,
+          data: data,
+         headers: {
+            'device_latitude': 30.538994,
+            'device_longitude': 75.955033
+          }
+        });
         } else {
-          return $http.get('/api/v1/allbarbers');
+          return $http({
+          method: 'get',
+          url: '/api/v1/barbers',
+          data: data,
+         headers: {
+            'device_latitude': 30.538994,
+            'device_longitude': 75.955033
+          }
+        });
         }
       },
-      shopInfo: function() {
-        return $http({
+      shopInfo: function(data) {
+        if(data)
+        {
+          return $http({
+          method: 'get',
+          url: '/api/v1/userprofile/' + data.obj._id
+        });
+        }
+        else
+        {
+          console.log(obj)
+          return $http({
           method: 'get',
           url: '/api/v1/userprofile/' + obj._id
         });
+        }
+          
       },
       deleteChair: function(data) {
           console.log(data)

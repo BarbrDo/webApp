@@ -67,7 +67,7 @@
                                     <span style="color:red ">Price maximum length exceeds</span>
                                 </div>
                                 <span ng-if="chairs.type=='monthly' || chairs.type=='weekly'" ng-hide="content == 'monthly' || chairs.type=='monthly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(chairs)" class="btn btn-primary" ng-disabled="myform.$invalid">Save Rent Fair</button></span>
-                                <span ng-if="chairs.type!='monthly' || chairs.type!='weekly'" ng-hide="chairs.type=='weekly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(content,price.priceValue)" class="btn btn-primary" ng-disabled="myform.$invalid">Save Rent Fair11</button></span>
+                                <span ng-if="chairs.type!='monthly' || chairs.type!='weekly'" ng-hide="chairs.type=='weekly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(content,price.priceValue)" class="btn btn-primary" ng-disabled="myform.$invalid">Save Rent Fair</button></span>
                         </div>
                         </form>
                         <div class="form-group" ng-show="content == 'monthly' || chairs.type=='monthly'" >

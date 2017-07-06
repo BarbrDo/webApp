@@ -20,13 +20,17 @@
             <div class="clearfix">
                 <div class="col-sm-4 form-group">
                     <label>First Name</label>
-                    <input type="text" class="form-control" name="first_name" ng-model="user.first_name" required />
+                    <input type="text" class="form-control" name="first_name" ng-model="user.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required />
                     <span style="color:red;" ng-show="signUpForm.first_name.$touched && signUpForm.first_name.$invalid && signUpForm.first_name.$error.required">First Name is required.</span>
+                    <span style="color:red;" ng-show="signUpForm.first_name.$error.pattern">Enter Valid Character</span><br>
+                    <span style="color:red " ng-show="signUpForm.first_name.$error.maxlength && signUpForm.first_name.$dirty">First name maximum length exceeds</span>
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Last Name</label>
-                    <input type="text" class="form-control" name="last_name" ng-model="user.last_name" required />
+                    <input type="text" class="form-control" name="last_name" ng-model="user.last_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required />
                     <span style="color:red;" ng-show="signUpForm.last_name.$touched && signUpForm.last_name.$invalid && signUpForm.last_name.$error.required">Last Name is required.</span>
+                    <span style="color:red;" ng-show="signUpForm.last_name.$error.pattern">Enter Valid Character</span><br>
+                    <span style="color:red " ng-show="signUpForm.last_name.$error.maxlength && signUpForm.last_name.$dirty">First name maximum length exceeds</span>
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Mobile Number</label>

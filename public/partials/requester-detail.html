@@ -1,13 +1,13 @@
 <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
 <div class="crumb"> <span>Requester Details</span> </div>
-<div class="wrapper" >
+<div class="wrapper" ng-init="requesterdetails()">
     <div class="block" >
         <div class="panel">
             <div class="panel-body">
                 <div class="container ">
                     <div class="col-lg-2"></div>
                     <div class="col-lg-8">
-                        <img class="img-circle" src="/images/brbr_pic.png" alt="Cinque Terre" width="304" height="236"></div>
+                        <img class="img-circle" src="/uploadedFiles/{{requester.picture}}" alt="Cinque Terre" width="304" height="236"></div>
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
@@ -17,7 +17,7 @@
                 </div>
                 <br>
                 <br>
-                <table class="table table-striped" ng-init="requesterdetails()">
+                <table class="table table-striped" >
                     <tr>
                         <td>
                             <h5>First Name </h5></td>

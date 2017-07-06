@@ -20,13 +20,17 @@
             <div class="clearfix">
                 <div class="col-sm-4 form-group">
                     <label>First Name</label>
-                    <input type="text" class="form-control" name="first_name" data-ng-model="barberdetail.first_name" required/>
+                    <input type="text" class="form-control" name="first_name" data-ng-model="barberdetail.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
                     <span style="color:red;" ng-show="editForm.first_name.$error.required">First Name cannot left blank</span>
+                    <span style="color:red;" ng-show="editForm.first_name.$error.pattern">Enter Valid Character</span><br>
+                    <span style="color:red " ng-show="editForm.first_name.$error.maxlength && editForm.first_name.$dirty">First name maximum length exceeds</span>
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Last Name</label>
-                    <input type="text" class="form-control" name="last_name" data-ng-model="barberdetail.last_name" required/>
+                    <input type="text" class="form-control" name="last_name" data-ng-model="barberdetail.last_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
                     <span style="color:red;" ng-show="editForm.last_name.$error.required">Last Name cannot left blank</span>
+                    <span style="color:red;" ng-show="editForm.last_name.$error.pattern">Enter Valid Character</span><br>
+                    <span style="color:red " ng-show="editForm.last_name.$error.maxlength && editForm.last_name.$dirty">First name maximum length exceeds</span>
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Mobile Number</label>

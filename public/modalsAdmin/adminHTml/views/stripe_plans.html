@@ -1,0 +1,146 @@
+<div ng-controller="planCtrl as vm">
+<div ng-if="vm.loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item active">Plans</li>
+</ol>
+<div class="panel" ng-init="pageChanged()">
+    <div class="panel-heading">
+        All Plans
+    </div>
+    <div class="panel-body" ng-init="vm.allPlans()">
+        <!-- RAHUL  CODE -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-6" style="margin-left: 300px;">
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-default" ng-click="vm.open()('lg')">Add Plan</button>
+                        <input ng-model="myobj.search" placeholder="Search for..." ng-change="pageChanged()" />
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="font-size: 13px;" width="20%"><a ng-click="Sort('created_date')" class="created_date" style="color: #ffffff;">name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                            <th style="font-size: 13px;" width="20%"><a ng-click="Sort('created_date')" class="created_date" style="color: #ffffff;">statement_descriptor<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                            <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">Interval Count<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                            <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">Interval<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                            <th style="font-size: 13px;"><a ng-click="Sort('name[0]')" class="name" style="color: #ffffff;">currency<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                            <th style="font-size: 13px;"><a ng-click="Sort('name[0]')" class="name" style="color: #ffffff;">Edit<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                            <th style="font-size: 13px;"><a ng-click="Sort('name[0]')" class="name" style="color: #ffffff;">Delete<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="results in vm.plans.data.data">
+                            <td>{{results.name}}</td>
+                            <td>{{results.statement_descriptor}}</td>
+                            <td>{{results.interval_count}}</td>
+                            <td>{{results.interval}}</td>
+                            <td>{{results.currency}}</td>
+                            <td><i class="fa fa-pencil-square-o" aria-hidden="true" style="cursor:pointer;" ng-click="vm.edit(results)"></i></td>
+                            <td><i class="fa fa-trash" aria-hidden="true" style="cursor:pointer;" ng-click="vm.del()"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <div class="col-sm-6">
+                    <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="pageChanged()"></ul>
+                </div>
+                <br>
+            </div>
+            <!-- Modal -->
+        </div>
+    </div>
+</div>
+</div>
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="" role="dialog" ng-controller="planCtrl as vm">
+        <div class="">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Create Plan</h4>
+                </div>
+                <div class="modal-body">
+                    <form name="planForm">
+                        <div class="clearfix">
+                            <div class="col-sm-6 form-group ">
+                                <label>Name</label>
+                                <input type="text " class="form-control " name="name" ng-model="vm.user.name " ng-pattern="/^[a-z ,. '-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required />
+                                <div class="validationError" ng-messages="planForm.name.$error" ng-show="
+                                planForm.name.$error.required && planForm.name.$touched &&
+                                planForm.name.$invalid" role="alert">
+                                    <span style="color:red" ng-message="required">Name is required</span>
+                                </div>
+                                <div class="validationError" ng-messages="planForm.name.$error" ng-show="
+                                planForm.name.$error.pattern && (!planForm.name.$pristine || planForm.$submitted)" role="alert">
+                                    <span style="color:red" ng-message="pattern">Enter valid character </span>
+                                </div>
+                                <div class="validationError" ng-show="planForm.name.$error.maxlength && planForm.name.$dirty" ">
+                                <span style="color:red "> maximum length exceeds</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group ">
+                            <div>
+                                <label>Interval</label>
+                            </div>
+                            <div>
+                                 <select class="form-control" name="singleSelect" id="singleSelect" ng-model="vm.user.interval">
+                                  <option value="">---Please select---</option> 
+                                  <option value="day">Day</option> 
+                                  <option value="week">Week</option>
+                                  <option value="month">Month</option>
+                                  <option value="year">Year</option>
+                                </select>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="clearfix ">
+                            <div class="col-sm-6 form-group">
+                                <label>Amount</label>
+                                <input type="text" class="form-control" name="amount" ng-model="vm.user.amount" ng-pattern="/^[0-9]*$/" ng-minlength="1" ng-maxlength="20" maxlength="21" required/>
+                                <div class="validationError" ng-messages="planForm.amount.$error" ng-show="
+                                planForm.amount.$error.required && planForm.amount.$touched &&
+                                planForm.amount.$invalid" role="alert">
+                                    <span style="color:red" ng-message="required">Amount is required</span>
+                                </div>
+                                <div class="validationError" ng-messages="planForm.amount.$error" ng-show="
+                                planForm.amount.$error.pattern && (!planForm.amount.$pristine || planForm.$submitted)" role="alert">
+                                    <span style="color:red" ng-message="pattern">Enter valid character </span>
+                                </div>
+                                <div class="validationError" ng-show="planForm.amount.$error.maxlength && planForm.amount.$dirty" ">
+                                <span style="color:red "> maximum length exceeds</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                            <label>Statement Description</label>
+                                <input type="text " class="form-control " name="statement_descriptor" ng-model="vm.user.statement_descriptor " ng-pattern="/^[a-z ,. '-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required />
+                                <div class="validationError" ng-messages="planForm.statement_descriptor.$error" ng-show="
+                                planForm.statement_descriptor.$error.required && planForm.statement_descriptor.$touched &&
+                                planForm.statement_descriptor.$invalid" role="alert">
+                                    <span style="color:red" ng-message="required">statement_descriptor is required</span>
+                                </div>
+                                <div class="validationError" ng-messages="planForm.statement_descriptor.$error" ng-show="
+                                planForm.statement_descriptor.$error.pattern && (!planForm.statement_descriptor.$pristine || planForm.$submitted)" role="alert">
+                                    <span style="color:red" ng-message="pattern">Enter valid character </span>
+                                </div>
+                                <div class="validationError" ng-show="planForm.statement_descriptor.$error.maxlength && planForm.statement_descriptor.$dirty" ">
+                                <span style="color:red "> maximum length exceeds</span>
+                                </div>
+                              </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer ">
+                <button type="button " class="btn btn-default " data-dismiss="modal" ng-click="vm.submitPlan()" ng-disabled="planForm.$invalid">Submit</button>
+                    <button type="button" class="btn btn-default " data-dismiss="modal" ng-click="vm.cancel()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>

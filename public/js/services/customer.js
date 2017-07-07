@@ -108,7 +108,7 @@ angular.module('BarbrDoApp')
       createEvent:function(data){
         return $http({
           method: 'post',
-          url: '/api/v1/createEvents',
+          url: '/api/v1/barber/event',
           headers: {
             'user_id': obj._id//obj._id
           },
@@ -118,7 +118,7 @@ angular.module('BarbrDoApp')
       getEvents:function (data) {
         return $http({
           method: 'post',
-          url: '/api/v1/getEvents',
+          url: '/api/v1/barber/event',
           headers: {
             'user_id': obj._id//obj._id
           },

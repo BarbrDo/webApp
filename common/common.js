@@ -3,6 +3,7 @@ var gcm = require('android-gcm');
 var apn = require("apn");
 var path = require('path');
 var gcmObject = new gcm.AndroidGcm('API_KEY');
+let moment = require('moment');
 // var geocoder = require('geocoder');
 let constantObj = require('./../constants.js');
 let crypto = require('crypto'),
@@ -24,14 +25,14 @@ let notification;
 
 // note = new apn.Notification();
 
-exports.pushRequest = function(body,headers,cb) {
+exports.pushRequest = function(body, headers, cb) {
 
-    console.log("req.body is pushRequest",body);
-    console.log("req.headers",headers);
-    if(headers.device_type == 'ios'){
+    console.log("req.body is pushRequest", body);
+    console.log("req.headers", headers);
+    if (headers.device_type == 'ios') {
         pushSendToIOS(headers.device_token)
     }
-    if(headers.device_type == 'Android'){
+    if (headers.device_type == 'Android') {
         console.log("else part for android");
         pushSendToAndroid(headers.device_token);
     }
@@ -46,14 +47,14 @@ exports.pushRequest = function(body,headers,cb) {
                 "userdata": userErr
             });
         } else {
-            console.log("userDetail",userDetail);
-             if (userDetail.device_type == 'ios') {
+            console.log("userDetail", userDetail);
+            if (userDetail.device_type == 'ios') {
                 pushSendToIOS(userDetail.device_token);
-                cb(null,"Notification send.");
+                cb(null, "Notification send.");
             }
             if (userDetail.device_type == 'android') {
                 pushSendToAndroid(userDetail.device_token);
-                cb(null,"Notification send.");
+                cb(null, "Notification send.");
             }
 
         }
@@ -62,7 +63,7 @@ exports.pushRequest = function(body,headers,cb) {
 }
 
 var pushSendToIOS = function(token) {
-    console.log("token here",token);
+    console.log("token here", token);
     var apnProvider = new apn.Provider(options);
     let deviceToken = token;
     var note = new apn.Notification();
@@ -77,23 +78,22 @@ var pushSendToIOS = function(token) {
     note.notifyType = "matchNotification"
     apnProvider.send(note, deviceToken).then((result) => {
         console.log("result is", JSON.stringify(result));
-        if(result.failed.length>0){
+        if (result.failed.length > 0) {
             console.log("error in sending notification");
-        }
-        else{
+        } else {
             console.log("success in sending notification");
         }
-    }); 
+    });
 }
 
 
 var pushSendToAndroid = function(androidToken) {
     var message = new gcm.Message({
-    registration_ids: [androidToken],
-    data: {
-        key1: 'You have a new match.'
-    }
-});
+        registration_ids: [androidToken],
+        data: {
+            key1: 'You have a new match.'
+        }
+    });
 }
 
 // gcmObject.send(message, function(err, response) {});
@@ -155,4 +155,18 @@ exports.viewTimeSlots = function(req, res) {
         msg: constantObj.messages.successRetreivingData,
         data: constantObj.timeSlots
     });
+}
+exports.removeOffset = function(dobFormat) {
+    let userOffset = new Date(dobFormat).getTimezoneOffset();
+    let userOffsetMilli = userOffset * 60 * 1000;
+    let dateInMilli = moment(dobFormat).unix() * 1000;
+    let dateInUtc = dateInMilli - userOffsetMilli;
+    return dateInUtc;
+}
+exports.addOffset = function(dobFormat) {
+    var userOffset = new Date(dobFormat).getTimezoneOffset();
+    var userOffsetMilli = userOffset * 60 * 1000;
+    var dateInMilli = moment(dobFormat).unix() * 1000;
+    var dateInUtc = dateInMilli + userOffsetMilli;
+    return dateInUtc;
 }

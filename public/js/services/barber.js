@@ -18,6 +18,7 @@ angular.module('BarbrDoApp')
          return $http({
           method: 'GET',
           url: '/api/v1/shops/chair',
+          params: {search:data.search},
           headers: {
             'device_latitude': data.latitude,
             'device_longitude': data.longitude

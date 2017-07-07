@@ -1428,7 +1428,6 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             link: function(scope, element, attrs) {
                 attrs.$observe('ngSrc', function(ngSrc) {
                     $http.get(ngSrc).success(function(response) {}).error(function() {
-                        // alert('image not exist');
                         element.attr('src', 'http://dhakaprice.com/images/No-image-found.jpg'); // set default image
                     });
                 });
@@ -1486,7 +1485,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                             deferred.resolve()
                             $auth.logout();
                             delete $window.localStorage.user;
-                            toastr.error('Please Login again');
+                            toastr.info('Please Login');
                             $state.go('home');
                             // $state.go('pageNotFound')
                         }, 0);
@@ -1515,7 +1514,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                             deferred.resolve()
                             $auth.logout();
                             delete $window.localStorage.user;
-                            toastr.error('Please Login again');
+                            toastr.info('Please Login');
                             $state.go('home');
                             // $state.go('pageNotFound')
                         }, 0);
@@ -1544,7 +1543,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                             deferred.resolve()
                             $auth.logout();
                             delete $window.localStorage.user;
-                            toastr.error('Please Login again');
+                            toastr.info('Please Login');
                             $state.go('home');
                             // $state.go('pageNotFound')
                         }, 0);

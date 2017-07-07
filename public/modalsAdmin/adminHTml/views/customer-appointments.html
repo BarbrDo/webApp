@@ -5,6 +5,10 @@
     <li class="breadcrumb-item active">View Customers's Appointments</li>
 </ol>
 <div class="panel" ng-init="viewappointment()">
+    <div ng-if="messages" role="alert" class="alert alert-danger">
+            <div>
+                {{messages}}</div>
+        </div>
     <div class="panel-heading">
         {{custname}}'s Appointments
     </div>

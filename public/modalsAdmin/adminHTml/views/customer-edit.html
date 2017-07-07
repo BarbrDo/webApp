@@ -20,13 +20,17 @@
             <div class="clearfix">
                 <div class="col-sm-4 form-group">
                     <label>First Name</label>
-                    <input type="text" class="form-control" name="first_name" data-ng-model="customerdetail.first_name" required />
+                    <input type="text" class="form-control" name="first_name" data-ng-model="customerdetail.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required />
                     <span style="color:red;" ng-show="editForm.first_name.$error.required">First Name cannot left blank</span>
+                    <span style="color:red;" ng-show="editForm.first_name.$error.pattern">Enter Valid Character</span><br>
+                    <span style="color:red " ng-show="editForm.first_name.$error.maxlength && editForm.first_name.$dirty">First name maximum length exceeds</span>
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Last Name</label>
-                    <input type="text" class="form-control" name="last_name" data-ng-model="customerdetail.last_name" required />
+                    <input type="text" class="form-control" name="last_name" data-ng-model="customerdetail.last_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required />
                     <span style="color:red;" ng-show="editForm.last_name.$error.required">Last Name cannot left blank</span>
+                    <span style="color:red;" ng-show="editForm.last_name.$error.pattern">Enter Valid Character</span><br>
+                    <span style="color:red " ng-show="editForm.last_name.$error.maxlength && editForm.last_name.$dirty">First name maximum length exceeds</span>
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Mobile Number</label>
@@ -68,8 +72,8 @@
                 <div class="col-sm-3 form-group">
                     <label>Is Active</label>
                     <br>
-                    <input type="radio" ng-model="activeSelected" name="active" value="true" ng-checked="customerdetail.isActive==true">YES&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="active" value="false" ng-model="activeSelected" ng-checked="customerdetail.isActive == false">NO
+                    <input type="radio" ng-model="activeSelected" name="active" value="true" ng-checked="customerdetail.is_active==true">YES&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="active" value="false" ng-model="activeSelected" ng-checked="customerdetail.is_active == false">NO
                 </div>
                 <div class="col-sm-3 form-group">
                     <label>Is Verified</label>
@@ -80,8 +84,8 @@
                 <div class="col-sm-3 form-group">
                     <label>Is Deleted</label>
                     <br>
-                    <input type="radio" ng-model="deleteSelected" name="delete" value="true" ng-checked="customerdetail.isDeleted==true">YES&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="delete" value="false" ng-model="deleteSelected" ng-checked="customerdetail.isDeleted == false">NO
+                    <input type="radio" ng-model="deleteSelected" name="delete" value="true" ng-checked="customerdetail.is_deleted==true">YES&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="delete" value="false" ng-model="deleteSelected" ng-checked="customerdetail.is_deleted == false">NO
                 </div>
             </div>
             <div class="clearfix text-center">

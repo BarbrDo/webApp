@@ -1,17 +1,14 @@
 "use strict";
 
-var app_admin = angular.module('barbrdo', ['ui.router', 'ui.bootstrap', 'angularModalService', 'rzModule', "chart.js", 'alexjoffroy.angular-loaders', 'ngMask']);
+var app_admin = angular.module('barbrdo', ['ui.router', 'ui.bootstrap', 'angularModalService', 'rzModule', "chart.js", 'alexjoffroy.angular-loaders', 'ngMask','toastr']);
 
 app_admin.config(['$locationProvider', function($locationProvider) {
     $locationProvider.hashPrefix('');
 }]);
 
 app_admin.config(function($stateProvider, $urlRouterProvider) {
-
     $urlRouterProvider.otherwise('/dashboard');
-
     $stateProvider
-
     // Dashboard
         .state('dashboard', {
         url: '/dashboard',
@@ -167,6 +164,13 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
         controller: "AdminCtrl",
         templateUrl: "/modalsAdmin/adminHTml/views/shop-details.html"
 
+    })
+
+    .state('plans', {
+        url: '/plans',
+        controller: "planCtrl",
+        controllerAs: 'vm',
+        templateUrl: "/modalsAdmin/adminHTml/views/stripe_plans.html"
     })
 
 });

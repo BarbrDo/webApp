@@ -25,7 +25,7 @@
                   <td>{{result.appointment_date | date:'medium'}}</td>
                   <td>{{result.shop_id.name}}</td>
                   <td class="ac_btn"> <a ui-sref="appointmentDetailOfBarber({_id:result._id})" class=""  tooltip-placement="top" uib-tooltip="View Detail" > <i class="fa fa-eye"></i> </a> 
-                      <a href="#" data-toggle="modal" data-target="#confirm" class="" tooltip-placement="top" uib-tooltip="Confirmed" ng-click="barbertasks(result._id,result.customer_id)"> <i class="fa fa-check "></i> </a> <a ui-sref="rescheduleAppointment({_id:result._id})" class=""  tooltip-placement="top" uib-tooltip="Reschedule" > <i class="fa fa-repeat "></i> </a> </td>
+                      <a href="#" data-toggle="modal" data-target="#confirm" class="" tooltip-placement="top" uib-tooltip="Confirmed" ng-click="barbertasks(result._id,result.customer_id)"> <i class="fa fa-check "></i> </a> <a ui-sref="rescheduleAppointment({_id:result._id})" class=""  tooltip-placement="top" uib-tooltip="Reschedule" > <i class="fa fa-repeat " ng-click="barbertasks(result._id,result.customer_id)"></i> </a> </td>
                 </tr>
               </table>
             </div>

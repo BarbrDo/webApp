@@ -1,7 +1,6 @@
 angular.module('BarbrDoApp')
   .factory('shop', function($http, $window, $rootScope) {
     var obj = {};
-    // console.log("$rootScope.currentUser", $rootScope.currentUser);
     if ($window.localStorage.user) {
       obj = JSON.parse($window.localStorage.user);
     }
@@ -17,21 +16,57 @@ angular.module('BarbrDoApp')
         });
       },
       barbers: function(data) {
+        console.log(data)
         if (data.search) {
-          return $http.get('/api/v1/allbarbers?search=' + data.search, data);
+          return $http({
+          method: 'get',
+          url: '/api/v1/barbers?search=' + data.search,
+          data: data,
+         headers: {
+            'device_latitude': 30.538994,
+            'device_longitude': 75.955033
+          }
+        });
         } else {
-          return $http.get('/api/v1/allbarbers');
+          return $http({
+          method: 'get',
+          url: '/api/v1/barbers',
+          data: data,
+         headers: {
+            'device_latitude': 30.538994,
+            'device_longitude': 75.955033
+          }
+        });
         }
       },
       shopInfo: function(data) {
-        return $http({
+        if(data)
+        {
+          return $http({
           method: 'get',
-          url: '/api/v1/userprofile/' + data.obj._id,
-          data: data
+          url: '/api/v1/userprofile/' + data.obj._id
         });
+        }
+        else
+        {
+          console.log(obj)
+          return $http({
+          method: 'get',
+          url: '/api/v1/userprofile/' + obj._id
+        });
+        }
+          
       },
       deleteChair: function(data) {
-        return $http.delete('/api/v1/shops/chair', data);
+          console.log(data)
+         return $http({
+        method: 'DELETE',
+        url: '/api/v1/shops/chair',
+        data: data,
+        headers: {
+          "Content-Type": "application/json;charset=utf-8"
+        }
+      });
       },
       saveSplitFair: function(data) {
         return $http({
@@ -44,6 +79,7 @@ angular.module('BarbrDoApp')
         });
       },
       saveWeeklyFair: function(data) {
+          console.log("data",data);
         return $http({
           method: 'put',
           url: '/api/v1/shops/managechair',
@@ -128,16 +164,6 @@ angular.module('BarbrDoApp')
       },
       barberDetail: function(data) {
         return $http.get('/api/v1/barberdetail/' + data, data);
-      },
-      deleteChair: function(data) {
-        return $http({
-          method: 'delete',
-          url: '/api/v1/shops/chair',
-          data: data,
-          headers: {
-            'user_id': obj._id
-          }
-        }, data);
       },
       plans: function(data) {
         return $http.get('/api/v1/plans', data);

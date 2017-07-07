@@ -10,6 +10,7 @@ let moment = require('moment');
 let async = require('async');
 let nodemailer = require('nodemailer');
 let mg = require('nodemailer-mailgun-transport');
+let commonObj = require('../common/common');
 
 exports.editBarber = function(req, res) {
     var updateData = JSON.parse(JSON.stringify(req.body));
@@ -47,7 +48,9 @@ exports.editBarber = function(req, res) {
 }
 
 exports.getAllServices = function(req, res) {
+
     service.find({
+
         "status": true
     }, function(err, data) {
         if (err) {
@@ -147,7 +150,7 @@ exports.deleteBarberService = function(req, res) {
         _id: req.params.barber_service_id
     }, {
         $set: {
-            "isDeleted": true
+            "is_deleted": true
         }
     }, function(err, result) {
         if (err) {
@@ -171,10 +174,12 @@ exports.viewAllServiesOfBarber = function(req, res) {
             err: errors
         });
     }
+    console.log(req.params.barber_id)
     barber_service.find({
         "barber_id": req.params.barber_id,
-        "isDeleted": false
+        "is_deleted": false
     }, function(err, data) {
+        console.log()
         if (err) {
             res.status(400).send({
                 msg: constantObj.messages.errorRetreivingData,
@@ -653,8 +658,8 @@ exports.availableBarber = function(req, res) {
             mobile_number: "$mobile_number",
             ratings: "$ratings",
             created_date: "$created_date",
-            isDeleted: "$isDeleted",
-            isActive: "$isActive",
+            is_deleted: "$is_deleted",
+            is_active: "$is_active",
             is_verified: "$is_verified",
             user_type: "$user_type",
             picture: "$picture"
@@ -682,8 +687,8 @@ exports.availableBarber = function(req, res) {
                     mobile_number: "$mobile_number",
                     created_date: "$created_date",
                     ratings: "$ratings",
-                    isDeleted: "$isDeleted",
-                    isActive: "$isActive",
+                    is_deleted: "$is_deleted",
+                    is_active: "$is_active",
                     is_verified: "$is_verified",
                     user_type: "$user_type",
                     latLong: "$latLong",
@@ -732,7 +737,7 @@ exports.deactivebarber = function(req, res) {
         _id: req.params.barber_id
     }, {
         $set: {
-            isActive: false
+            is_active: false
         }
     }, function(err, count) {
         user.find({
@@ -751,7 +756,7 @@ exports.activatebarber = function(req, res) {
         _id: req.params.barber_id
     }, {
         $set: {
-            isActive: true
+            is_active: true
         }
     }, function(err, count) {
         user.find({
@@ -806,7 +811,7 @@ exports.deletebarber = function(req, res) {
         _id: req.params.barber_id
     }, {
         $set: {
-            isDeleted: true
+            is_deleted: true
         }
     }, function(err, count) {
         user.find({
@@ -824,7 +829,7 @@ exports.undeletebarber = function(req, res) {
         _id: req.params.barber_id
     }, {
         $set: {
-            isDeleted: false
+            is_deleted: false
         }
     }, function(err, count) {
         user.find({
@@ -857,8 +862,8 @@ exports.barberdetail = function(req, res) {
             mobile_number: "$mobile_number",
             created_date: "$created_date",
             ratings: "$ratings",
-            isDeleted: "$isDeleted",
-            isActive: "$isActive",
+            is_deleted: "$is_deleted",
+            is_active: "$is_active",
             is_verified: "$is_verified",
             user_type: "$user_type",
             latLong: "$latLong",
@@ -1215,8 +1220,11 @@ exports.createEvents = function(req, res) {
     }
     let obj = {};
     obj.title = req.body.title;
-    obj.startsAt = removeOffset(req.body.startsAt);
-    obj.endsAt = removeOffset(req.body.endsAt);
+    obj.startsAt = commonObj.removeOffset(req.body.startsAt);
+    obj.endsAt = commonObj.removeOffset(req.body.endsAt);
+
+    console.log("obj.startsAt,obj.endsAt",obj.startsAt,obj.endsAt);
+
     if(req.body.color){
         obj.color = req.body.color
     }
@@ -1244,14 +1252,6 @@ exports.createEvents = function(req, res) {
     })
 }
 
-let removeOffset = function(dobFormat) {
-    let userOffset = new Date(dobFormat).getTimezoneOffset();
-    let userOffsetMilli = userOffset * 60 * 1000;
-    let dateInMilli = moment(dobFormat).unix() * 1000;
-    let dateInUtc = dateInMilli - userOffsetMilli;
-    return dateInUtc;
-}
-
 exports.getEvents = function(req, res) {
     barber.findOne({
         user_id: req.headers.user_id
@@ -1273,66 +1273,84 @@ exports.getEvents = function(req, res) {
     })
 }
 
-exports.getEventOnDate = function(req, res) {
-    
-    let event_Date = req.params.date;
-    let eventdate = moment(event_Date, "YYYY-MM-DD").add(1, 'days').format("YYYY-MM-DD[T]HH:mm:ss.SSS");
-    console.log(eventdate);
-    barber.find({
-        'user_id': req.headers.user_id,
-        'events.startsAt': {$lte: eventdate + 'Z'},
-        'events.endsAt': {$gte: eventdate + 'Z'}
-    }, {
-        'events.$': 1
-    }, function(err, data) {
+exports.getEventOnDate = function (req, res) {
+    var event_Date = req.params.date;
+    var eventStartdate = moment(event_Date, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
+    var eventEnddate = moment(event_Date, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
+    var barber_id = mongoose.Types.ObjectId(req.headers.user_id);
+    console.log(eventStartdate, eventEnddate, barber_id);
+    barber.aggregate([
+        {$match:
+                    {"user_id": barber_id}
+        },
+        {$unwind: "$events"},
+        {$match:
+                    {
+                        "events.startsAt": {$gte: new Date(eventStartdate)},
+                        "events.endsAt": {$lt: new Date(eventEnddate)}
+                    }
+        },
+        {$group:
+                    {
+                        "_id": "$_id",
+                        "events": {$push: "$events"},
+                    }
+        }
+    ]).exec(function (err, barberEvents) {
         if (err) {
             res.status(400).send({
                 msg: 'Error in Finding this user.',
                 "err": err
             });
         } else {
-            console.log("getEvents", data);
-            
-            var currentDate = moment().format("YYYY-MM-DD");
-    appointment.find({
-            "barber_id": {
-                $exists: true,
-                $eq: req.headers.user_id
-            },
-            "appointment_date": {
-                $gte: eventdate
-            }
-
-        }).sort({
-            'created_date': -1
-        }).populate('barber_id', 'first_name last_name ratings picture')
-        .populate('customer_id', 'first_name last_name ratings picture')
-        .populate('shop_id', 'name address city state gallery latLong')
-        .exec(function(err, result) {
-            if (err) {
-                return res.status(400).send({
-                    msg: constantObj.messages.errorRetreivingData
-                });
-            } else {
-                let pendingAppointments = [];
-                let bookedAppointments = [];
-                for (var i = 0; i < result.length; i++) {
-                    if (result[i].appointment_status == 'confirm') {
-                        bookedAppointments.push(result[i])
-                    }
+            appointment.find({
+                "barber_id": {
+                    $exists: true,
+                    $eq: req.headers.user_id
+                },
+                "appointment_date": {
+                    $gte: eventStartdate,
+                    $lt: eventEnddate
                 }
 
-                return res.status(200).send({
-                    msg: constantObj.messages.successRetreivingData,
-                    data: {
-                        "booked": bookedAppointments,
-                        "events":data[0].events
+            }).sort({
+                'created_date': -1
+            }).populate('barber_id', 'first_name last_name ratings picture')
+            .populate('customer_id', 'first_name last_name ratings picture')
+            .populate('shop_id', 'name address city state gallery latLong')
+            .exec(function (err, result) {
+                if (err) {
+                    return res.status(400).send({
+                        msg: constantObj.messages.errorRetreivingData
+                    });
+                } else {
+                    let bookedAppointments = [];
+                    for (var i = 0; i < result.length; i++) {
+                        if (result[i].appointment_status == 'confirm') {
+                            bookedAppointments.push(result[i])
+                        }
                     }
-                });
-            }
-        })
+
+                    if (barberEvents.length > 0) {
+                        return res.status(200).send({
+                            msg: constantObj.messages.successRetreivingData,
+                            data: {
+                                "appointments": bookedAppointments,
+                                "events": barberEvents[0].events
+                            }
+                        });
+                    } else {
+                        var events = [];
+                        return res.status(200).send({
+                            msg: constantObj.messages.successRetreivingData,
+                            data: {
+                                "appointments": bookedAppointments,
+                                "events": events
+                            }
+                        });
+                    }
+                }
+            })
         }
     })
 }
-
-

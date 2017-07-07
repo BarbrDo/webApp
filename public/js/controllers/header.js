@@ -2,7 +2,6 @@ angular.module('BarbrDoApp')
   .controller('HeaderCtrl', function($scope, $location, $window, $auth, $state, $rootScope, $uibModal, toastr, shop, geolocation) {
     $scope.user = {};
     $scope.messages = {};
-    // alert("working");
     $scope.isActive = function(viewLocation) {
       return viewLocation === $location.path();
     };
@@ -86,9 +85,10 @@ angular.module('BarbrDoApp')
       });
       $auth.login($scope.user)
         .then(function(response) {
-          toastr.success('Welcome');
-          $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
+          toastr.success('Welcome'+'  '+response.data.user.first_name+'  '+response.data.user.last_name);
+          $rootScope.currentUser = response.data.user;
+          
           $window.localStorage.imagePath = response.data.imagesPath;
           if (response.data.user.user_type == 'customer') {
             $state.go('upcomingComplete');
@@ -102,7 +102,6 @@ angular.module('BarbrDoApp')
         })
         .catch(function(response) {
           if (response.status == 402) {
-            alert(response.data.user._id);
             $state.go('subScription', {
               _id: response.data.user._id
             })
@@ -120,7 +119,6 @@ angular.module('BarbrDoApp')
     $scope.signup = function() {
       $auth.signup($scope.user)
         .then(function(response) {
-          alert(response.data.user)
           if (response.data.user) {
             $state.go('subScription', {
               _id: response.data.user._id
@@ -137,7 +135,6 @@ angular.module('BarbrDoApp')
     };
 
     $scope.fbsignup = function(user) {
-      console.log("here")
       shop.fbSignup(user)
         .then(function(response) {
           toastr.success("Please check your mail to activate your account.")
@@ -152,11 +149,13 @@ angular.module('BarbrDoApp')
     };
 
     $scope.addChair = function() {
+      $scope.loaderStart = true;
       var obj = JSON.parse($window.localStorage.user);
       var passObj = {
         _id: $window.localStorage.shop_id
       };
       shop.addChair(passObj).then(function(response) {
+        $scope.loaderStart = false;
         toastr.success('Chair successfully added.');
         $rootScope.$emit("MyEvent", response);
       })

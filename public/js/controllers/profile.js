@@ -30,6 +30,8 @@ angular.module('BarbrDoApp').controller('ProfileCtrl', function($scope, $rootSco
        $("#mobile_number").trigger('click');
     }, 100, false);
     }
+    
+    
     $scope.updateProfile = function() {
         console.log($scope.profile);
         var fs = new FormData();
@@ -49,7 +51,6 @@ angular.module('BarbrDoApp').controller('ProfileCtrl', function($scope, $rootSco
             })
             .success(function(response) {
                 if (response) {
-                    console.log(response)
                     $rootScope.currentUser = response.user;
                     $window.localStorage.user = JSON.stringify(response.user);
                     toastr.success("User profile updated successfully.");

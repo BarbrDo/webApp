@@ -54,8 +54,8 @@ exports.listcustomers = function(req, res) {
             mobile_number: "$mobile_number",
             ratings: "$ratings",
             created_date: "$created_date",
-            isDeleted: "$isDeleted",
-            isActive: "$isActive",
+            is_deleted: "$is_deleted",
+            is_active: "$is_active",
             is_verified: "$is_verified",
             gallery: "$gallery",
             latLong: "$latLong",
@@ -78,8 +78,8 @@ exports.listcustomers = function(req, res) {
             mobile_number: "$mobile_number",
             ratings: "$ratings",
             created_date: "$created_date",
-            isDeleted: "$isDeleted",
-            isActive: "$isActive",
+            is_deleted: "$is_deleted",
+            is_active: "$is_active",
             is_verified: "$is_verified",
             gallery: "$gallery",
             latLong: "$latLong",
@@ -135,7 +135,7 @@ exports.customerappointments = function(req, res) {
                 $gte: currentDate
             }
         }).populate('barber_id', 'first_name last_name ratings picture created_date')
-        .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong isActive is_verified isDeleted ratings')
+        .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong is_active is_verified is_deleted ratings')
         .populate('shop_id', 'name address city state gallery latLong created_date user_id')
         .exec(function(err, result) {
             if (err) {
@@ -154,7 +154,7 @@ exports.customerappointments = function(req, res) {
                             $in: ['completed']
                         }
                     }).populate('barber_id', 'first_name last_name ratings picture created_date')
-                    .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong isActive is_verified isDeleted ratings')
+                    .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong is_active is_verified is_deleted ratings')
                     .populate('shop_id', 'name address city state gallery latLong created_date user_id')
                     .exec(function(err, data) {
 
@@ -202,8 +202,8 @@ exports.custdetail = function(req, res) {
             mobile_number: "$mobile_number",
             ratings: "$ratings",
             created_date: "$created_date",
-            isDeleted: "$isDeleted",
-            isActive: "$isActive",
+            is_deleted: "$is_deleted",
+            is_active: "$is_active",
             is_verified: "$is_verified",
             gallery: "$gallery",
             latLong: "$latLong",
@@ -242,7 +242,7 @@ exports.deletecustomer = function(req, res) {
         _id: req.params.cust_id
     }, {
         $set: {
-            isDeleted: true
+            is_deleted: true
         }
     }, function(err, count) {
         User.find({
@@ -261,7 +261,7 @@ exports.undeletecustomer = function(req, res) {
         _id: req.params.cust_id
     }, {
         $set: {
-            isDeleted: false
+            is_deleted: false
         }
     }, function(err, count) {
         User.find({
@@ -279,7 +279,7 @@ exports.deactivecustomer = function(req, res) {
         _id: req.params.cust_id
     }, {
         $set: {
-            isActive: false
+            is_active: false
         }
     }, function(err, count) {
         User.find({
@@ -297,7 +297,7 @@ exports.activatecustomer = function(req, res) {
         _id: req.params.cust_id
     }, {
         $set: {
-            isActive: true
+            is_active: true
         }
     }, function(err, count) {
         User.find({

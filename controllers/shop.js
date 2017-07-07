@@ -179,6 +179,7 @@ exports.allShops = function(req, res) {
             if (err) {
                 console.log(err);
             } else {
+               console.log("here",data)
                 /*let resultTantArray = [];
                 for (let i = 0; i < data.length; i++) {
                     let obj = {};
@@ -268,7 +269,7 @@ exports.associatedBarbers = function(req, res) {
             if (err) {
                 console.log(err);
             } else {
-
+                
                 let resultTantArray = [];
                 for (let i = 0; i < data.length; i++) {
                     let obj = {};
@@ -288,6 +289,7 @@ exports.associatedBarbers = function(req, res) {
                         resultTantArray.push(obj);
                     }
                 }
+                console.log("database",data)
                 res.status(200).send({
                     "msg": constantObj.messages.successRetreivingData,
                     "data": resultTantArray
@@ -329,6 +331,13 @@ exports.allShopsHavingChairs = function(req, res) {
                 spherical: true
             }
         }, {
+            $match: {
+                "name": {
+                    $regex: search,
+                    $options: 'i'
+                }
+            }
+        },{
             $unwind: "$chairs"
         },
         {
@@ -489,6 +498,7 @@ exports.postChairToAllBarbers = function(req, res) {
     }, {
         "chairs.$": 1
     }).exec(function(err, data) {
+        console.log(data);
         if (data.chairs[0].type) {
             shop.update({
                 "user_id": req.headers.user_id,
@@ -512,7 +522,6 @@ exports.postChairToAllBarbers = function(req, res) {
         }
     })
 }
-
 
 exports.listshops = function(req, res) {
     var page = parseInt(req.query.page) || 1;
@@ -576,8 +585,8 @@ exports.listshops = function(req, res) {
                     mobile_number: "$mobile_number",
                     created_date: "$created_date",
                     ratings: "$ratings",
-                    isDeleted: "$isDeleted",
-                    isActive: "$isActive",
+                    is_deleted: "$is_deleted",
+                    is_active: "$is_active",
                     is_verified: "$is_verified",
                     user_type: "$user_type",
                     latLong: "$latLong",
@@ -642,8 +651,8 @@ exports.shopdetail = function(req, res) {
             mobile_number: "$mobile_number",
             created_date: "$created_date",
             ratings: "$ratings",
-            isDeleted: "$isDeleted",
-            isActive: "$isActive",
+            is_deleted: "$is_deleted",
+            is_active: "$is_active",
             is_verified: "$is_verified",
             user_type: "$user_type",
             latLong: "$latLong",
@@ -665,7 +674,6 @@ exports.shopdetail = function(req, res) {
         }
     })
 };
-
 
 exports.chairdetail = function(req, res) {
     req.checkParams("chair_id", "chair_id cannot be blank").notEmpty();
@@ -698,10 +706,6 @@ exports.chairdetail = function(req, res) {
         }
     })
 };
-
-
-
-
 
 exports.getDataForBookNowPage = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
@@ -788,8 +792,6 @@ exports.getDataForBookNowPage = function(req, res) {
         })
     }
 }
-
-
 
 exports.shopContainsChairs = function(req, res) {
     req.checkParams('shop_id', 'Shop id is required').notEmpty();
@@ -963,7 +965,7 @@ exports.deactiveshop = function(req, res) {
         _id: req.params.shop_id
     }, {
         $set: {
-            isActive: false
+            is_active: false
         }
     }, function(err, count) {
         user.find({
@@ -981,7 +983,7 @@ exports.activateshop = function(req, res) {
         _id: req.params.shop_id
     }, {
         $set: {
-            isActive: true
+            is_active: true
         }
     }, function(err, count) {
         user.find({
@@ -1034,7 +1036,7 @@ exports.deleteshop = function(req, res) {
         _id: req.params.shop_id
     }, {
         $set: {
-            isDeleted: true
+            is_deleted: true
         }
     }, function(err, count) {
         user.find({
@@ -1051,7 +1053,7 @@ exports.undeleteshop = function(req, res) {
         _id: req.params.shop_id
     }, {
         $set: {
-            isDeleted: false
+            is_deleted: false
         }
     }, function(err, count) {
         user.find({

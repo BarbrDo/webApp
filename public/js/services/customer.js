@@ -3,6 +3,7 @@ angular.module('BarbrDoApp')
     var obj = JSON.parse($window.localStorage.user);
     return {
       shopList: function(data) {
+          console.log("data",data)
         return $http({
           method: 'GET',
           url: '/api/v1/shops',
@@ -11,7 +12,7 @@ angular.module('BarbrDoApp')
             'device_latitude': data.latitude,
             'device_longitude': data.longitude
           }
-        },data);
+        });
       },
        barberAll: function(data) {
         return $http({
@@ -107,7 +108,7 @@ angular.module('BarbrDoApp')
       createEvent:function(data){
         return $http({
           method: 'post',
-          url: '/api/v1/createEvents',
+          url: '/api/v1/barber/event',
           headers: {
             'user_id': obj._id//obj._id
           },
@@ -117,7 +118,7 @@ angular.module('BarbrDoApp')
       getEvents:function (data) {
         return $http({
           method: 'post',
-          url: '/api/v1/getEvents',
+          url: '/api/v1/barber/event',
           headers: {
             'user_id': obj._id//obj._id
           },

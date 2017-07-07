@@ -13,8 +13,10 @@
 <br>
 <div class="container" ng-init="barberdetails()">
     <div>
-        <font color="green">
-        </font>
+        <div ng-if="messages" role="alert" class="alert alert-danger">
+            <div>
+                {{messages}}</div>
+        </div>
         <div class="row list-group">
             <div class="item  col-xs-12 col-lg-12">
                 <div class="thumbnail">
@@ -111,7 +113,7 @@
                                 <tr>
                                     <td>
                                         <h5>IS BARBER ACTIVE</h5></td>
-                                    <td> {{barberdetail.isActive}} </td>
+                                    <td> {{barberdetail.is_active}} </td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -121,7 +123,7 @@
                                 <tr>
                                     <td>
                                         <h5>IS BARBER DELETED</h5></td>
-                                    <td> {{barberdetail.isDeleted}} </td>
+                                    <td> {{barberdetail.is_deleted}} </td>
                                 </tr>
                                 <tr>
                                     <td>

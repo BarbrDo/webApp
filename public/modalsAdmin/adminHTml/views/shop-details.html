@@ -6,8 +6,10 @@
 </ol>
 <div class="container" ng-init="shopdetail()">
     <div>
-        <font color="green">
-        </font>
+        <div ng-if="messages" role="alert" class="alert alert-danger">
+            <div>
+                {{messages}}</div>
+        </div>
         <div class="row list-group">
             <div class="item  col-xs-12 col-lg-12">
                 <div class="thumbnail">
@@ -103,7 +105,7 @@
                                 <tr>
                                     <td>
                                         <h5>IS OWNER ACTIVE</h5></td>
-                                    <td> {{shopdetailview.isActive}} </td>
+                                    <td> {{shopdetailview.is_active}} </td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -113,7 +115,7 @@
                                 <tr>
                                     <td>
                                         <h5>IS OWNER DELETED</h5></td>
-                                    <td> {{shopdetailview.isDeleted}} </td>
+                                    <td> {{shopdetailview.is_deleted}} </td>
                                 </tr>
                                 <tr>
                                     <td>

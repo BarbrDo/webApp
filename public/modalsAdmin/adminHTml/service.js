@@ -294,7 +294,12 @@ angular.module('barbrdo').factory('Admin', function($http) {
     },
     countAppointment: function(data) {
       return $http.get('/api/v1/countappoint', data);
+    },
+    featuringPlans: function(data) {
+      return $http.get('/api/v1/stripe/plans', data);
+    },
+    createPlan:function (data) {
+      return $http.post('/api/v1/stripe/createPlan', data)
     }
-
   };
 });

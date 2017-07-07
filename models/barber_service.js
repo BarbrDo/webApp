@@ -28,7 +28,7 @@ var barberServicesSchema = new mongoose.Schema({
         type: Date,
         default: Date.now()
     },
-    isDeleted: {
+    is_deleted: {
         type: Boolean,
         default: false
     }

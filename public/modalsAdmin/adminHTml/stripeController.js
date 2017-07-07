@@ -1,8 +1,8 @@
 app_admin.controller("planCtrl", planCtrl);
 
-function planCtrl($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr,$uibModal) {
+function planCtrl($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $uibModal,$timeout) {
   var vm = this;
-  vm.user = {};
+  $scope.user = {};
   vm.animationsEnabled = true;
   vm.edit = edit;
   vm.del = del;
@@ -22,35 +22,45 @@ function planCtrl($scope, $rootScope, $location, Admin, $filter, $log, $statePar
 
   function edit(data) {
     console.log(data);
-    vm.user.name = data.name;
-    console.log(vm.user);
-    vm.open()
-    console.log("inside edit");
+    $timeout(function() {
+      vm.user = data;
+      console.log(vm.user);
+      vm.open(vm.user )
+      console.log("inside edit");
+    }, 100);
   }
+
   function del() {
     console.log("inside del");
   }
 
-  function open() {
+  function open(data) {
+    vm.user = data;
+    console.log("vm.user",vm.user);
     $rootScope.modalInstance = $uibModal.open({
-        animation: $scope.animationsEnabled,
-        templateUrl: 'myModalContent.html',
-        controller: 'instanceController12',
-        controllerAs: 'vm',
-        windowClass: 'transmitter_modal',
-        scope: $scope,
-        size: ' holder'
-      });
+      animation: $scope.animationsEnabled,
+      templateUrl: 'myModalContent.html',
+      controller: 'instanceController12',
+      controllerAs: 'vm',
+      windowClass: 'transmitter_modal',
+      scope: $scope,
+      size: ' holder',
+      resolve: {
+        user: function () {
+          return vm.user;
+        }
+      }
+    });
   }
 
   function submitPlan() {
-    console.log(vm.user);
+    console.log($scope.user);
     vm.loaderStart = true;
-    Admin.createPlan(vm.user).then(function(responce) {
-        console.log(responce);
-        vm.allPlans();
-        $rootScope.$emit("MyEvent");
-    })
+    // Admin.createPlan(vm.user).then(function(responce) {
+    //   console.log(responce);
+    //   vm.allPlans();
+    //   $rootScope.$emit("MyEvent");
+    // })
   }
 
   function cancel() {
@@ -58,14 +68,14 @@ function planCtrl($scope, $rootScope, $location, Admin, $filter, $log, $statePar
   }
 }
 
-app_admin.controller('instanceController12', ['$uibModalInstance', '$scope','$rootScope',function($uibModalInstance, $scope,$rootScope) {
-    var vm = this;
-    vm.cancel = cancel;
-    $rootScope.$on("MyEvent", function(evt,data){ 
-      cancel();
-    })
-    function cancel() {
-      $uibModalInstance.dismiss('cancel');
-    }
+app_admin.controller('instanceController12', ['$uibModalInstance', '$scope', '$rootScope', function($uibModalInstance, $scope, $rootScope) {
+  var vm = this;
+  vm.cancel = cancel;
+  $rootScope.$on("MyEvent", function(evt, data) {
+    cancel();
+  })
+
+  function cancel() {
+    $uibModalInstance.dismiss('cancel');
   }
-])
+}])

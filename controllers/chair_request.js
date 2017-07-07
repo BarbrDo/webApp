@@ -16,8 +16,11 @@ let mg = require('nodemailer-mailgun-transport');
  * 
  */
 exports.requestChair = function (req, res) {
+    console.log(req.body)
     req.checkHeaders("user_id", "User is is required.").notEmpty();
     req.assert("chair_id", "Chair Id is required.").notEmpty();
+    req.assert("shop_id", "Shop Id is required.").notEmpty();
+    req.assert("barber_id", "Barber Id is required.").notEmpty();
     var errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -25,30 +28,13 @@ exports.requestChair = function (req, res) {
             err: errors
         });
     }
-    console.log(req.body)
-    //var d = new Date(req.body.booking_date);
-    //var bookDate = d.toISOString();
-
     let book_Date = req.body.booking_date;
-    let bookDate = moment(book_Date, "YYYY-MM-DD").add(1, 'days').format("YYYY-MM-DD[T]HH:mm:ss.SSS");
-
+    let bookDate = moment(book_Date, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
 
     console.log("bookDate", bookDate);
 
-    chairBook.find({
-        shop_id: req.body.shop_id,
-        barber_id: req.body.barber_id,
-        booking_date: {$lte: bookDate + 'Z'},
-        release_date: {$gte: bookDate + 'Z'}
-    }).exec(function (bookerr, bookresult) {
-        console.log(bookresult.length);
-        if (bookresult.length > 0) {
-            return res.status(400).send({
-                msg: "You are already associated with this shop",
-                err: "You are already associated with this shop"
-            });
-        }
-        else {
+    checkBarberBookings(req.body.barber_id, bookDate, function (err, data) {
+        if (data) {
             chairRequest.find({
                 shop_id: req.body.shop_id,
                 chair_id: req.body.chair_id,
@@ -94,9 +80,10 @@ exports.requestChair = function (req, res) {
                                 if (currentDate.date() != futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
                                     futureMonth = futureMonth.add(1, 'd');
                                 }
-                                var bookDate = moment(req.body.booking_date);
+                                //var bookDate = moment(req.body.booking_date);
+
                                 // This will validate that you can't add boooking more then one month
-                                if (bookDate < futureMonth && bookDate >= currentDate) {
+                                if (moment(req.body.booking_date) < futureMonth && moment(req.body.booking_date) >= currentDate) {
                                     shop.findOne({
                                         "_id": req.body.shop_id,
                                         "chairs._id": req.body.chair_id
@@ -117,7 +104,7 @@ exports.requestChair = function (req, res) {
                                             }
                                             saveData.requested_by = data.user_type
                                             saveData.barber_id = req.headers.user_id
-                                            saveData.booking_date = req.body.booking_date
+                                            saveData.booking_date = bookDate
                                             saveData.status = "pending";
                                             chairRequest(saveData).save(function (err, result) {
                                                 if (err) {
@@ -202,6 +189,12 @@ exports.requestChair = function (req, res) {
                     })
                 }
             })
+        }
+        if (err) {
+            console.log(err)
+            return res.status(400).send({
+                msg: "You are already have booking for this date"
+            });
         }
     })
 }
@@ -420,7 +413,6 @@ exports.acceptRequest = function (req, res) {
                     as: "barberInformation"
                 }
             }]).exec(function (err, result) {
-            console.log("here am i  in mongo", result)
             if (err) {
                 return res.status(400).send({
                     msg: "error in finding",
@@ -433,19 +425,19 @@ exports.acceptRequest = function (req, res) {
                     })
                 }
 
-                
+
                 let book_date = moment().format("YYYY-MM-DD");
-                
+
                 if (result[0].booking_date) {
                     book_date = moment(result[0].booking_date).format("YYYY-MM-DD");
                 }
-                
-                let bookingEndDate = moment(book_date).add(1, 'M');
-                
+
+                let bookingEndDate = moment(book_date).add(1, 'M').format("YYYY-MM-DD");
+
                 if (result[0].chair_type == 'weekly') {
-                    bookingEndDate = moment(book_date).add(7, 'day')
+                    bookingEndDate = moment(book_date).add(7, 'day').format("YYYY-MM-DD")
                 }
-                
+
                 updateCollectionData = {
                     "$set": {
                         "chairs.$.booking_start": book_date,
@@ -454,8 +446,8 @@ exports.acceptRequest = function (req, res) {
                         "chairs.$.availability": "booked"
                     }
                 };
-                
-                console.log('updateCollectionData',updateCollectionData);
+
+                console.log('updateCollectionData', updateCollectionData);
                 /*
                  1. In case of if type is weekly then booking_end date is one week ahead
                  2. In case of if type is percentage then booking_end date is one month ahead
@@ -470,7 +462,7 @@ exports.acceptRequest = function (req, res) {
                             release_date: bookingEndDate,
                             booking_date: book_date,
                             chair_type: result[0].chair_type,
-                            is_booking_active:true
+                            is_booking_active: true
                         }
                         if (result[0].chair_type == 'percentage') {
                             saveData.shop_percentage = result[0].shop_percentage
@@ -494,7 +486,7 @@ exports.acceptRequest = function (req, res) {
                         var bulk = chairRequest.collection.initializeUnorderedBulkOp();
                         let query = {
                             "chair_id": mongoose.Types.ObjectId(result[0].chair_id),
-                            "status": "pending"
+                            "status": "pending",
                         }
                         let update = {
                             "$set": {
@@ -590,4 +582,19 @@ exports.acceptRequest = function (req, res) {
             msg: "Error in request"
         })
     }
+}
+
+var checkBarberBookings = function (barber_id, bookDate, cb) {
+    chairBook.find({
+        barber_id: barber_id,
+        booking_date: {$lte: bookDate},
+        release_date: {$gt: bookDate}
+    }).exec(function (bookerr, bookresult) {
+        console.log("bookresult", bookresult);
+        if (bookresult.length > 0) {
+            return cb("Already exists");
+        } else {
+            return cb(null, "you are good to go");
+        }
+    })
 }

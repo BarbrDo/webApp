@@ -303,6 +303,7 @@ exports.associatedBarbers = function(req, res) {
 }
 
 exports.allShopsHavingChairs = function(req, res) {
+    console.log(req.headers);
     if (req.headers.device_latitude && req.headers.device_longitude) {
         let long = parseFloat(req.headers.device_longitude);
         let lati = parseFloat(req.headers.device_latitude);

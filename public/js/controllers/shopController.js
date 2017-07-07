@@ -4,9 +4,6 @@
 		$scope.myobj = {};
 		
 		$scope.shopData = JSON.parse($window.localStorage.user);
-		$scope.shopInfo = function(){
-			
-		}
 
 		$scope.chairrequest = function() {
 			$scope.loaderStart = true;
@@ -79,7 +76,7 @@
 		}
 
 		if($state.current.name == 'barbershopdashboard'){
-			let obj = {
+			var obj = {
 				obj:JSON.parse($window.localStorage.user)
 			}
 			shop.shopInfo(obj).then(function(response){
@@ -104,7 +101,10 @@
 					}
 				})
 				.success(function(response) {
-					shop.shopInfo().then(function(res) {
+					var obj = {
+						obj:JSON.parse($window.localStorage.user)
+					}
+					shop.shopInfo(obj).then(function(res) {
 						toastr.success('Image uploaded in gallery succesfully');
 						$scope.userGallery = res.data.user;
 					})
@@ -117,12 +117,14 @@
 		}
 
 		$scope.showgallery = function() {
-			shop.shopInfo().then(function(res) {
+			var obj = {
+				obj:JSON.parse($window.localStorage.user)
+			}
+			shop.shopInfo(obj).then(function(res) {
 				$scope.userGallery = res.data.user;
 				$scope.ratings = res.data.user.ratings;
 			}).catch (function(result) {
                             console.log(result)
-                           toastr.error('Error');
                         })
 		}
 
@@ -133,7 +135,10 @@
 		$scope.delpic = function(pic) {
 			shop.deleteImage(pic)
 				.then(function(response) {
-					shop.shopInfo().then(function(res) {
+					var obj = {
+						obj:JSON.parse($window.localStorage.user)
+					}
+					shop.shopInfo(obj).then(function(res) {
 						toastr.success('Image deleted succesfully');
 						$scope.userGallery = res.data.user;
 					})
@@ -156,7 +161,7 @@
 		$scope.shopDashboard = function(){
 			console.log("here")
             $scope.loaderStart = true;
-			let obj = {
+			var obj = {
 				obj:JSON.parse($window.localStorage.user)
 			}
 			shop.shopInfo(obj).then(function(response){

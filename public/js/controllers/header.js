@@ -29,6 +29,11 @@ angular.module('BarbrDoApp')
       }
     }
 
+    $scope.usertype = function(type) {
+      $scope.user.user_type = type;
+    }
+
+
     $scope.logout = function() {
       $auth.logout();
       delete $window.localStorage.user;

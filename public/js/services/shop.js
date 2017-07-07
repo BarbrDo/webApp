@@ -40,22 +40,10 @@ angular.module('BarbrDoApp')
         }
       },
       shopInfo: function(data) {
-        if(data)
-        {
           return $http({
           method: 'get',
           url: '/api/v1/userprofile/' + data.obj._id
-        });
-        }
-        else
-        {
-          console.log(obj)
-          return $http({
-          method: 'get',
-          url: '/api/v1/userprofile/' + obj._id
-        });
-        }
-          
+        });   
       },
       deleteChair: function(data) {
           console.log(data)

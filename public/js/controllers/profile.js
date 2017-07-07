@@ -6,7 +6,7 @@ angular.module('BarbrDoApp').controller('ProfileCtrl', function($scope, $rootSco
     $scope.imgPath = $window.localStorage.imagePath;
 
     $scope.shop = function() {
-        let obj = {
+        var obj = {
                 obj:JSON.parse($window.localStorage.user)
             }
         shop.shopInfo(obj).then(function(response) {

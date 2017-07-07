@@ -1,32 +1,42 @@
 <div class="crumb"> <span>Shop Profile</span> </div>
-<div class="wrapper">
+<div class="wrapper wrapper_cus">
     <div class="block">
-        <div class="panel">
-            <div class="panel-body">
+        <div class="panel panel_1">
+            <div class="panel-body brdr_btm">
                 <div class="row ">
                     <div class="col-lg-2"></div>
                     <div class="col-lg-8">
-                            <div ng-if="profile.picture">
-                                <img ng-src="{{imgPath + profile.picture}} " class="img-circle" width="304" height="236">
+                            <div ng-if="profile.picture" class="profile_pic">
+                                <div class="profile_inner">
+                                    <img ng-src="{{imgPath + profile.picture}} " class="img-circle" width="304" height="236">
+                                </div>
+                                
                             </div>
                             <div ng-if="!profile.picture">
                                 <img ng-src="images/no-image-found.jpg " class="img-circle" width="304" height="236">
                             </div>
                     </div>
                     <div class="col-lg-2">
+                        
                         <a ui-sref="editShopProfile">
-                            <span align="right" class="glyphicon glyphicon-pencil" style="font-size: 30px;"></span> </a>
+                            <span align="right right_span" class="glyphicon glyphicon-pencil" style="font-size: 20px;float:right;"></span> </a>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-6">
-                        Total Barbers : &nbsp;&nbsp;&nbsp; {{totalbarbers}} </div>
-                    <div class="col-sm-6">
-                         Total Cuts : &nbsp;&nbsp;&nbsp; <a ui-sref="shopGallery">{{profile.ratings.length}} </a> </div>
+                    <div class="col-sm-6 col-xs-6">
+                        <span class="top-head top-head1">
+                        Total Barbers : &nbsp;&nbsp;&nbsp; <a ui-sref="barbershopdashboard"> {{totalbarbers}} </a> 
+                        </span>
+                    </div>
+                    <div class="col-sm-6 col-xs-6">
+                         <span><span class="top-head">
+                        Total Cuts : &nbsp;&nbsp;&nbsp;<span ng-if="profile.ratings.length=='0'">{{profile.ratings.length}}</span><span ng-if="profile.ratings.length!='0'"> <a ui-sref="shopGallery">{{profile.ratings.length}} </a> </span>
+                         <span>
+                    </div>
                 </div>
-                <br>
-                <br>
+                <h4><b> SHOP OWNER </b></h4><br>
                 <table class="table table-striped">
+                   
                     <tr >
                         <td>
                             <h5>First Name </h5></td>
@@ -64,9 +74,11 @@
 </div>
 <div class="wrapper" ng-init="shop()">
     <div class="block">
-        <div class="panel">
+        <div class="panel panel_1">
             <div class="panel-body">
+           <h4><b> SHOP DETAILS </b></h4><br>
                 <table class="table table-striped">
+                
                     <tr>
                         <td>
                             <h5>Shop Name </h5></td>

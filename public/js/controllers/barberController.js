@@ -29,9 +29,9 @@ angular.module('BarbrDoApp')
 			barber.appointment(obj).then(function(response) {
 				$scope.loaderStart = false;
 				$scope.particularAppointment = response.data.data;
-				let price = 0;
-				let sum = 0;
-				let len = response.data.data.customer_id.ratings.length;
+				var price = 0;
+				var sum = 0;
+				var len = response.data.data.customer_id.ratings.length;
 				for (var i = 0; i < len; i++) {
 					sum += response.data.data.customer_id.ratings[i].score
 				}
@@ -180,7 +180,7 @@ angular.module('BarbrDoApp')
 
 
 		$scope.timeReschedule = function(time) {
-            if (time == 15 || time == 30 || time == 45) {
+
                 var myobj = {
                     minutes: time,
                     appointment_id: $stateParams._id,
@@ -189,9 +189,12 @@ angular.module('BarbrDoApp')
                 
                 barber.reschedule(myobj).then(function(response) {
                     toastr.success('Your appointment is successfully rescheduled');
-                })
-            }
-        }
+                    $state.go('barberDashboard');
+                }).catch(function(result) {
+                    console.log(result)
+                });
+       
+        };
 
 
 		$scope.cancelAppointment = function() {

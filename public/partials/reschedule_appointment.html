@@ -10,23 +10,29 @@
       </div>
 
 
-  <div class="block">
+  <div class="block appoint_block">
    <div class="row">
-     <div class="col-sm-2">
+     <div class="col-sm-3 col-md-2 col-xs-4">
+         <div class="contactto">
        To :
+       </div>
      </div>
-     <div class="col-sm-4">
-     <img src="{{imgPath+particularAppointment.customer_id.picture}}" alt=""> 
+     <div class="col-sm-3 col-md-2 col-xs-3">
+         <div class="perimg">
+     <img src="/images/brbr_pic.png" alt=""> 
      </div>
-      <div class="col-sm-6" >
-      <h3 style="color: #1860f0;"> {{particularAppointment.customer_name}} </h2>
+     </div>
+      <div class="col-sm-3 col-md-6 col-xs-5" >
+          <div class="pername">
+      <h3 style="color: #1860f0;"> {{particularAppointment.customer_name}} </h3>
+      </div>
      </div>
    </div>
   </div>
 
 <div class="block higlght">
-    <h2>Can we move appointment back by:</h2>
-    <div class="row" style="margin-top: 50px;">
+    <h2>Move appointment back</h2>
+<!--    <div class="row" style="margin-top: 50px;">
       <div class="col-md-4 col-sm-6">
         <button class="btn btn-primary btn-lg" ng-click="timeReschedule(15)">15 minutes</button>
       </div>
@@ -36,13 +42,33 @@
       <div class="col-md-4 col-sm-6">
         <button class="btn btn-primary btn-lg" ng-click="timeReschedule(45)">45 minutes</button>
       </div>
-      <!-- <div class="col-md-4 col-sm-6">
+       <div class="col-md-4 col-sm-6">
         <p><i class="fa  fa-clock-o"> </i> 9:00 AM</p>
-      </div> -->
-      <!-- <div class="col-md-4"> <a href="#" class="cmbtn">Add to Calendar</a> </div> -->
-    </div>
-    <div>
-      <button ng-click="cancelAppointment()">Cancel Appointment</button>
+      </div> 
+       <div class="col-md-4"> <a href="#" class="cmbtn">Add to Calendar</a> </div> 
+    </div>-->
+<br><br>
+ <div class="row">
+     <div class="col-sm-12">
+     <div class="reschedappoint">
+         <span>Can we move appointment back by </span>
+         <span>  <div class="id_100">
+                                    <select ng-model="mySelect">
+                                        <option value="">00</option>
+                                        <option value="15">15</option>
+                                        <option value="30">30</option>
+                                        <option value="45">45</option>
+                                    </select>
+                                </div> </span>
+         <span>min </span>
+     </div>
+                       
+        <textarea rows="4" cols="70" placeholder="Describe yourself here..." name="comments" class="reschedule_area">
+        </textarea>
+     </div>
+    <div class="reschedule">
+      <button class="bkap" ng-click="timeReschedule(mySelect)">Send</button>
+      <button class="bkap" ng-click="cancelAppointment()">Cancel Appointment</button>
     </div>
   </div>
 </div>

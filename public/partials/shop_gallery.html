@@ -1,11 +1,12 @@
 <div class="crumb"> <span>Gallery</span> </div>
 <div class="wrapper" >
-    <div class="customtab">
+    <div class="customtab" ng-init="showgallery()">
         <!-- Nav tabs -->
-        <uib-tabset active="activeJustified" justified="true" ng-init="showgallery()">
-            <uib-tab index="0" heading="No.of cuts">
+        <uib-tabset active="activeJustified" justified="true" >
+            <uib-tab index="0" heading="Total No.of cuts">
                 <div class="block">
-                    <span ng-if="!ratings"> <h2> No Cuts For This Shop 
+                    <span ng-if="ratings==''"> <h3 align="center"> No Cuts For This Shop</h3></span>
+                    <span ng-if="ratings!=''"> 
                     <div class="all_cuts">
                         <div class="table-responsive">
                             <table class="table table-bordered"  >
@@ -27,6 +28,7 @@
                             </table>
                         </div>
                     </div>
+                    </span>
                 </div>
             </uib-tab>
             <uib-tab index="1" heading="Gallery" >
@@ -61,7 +63,7 @@
         <div class="modal-dialog">
             <!-- Modal content-->
             <div class="modal-content">
-                <div class="modal-header" style="background-color: #c2f7b5;">
+                <div class="modal-header" style="background-color: #395b96;">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">View Image</h4>
                 </div>

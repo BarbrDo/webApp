@@ -100,13 +100,20 @@
                                         {{err[0].msg}}</div>
                                 </div>
                                 <form name="signUpForm">
-                                    <div class="type_selection">
-                                        <label>
-                                            <input type="radio" name="type" ng-model="user.user_type" value="customer" ng-init="user.user_type = 'customer'"> <span>Customer</span> </label>
-                                        <label>
-                                            <input type="radio" name="type" ng-model="user.user_type" value="barber"> <span>Barber</span> </label>
-                                        <label>
-                                            <input type="radio" name="type" ng-model="user.user_type" value="shop"> <span>Barber Shop</span> </label>
+                                    <div class="type_selection" >
+                                        <label name="type" ng-click="usertype('customer')" ng-init="user.user_type = 'customer'" ng-class="{isactive:user.user_type=='customer'}" >
+                                            <img src="/images/p1.png">
+                                            <span>Customer</span> 
+                                        </label>
+                                        <label  name="type" ng-click="usertype('barber')" ng-class="{isactive:user.user_type=='barber'}" >
+                        
+                                            <img src="/images/p2.png">
+                                            <span>Barber</span>
+                                        </label>
+                                        <label name="type" ng-click="usertype('shop')" ng-class="{isactive:user.user_type=='shop'}" >
+                                            <img src="/images/p3.png">
+                                            <span>Barber Shop</span>
+                                            </label>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">

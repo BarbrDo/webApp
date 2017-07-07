@@ -4,25 +4,18 @@ let appointment = require('../models/appointment');
 let user = require('../models/User');
 let shop = require('../models/shop');
 let moment = require('moment');
+let mongoose = require('mongoose');
 
 exports.takeAppointment = function(req, res) {
 	req.assert("shop_id", "shop_id cannot be blank").notEmpty();
-	// req.assert("shop_name", "shop_name cannot be blank").notEmpty();
 	req.assert("barber_id", "barber_id cannot be blank").notEmpty();
-	// req.assert("barber_name", "barber_name cannot be blank").notEmpty();
 	req.checkHeaders("user_id", "user_id cannot be blank").notEmpty();
-	// req.assert("customer_name", "customer_name cannot be blank").notEmpty();
 	req.assert("services", "servies cannot be blank").notEmpty();
 	req.assert("appointment_date", "appointment_date cannot be blank").notEmpty();
-	// req.assert("tax_amount", "tax_amount cannot be blank").notEmpty();
-	// req.assert("tax_percent", "tax_percent cannot be blank").notEmpty();
-	// req.assert("amount", "amount cannot be blank").notEmpty();
-	// req.assert("currency_code", "currency_code cannot be blank").notEmpty();
 	req.assert("payment_method", "payment_method cannot be blank").notEmpty();
 	if (req.body.payment_method == 'card') {
 		req.assert("card_lastfourdigit", "card_lastfourdigit cannot be blank").notEmpty();
 	}
-	// req.assert("payment_status", "payment_status cannot be blank").notEmpty();
 	let errors = req.validationErrors();
 	if (errors) {
 		return res.status(400).send({
@@ -225,36 +218,43 @@ exports.countappoint = function(req, res) {
 		res.json(barber);
 	});
 };
-//Delete this function and use customerAppointments function only for both future and completed booking
 
-/*
-exports.customerCompletedAppointments = function(req, res) {
-	req.assert("customer_id", "Customer id cannot be blank").notEmpty();
-	let errors = req.validationErrors();
-	if (errors) {
-		return res.status(400).send({
-			msg: "error in your request",
-			err: errors
-		});
-	}
-	let currentDate = moment().format("YYYY-MM-DD");
-	appointment.find({
-		"customer_id": req.body.customer_id,
-		"appointment_status": "completed",
-		"appointment_date": {
-			$lt: currentDate
-		}
-	}).populate('barber_id', 'first_name last_name ratings').populate('shop_id', 'name address city state gallery').exec(function(err, result) {
-		if (err) {
-			return res.status(400).send({
-				msg: constantObj.messages.errorRetreivingData
-			});
-		} else {
-			console.log("result", result);
-			return res.status(200).send({
-				msg: constantObj.messages.successRetreivingData,
-				data: result
-			});
-		}
-	})
-}*/
+exports.showEvents = function (req, res) {
+    req.assert('barber_id', 'Barber id is required.').notEmpty();
+    req.assert('date', 'Date is required.').notEmpty();//YYYY-MM-DD
+    
+    
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let barber_id = mongoose.Types.ObjectId(req.query.barber_id);
+    let date = req.query.date;
+    let appointmentStartdate = moment(date, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
+    var appointmentEnddate = moment(date, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
+    console.log(appointmentStartdate,appointmentEnddate,barber_id);
+    appointment.aggregate([
+    {
+        $match:{
+            barber_id:barber_id,
+            appointment_date: {$gte: new Date(appointmentStartdate)},
+            appointment_date: {$lt: new Date(appointmentEnddate)},
+            appointment_status: 'confirm'
+        }
+    }
+    ]).exec(function(err,data){
+        if(err){
+            return res.status(400).send({
+            msg: constantObj.messages.errorRetreivingData
+        });
+        }else{
+            return res.status(200).send({
+                msg: constantObj.messages.successRetreivingData,
+                data: data
+            });
+        }
+    })
+}

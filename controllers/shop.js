@@ -794,7 +794,8 @@ exports.getDataForBookNowPage = function(req, res) {
 }
 
 exports.shopContainsChairs = function(req, res) {
-    req.checkParams('shop_id', 'Shop id is required').notEmpty();
+    req.checkHeaders('user_id', 'Shop id is required.').notEmpty();
+    let shop_user_id = mongoose.Types.ObjectId(req.headers.user_id);
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -802,10 +803,61 @@ exports.shopContainsChairs = function(req, res) {
             err: errors
         });
     }
-    console.log(req.params.shop_id);
-    shop.findOne({
-        _id: req.params.shop_id
-    }).exec(function(err, result) {
+    console.log(shop_user_id);
+    shop.aggregate([
+        {
+            $match:{
+                user_id:shop_user_id
+            }
+        },
+        {
+            $unwind:"$chairs"
+        },
+        {
+            $lookup:{
+                    from: "users",
+                    localField: "chairs.barber_id",
+                    foreignField: "_id",
+                    as: "barberInformation"
+            }
+        },
+        {
+            $project:{
+                _id:1,
+                user_id:1,
+                license_number:1,
+                ratings : 1,
+                latLong: 1,
+                state:1,
+                city:1,
+                zip:1,
+                address:1,
+                name:1,
+                chairs:1,
+                chairs: {
+                    isActive:1,
+                    _id :1,
+                    availability :1,
+                    name: 1,
+                    shop_percentage:1,
+                    type:1,
+                    barber_percentage:1,
+                    booking_start:1,
+                    booking_end:1,
+                    amount:1,
+                    barber_id:1,
+                    barber:"$barberInformation"
+                }
+            }
+        },
+        {
+            $group:{
+                    _id:"$_id",
+                    chairs:{$push:"$chairs"}
+
+            }
+        }]).exec(function(err, result) {
+            console.log(result);
         if (err) {
             return res.status(400).send({
                 msg: "error in your request",

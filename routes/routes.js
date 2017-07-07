@@ -53,6 +53,7 @@ module.exports = function(app, express) {
     //app.get('/auth/google/callback', userController.authGoogleCallback);
     app.post('/reset/:token', userController.resetPost);
     app.post('/api/v1/checkFaceBook', userController.checkFaceBook);    
+    
     //Shops
     app.get('/api/v1/allshops',shopController.listshops); // All shops registered in system
     app.get('/api/v1/shops', shopController.allShops); // List barber associated shops only
@@ -67,7 +68,8 @@ module.exports = function(app, express) {
     app.put('/api/v1/shops/postchairtoallbarbers',shopController.postChairToAllBarbers);
     app.get('/api/v1/shops/chair/:shop_id',shopController.shopContainsChairs);
     app.put('/api/v1/shops/markchairasbooked/:chair_id',shopController.markChairAsBooked);
-    app.put('/api/v1/shops/acceptrequest',chairRequestController.acceptRequest); 
+    app.put('/api/v1/shops/acceptrequest',chairRequestController.acceptRequest);
+    app.get('/api/v1/shops/event',appointmentController.showEvents);
     
     //Customer
     app.get('/api/v1/allcustomers',customerController.listcustomers);

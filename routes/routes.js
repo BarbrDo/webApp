@@ -112,10 +112,11 @@ module.exports = function(app, express) {
     app.get('/api/v1/shops/barbers/:shop_id/:barber_id',shopController.getDataForBookNowPage)
 
     // Stripe Implementation API
-    //app.get('/api/v1/plans', userController.featuringPlans);
+    app.get('/api/v1/stripe/plans', userController.featuringPlans);
     //app.post('/api/v1/subscribe',userController.subscribe);
-    app.post('/api/v1/createCharges',userController.createCharges);
-    app.post('/api/v1/webhooks',userController.stripeWebhook);
+    app.post('/api/v1/stripe/createPlan',userController.createPlan);
+    app.post('/api/v1/stripe/createCharges',userController.createCharges);
+    app.post('/api/v1/stripe/webhooks',userController.stripeWebhook);
     
     //Need to delete in sprint-8
     app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber/shop requesting chair to shop

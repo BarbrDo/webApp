@@ -84,7 +84,7 @@ exports.addBarberServices = function(req, res) {
     var barber_id = objectID.isValid(req.headers.user_id)
     if (barber_id) {
         barber_service(saveData).save(function(err, data) {
-            console.log(data);
+
             if (err) {
                 res.status(400).send({
                     msg: constantObj.messages.errorInSave,

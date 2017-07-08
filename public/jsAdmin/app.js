@@ -169,7 +169,6 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     .state('plans', {
         url: '/plans',
         controller: "planCtrl",
-        controllerAs: 'vm',
         templateUrl: "/modalsAdmin/adminHTml/views/stripe_plans.html"
     })
 

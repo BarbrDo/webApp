@@ -300,6 +300,12 @@ angular.module('barbrdo').factory('Admin', function($http) {
     },
     createPlan:function (data) {
       return $http.post('/api/v1/stripe/createPlan', data)
+    },
+    updatePlan:function (data) {
+      return $http.put('/api/v1/stripe/updatePlan', data)
+    },
+    deletePlan:function (data) {
+      return $http.put('/api/v1/stripe/deletePlan', data)
     }
   };
 });

@@ -269,6 +269,7 @@ angular.module('BarbrDoApp')
 		$scope.addservice = function(service,price) {
 			if(price) {
 				var obj={
+				barber_service_id: service._id,
 				name : service.name,
 				price: price
 			}

@@ -15,6 +15,8 @@
         <div class="row">
           <!-- By shop -->
           <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat = "result in shopChairs">
+          <span ng-if="!result"> No Chairs are there</span>
+          <span ng-if="result">
             <div class="shop"> <img class="shopimage" src="images/shop.png" alt="" >
               <div class="above">
                 <div class="dtll shpdtl">
@@ -28,6 +30,7 @@
                 <a ui-sref="shopChairs({_id:result._id._id})" class="byshop" >{{result._id.name}}<i class="fa  fa-angle-right"></i> </a> </div>
             </div>
           </div>
+          </span>
         </div>
       </div>
     </div>

@@ -175,6 +175,12 @@ angular.module('BarbrDoApp')
             'user_id': data.user_id
           }
         }, data);
+      },
+      allServices: function(data) {
+        return $http.get('/api/v1/barber/services');
+      },
+      barberServices: function(data) {
+        return $http.get('/api/v1/barber/services/'+obj._id);
       }
     }
   });

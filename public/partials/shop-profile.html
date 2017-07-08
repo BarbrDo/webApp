@@ -3,7 +3,7 @@
     <div class="block">
         <div class="panel panel_1">
             <div class="panel-body brdr_btm">
-                <div class="row ">
+                <div class="row">
                     <div class="col-lg-2"></div>
                     <div class="col-lg-8">
                             <div ng-if="profile.picture" class="profile_pic">
@@ -25,13 +25,16 @@
                 <div class="row">
                     <div class="col-sm-6 col-xs-6">
                         <span class="top-head top-head1">
-                        Total Barbers : &nbsp;&nbsp;&nbsp; <a ui-sref="barbershopdashboard"> {{totalbarbers}} </a> 
+                        <a >  </a> 
+                        </span>
+                        <span class="top-head top-head1">
+                         Total Barbers : &nbsp;&nbsp;&nbsp; <span ng-if="totalbarbers=='0'">{{totalbarbers}} </span><span ng-if="totalbarbers!='0'"> <a ui-sref="barbershopdashboard" > {{totalbarbers}} </a> </span>
                         </span>
                     </div>
                     <div class="col-sm-6 col-xs-6">
-                         <span><span class="top-head">
+                        <span class="top-head">
                         Total Cuts : &nbsp;&nbsp;&nbsp;<span ng-if="profile.ratings.length=='0'">{{profile.ratings.length}}</span><span ng-if="profile.ratings.length!='0'"> <a ui-sref="shopGallery">{{profile.ratings.length}} </a> </span>
-                         <span>
+                         </span>
                     </div>
                 </div>
                 <h4><b> SHOP OWNER </b></h4><br>

@@ -937,6 +937,37 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 }]
             }
         })
+        
+        .state('requestorgallery', {
+            url: '/barberGallery/:id',
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/requestor_gallery.html',
+                    controller: "shopCtrl"
+                },
+               "header": {
+                    templateUrl: 'partials/barber_shop_header.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/barbershopSideBar.html'
+                }
+            },
+           resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/shopController.js',
+                            'js/services/shop.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
+            }
+        })
 
         .state('shopGallery', {
             url: '/shop/gallery',

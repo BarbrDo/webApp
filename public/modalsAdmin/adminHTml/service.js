@@ -6,8 +6,6 @@ angular.module('barbrdo').factory('Admin', function($http) {
       } else {
         return $http.get('/api/v1/allbarbers?page=' + data.page + '&count=' + data.count);
       }
-
-
     },
     shopsAll: function(data) {
       if (data.search) {

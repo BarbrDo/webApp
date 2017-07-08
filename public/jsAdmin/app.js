@@ -172,6 +172,12 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
         templateUrl: "/modalsAdmin/adminHTml/views/stripe_plans.html"
     })
 
+    .state('payments', {
+        url: '/payments',
+        controller: "paymentCtrl",
+        templateUrl: "/modalsAdmin/adminHTml/views/stripe_payment.html"
+    })
+
 });
 
 app_admin.config(function(ChartJsProvider) {

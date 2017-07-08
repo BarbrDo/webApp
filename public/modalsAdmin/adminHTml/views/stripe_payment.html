@@ -1,0 +1,60 @@
+<div ng-controller="planCtrl as vm">
+    <div ng-if="vm.loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+        <li class="breadcrumb-item active">Payment</li>
+    </ol>
+    <div class="panel" ng-init="pageChanged()">
+        <div class="panel-heading">
+            All Payments
+        </div>
+        <div class="panel-body" ng-init="vm.allPlans()">
+            <!-- RAHUL  CODE -->
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-6" style="margin-left: 300px;">
+                        </div>
+                        <div>
+                            <!-- <button type="button" class="btn btn-default" ng-click="vm.open('open','add')('lg')">Add Plan</button> -->
+                            <!-- <input ng-model="myobj.search" placeholder="Search for..." ng-change="pageChanged()" /> -->
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="font-size: 13px;" width="20%"><a ng-click="Sort('created_date')" class="created_date" style="color: #ffffff;">Customer Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                                <th style="font-size: 13px;" width="20%"><a ng-click="Sort('created_date')" class="created_date" style="color: #ffffff;">Barber Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                                <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">Appointment Date<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                                <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">Total Price<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                                <th style="font-size: 13px;"><a ng-click="Sort('name[0]')" class="name" style="color: #ffffff;">Payment Method<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                                <th style="font-size: 13px;"><a ng-click="Sort('name[0]')" class="name" style="color: #ffffff;">Appointment Status<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                                <th style="font-size: 13px;"><a ng-click="Sort('name[0]')" class="name" style="color: #ffffff;">Payment Status<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="results in vm.plans.data.data">
+                                <td>{{results.name}}</td>
+                                <td>{{results.statement_descriptor}}</td>
+                                <td>{{results.interval_count}}</td>
+                                <td>{{results.interval}}</td>
+                                <td>{{results.currency}}</td>
+                                <td><i class="fa fa-pencil-square-o" aria-hidden="true" style="cursor:pointer;" ng-click="vm.edit(results,'update')"></i></td>
+                                <td><i class="fa fa-trash" aria-hidden="true" style="cursor:pointer;" ng-click="vm.del(results)"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <!-- <div class="col-sm-6">
+                        <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="pageChanged()"></ul>
+                    </div> -->
+                    <br>
+                </div>
+                <!-- Modal -->
+            </div>
+        </div>
+    </div>
+</div>

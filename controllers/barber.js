@@ -1223,19 +1223,19 @@ exports.createEvents = function(req, res) {
     obj.startsAt = commonObj.removeOffset(req.body.startsAt);
     obj.endsAt = commonObj.removeOffset(req.body.endsAt);
 
-    console.log("obj.startsAt,obj.endsAt",obj.startsAt,obj.endsAt);
+    console.log("obj.startsAt,obj.endsAt", obj.startsAt, obj.endsAt);
 
-    if(req.body.color){
+    if (req.body.color) {
         obj.color = req.body.color
     }
     obj.resizable = true;
     obj.draggable = true;
-    console.log("obj",obj);
+    console.log("obj", obj);
     barber.update({
         user_id: req.headers.user_id
     }, {
         $push: {
-            events:obj
+            events: obj
         }
     }).exec(function(err, update) {
         if (err) {
@@ -1273,30 +1273,35 @@ exports.getEvents = function(req, res) {
     })
 }
 
-exports.getEventOnDate = function (req, res) {
+exports.getEventOnDate = function(req, res) {
     var event_Date = req.params.date;
     var eventStartdate = moment(event_Date, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
     var eventEnddate = moment(event_Date, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
     var barber_id = mongoose.Types.ObjectId(req.headers.user_id);
     console.log(eventStartdate, eventEnddate, barber_id);
-    barber.aggregate([
-        {$match:
-                    {"user_id": barber_id}
-        },
-        {$unwind: "$events"},
-        {$match:
-                    {
-                        "events.startsAt": {$gte: new Date(eventStartdate)},
-                        "events.endsAt": {$lt: new Date(eventEnddate)}
-                    }
-        },
-        {$group:
-                    {
-                        "_id": "$_id",
-                        "events": {$push: "$events"},
-                    }
+    barber.aggregate([{
+        $match: {
+            "user_id": barber_id
         }
-    ]).exec(function (err, barberEvents) {
+    }, {
+        $unwind: "$events"
+    }, {
+        $match: {
+            "events.startsAt": {
+                $gte: new Date(eventStartdate)
+            },
+            "events.endsAt": {
+                $lt: new Date(eventEnddate)
+            }
+        }
+    }, {
+        $group: {
+            "_id": "$_id",
+            "events": {
+                $push: "$events"
+            },
+        }
+    }]).exec(function(err, barberEvents) {
         if (err) {
             res.status(400).send({
                 msg: 'Error in Finding this user.',
@@ -1304,53 +1309,237 @@ exports.getEventOnDate = function (req, res) {
             });
         } else {
             appointment.find({
-                "barber_id": {
-                    $exists: true,
-                    $eq: req.headers.user_id
-                },
-                "appointment_date": {
-                    $gte: eventStartdate,
-                    $lt: eventEnddate
-                }
-
-            }).sort({
-                'created_date': -1
-            }).populate('barber_id', 'first_name last_name ratings picture')
-            .populate('customer_id', 'first_name last_name ratings picture')
-            .populate('shop_id', 'name address city state gallery latLong')
-            .exec(function (err, result) {
-                if (err) {
-                    return res.status(400).send({
-                        msg: constantObj.messages.errorRetreivingData
-                    });
-                } else {
-                    let bookedAppointments = [];
-                    for (var i = 0; i < result.length; i++) {
-                        if (result[i].appointment_status == 'confirm') {
-                            bookedAppointments.push(result[i])
-                        }
+                    "barber_id": {
+                        $exists: true,
+                        $eq: req.headers.user_id
+                    },
+                    "appointment_date": {
+                        $gte: eventStartdate,
+                        $lt: eventEnddate
                     }
 
-                    if (barberEvents.length > 0) {
-                        return res.status(200).send({
-                            msg: constantObj.messages.successRetreivingData,
-                            data: {
-                                "appointments": bookedAppointments,
-                                "events": barberEvents[0].events
-                            }
+                }).sort({
+                    'created_date': -1
+                }).populate('barber_id', 'first_name last_name ratings picture')
+                .populate('customer_id', 'first_name last_name ratings picture')
+                .populate('shop_id', 'name address city state gallery latLong')
+                .exec(function(err, result) {
+                    if (err) {
+                        return res.status(400).send({
+                            msg: constantObj.messages.errorRetreivingData
                         });
                     } else {
-                        var events = [];
-                        return res.status(200).send({
-                            msg: constantObj.messages.successRetreivingData,
-                            data: {
-                                "appointments": bookedAppointments,
-                                "events": events
+                        let bookedAppointments = [];
+                        for (var i = 0; i < result.length; i++) {
+                            if (result[i].appointment_status == 'confirm') {
+                                bookedAppointments.push(result[i])
                             }
-                        });
+                        }
+
+                        if (barberEvents.length > 0) {
+                            return res.status(200).send({
+                                msg: constantObj.messages.successRetreivingData,
+                                data: {
+                                    "appointments": bookedAppointments,
+                                    "events": barberEvents[0].events
+                                }
+                            });
+                        } else {
+                            var events = [];
+                            return res.status(200).send({
+                                msg: constantObj.messages.successRetreivingData,
+                                data: {
+                                    "appointments": bookedAppointments,
+                                    "events": events
+                                }
+                            });
+                        }
                     }
-                }
-            })
+                })
         }
     })
 }
+exports.getBarber = function(id, cb) {
+    console.log(id);
+    user.findOne({
+        _id: id
+    }, function(err, result) {
+        cb(null, result);
+    })
+}
+exports.getBarberDetail = function(id, cb) {
+    Barber.findOne({
+        user_id: id
+    }, function(err, result) {
+        cb(null, result);
+    })
+}
+exports.getBarberEvents = function(id, cb) {
+    Barber.findOne({
+        user_id: id
+    }, {
+        events: 1
+    }, function(err, result) {
+        cb(null, result);
+    })
+}
+exports.getBarberEventsOnDay = function(id, date) {
+    Barber.findOne({
+        user_id: id
+    }, {
+        events: 1
+    }, function(err, result) {
+        return result
+    })
+}
+exports.getBarberEventsOnDates = function(id, startDate, EndDate) {
+    Barber.findOne({
+        user_id: id
+    }, {
+        events: 1
+    }, function(err, result) {
+        return result
+    })
+}
+exports.getBarberSubscription = function(id) {
+    Barber.findOne({
+        user_id: id
+    }, {
+        events: 1
+    }, function(err, result) {
+        return result
+    })
+}
+exports.getBarberAppointments = function(id) {
+    appointment.findOne({
+        barber_id: id
+    }, function(err, result) {
+        return result
+    })
+}
+exports.getBarberAppointmentsOnDates = function(id, startDate, endDate,cb) {
+    let barber_id = mongoose.Types.ObjectId(id);
+    let appointmentStartdate =new Date(moment(startDate, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+    let appointmentEnddate = new Date(moment(endDate, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+    appointment.findOne({
+        barber_id: barber_id,
+        appointment_date:{$gte:appointmentStartdate,$lt:appointmentEnddate}
+    }, function(err, result) {
+       if (err) {
+            cb(err, null);
+        } else {
+            cb(null, result)
+        }
+    })
+}
+exports.getBarberAppointmentsOnDay = function(id, date) {
+    appointment.findOne({
+        barber_id: id
+    }, function(err, result) {
+        return result
+    })
+}
+exports.getBarberTotalSale = function(id,cb) {
+    let barber_id = mongoose.Types.ObjectId(id);
+    appointment.aggregate([{
+        $match: {
+            barber_id: barber_id,
+            "appointment_status": "completed"
+        }
+    }, {
+        $unwind: "$services"
+    }, {
+        $group: {
+            "_id": "$_id",
+            "barber_id": {
+                "$first": "$barber_id"
+            },
+            "price": {
+                "$sum": "$services.price"
+            }
+        }
+    }, {
+        $group: {
+            "_id": "$barber_id",
+            "total_sale": {
+                $sum: "$price"
+            }
+        }
+    }]).exec(function(err, result) {
+        if (err) {
+            cb(err, null);
+        } else {
+            cb(null, result)
+        }
+    })
+}
+exports.getBarberTotalSaleOnDates = function(id, startDate, EndDate,cb) {
+    let barber_id = mongoose.Types.ObjectId(id);
+    let appointmentStartdate = new Date(moment(startDate, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+    let appointmentEnddate = new Date(moment(EndDate, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+    appointment.aggregate([{
+        $match: {
+            barber_id: barber_id,
+            "appointment_status": "completed"
+        }
+    }, {
+        $unwind: "$services"
+    }, {
+        $match: {
+            appointment_date: {
+                $gte: appointmentStartdate,
+                $lt: appointmentEnddate
+            }
+        }
+    }, {
+        $group: {
+            "_id": "$_id",
+            "barber_id": {
+                "$first": "$barber_id"
+            },
+            "price": {
+                "$sum": "$services.price"
+            }
+        }
+    }, {
+        $group: {
+            "_id": "$barber_id",
+            "total_sale": {
+                $sum: "$price"
+            }
+        }
+    }]).exec(function(err, result) {
+        if (err) {
+            cb(err, null);
+        } else {
+            cb(null, result)
+        }
+    })
+}
+// aggregate([{
+//         $match: {
+//             barber_id: ObjectId("595dde4472847e58cbbe490b"),
+//             "appointment_status": "completed"
+//         }
+//     }, {
+//         $unwind: "$services"
+//     },{
+//         $match: {
+//             appointment_date: {
+//                 $gte: ISODate("2017-07-07T00:00:00.000Z"),
+//                 $lt: ISODate("2017-07-11T00:00:00.000Z")
+//             }
+//         }
+//     },{
+//        $project:{
+//            barber_id:1,
+//            payment_method:1,
+//            services:1,
+//            appointment_Date:{ $dateToString: { format: "%Y-%m-%d", date: "$appointment_date" } }
+//           } 
+//       },{
+//         $group:{"_id":"$appointment_Date",
+//         "services":{"$push":"$services"}
+//         }
+//       }
+//     ])

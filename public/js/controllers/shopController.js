@@ -36,13 +36,15 @@
 
 		$scope.requesterdetails = function() {
 			$scope.loaderStart = true;
+			console.log($stateParams.id)
 				shop.barberDetail($stateParams.id)
 					.then(function(response) {
 						console.log(response)
 						$scope.loaderStart = false;
 						$rootScope.requester = response.data.data[0];
+						$rootScope.gallery = response.data.data[0].gallery;
+						$rootScope.ratings = response.data.data[0].ratings;
 					}).catch (function(result) {
-                            console.log(result)
                            toastr.error('Errorregh3');
                         })
 
@@ -81,6 +83,11 @@
 			}
 			shop.shopInfo(obj).then(function(response){
 				$scope.chairs = response.data.user;
+				if(response.data.user.shop[0].chairs.length==0)
+				{
+					console.log("jgbjkg")
+				}
+				console.log(response.data.user.shop[0].chairs.length)
 				$window.localStorage.shop_id = response.data.user.shop[0]._id;
 			})
 		}

@@ -79,6 +79,18 @@ angular.module('BarbrDoApp')
         });
     };
 
+    if ($state.current.name == 'manageservices' || $state.current.name == 'addservice') {
+      shop.barberServices().then(function(response) {
+        $scope.barberservices = response.data.data.length
+        console.log( "barbe",response.data.data.length)
+      });
+      shop.allServices().then(function(response) {
+        $scope.servicesData = response.data.data.length
+        console.log("admin", response.data.data.length)
+      })
+      
+    }
+
     $scope.login = function() {
       $scope.coords = geolocation.getLocation().then(function(data) {
         $window.localStorage.lat = data.coords.latitude;

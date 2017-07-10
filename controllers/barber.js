@@ -84,7 +84,7 @@ exports.addBarberServices = function(req, res) {
     var barber_id = objectID.isValid(req.headers.user_id)
     if (barber_id) {
         barber_service(saveData).save(function(err, data) {
-            console.log(data);
+
             if (err) {
                 res.status(400).send({
                     msg: constantObj.messages.errorInSave,
@@ -120,9 +120,15 @@ exports.editBarberServices = function(req, res) {
         _id: req.params.barber_service_id
     }, {
         $set: {
-            "price": req.body.price
+            "price": req.body.price,
+            "is_deleted": false,
+            "name":req.body.name,
+            "service_id":req.params.barber_service_id,
+            "barber_id":req.headers.user_id,
+            "created_date": new Date(),
+            "modified_date": new Date()
         }
-    }, function(err, result) {
+    },{upsert:true}, function(err, result) {
         if (err) {
             res.status(400).send({
                 msg: constantObj.messages.userStatusUpdateFailure
@@ -869,7 +875,8 @@ exports.barberdetail = function(req, res) {
             latLong: "$latLong",
             picture: "$picture",
             name: "$shopdetails.name",
-            shop: "$shopdetails"
+            shop: "$shopdetails",
+            gallery: "$gallery"
         }
     }, {
         $match: query

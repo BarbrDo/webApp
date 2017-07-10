@@ -4,14 +4,14 @@
   <div class="block">
     <h2>Manage Service</h2>
     <div class="row">
-      <div class="col-md-6" ng-repeat = "service in servicesData" ng-show="service.isDeleted==false">
+      <div class="col-md-6" ng-repeat = "service in barberservices" >
         <div class="serve">
           <p >{{service.name}} </p>
           <p data-ng-hide="editMode">$ {{service.price}}</p><input type="text" data-ng-show="editMode" ng-model="service.price" placeholder="price" style="color: #000000;" />
           <div> 
           <a href="#" data-ng-hide="editMode" data-ng-click="editMode = true"> <i class="fa  fa-edit " style="color: #000000;"></i> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
           <a href="#"  data-ng-click="deleteservice(service)" data-ng-hide="editMode"> <i class="fa  fa-trash " style="color: #000000;"></i> </a>
-          <a  href="#" data-ng-show="editMode" data-ng-click="editMode = false;editservices(service)"  data-toggle="tooltip" title="Save"><i class="fa fa-floppy-o" aria-hidden="true" style="color: #000000;"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <a  href="#" data-ng-show="editMode" data-ng-click="editMode = false;editservices(service._id,service.price,service.name)"  data-toggle="tooltip" title="Save"><i class="fa fa-floppy-o" aria-hidden="true" style="color: #000000;"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="#" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" data-toggle="tooltip" title="Cancel"><i class="fa fa-ban" aria-hidden="true" style="color: #000000;"></i></a> </div>
         </div>
       </div>

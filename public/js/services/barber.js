@@ -107,6 +107,7 @@ angular.module('BarbrDoApp')
         })
       },
       editService: function(data) {
+        console.log("data",data)
          return $http({
           method: 'put',
           url: '/api/v1/barber/services/'+data._id,
@@ -127,6 +128,9 @@ angular.module('BarbrDoApp')
         })
       },
       allServices: function(data) {
+        return $http.get('/api/v1/barber/services');
+      },
+      barberServices: function(data) {
         return $http.get('/api/v1/barber/services/'+obj._id);
       }
       }

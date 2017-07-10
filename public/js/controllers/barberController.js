@@ -11,6 +11,7 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.pendingComplete = response.data.data;
+					console.log(response)
 				});
 		}
 		$scope.markers = [];
@@ -29,6 +30,7 @@ angular.module('BarbrDoApp')
 			barber.appointment(obj).then(function(response) {
 				$scope.loaderStart = false;
 				$scope.particularAppointment = response.data.data;
+				console.log(response.data.data)
 				var price = 0;
 				var sum = 0;
 				var len = response.data.data.customer_id.ratings.length;
@@ -252,14 +254,22 @@ angular.module('BarbrDoApp')
 
 		if ($state.current.name == 'manageservices' || $state.current.name == 'addservice') {
 			$scope.loaderStart = true;
+			barber.barberServices().then(function(response) {
+				$scope.loaderStart = false;
+				$scope.barberservices = response.data.data
+				console.log("barvber",response.data.data)
+			});
 			barber.allServices().then(function(response) {
 				$scope.loaderStart = false;
 				$scope.servicesData = response.data.data
+				console.log("all admin",response.data.data)
 			})
 		}
+
 		$scope.addservice = function(service,price) {
 			if(price) {
 				var obj={
+				barber_service_id: service._id,
 				name : service.name,
 				price: price
 			}
@@ -277,8 +287,13 @@ angular.module('BarbrDoApp')
 			
 		}
 
-		$scope.editservices = function(service) {
-			barber.editService(service).then(function(response) {
+		$scope.editservices = function(service_id,price,name) {
+			var obj={
+				_id : service_id,
+				price: price,
+				name:name
+			}
+			barber.editService(obj).then(function(response) {
 			toastr.success("Service Edited Successfully");
 			})
 		}

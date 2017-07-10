@@ -1,4 +1,4 @@
-"use strict";
+    "use strict";
 
 var app_admin = angular.module('barbrdo', ['ui.router', 'ui.bootstrap', 'angularModalService', 'rzModule', "chart.js", 'alexjoffroy.angular-loaders', 'ngMask','toastr']);
 

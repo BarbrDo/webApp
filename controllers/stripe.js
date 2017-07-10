@@ -195,36 +195,36 @@ exports.deletePlan = function(req, res) {
   )
 }
 
-exports.getInformation = function (req,res) {
-	let barberId = "595dde4472847e58cbbe490b"
-	let startDate = "2017-07-07";
-	let endDate = "2017-07-10"
-	async.parallel({
-    one: function(parallelCb) {
-        barberFile.getBarber(barberId,function (err,result) {
-        	parallelCb(null,result)
-        });
-    },
-    two: function(parallelCb) {
-        barberFile.getBarberAppointmentsOnDates(barberId,startDate,endDate,function (err,result) {
-        	parallelCb(null,result)
-        });
-    },
-    three: function(parallelCb) {
-        barberFile.getBarberTotalSale(barberId,function (err,result) {
-        	parallelCb(null,result)
-        });
-    },
-    four: function(parallelCb) {
-        barberFile.getBarberTotalSaleOnDates(barberId,startDate,endDate,function (err,result) {
-        	parallelCb(null,result)
-        });
-    }
-}, function(err, results) {
-    // results will have the results of all 3
-    console.log("barberProfile",results.one);
-    console.log("Appointments between dates",results.two);
-    console.log("Total sale",results.three);
-    console.log("Total sale b/w dates",results.four);
-});
-}
+// exports.getInformation = function (req,res) {
+// 	let barberId = "595dde4472847e58cbbe490b"
+// 	let startDate = "2017-07-07";
+// 	let endDate = "2017-07-10"
+// 	async.parallel({
+//     one: function(parallelCb) {
+//         barberFile.getBarber(barberId,function (err,result) {
+//         	parallelCb(null,result)
+//         });
+//     },
+//     two: function(parallelCb) {
+//         barberFile.getBarberAppointmentsOnDates(barberId,startDate,endDate,function (err,result) {
+//         	parallelCb(null,result)
+//         });
+//     },
+//     three: function(parallelCb) {
+//         barberFile.getBarberTotalSale(barberId,function (err,result) {
+//         	parallelCb(null,result)
+//         });
+//     },
+//     four: function(parallelCb) {
+//         barberFile.getBarberTotalSaleOnDates(barberId,startDate,endDate,function (err,result) {
+//         	parallelCb(null,result)
+//         });
+//     }
+// }, function(err, results) {
+//     // results will have the results of all 3
+//     console.log("barberProfile",results.one);
+//     console.log("Appointments between dates",results.two);
+//     console.log("Total sale",results.three);
+//     console.log("Total sale b/w dates",results.four);
+// });
+// }

@@ -219,42 +219,136 @@ exports.countappoint = function(req, res) {
 	});
 };
 
-exports.showEvents = function (req, res) {
-    req.assert('barber_id', 'Barber id is required.').notEmpty();
-    req.assert('date', 'Date is required.').notEmpty();//YYYY-MM-DD
-    
-    
-    let errors = req.validationErrors();
-    if (errors) {
-        return res.status(400).send({
-            msg: "error in your request",
-            err: errors
-        });
-    }
-    let barber_id = mongoose.Types.ObjectId(req.query.barber_id);
-    let date = req.query.date;
-    let appointmentStartdate = moment(date, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
-    var appointmentEnddate = moment(date, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
-    console.log(appointmentStartdate,appointmentEnddate,barber_id);
-    appointment.aggregate([
-    {
-        $match:{
-            barber_id:barber_id,
-            appointment_date: {$gte: new Date(appointmentStartdate)},
-            appointment_date: {$lt: new Date(appointmentEnddate)},
-            appointment_status: 'confirm'
-        }
-    }
-    ]).exec(function(err,data){
-        if(err){
-            return res.status(400).send({
-            msg: constantObj.messages.errorRetreivingData
-        });
-        }else{
-            return res.status(200).send({
-                msg: constantObj.messages.successRetreivingData,
-                data: data
-            });
-        }
-    })
+exports.showEvents = function(req, res) {
+	req.assert('barber_id', 'Barber id is required.').notEmpty();
+	req.assert('date', 'Date is required.').notEmpty(); //YYYY-MM-DD
+
+
+	let errors = req.validationErrors();
+	if (errors) {
+		return res.status(400).send({
+			msg: "error in your request",
+			err: errors
+		});
+	}
+	let barber_id = mongoose.Types.ObjectId(req.query.barber_id);
+	let date = req.query.date;
+	let appointmentStartdate = moment(date, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
+	var appointmentEnddate = moment(date, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
+	console.log(appointmentStartdate, appointmentEnddate, barber_id);
+	appointment.aggregate([{
+		$match: {
+			barber_id: barber_id,
+			appointment_date: {
+				$gte: new Date(appointmentStartdate)
+			},
+			appointment_date: {
+				$lt: new Date(appointmentEnddate)
+			},
+			appointment_status: 'confirm'
+		}
+	}]).exec(function(err, data) {
+		if (err) {
+			return res.status(400).send({
+				msg: constantObj.messages.errorRetreivingData
+			});
+		} else {
+			return res.status(200).send({
+				msg: constantObj.messages.successRetreivingData,
+				data: data
+			});
+		}
+	})
+}
+exports.allPayments = function(req, res) {
+
+	appointment.aggregate([{
+		$unwind: "$services"
+	}, {
+		$group: {
+			_id: "$_id",
+			"appointment_date": {
+				"$first": "$appointment_date"
+			},
+			"barber_id": {
+				"$first": "$barber_id"
+			},
+			"payment_method": {
+				"$first": "$payment_method"
+			},
+			"shop_id": {
+				"$first": "$shop_id"
+			},
+			"customer_id": {
+				"$first": "$customer_id"
+			},
+			"payment_status": {
+				"$first": "$payment_status"
+			},
+			"appointment_status": {
+				"$first": "$appointment_status"
+			},
+			"totalAmount": {
+				"$sum": "$services.price"
+			}
+		}
+	},{
+		$lookup: {
+			from: 'shops',
+			localField: 'shop_id',
+			foreignField: '_id',
+			as: 'shopInfo'
+		}
+	}, {
+		$lookup: {
+			from: 'users',
+			localField: 'barber_id',
+			foreignField: '_id',
+			as: 'barberInfo'
+		}
+	}, {
+		$lookup: {
+			from: 'users',
+			localField: 'customer_id',
+			foreignField: '_id',
+			as: 'customerInfo'
+		}
+	}, {
+		$project: {
+			_id: 1,
+			appointment_date: 1,
+			payment_method: 1,
+			barberInfo: {
+				_id: 1,
+				first_name: 1,
+				last_name: 1,
+				picture: 1
+			},
+			shopInfo: {
+				_id: 1,
+				name: 1,
+			},
+			customerInfo: {
+				_id: 1,
+				first_name: 1,
+				last_name: 1,
+				picture: 1
+			},
+			totalAmount:1,
+			payment_status: 1,
+			appointment_status: 1,
+
+		}
+	}]).exec(function(err,result) {
+		if (err) {
+			return res.status(400).send({
+				msg: constantObj.messages.errorRetreivingData
+			});
+		} else {
+			return res.status(200).send({
+				msg: constantObj.messages.successRetreivingData,
+				data: result
+			});
+		}
+	})
 }

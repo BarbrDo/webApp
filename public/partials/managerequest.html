@@ -4,6 +4,8 @@
   <div class="block" >
     <h2>Shops are requesting your services</h2>
     <div class="all_cuts">
+    <span ng-if="shoprequest==''"><h3 align="center"> No requests could be found </h3></span>
+    <span ng-if="shoprequest!=''">
       <div class="table-responsive">
         <table class="table table-bordered">
           <tr>
@@ -23,6 +25,7 @@
           </tr>
         </table>
       </div>
+      </span>
     </div>
   </div>
 </div>

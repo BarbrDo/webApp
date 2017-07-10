@@ -128,14 +128,14 @@ angular.module('BarbrDoApp')
         return $http({
           method: 'put',
           url: '/api/v1/shops/acceptrequest',
+          headers: {
+            'user_id': obj._id
+          },
           data: {
             chair_request_id: data._id,
             request_type: 'accept'
-          },
-          headers: {
-            'user_id': obj._id
           }
-        });
+        })
       },
       declineRequest: function(data) {
         return $http({

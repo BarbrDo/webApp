@@ -8,11 +8,16 @@
     <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat = "barber in barbers">
       <div class="barber toshop">
         <div class="cont">
-          <div class="user_pic"> <img src="/images/brbr_pic.png" alt="" ui-sref="requester-details({id:barber._id})"></div>
+          <div class="user_pic"> 
+              <span ng-if="profile.picture">
+                <img ng-src="{{imgPath + barber.picture}} "  ui-sref="requester-details({id:barber._id})">
+              </span>
+              <span ng-if="!profile.picture">
+                <img ng-src="images/no-image-found.jpg " class="profile " width="100 " height="100 ">
+          </div>
           <h3>{{barber.first_name}} {{barber.last_name}}</h3>
-          <p >Email : <span>{{barber.email}}</span></p>
+          <p >Location : <span>{{barber.location}}</span></p>
           <p >Member Since : <span>{{barber.created_date | date: dd/mm/yyyy}}</span></p>
-          <p >Mobile Number : <span>{{barber.mobile_number}}</span> </p>
           <p> Rating : <span> <img src="images/rating.png" alt="" > </span> </p>
         </div>
          <a class="book_nw" href="#" ng-click="requestbarber(barber)"> Request <i class="fa fa-paper-plane"></i> </a>

@@ -803,7 +803,6 @@ exports.shopContainsChairs = function(req, res) {
             err: errors
         });
     }
-    console.log(shop_user_id);
     shop.aggregate([
         {
             $match:{
@@ -853,7 +852,15 @@ exports.shopContainsChairs = function(req, res) {
         {
             $group:{
                     _id:"$_id",
-                    chairs:{$push:"$chairs"}
+                    chairs:{$push:"$chairs"},
+                    name:{$first:"$name"},
+                    license_number:{$first:"$license_number"},
+                    ratings:{$first:"$ratings"},
+                    latLong:{$first:"$latLong"},
+                    state:{$first:"$state"},
+                    city:{$first:"$city"},
+                    zip:{$first:"$zip"},
+                    address:{$first:"$address"}
 
             }
         }]).exec(function(err, result) {

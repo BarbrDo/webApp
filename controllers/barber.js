@@ -68,7 +68,6 @@ exports.getAllServices = function(req, res) {
 }
 
 exports.addBarberServices = function(req, res) {
-    console.log(req.body);
     req.checkHeaders("user_id", "user_id is required").notEmpty();
     req.assert("name", "name is required").notEmpty();
     req.assert("price", "price is required").notEmpty();
@@ -79,24 +78,44 @@ exports.addBarberServices = function(req, res) {
             err: errors
         });
     }
+
     var saveData = req.body;
     saveData.barber_id = req.headers.user_id;
     var barber_id = objectID.isValid(req.headers.user_id)
     if (barber_id) {
-        barber_service(saveData).save(function(err, data) {
-
+        barber_service.find({
+            "barber_id": req.headers.user_id,
+            "service_id": req.body.service_id
+        }, function(err, data) {
             if (err) {
                 res.status(400).send({
-                    msg: constantObj.messages.errorInSave,
-                    "err": err
+                    msg: constantObj.messages.errorRetreivingData,
+                    err: err
                 });
             } else {
-                res.status(200).send({
-                    msg: constantObj.messages.saveSuccessfully,
-                    "data": data
-                });
+                console.log("len of data is",data.length)
+                if (data.length==0) {
+                    barber_service(saveData).save(function(err, data) {
+                        if (err) {
+                            res.status(400).send({
+                                msg: constantObj.messages.errorInSave,
+                                "err": err
+                            });
+                        } else {
+                            res.status(200).send({
+                                msg: constantObj.messages.saveSuccessfully,
+                                "data": data
+                            });
+                        }
+                    })
+                } else {
+                    res.status(400).send({
+                        msg: 'Service already added'
+                    });
+                }
             }
         })
+
     } else {
         res.status(400).send({
             msg: 'Your input is wrong.'
@@ -115,20 +134,13 @@ exports.editBarberServices = function(req, res) {
             err: req.validationErrors()
         })
     }
-
     barber_service.update({
-        _id: req.params.barber_service_id
+        service_id: req.params.barber_service_id
     }, {
         $set: {
             "price": req.body.price,
-            "is_deleted": false,
-            "name":req.body.name,
-            "service_id":req.params.barber_service_id,
-            "barber_id":req.headers.user_id,
-            "created_date": new Date(),
-            "modified_date": new Date()
         }
-    },{upsert:true}, function(err, result) {
+    }, function(err, result) {
         if (err) {
             res.status(400).send({
                 msg: constantObj.messages.userStatusUpdateFailure
@@ -1230,19 +1242,19 @@ exports.createEvents = function(req, res) {
     obj.startsAt = commonObj.removeOffset(req.body.startsAt);
     obj.endsAt = commonObj.removeOffset(req.body.endsAt);
 
-    console.log("obj.startsAt,obj.endsAt",obj.startsAt,obj.endsAt);
+    console.log("obj.startsAt,obj.endsAt", obj.startsAt, obj.endsAt);
 
-    if(req.body.color){
+    if (req.body.color) {
         obj.color = req.body.color
     }
     obj.resizable = true;
     obj.draggable = true;
-    console.log("obj",obj);
+    console.log("obj", obj);
     barber.update({
         user_id: req.headers.user_id
     }, {
         $push: {
-            events:obj
+            events: obj
         }
     }).exec(function(err, update) {
         if (err) {
@@ -1280,30 +1292,35 @@ exports.getEvents = function(req, res) {
     })
 }
 
-exports.getEventOnDate = function (req, res) {
+exports.getEventOnDate = function(req, res) {
     var event_Date = req.params.date;
     var eventStartdate = moment(event_Date, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
     var eventEnddate = moment(event_Date, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
     var barber_id = mongoose.Types.ObjectId(req.headers.user_id);
     console.log(eventStartdate, eventEnddate, barber_id);
-    barber.aggregate([
-        {$match:
-                    {"user_id": barber_id}
-        },
-        {$unwind: "$events"},
-        {$match:
-                    {
-                        "events.startsAt": {$gte: new Date(eventStartdate)},
-                        "events.endsAt": {$lt: new Date(eventEnddate)}
-                    }
-        },
-        {$group:
-                    {
-                        "_id": "$_id",
-                        "events": {$push: "$events"},
-                    }
+    barber.aggregate([{
+        $match: {
+            "user_id": barber_id
         }
-    ]).exec(function (err, barberEvents) {
+    }, {
+        $unwind: "$events"
+    }, {
+        $match: {
+            "events.startsAt": {
+                $gte: new Date(eventStartdate)
+            },
+            "events.endsAt": {
+                $lt: new Date(eventEnddate)
+            }
+        }
+    }, {
+        $group: {
+            "_id": "$_id",
+            "events": {
+                $push: "$events"
+            },
+        }
+    }]).exec(function(err, barberEvents) {
         if (err) {
             res.status(400).send({
                 msg: 'Error in Finding this user.',
@@ -1311,53 +1328,53 @@ exports.getEventOnDate = function (req, res) {
             });
         } else {
             appointment.find({
-                "barber_id": {
-                    $exists: true,
-                    $eq: req.headers.user_id
-                },
-                "appointment_date": {
-                    $gte: eventStartdate,
-                    $lt: eventEnddate
-                }
-
-            }).sort({
-                'created_date': -1
-            }).populate('barber_id', 'first_name last_name ratings picture')
-            .populate('customer_id', 'first_name last_name ratings picture')
-            .populate('shop_id', 'name address city state gallery latLong')
-            .exec(function (err, result) {
-                if (err) {
-                    return res.status(400).send({
-                        msg: constantObj.messages.errorRetreivingData
-                    });
-                } else {
-                    let bookedAppointments = [];
-                    for (var i = 0; i < result.length; i++) {
-                        if (result[i].appointment_status == 'confirm') {
-                            bookedAppointments.push(result[i])
-                        }
+                    "barber_id": {
+                        $exists: true,
+                        $eq: req.headers.user_id
+                    },
+                    "appointment_date": {
+                        $gte: eventStartdate,
+                        $lt: eventEnddate
                     }
 
-                    if (barberEvents.length > 0) {
-                        return res.status(200).send({
-                            msg: constantObj.messages.successRetreivingData,
-                            data: {
-                                "appointments": bookedAppointments,
-                                "events": barberEvents[0].events
-                            }
+                }).sort({
+                    'created_date': -1
+                }).populate('barber_id', 'first_name last_name ratings picture')
+                .populate('customer_id', 'first_name last_name ratings picture')
+                .populate('shop_id', 'name address city state gallery latLong')
+                .exec(function(err, result) {
+                    if (err) {
+                        return res.status(400).send({
+                            msg: constantObj.messages.errorRetreivingData
                         });
                     } else {
-                        var events = [];
-                        return res.status(200).send({
-                            msg: constantObj.messages.successRetreivingData,
-                            data: {
-                                "appointments": bookedAppointments,
-                                "events": events
+                        let bookedAppointments = [];
+                        for (var i = 0; i < result.length; i++) {
+                            if (result[i].appointment_status == 'confirm') {
+                                bookedAppointments.push(result[i])
                             }
-                        });
+                        }
+
+                        if (barberEvents.length > 0) {
+                            return res.status(200).send({
+                                msg: constantObj.messages.successRetreivingData,
+                                data: {
+                                    "appointments": bookedAppointments,
+                                    "events": barberEvents[0].events
+                                }
+                            });
+                        } else {
+                            var events = [];
+                            return res.status(200).send({
+                                msg: constantObj.messages.successRetreivingData,
+                                data: {
+                                    "appointments": bookedAppointments,
+                                    "events": events
+                                }
+                            });
+                        }
                     }
-                }
-            })
+                })
         }
     })
 }

@@ -81,7 +81,9 @@ exports.requestChair = function (req, res) {
                                     futureMonth = futureMonth.add(1, 'd');
                                 }
                                 //var bookDate = moment(req.body.booking_date);
-
+                                console.log(req.body.shop_id)
+                                console.log(req.body.chair_id)
+                                
                                 // This will validate that you can't add boooking more then one month
                                 if (moment(req.body.booking_date) < futureMonth && moment(req.body.booking_date) >= currentDate) {
                                     shop.findOne({
@@ -90,7 +92,7 @@ exports.requestChair = function (req, res) {
                                     }, {
                                         "chairs.$": 1
                                     }).exec(function (shopErr, shopResult) {
-
+                                        console.log("this is shopResult",shopResult)
                                         if (shopResult != null && shopResult.chairs[0].availability == 'available') {
                                             saveData.shop_id = req.body.shop_id;
                                             saveData.chair_id = req.body.chair_id;
@@ -413,6 +415,7 @@ exports.acceptRequest = function (req, res) {
                     as: "barberInformation"
                 }
             }]).exec(function (err, result) {
+                console.log("this is result",result)
             if (err) {
                 return res.status(400).send({
                     msg: "error in finding",
@@ -424,8 +427,6 @@ exports.acceptRequest = function (req, res) {
                         'msg': "Data for this chair request is not present."
                     })
                 }
-
-
                 let book_date = moment().format("YYYY-MM-DD");
 
                 if (result[0].booking_date) {

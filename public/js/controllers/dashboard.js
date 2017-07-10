@@ -166,6 +166,7 @@ angular.module('BarbrDoApp')
 					customer.fetchAppointments().then(function(response) {
 						$scope.loaderStart = false;
 						$scope.data = response.data;
+						console.log(response)
 						$defer.resolve($scope.data);
 					})
 				}

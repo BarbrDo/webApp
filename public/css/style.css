@@ -176,6 +176,8 @@ font-family: 'Oswald', sans-serif;
     font-size: 27px;
     border-radius: 0
 }
+
+
 .red-btn:hover, .red-btn:focus {
     background-color: #000;
     color: #fff
@@ -861,7 +863,7 @@ font-size: 24px
     width: 100%;
 }
 .type_selection label {
-    width: 32%;
+    width: 30%;
     text-align: center;
     font-family: 'Titillium Web', sans-serif;
     font-size: 20px;
@@ -870,6 +872,7 @@ font-size: 24px
     border-radius: 4px;
     padding: 4px;
     cursor: pointer;
+    margin-right: 9px;
 }
 .type_selection label span {
     float: left;
@@ -882,7 +885,65 @@ font-size: 24px
 
 }
 
+.selected_barber.chairdet {
+padding: 10px;
+min-height: auto;
+}
 
+.selected_barber.chairdet h3{
+margin: 0;
+float: left;
+font-size: 25px;
+}
+
+.selected_barber.chairdet h2 {
+float: left;
+width: auto;
+margin: 5px 20px;
+border: none;
+padding-bottom: 0px;
+}
+
+.block.higlght.appointbooked {
+margin-top: 15px;
+}
+
+.appointbooked p {
+    padding: 10px 0 0 ;
+}
+
+.appointbooked p span {
+    display: block;
+}
+
+.imagechair{
+    text-align: center;
+}
+
+.details p {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.details p span {
+    font-weight: normal;
+    font-size: 10px;
+}
+
+.servicename {
+    float: left;
+    font-size: 18px;
+}
+
+.servicename span {
+    font-size: 18px;
+    padding: 0 10px;
+}
+
+.map {
+    float: left;
+    width: 100%;
+}
 
 .modal-backdrop.in {
     opacity: 0.9;
@@ -1624,6 +1685,16 @@ td.action {
     
 }
 
+.editservice {
+    float: right;
+
+}
+
+.editservice i.fa {
+    font-size: 20px;
+    color: #fff;
+}
+
 .serve { border-radius: 3px; float: left; margin: 10px 0 12px; width:100%; background: #6892FE; color: #fff; padding: 10px; position:relative;}
 
 
@@ -1631,7 +1702,6 @@ td.action {
 .serve p{ font-size:18px;  }
 
 
-.serve p span{ float: right; font-size:22px; }
 
 
 .serve .option{  background: #6892FE none repeat scroll 0 0;
@@ -2121,6 +2191,7 @@ ul.csdwon li a {
 .contactto:after, .contactto:before{display: none;}
 .perimg,.pername{text-align: center;padding-bottom: 10px;}
 .reschedule button{padding: 5px 15px;font-size: 18px;}
+
 }
 
 @media(max-width:360px) {
@@ -2313,6 +2384,7 @@ ul.csdwon li a {
   margin: 0 auto;
   width: 400px;
 }
+
 form#payment-form button.subscribe.btn,.suscription_tab div.panel-footer a.btn {
   background: hsl(357, 73%, 47%) none repeat scroll 0 0;
   border-color: #ce2029;

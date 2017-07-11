@@ -8,14 +8,13 @@
         <div class="selected_barber chairdet">
             <img src="images/clndr.png" alt="">
             <div class="namertng">
-               <h3> Request For </h3>
                 <h2>{{selectedDate | date:'EEEE'}},{{selectedDate |  date:'MMMM dd'}} </h2>
             </div>
             
         </div>
     </div>
     <div class="block higlght appointbooked">
-        <h2>Appointment Booked At</h2>
+        <h2>Barber Shop Address</h2>
         <div class="row">
             <div class="col-md-4 col-sm-6">
                 <p> 
@@ -30,7 +29,7 @@
             <!-- <div class="col-md-4"> <a href="#" class="cmbtn">Add to Calendar</a> </div> -->
         </div>
     </div>
-    <div class="block higlght">
+    <div class="block higlght appointbooked">
         <h2>Chair Details </h2>
         <div class="row">
             <div class="col-md-2">
@@ -38,15 +37,15 @@
             </div>
             <div class="col-md-10">
                 <div class="details">
-                    <p>  Name : <span> {{chair.name}}</span> </p>
-                    <p ng-if="chair.type=='percentage'">  Split : <span> {{chair.shop_percentage}} / {{chair.barber_percentage}} </span> </p>
+                    <p>  <span> {{chair.name}}</span> </p><br>
+                    <p ng-if="chair.type=='percentage'"> Split :<span> {{chair.shop_percentage}} / {{chair.barber_percentage}} </span> </p>
                     <p ng-if="chair.type=='monthly' || chair.type=='weekly'">  Amount  : <span> {{chair.amount}} </span> </p>
                 </div>
             </div>
         </div>
     </div>
     
-    <div class="perform_action">
+    <div >
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <button class="subtn" data-toggle="modal" data-target="#contactshop" ><i class="fa fa-envelope"></i> Contact Shop</button>

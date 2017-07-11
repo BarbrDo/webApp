@@ -16,11 +16,13 @@ let mg = require('nodemailer-mailgun-transport');
  * 
  */
 exports.requestChair = function (req, res) {
-    console.log(req.body)
-    req.checkHeaders("user_id", "User is is required.").notEmpty();
+    console.log(req.body);  
+    req.checkHeaders("user_id", "User id is required.").notEmpty();
     req.assert("chair_id", "Chair Id is required.").notEmpty();
     req.assert("shop_id", "Shop Id is required.").notEmpty();
     req.assert("barber_id", "Barber Id is required.").notEmpty();
+    req.assert("booking_date", "Booking Date is required.").notEmpty();
+    req.assert("user_type", "User type is required.").notEmpty();
     var errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -28,9 +30,18 @@ exports.requestChair = function (req, res) {
             err: errors
         });
     }
+    let barber_id = req.body.barber_id;
+    //let barber_name = req.body.barber_name;
+    let user_type = req.body.user_type;
+    let shop_id = req.body.shop_id;
+    let chair_id = req.body.chair_id;
+    //let chair_name = req.body.chair_name;
+    //let chair_type = req.body.chair_type;
+    //let chair_amount = req.body.chair_amount;
+    //let shop_percentage = req.body.shop_percentage;
+    //let barber_percentage = req.body.barber_percentage;
     let book_Date = req.body.booking_date;
     let bookDate = moment(book_Date, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
-
     console.log("bookDate", bookDate);
 
     checkBarberBookings(req.body.barber_id, bookDate, function (err, data) {
@@ -55,140 +66,197 @@ exports.requestChair = function (req, res) {
                             data: resultCheck
                         });
                     }
-
                     var saveData = {};
-                    user.findOne({
-                        _id: req.headers.user_id
-                    }, function (err, data) {
-                        if (data) {
-                            if (data.user_type == 'barber') {
-                                req.assert("shop_id", "Shop Id is required.").notEmpty();
-                                req.assert("booking_date", "Booking Date is required.").notEmpty();
-                                var errors = req.validationErrors();
-                                if (errors) {
-                                    return res.status(400).send({
-                                        msg: "error in your request",
-                                        err: errors
-                                    });
-                                }
+                    // to check booking date is Under one month or not
+                    var currentDate = moment().format("YYYY-MM-DD");
+                    currentDate = moment(currentDate);
+                    var futureMonth = moment(currentDate).add(1, 'M');
+                    var futureMonthEnd = moment(futureMonth).endOf('month');
+                    if (currentDate.date() != futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
+                        futureMonth = futureMonth.add(1, 'd');
+                    }
 
-                                // to check booking date is Under one month or not
-                                var currentDate = moment().format("YYYY-MM-DD");
-                                currentDate = moment(currentDate)
-                                var futureMonth = moment(currentDate).add(1, 'M');
-                                var futureMonthEnd = moment(futureMonth).endOf('month');
-                                if (currentDate.date() != futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
-                                    futureMonth = futureMonth.add(1, 'd');
+                    // This will validate that you can't add boooking more then one month
+                    if (moment(req.body.booking_date) < futureMonth && moment(req.body.booking_date) >= currentDate) {
+                        shop.findOne({
+                            "_id": shop_id,
+                            "chairs._id": chair_id
+                        }, {
+                            "chairs.$": 1
+                        }).exec(function (shopErr, shopResult) {
+                            if (shopResult != null && shopResult.chairs[0].availability == 'available') {
+                                saveData.shop_id = shop_id;
+                                saveData.chair_id = chair_id;
+                                saveData.chair_type = shopResult.chairs[0].type
+                                if (shopResult.chairs[0].type == 'weekly' || shopResult.chairs[0].type == 'monthly') {
+                                    saveData.amount = shopResult.chairs[0].amount
                                 }
-                                //var bookDate = moment(req.body.booking_date);
-                                console.log(req.body.shop_id)
-                                console.log(req.body.chair_id)
-                                
-                                // This will validate that you can't add boooking more then one month
-                                if (moment(req.body.booking_date) < futureMonth && moment(req.body.booking_date) >= currentDate) {
-                                    shop.findOne({
-                                        "_id": req.body.shop_id,
-                                        "chairs._id": req.body.chair_id
-                                    }, {
-                                        "chairs.$": 1
-                                    }).exec(function (shopErr, shopResult) {
-                                        console.log("this is shopResult",shopResult)
-                                        if (shopResult != null && shopResult.chairs[0].availability == 'available') {
-                                            saveData.shop_id = req.body.shop_id;
-                                            saveData.chair_id = req.body.chair_id;
-                                            saveData.chair_type = shopResult.chairs[0].type
-                                            if (shopResult.chairs[0].type == 'weekly' || shopResult.chairs[0].type == 'monthly') {
-                                                saveData.amount = shopResult.chairs[0].amount
-                                            }
-                                            if (shopResult.chairs[0].type == 'percentage') {
-                                                saveData.shop_percentage = shopResult.chairs[0].shop_percentage
-                                                saveData.barber_percentage = shopResult.chairs[0].barber_percentage
-                                            }
-                                            saveData.requested_by = data.user_type
-                                            saveData.barber_id = req.headers.user_id
-                                            saveData.booking_date = bookDate
-                                            saveData.status = "pending";
-                                            chairRequest(saveData).save(function (err, result) {
-                                                if (err) {
-                                                    return res.status(400).send({
-                                                        msg: constantObj.messages.errorInSave
-                                                    })
-                                                } else {
-                                                    mailChairRequest(data.email)
-                                                    res.status(200).send({
-                                                        msg: "Your request for shop is successfully registered.",
-                                                        data: result
-                                                    });
-                                                }
-                                            })
-                                        } else {
-                                            res.status(400).send({
-                                                msg: "Booking not available at the moment."
-                                            });
-                                        }
-                                    })
-                                } else {
-                                    res.status(400).send({
-                                        msg: "You cannot add Booking for more than one month or less then current date."
-                                    })
+                                if (shopResult.chairs[0].type == 'percentage') {
+                                    saveData.shop_percentage = shopResult.chairs[0].shop_percentage
+                                    saveData.barber_percentage = shopResult.chairs[0].barber_percentage
                                 }
-                            } else if (data.user_type == 'shop') {
-                                req.assert("barber_id", "Barber Id is required.").notEmpty();
-                                var errors = req.validationErrors();
-                                if (errors) {
-                                    return res.status(400).send({
-                                        msg: "error in your request",
-                                        err: errors
-                                    });
-                                }
-                                shop.findOne({
-                                    "_id": req.body.shop_id,
-                                    "chairs._id": req.body.chair_id
-                                }, {
-                                    "chairs.$": 1
-                                }).exec(function (shopErr, result) {
-                                    saveData = req.body;
-                                    if (result != null && result.chairs[0].availability == 'available') {
-
-                                        if (result.chairs[0].type == 'weekly' || result.chairs[0].type == 'monthly') {
-                                            saveData.amount = result.chairs[0].amount
-                                        }
-                                        if (result.chairs[0].type == 'percentage') {
-                                            saveData.shop_percentage = result.chairs[0].shop_percentage
-                                            saveData.barber_percentage = result.chairs[0].barber_percentage
-                                        }
-                                        saveData.chair_type = result.chairs[0].type;
-                                        saveData.shop_id = req.headers.user_id
-                                        saveData.requested_by = data.user_type
-                                        saveData.status = "pending";
-                                        chairRequest(saveData).save(function (err, shop) {
-                                            if (err) {
-                                                return res.status(400).send({
-                                                    msg: constantObj.messages.errorInSave
-                                                })
-                                            } else {
-                                                mailChairRequest(data.email)
-                                                res.status(200).send({
-                                                    msg: "Your request for shop is successfully registered.",
-                                                    data: shop
-                                                });
-                                            }
+                                saveData.requested_by = user_type
+                                saveData.barber_id = barber_id
+                                saveData.booking_date = bookDate
+                                saveData.status = "pending";
+                                chairRequest(saveData).save(function (err, result) {
+                                    if (err) {
+                                        return res.status(400).send({
+                                            msg: constantObj.messages.errorInSave
                                         })
-
                                     } else {
-                                        res.status(400).send({
-                                            msg: "Booking not available at the moment."
+                                        mailChairRequest(data.email)
+                                        res.status(200).send({
+                                            msg: "Your request for shop is successfully registered.",
+                                            data: result
                                         });
                                     }
+                                })
+                            } else {
+                                res.status(400).send({
+                                    msg: "Booking not available at the moment."
                                 });
                             }
-                        } else {
-                            res.status(400).send({
-                                msg: "User is not present.",
-                                data: data
-                            });
-                        }
-                    })
+                        })
+                    } else {
+                        res.status(400).send({
+                            msg: "You cannot add Booking for more than one month or less then current date."
+                        })
+                    }
+                    
+//                    user.findOne({
+//                        _id: req.headers.user_id
+//                    }, function (err, data) {
+//                        if (data) {
+//                            if (data.user_type == 'barber') {
+//                                req.assert("shop_id", "Shop Id is required.").notEmpty();
+//                                req.assert("booking_date", "Booking Date is required.").notEmpty();
+//                                var errors = req.validationErrors();
+//                                if (errors) {
+//                                    return res.status(400).send({
+//                                        msg: "error in your request",
+//                                        err: errors
+//                                    });
+//                                }
+
+//                                // to check booking date is Under one month or not
+//                                var currentDate = moment().format("YYYY-MM-DD");
+//                                currentDate = moment(currentDate)
+//                                var futureMonth = moment(currentDate).add(1, 'M');
+//                                var futureMonthEnd = moment(futureMonth).endOf('month');
+//                                if (currentDate.date() != futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
+//                                    futureMonth = futureMonth.add(1, 'd');
+//                                }
+//                                //var bookDate = moment(req.body.booking_date);
+//                                console.log(req.body.shop_id)
+//                                console.log(req.body.chair_id)
+//                                
+//                                // This will validate that you can't add boooking more then one month
+//                                if (moment(req.body.booking_date) < futureMonth && moment(req.body.booking_date) >= currentDate) {
+//                                    shop.findOne({
+//                                        "_id": req.body.shop_id,
+//                                        "chairs._id": req.body.chair_id
+//                                    }, {
+//                                        "chairs.$": 1
+//                                    }).exec(function (shopErr, shopResult) {
+//                                        console.log("this is shopResult",shopResult)
+//                                        if (shopResult != null && shopResult.chairs[0].availability == 'available') {
+//                                            saveData.shop_id = req.body.shop_id;
+//                                            saveData.chair_id = req.body.chair_id;
+//                                            saveData.chair_type = shopResult.chairs[0].type
+//                                            if (shopResult.chairs[0].type == 'weekly' || shopResult.chairs[0].type == 'monthly') {
+//                                                saveData.amount = shopResult.chairs[0].amount
+//                                            }
+//                                            if (shopResult.chairs[0].type == 'percentage') {
+//                                                saveData.shop_percentage = shopResult.chairs[0].shop_percentage
+//                                                saveData.barber_percentage = shopResult.chairs[0].barber_percentage
+//                                            }
+//                                            saveData.requested_by = data.user_type
+//                                            saveData.barber_id = req.headers.user_id
+//                                            saveData.booking_date = bookDate
+//                                            saveData.status = "pending";
+//                                            chairRequest(saveData).save(function (err, result) {
+//                                                if (err) {
+//                                                    return res.status(400).send({
+//                                                        msg: constantObj.messages.errorInSave
+//                                                    })
+//                                                } else {
+//                                                    mailChairRequest(data.email)
+//                                                    res.status(200).send({
+//                                                        msg: "Your request for shop is successfully registered.",
+//                                                        data: result
+//                                                    });
+//                                                }
+//                                            })
+//                                        } else {
+//                                            res.status(400).send({
+//                                                msg: "Booking not available at the moment."
+//                                            });
+//                                        }
+//                                    })
+//                                } else {
+//                                    res.status(400).send({
+//                                        msg: "You cannot add Booking for more than one month or less then current date."
+//                                    })
+//                                }
+//                            } 
+//                            else if (data.user_type == 'shop') {
+//                                req.assert("barber_id", "Barber Id is required.").notEmpty();
+//                                var errors = req.validationErrors();
+//                                if (errors) {
+//                                    return res.status(400).send({
+//                                        msg: "error in your request",
+//                                        err: errors
+//                                    });
+//                                }
+//                                shop.findOne({
+//                                    "_id": req.body.shop_id,
+//                                    "chairs._id": req.body.chair_id
+//                                }, {
+//                                    "chairs.$": 1
+//                                }).exec(function (shopErr, result) {
+//                                    saveData = req.body;
+//                                    if (result != null && result.chairs[0].availability == 'available') {
+//
+//                                        if (result.chairs[0].type == 'weekly' || result.chairs[0].type == 'monthly') {
+//                                            saveData.amount = result.chairs[0].amount
+//                                        }
+//                                        if (result.chairs[0].type == 'percentage') {
+//                                            saveData.shop_percentage = result.chairs[0].shop_percentage
+//                                            saveData.barber_percentage = result.chairs[0].barber_percentage
+//                                        }
+//                                        saveData.chair_type = result.chairs[0].type;
+//                                        saveData.shop_id = req.headers.user_id
+//                                        saveData.requested_by = data.user_type
+//                                        saveData.status = "pending";
+//                                        chairRequest(saveData).save(function (err, shop) {
+//                                            if (err) {
+//                                                return res.status(400).send({
+//                                                    msg: constantObj.messages.errorInSave
+//                                                })
+//                                            } else {
+//                                                mailChairRequest(data.email)
+//                                                res.status(200).send({
+//                                                    msg: "Your request for shop is successfully registered.",
+//                                                    data: shop
+//                                                });
+//                                            }
+//                                        })
+//
+//                                    } else {
+//                                        res.status(400).send({
+//                                            msg: "Booking not available at the moment."
+//                                        });
+//                                    }
+//                                });
+//                            }
+//                        } else {
+//                            res.status(400).send({
+//                                msg: "User is not present.",
+//                                data: data
+//                            });
+//                        }
+//                    })
                 }
             })
         }
@@ -246,7 +314,7 @@ exports.barberChairReqests = function (req, res) {
     chairRequest.aggregate([{
             $match: {
                 shop_id: shop_id,
-                requested_by: "barber",
+                //requested_by: "barber",
                 status: "pending"
             }
         }, {
@@ -272,6 +340,7 @@ exports.barberChairReqests = function (req, res) {
                 _id: 1,
                 booking_date: 1,
                 status: 1,
+                requested_by:1,
                 barberInfo: {
                     _id: 1,
                     first_name: 1,
@@ -322,7 +391,7 @@ exports.shopChairRequest = function (req, res) {
     chairRequest.aggregate([{
             $match: {
                 'barber_id': barber_id,
-                "requested_by": "shop",
+                //"requested_by": "shop",
                 "status": "pending"
             }
         }, {
@@ -348,6 +417,7 @@ exports.shopChairRequest = function (req, res) {
                 _id: 1,
                 booking_date: 1,
                 status: 1,
+                requested_by:1,
                 barberInfo: {
                     _id: 1,
                     first_name: 1,

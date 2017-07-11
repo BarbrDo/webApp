@@ -131,16 +131,18 @@ angular.module('BarbrDoApp')
 			$rootScope.chair = chair;
 
 		}
-		$scope.requestChair = function(shopid) {
-			console.log($scope.chairId)
+		$scope.requestChair = function(shopid,userType) {
+			console.log($rootScope)
 			if ($scope.chairId) {
 				$scope.loaderStart = true;
 				var passObj = {
 					shop_id: shopid,
 					chair_id: $scope.chairId,
 					barber_id: objj._id,
-					barber_name: objj.first_name,
-					booking_date: $rootScope.selectedDate
+					barber_name: objj.first_name+' '+objj.last_name,
+					booking_date: $rootScope.selectedDate,
+                                        chair_type:$rootScope.chair.type,
+                                        user_type:userType
 				}
 
 				barber.requestChair(passObj).then(function(response) {

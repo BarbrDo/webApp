@@ -106,7 +106,7 @@ angular.module('BarbrDoApp')
           data: data
         });
       },
-      requestBarber: function(shopid, chairid, barber) {
+      requestBarber: function(shopid, chairid, barber,user_type) {
         return $http({
           method: 'post',
           url: '/api/v1/requestchair',
@@ -117,7 +117,8 @@ angular.module('BarbrDoApp')
             barber_id: barber._id,
             chair_id: chairid,
             shop_id: shopid,
-            booking_date: "2017-07-20"
+            booking_date: new Date(),
+            user_type:user_type   
           }
         })
       },

@@ -57,9 +57,9 @@
 
 
 		$scope.requestbarber = function(barber) {
-				shop.requestBarber($window.localStorage.shop_id,$stateParams.id,barber)
+				shop.requestBarber($window.localStorage.shop_id,$stateParams.id,barber,'shop')
 					.then(function(response) {
-						toastr.success('Request is Sended to the barber successfully ! Check Your Mail');
+						toastr.success('Request is Sended to the barber successfully!');
 						$state.go('chairaction', { id: $stateParams.id,name: $stateParams.name});					
 					}).catch(function(result) {
 						toastr.error(result.data.msg);

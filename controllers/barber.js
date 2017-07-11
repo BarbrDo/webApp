@@ -996,7 +996,7 @@ exports.viewBarberAvailability = function (req, res) {
     let endDate = moment(currentDate, "YYYY-MM-DD").add(1, 'days').format("YYYY-MM-DD[T]HH:mm:ss.SSS");
     appointment.find({
         barber_id: req.params.barber_id,
-        appointment_status: 'confirm',
+        appointment_status:{$ne:'cancel',$ne:'completed'},
         appointment_date: {
             $gte: new Date(currentDate).toISOString(),
             $lte: endDate + 'Z'

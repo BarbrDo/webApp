@@ -1,31 +1,42 @@
 
 <div class="crumb"> <span>Book Appointment</span> </div>
 <div class="wrapper" ng-init="managerequests()">
-  <div class="block" >
-    <h2>Shops are requesting your services</h2>
-    <div class="all_cuts">
-    <span ng-if="shoprequest==''"><h3 align="center"> No requests could be found </h3></span>
-    <span ng-if="shoprequest!=''">
-      <div class="table-responsive">
-        <table class="table table-bordered">
-          <tr>
-            <th>Picture</th>
-            <th>Shop Name</th>
-            <th>Chair Split</th>
-            <th>Date</th>
-            <th class="action">Action</th>
-          </tr>
-          <tr ng-repeat="requests in shoprequest">
-            <td> <span class="lspic"> <img src="images/shop.jpg" alt=""> </span> </td>
-            <td>{{requests.shopChairInfo.name}}</td>
-            <td> <span ng-if="requests.shopChairInfo.chairs.type=='percentage'">{{requests.shopChairInfo.chairs.shop_percentage}}/{{requests.shopChairInfo.chairs.barber_percentage}}</span>
-                  <span ng-if="requests.shopChairInfo.chairs.type!='percentage'">{{requests.shopChairInfo.chairs.amount}}</td>
-            <td>{{requests.booking_date | date : dd/mm }} @ {{requests.booking_date | date : 'h:mma' }}</td>
-            <td class="ac_btn"> <a href="#" class="" tooltip-placement="top" uib-tooltip="View" ui-sref="shoprequester({id:requests.shopChairInfo.user_id})"> <i class="fa fa-eye "></i> </a> <a href="#" class="" tooltip-placement="top" uib-tooltip="Accept" ng-click="acceptrequest(requests)"> <i class="fa fa-check "></i> </a> <a href="#" class="" tooltip-placement="top" uib-tooltip="Reject" style="background-color: #fd3b3b;" ng-click="rejectrequest(requests)"> <i class="fa fa-close"></i> </a> </td>
-          </tr>
-        </table>
-      </div>
-      </span>
+    <div class="block" >
+        <h2>Shops are requesting your services</h2>
+        <div class="all_cuts">
+            <span ng-if="shoprequest == ''"><h3 align="center"> No requests could be found </h3></span>
+            <span ng-if="shoprequest != ''">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Picture</th>
+                            <th>Shop Name</th>
+                            <th>Chair</th>
+                            <th>Chair amount/split</th>
+                            <th>Date</th>
+                            <th class="action">Action</th>
+                        </tr>
+                        <tr ng-repeat="requests in shoprequest">
+                            <td> <span class="lspic"> <img src="images/shop.jpg" alt=""> </span> </td>
+                            <td>{{requests.shopChairInfo.name}}</td>
+                            <td>{{requests.shopChairInfo.chairs.name}}</td>
+                            <td> <span ng-if="requests.shopChairInfo.chairs.type == 'percentage'">{{requests.shopChairInfo.chairs.shop_percentage}}/{{requests.shopChairInfo.chairs.barber_percentage}}</span>
+                                <span ng-if="requests.shopChairInfo.chairs.type != 'percentage'">{{requests.shopChairInfo.chairs.amount}}</td>
+                            <td>{{requests.booking_date| date : dd/mm }} @ {{requests.booking_date| date : 'h:mma' }}</td>
+                            <td ng-if="requests.requested_by == 'barber'" class="ac_btn"> 
+                                Pending<br>
+                                <a href="#" class="" tooltip-placement="top" uib-tooltip="View" ui-sref="shoprequester({id:requests.shopChairInfo.user_id})"> <i class="fa fa-eye "></i> </a> 
+                                <!--<a href="#" class="" tooltip-placement="top" uib-tooltip="Reject" style="background-color: #fd3b3b;" ng-click="rejectrequest(requests)"> <i class="fa fa-close"></i> </a>--> 
+                            </td>
+                            <td ng-if="requests.requested_by == 'shop'" class="ac_btn"> 
+                                <a href="#" class="" tooltip-placement="top" uib-tooltip="View" ui-sref="shoprequester({id:requests.shopChairInfo.user_id})"> <i class="fa fa-eye "></i> </a> 
+                                <a href="#" class="" tooltip-placement="top" uib-tooltip="Accept" ng-click="acceptrequest(requests)"> <i class="fa fa-check "></i> </a> 
+                                <!--<a href="#" class="" tooltip-placement="top" uib-tooltip="Reject" style="background-color: #fd3b3b;" ng-click="rejectrequest(requests)"> <i class="fa fa-close"></i> </a>--> 
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </span>
+        </div>
     </div>
-  </div>
 </div>

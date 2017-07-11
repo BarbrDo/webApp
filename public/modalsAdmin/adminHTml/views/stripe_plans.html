@@ -24,13 +24,14 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th style="font-size: 13px;" width="20%"><a ng-click="Sort('created_date')" class="created_date" style="color: #ffffff;">name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
-                                <th style="font-size: 13px;" width="20%"><a ng-click="Sort('created_date')" class="created_date" style="color: #ffffff;">statement_descriptor<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
-                                <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">Interval Count<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
-                                <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">Interval<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
-                                <th style="font-size: 13px;"><a ng-click="Sort('name[0]')" class="name" style="color: #ffffff;">currency<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
-                                <th style="font-size: 13px;"><a ng-click="Sort('name[0]')" class="name" style="color: #ffffff;">Edit<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
-                                <th style="font-size: 13px;"><a ng-click="Sort('name[0]')" class="name" style="color: #ffffff;">Delete<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                                <th style="font-size: 13px;" width="15%">Name</a>
+                                </th>
+                                <th style="font-size: 13px;" width="20%">Statement Descriptor</th>
+                                <th style="font-size: 13px;">Interval Count</th>
+                                <th style="font-size: 13px;">Interval</th>
+                                <th style="font-size: 13px;">Currency</th>
+                                <th style="font-size: 13px;">Edit</th>
+                                <th style="font-size: 13px;">Delete</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -47,13 +48,6 @@
                         </tbody>
                     </table>
                 </div>
-                <div>
-                    <!-- <div class="col-sm-6">
-                        <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="pageChanged()"></ul>
-                    </div> -->
-                    <br>
-                </div>
-                <!-- Modal -->
             </div>
         </div>
     </div>
@@ -71,7 +65,7 @@
                         <div class="clearfix">
                             <div class="col-sm-6 form-group ">
                                 <label>Unique Id</label>
-                                <input type="text " class="form-control " name="id" ng-model="user.id " ng-pattern="/^[a-zA-Z0-9 ._-]+$/" ng-minlength="3" ng-maxlength="20" maxlength="21" required ng-disabled="uniquieId=='disabled'"/>
+                                <input type="text " class="form-control " name="id" ng-model="user.id " ng-pattern="/^[a-zA-Z0-9 ._-]+$/" ng-minlength="3" ng-maxlength="20" maxlength="21" required ng-disabled="uniquieId=='disabled'" />
                                 <div class="validationError" ng-messages="planForm.id.$error" ng-show="
                                 planForm.id.$error.required && planForm.id.$touched &&
                                 planForm.id.$invalid" role="alert">
@@ -88,7 +82,7 @@
 
                             <div class="col-sm-6 form-group ">
                                 <label>Name</label>
-                                <input type="text " class="form-control " name="name" ng-model="user.name " ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3 " ng-maxlength="20 " maxlength="21 " required />
+                                <input type="text " class="form-control " name="name " ng-model="user.name " ng-pattern="/^[a-z ,. '-]+$/i" ng-minlength="3 " ng-maxlength="20 " maxlength="21 " required />
                                 <div class="validationError " ng-messages="planForm.name.$error " ng-show=" planForm.name.$error.required && planForm.name.$touched && planForm.name.$invalid " role="alert ">
                                     <span style="color:red " ng-message="required ">Name is required</span>
                                 </div>
@@ -103,7 +97,7 @@
                 <div class="clearfix ">
                     <div class="col-sm-6 form-group">
                         <label>Amount</label>
-                        <input type="text" class="form-control" name="amount" ng-model="user.amount" ng-pattern="/^[0-9]*$/" ng-minlength="1" ng-maxlength="20" maxlength="21" ng-disabled="uniquieId=='disabled'" required/>
+                        <input type="text" class="form-control" name="amount" ng-model="user.amount" ng-pattern="/^[0-9]*$/" ng-minlength="1" ng-maxlength="20" maxlength="21" ng-disabled="uniquieId=='disabled '" required/>
                         <div class="validationError" ng-messages="planForm.amount.$error" ng-show="
                                 planForm.amount.$error.required && planForm.amount.$touched &&
                                 planForm.amount.$invalid" role="alert">
@@ -122,7 +116,7 @@
                                 <label>Interval</label>
                             </div>
                             <div>
-                                 <select class="form-control " name="singleSelect " id="singleSelect " ng-model="user.interval" ng-disabled="uniquieId=='disabled'">
+                                 <select class="form-control " name="singleSelect " id="singleSelect " ng-model="user.interval" ng-disabled="uniquieId=='disabled '">
                                   <option value="">---Please select---</option> 
                                   <option value="day">Day</option> 
                                   <option value="week">Week</option>
@@ -135,22 +129,19 @@
                         <div class="clearfix ">
                               <div class="col-sm-6 form-group ">
                             <label>Statement Description</label>
-                                <input type="text " class="form-control " name="statement_descriptor " ng-model="user.statement_descriptor " ng-pattern="/^[a-z ,. '-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required />
-                                <div class="validationError" ng-messages="planForm.statement_descriptor.$error" ng-show="
-                                planForm.statement_descriptor.$error.required && planForm.statement_descriptor.$touched &&
-                                planForm.statement_descriptor.$invalid" role="alert">
-                                    <span style="color:red" ng-message="required">statement_descriptor is required</span>
+                                <input type="text " class="form-control " name="statement_descriptor " ng-model="user.statement_descriptor " ng-pattern="/^[a-z ,. '-]+$/i " ng-minlength="3 " ng-maxlength="20 " maxlength="21 " required />
+                                <div class="validationError " ng-messages="planForm.statement_descriptor.$error " ng-show=" planForm.statement_descriptor.$error.required && planForm.statement_descriptor.$touched && planForm.statement_descriptor.$invalid " role="alert ">
+                                    <span style="color:red " ng-message="required ">statement_descriptor is required</span>
                                 </div>
-                                <div class="validationError" ng-messages="planForm.statement_descriptor.$error" ng-show="
-                                planForm.statement_descriptor.$error.pattern && (!planForm.statement_descriptor.$pristine || planForm.$submitted)" role="alert">
-                                    <span style="color:red" ng-message="pattern">Enter valid character </span>
+                                <div class="validationError " ng-messages="planForm.statement_descriptor.$error " ng-show=" planForm.statement_descriptor.$error.pattern && (!planForm.statement_descriptor.$pristine || planForm.$submitted) " role="alert ">
+                                    <span style="color:red " ng-message="pattern ">Enter valid character </span>
                                 </div>
-                                <div class="validationError" ng-show="planForm.statement_descriptor.$error.maxlength && planForm.statement_descriptor.$dirty" ">
-                                <span style="color:red "> maximum length exceeds</span>
+                                <div class="validationError " ng-show="planForm.statement_descriptor.$error.maxlength && planForm.statement_descriptor.$dirty " ">
+                                    <span style="color:red "> maximum length exceeds</span>
                                 </div>
-                              </div>
-                              <div class="col-sm-6 form-group">
-                            <label>trial_period_days</label>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <label>trial_period_days</label>
                                 <input type="text " class="form-control " name="trial_period_days" ng-model="user.trial_period_days " ng-pattern="/^[0-9]*$/" ng-minlength="3 " ng-maxlength="20 " maxlength="21 " required />
                                 <div class="validationError " ng-messages="planForm.trial_period_days.$error " ng-show=" planForm.trial_period_days.$error.required && planForm.trial_period_days.$touched && planForm.trial_period_days.$invalid " role="alert ">
                                     <span style="color:red " ng-message="required ">trial_period_days is required</span>
@@ -166,9 +157,9 @@
                 </form>
             </div>
             <div class="modal-footer ">
-                <button ng-if="update=='true'" type="button " class="btn btn-default " data-dismiss="modal" ng-click="vm.updatePlan()" ng-disabled="planForm.$invalid">Update</button>
-                <button ng-if="submit=='true'" type="button " class="btn btn-default " data-dismiss="modal" ng-click="vm.submitPlan()" ng-disabled="planForm.$invalid">Submit</button>
-                <button type="button" class="btn btn-default " data-dismiss="modal" ng-click="vm.cancel()">Close</button>
+                <button ng-if="update=='true' " type="button " class="btn btn-default " data-dismiss="modal " ng-click="vm.updatePlan() " ng-disabled="planForm.$invalid ">Update</button>
+                <button ng-if="submit=='true' " type="button " class="btn btn-default " data-dismiss="modal " ng-click="vm.submitPlan() " ng-disabled="planForm.$invalid ">Submit</button>
+                <button type="button " class="btn btn-default " data-dismiss="modal " ng-click="vm.cancel() ">Close</button>
             </div>
         </div>
     </div>

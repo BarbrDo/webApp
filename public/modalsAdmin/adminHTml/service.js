@@ -6,8 +6,6 @@ angular.module('barbrdo').factory('Admin', function($http) {
       } else {
         return $http.get('/api/v1/allbarbers?page=' + data.page + '&count=' + data.count);
       }
-
-
     },
     shopsAll: function(data) {
       if (data.search) {
@@ -306,6 +304,9 @@ angular.module('barbrdo').factory('Admin', function($http) {
     },
     deletePlan:function (data) {
       return $http.put('/api/v1/stripe/deletePlan', data)
+    },
+    allPayments:function (data) {
+      return $http.get('/api/v1/allPayments', data);
     }
   };
 });

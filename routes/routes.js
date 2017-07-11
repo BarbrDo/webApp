@@ -33,6 +33,7 @@ module.exports = function(app, express) {
     let customerController = require('./../controllers/customer');
     let shopController = require('./../controllers/shop');
     let chairRequestController = require('./../controllers/chair_request');
+    let stripeController = require('./../controllers/stripe');
     let appointmentController = require('./../controllers/appointment');
     let barberServices = require('./../controllers/barber');
     let commonObj = require('./../common/common');
@@ -104,9 +105,11 @@ module.exports = function(app, express) {
     app.post('/api/v1/barber/event',barberServices.createEvents);
     app.get('/api/v1/barber/event',barberServices.getEvents);
     app.get('/api/v1/barber/event/:date',barberServices.getEventOnDate);
+    app.get('/api/v1/barber/sale/:startDate/:endDate',barberServices.financeScreenResult);
     
 
     //Common
+    app.get('/api/v1/allPayments',appointmentController.allPayments);
     app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of any customer/barber/shop
     //app.get('/api/v1/timeslots',commonObj.viewTimeSlots); //Time slot to book an appointment
     //app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
@@ -114,13 +117,13 @@ module.exports = function(app, express) {
     app.get('/api/v1/shops/barbers/:shop_id/:barber_id',shopController.getDataForBookNowPage)
 
     // Stripe Implementation API
-    app.get('/api/v1/stripe/plans', userController.featuringPlans);
+    app.get('/api/v1/stripe/plans', stripeController.featuringPlans);
     //app.post('/api/v1/subscribe',userController.subscribe);
-    app.post('/api/v1/stripe/createPlan',userController.createPlan);
-    app.post('/api/v1/stripe/createCharges',userController.createCharges);
+    app.post('/api/v1/stripe/createPlan',stripeController.createPlan);
+    app.post('/api/v1/stripe/createCharges',stripeController.createCharges);
     app.post('/api/v1/stripe/webhooks',userController.stripeWebhook);
-    app.put('/api/v1/stripe/updatePlan',userController.updatePlan);
-    app.put('/api/v1/stripe/deletePlan',userController.deletePlan);
+    app.put('/api/v1/stripe/updatePlan',stripeController.updatePlan);
+    app.put('/api/v1/stripe/deletePlan',stripeController.deletePlan);
     
     //Need to delete in sprint-8
     app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber/shop requesting chair to shop

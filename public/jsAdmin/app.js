@@ -1,4 +1,4 @@
-"use strict";
+    "use strict";
 
 var app_admin = angular.module('barbrdo', ['ui.router', 'ui.bootstrap', 'angularModalService', 'rzModule', "chart.js", 'alexjoffroy.angular-loaders', 'ngMask','toastr']);
 
@@ -170,6 +170,12 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
         url: '/plans',
         controller: "planCtrl",
         templateUrl: "/modalsAdmin/adminHTml/views/stripe_plans.html"
+    })
+
+    .state('payments', {
+        url: '/payments',
+        controller: "paymentCtrl",
+        templateUrl: "/modalsAdmin/adminHTml/views/stripe_payment.html"
     })
 
 });

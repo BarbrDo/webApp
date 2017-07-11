@@ -794,7 +794,7 @@ exports.getDataForBookNowPage = function(req, res) {
 }
 
 exports.shopContainsChairs = function(req, res) {
-    req.checkHeaders('user_id', 'Shop id is required.').notEmpty();
+    req.checkHeaders('user_id', 'Shop user id is required.').notEmpty();
     let shop_user_id = mongoose.Types.ObjectId(req.headers.user_id);
     let errors = req.validationErrors();
     if (errors) {
@@ -803,80 +803,87 @@ exports.shopContainsChairs = function(req, res) {
             err: errors
         });
     }
-    shop.aggregate([
-        {
-            $match:{
-                user_id:shop_user_id
-            }
-        },
-        {
-            $unwind:"$chairs"
-        },
-        {
-            $lookup:{
+    shop.findOne({
+        user_id: shop_user_id
+    }, function (err, shopData) {
+
+
+        shop.aggregate([
+            {
+                $match: {
+                    user_id: shop_user_id
+                }
+            },
+            {
+                $unwind: "$chairs"
+            },
+            {
+                $lookup: {
                     from: "users",
                     localField: "chairs.barber_id",
                     foreignField: "_id",
                     as: "barberInformation"
-            }
-        },
-        {
-            $project:{
-                _id:1,
-                user_id:1,
-                license_number:1,
-                ratings : 1,
-                latLong: 1,
-                state:1,
-                city:1,
-                zip:1,
-                address:1,
-                name:1,
-                chairs:1,
-                chairs: {
-                    isActive:1,
-                    _id :1,
-                    availability :1,
-                    name: 1,
-                    shop_percentage:1,
-                    type:1,
-                    barber_percentage:1,
-                    booking_start:1,
-                    booking_end:1,
-                    amount:1,
-                    barber_id:1,
-                    barber:"$barberInformation"
                 }
-            }
-        },
-        {
-            $group:{
-                    _id:"$_id",
-                    chairs:{$push:"$chairs"},
-                    name:{$first:"$name"},
-                    license_number:{$first:"$license_number"},
-                    ratings:{$first:"$ratings"},
-                    latLong:{$first:"$latLong"},
-                    state:{$first:"$state"},
-                    city:{$first:"$city"},
-                    zip:{$first:"$zip"},
-                    address:{$first:"$address"}
+            },
+            {
+                $project: {
+                    _id: 1,
+                    user_id: 1,
+                    license_number: 1,
+                    ratings: 1,
+                    latLong: 1,
+                    state: 1,
+                    city: 1,
+                    zip: 1,
+                    address: 1,
+                    name: 1,
+                    chairs: 1,
+                    chairs: {
+                        isActive: 1,
+                        _id: 1,
+                        availability: 1,
+                        name: 1,
+                        shop_percentage: 1,
+                        type: 1,
+                        barber_percentage: 1,
+                        booking_start: 1,
+                        booking_end: 1,
+                        amount: 1,
+                        barber_id: 1,
+                        barber: "$barberInformation"
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    chairs: {$push: "$chairs"},
+                    name: {$first: "$name"},
+                    license_number: {$first: "$license_number"},
+                    ratings: {$first: "$ratings"},
+                    latLong: {$first: "$latLong"},
+                    state: {$first: "$state"},
+                    city: {$first: "$city"},
+                    zip: {$first: "$zip"},
+                    address: {$first: "$address"}
 
-            }
-        }]).exec(function(err, result) {
+                }
+            }]).exec(function (err, result) {
             console.log(result);
-        if (err) {
-            return res.status(400).send({
-                msg: "error in your request",
-                err: errors
-            });
-        } else {
+            if (err) {
+                return res.status(400).send({
+                    msg: "error in your request",
+                    err: errors
+                });
+            } else {
 
-            res.status(200).send({
-                "msg": constantObj.messages.successRetreivingData,
-                "data": result
-            })
-        }
+                res.status(200).send({
+                    msg: constantObj.messages.successRetreivingData,
+                    data: result,
+                    shop_id:shopData._id
+                })
+            }
+        })
     })
 }
 

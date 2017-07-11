@@ -1379,6 +1379,271 @@ exports.getEventOnDate = function(req, res) {
         }
     })
 }
+
+exports.financeScreenResult = function (req, res) {
+    req.checkHeaders("user_id", "user_id is required").notEmpty();
+    req.checkParams("startDate", "startDate is required.").notEmpty();
+    req.checkParams("endDate", "endDate is required").notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let barber_id = req.headers.user_id;
+    console.log(req.params.startDate);
+    console.log(req.params.endDate);
+    function firstDayOfMonth() {
+        var d = new Date(Date.apply(null, arguments));
+        d.setDate(1);
+        return d.toISOString();
+    }
+    function lastDayOfMonth() {
+        var d = new Date(Date.apply(null, arguments));
+        d.setMonth(d.getMonth() + 1);
+        d.setDate(0);
+        return d.toISOString();
+    }
+    var now = Date.now();
+    /*Below line for getting the first date of current month*/
+    let startDayOfMonth = firstDayOfMonth(now);
+    /*Below line for getting the last date of current month*/
+    let endDayOfMonth = lastDayOfMonth(now);
+    /*Below line for getting the current week first day*/
+    let currentDayOfweek = moment().day(0); // Sunday
+    /*Below line for getting the current week last day*/
+    let lastDayOfweek = moment().day(6); // saturday
+    async.parallel({
+        one: function (parallelCb) {
+            // This callback will get the total sale of barber
+            getBarberTotalSale(barber_id, function (err, result) {
+                parallelCb(null, result)
+            });
+        },
+        two: function (parallelCb) {
+            // get barber total sales of current month
+            getBarberTotalSaleOnDates(barber_id, startDayOfMonth, endDayOfMonth, function (err, result) {
+                parallelCb(null, result)
+            });
+        },
+        three: function (parallelCb) {
+            // get barber sale of current week
+            getBarberTotalSaleOnDates(barber_id, currentDayOfweek, lastDayOfweek, function (err, result) {
+                parallelCb(null, result)
+            });
+        },
+        four: function (parallelCb) {
+            getBarberAppointmentsDetail(barber_id, req.params.startDate, req.params.endDate, function (err, result) {
+                parallelCb(null, result)
+            });
+        }
+    }, function (err, results) {
+        // results will have the results of all 3
+        console.log("barber total sale", results.one);
+        console.log("barber month sale", results.two);
+        console.log("barber week sale", results.four);
+        console.log("barber sale b/w two dates", results.three);
+        res.status(200).send({
+            msg: constantObj.messages.successRetreivingData,
+            data: {
+                "totalSale": results.one,
+                "monthSale": results.two,
+                "weekSale": results.three,
+                "custom": results.four
+            }
+        })
+    });
+}
+// This is used to fetch User information 
+exports.getBarber = function (id, cb) {
+    console.log(id);
+    user.findOne({
+        _id: id
+    }, function (err, result) {
+        cb(null, result);
+    })
+}
+// Get barber details : barber collection
+exports.getBarberDetail = function (id, cb) {
+    Barber.findOne({
+        user_id: id
+    }, function (err, result) {
+        cb(null, result);
+    })
+}
+// Fetching only barber events
+exports.getBarberEvents = function (id, cb) {
+    Barber.findOne({
+        user_id: id
+    }, {
+        events: 1
+    }, function (err, result) {
+        cb(null, result);
+    })
+}
+// Not in use
+// exports.getBarberEventsOnDay = function(id, date) {
+//     Barber.findOne({
+//         user_id: id
+//     }, {
+//         events: 1
+//     }, function(err, result) {
+//         return result
+//     })
+// }
+// exports.getBarberEventsOnDates = function(id, startDate, EndDate) {
+//     Barber.findOne({
+//         user_id: id
+//     }, {
+//         events: 1
+//     }, function(err, result) {
+//         return result
+//     })
+// }
+// exports.getBarberSubscription = function(id) {
+//     Barber.findOne({
+//         user_id: id
+//     }, {
+//         events: 1
+//     }, function(err, result) {
+//         return result
+//     })
+// }
+//GET  Barber confirm,pending,completed appointments between two dates  
+exports.getBarberAppointments = function (id) {
+    appointment.find({
+        barber_id: id
+    }, function (err, result) {
+        return result
+    })
+}
+
+//GET  Barber confirm,pending,completed appointments 
+exports.getBarberAppointmentsOnDates = function (id, startDate, endDate, cb) {
+    let barber_id = mongoose.Types.ObjectId(id);
+    let appointmentStartdate = new Date(moment(startDate, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+    let appointmentEnddate = new Date(moment(endDate, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+    appointment.find({
+        barber_id: barber_id,
+        appointment_date: {
+            $gte: appointmentStartdate,
+            $lt: appointmentEnddate
+        }
+    }, function (err, result) {
+        if (err) {
+            cb(err, null);
+        } else {
+            cb(null, result)
+        }
+    })
+}
+
+//GET  Barber completed appointments between two dates and date wise group and total sale
+let getBarberAppointmentsDetail = function (id, startDate, endDate, cb) {
+    let barber_id = mongoose.Types.ObjectId(id);
+    let appointmentStartdate = new Date(moment(startDate, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+    let appointmentEnddate = new Date(moment(endDate, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+
+    appointment.aggregate([{
+            $match: {
+                barber_id: barber_id,
+                "appointment_status": "completed"
+            }
+        }, {
+            $unwind: "$services"
+        }, {
+            $match: {
+                appointment_date: {
+                    $gte: appointmentStartdate,
+                    $lt: appointmentEnddate
+                }
+            }
+        }, {
+            $project: {
+                _id: "$_id",
+                services: 1,
+                appointment_Date: {$dateToString: {format: "%Y-%m-%d", date: "$appointment_date"}},
+                appointment_id: "$_id",
+            }
+        },
+        {$group:
+                    {
+                        _id: "$_id",
+                        data: {$push: "$data"},
+                        appointment_Date: {$first: "$appointment_Date"},
+                        sale: {$sum: "$services.price"},
+
+                    }
+
+        },
+        {
+            $group:
+                    {
+                        _id: "$_id",
+                        sale: {$first: "$sale"},
+                        appointment_Date: {$first: "$appointment_Date"},
+                    }
+        },
+        {
+            $group:
+                    {
+                        _id: "$appointment_Date",
+                        appointments: {$sum: 1},
+                        sale: {$sum: "$sale"},
+                        appointment_Date: {$first: "$appointment_Date"},
+                    }
+        }]).exec(function (err, result) {
+        if (err) {
+            cb(err, null);
+        } else {
+            cb(null, result)
+        }
+    })
+}
+// Get barber appointment on specific date
+exports.getBarberAppointmentsOnDay = function (id, date) {
+    appointment.findOne({
+        barber_id: id
+    }, function (err, result) {
+        return result
+    })
+}
+// Total sale by barber
+let getBarberTotalSale = function (id, cb) {
+    let barberId = mongoose.Types.ObjectId(id);
+    appointment.aggregate([{
+            $match: {
+                barber_id: barberId,
+                appointment_status: "completed"
+            }
+        }, {
+            $unwind: "$services"
+        }, {
+            $group: {
+                _id: "$_id",
+                barber_id: {
+                    $first: "$barber_id"
+                },
+                price: {
+                    $sum: "$services.price"
+                }
+            }
+        }, {
+            $group: {
+                _id: "$barber_id",
+                total_sale: {
+                    $sum: "$price"
+                }
+            }
+        }]).exec(function (err, result) {
+        if (err) {
+            cb(err, null);
+        } else {
+            cb(null, result)
+        }
+    })
+}
 // Total sale of barber between two dates
 let getBarberTotalSaleOnDates = function (id, startDate, endDate, cb) {
     let barberId = mongoose.Types.ObjectId(id);
@@ -1424,3 +1689,4 @@ let getBarberTotalSaleOnDates = function (id, startDate, endDate, cb) {
     })
 }
 // get barber appointment between two dates
+

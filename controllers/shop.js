@@ -339,6 +339,11 @@ exports.allShopsHavingChairs = function(req, res) {
             }
         },{
             $unwind: "$chairs"
+        },{
+            $match:{
+                "chairs.isActive":true,
+                "chairs.availability" :{$ne:"closed"}
+            }
         },
         {
             $lookup: {

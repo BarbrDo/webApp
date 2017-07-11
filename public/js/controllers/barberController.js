@@ -1,7 +1,7 @@
 angular.module('BarbrDoApp')
 	.controller('barberCtrl', function($scope, $rootScope, $location, barber, $stateParams, $state, $window, toastr) {
 		var objj = JSON.parse($window.localStorage.user);
-		$scope.imgPath = $window.localStorage.imagePath;
+		$scope.imgPathselectedDate = $window.localStorage.imagePath;
 		$scope.search = {};
 
 		
@@ -84,7 +84,7 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.shopChairs = response.data.data;
-					console.log(response)
+					
 				});
 		}
 
@@ -92,9 +92,21 @@ angular.module('BarbrDoApp')
 			var obj = {
 				_id: $stateParams._id
 			}
+			var shp = [];
 			barber.shopChairs(obj).then(function(response) {
 				$rootScope.particularShop = response.data.data[0];
-				console.log(response.data.data[0])
+				var len = response.data.data[0].chairs.length;
+        		for (var i = 0; i < len; i++) {
+        			if (response.data.data[0].chairs[i].isActive==true && response.data.data[0].chairs[i].availability!='closed') {
+        				 var objj = response.data.data[0].chairs[i];
+        				 shp.push(objj);
+            		}
+        }
+
+ 	$scope.chairs = shp ;
+ 	console.log(shp)
+            
+       
 			})
 			var myArray = [];
 		// Below code is generating current date + 6 days more
@@ -120,6 +132,7 @@ angular.module('BarbrDoApp')
 
 		}
 		$scope.requestChair = function(shopid) {
+			console.log($scope.chairId)
 			if ($scope.chairId) {
 				$scope.loaderStart = true;
 				var passObj = {

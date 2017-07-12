@@ -239,10 +239,8 @@ exports.showEvents = function(req, res) {
 		$match: {
 			barber_id: barber_id,
 			appointment_date: {
-				$gte: new Date(appointmentStartdate)
-			},
-			appointment_date: {
-				$lt: new Date(appointmentEnddate)
+				$gte: new Date(appointmentStartdate),
+                                $lt: new Date(appointmentEnddate)
 			},
 			appointment_status: 'confirm'
 		}

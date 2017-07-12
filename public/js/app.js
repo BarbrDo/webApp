@@ -1122,37 +1122,37 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 templateUrl: './../profile.html',
                 controller: 'shopCtrl'
             })
-            .state('forgot', {
-                url: '/forgot',
-                views: {
-                    "header": {
-                        templateUrl: 'partials/header.html',
-                        controller: "HeaderCtrl"
-                    },
-                    "home": {
-                        templateUrl: 'partials/forgot.html',
-                        controller: 'ForgotCtrl'
-                    },
-                    "footer": {
-                        templateUrl: 'partials/footer.html',
-                        controller: 'ForgotCtrl'
-                    }
-                },
-                resolve: {
-                    lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
-                        var deferred = $q.defer();
-                        $ocLazyLoad.load({
-                            name: 'BarbrDoApp',
-                            files: ['js/controllers/forgot.js',
-                                'js/services/account.js'
-                            ]
-                        }).then(function() {
-                            deferred.resolve();
-                        });
-                        return deferred.promise;
-                    }]
-                }
-            })
+            // .state('forgot', {
+            //     url: '/forgot',
+            //     views: {
+            //         "header": {
+            //             templateUrl: 'partials/header.html',
+            //             controller: "HeaderCtrl"
+            //         },
+            //         "home": {
+            //             templateUrl: 'partials/forgot.html',
+            //             controller: 'ForgotCtrl'
+            //         },
+            //         "footer": {
+            //             templateUrl: 'partials/footer.html',
+            //             controller: 'ForgotCtrl'
+            //         }
+            //     },
+            //     resolve: {
+            //         lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+            //             var deferred = $q.defer();
+            //             $ocLazyLoad.load({
+            //                 name: 'BarbrDoApp',
+            //                 files: ['js/controllers/forgot.js',
+            //                     'js/services/account.js'
+            //                 ]
+            //             }).then(function() {
+            //                 deferred.resolve();
+            //             });
+            //             return deferred.promise;
+            //         }]
+            //     }
+            // })
 
         .state('accountActivate', {
             url: '/account/verification/:email/:random',

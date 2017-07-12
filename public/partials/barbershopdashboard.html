@@ -1,92 +1,95 @@
 <div class="crumb" ng-init="shopInfo()"> <span>Manage Chair</span> </div>
 <div class="wrapper">
-  <div class="block">
-    <h2>Manage Chair</h2>
-    <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat = "res in chairs.shop[0].chairs">
-      <div class="barber toshop">
-        <div class="cont">
-          <div class="user_pic"><span ng-if="res.barber_id" ><img style="cursor: pointer;" data-toggle="tooltip" title="View Barber" ui-sref="requester-details({id:res.barber_id})" src="images/people.jpeg"> </span> 
-                                <span ng-if="!res.barber_id"><img src="images/chair@4x.png"  ng-click="nobarbers()"> </span></div>
-          <h3>Chair {{$index+1}}</h3>
-          <p ng-if="res.barber_id"><span>{{res.barber_name}}</span></p>
-          <p ng-if="res.type == 'percentage'"><span>Chair Split</span> : {{res.shop_percentage}}/{{res.barber_percentage}}</p>
-          <p ng-if="res.type=='weekly' || res.type=='monthly'"><span>{{res.type}}</span> : ${{res.amount}}</p>
-          <p ng-if="res.type!='weekly' && res.type!='monthly' && res.type!='percentage'">Empty</p>
-          <p ng-if="res.availability">{{res.availability}}</p>
+    <div class="block">
+        <h2>Manage Chair</h2>
+        <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat = "res in chairs.shop[0].chairs">
+            <div class="barber toshop">
+                <div class="cont">
+                    <div class="user_pic">
+                        <span ng-if="res.barber_id">
+                            <img style="cursor: pointer;" data-toggle="tooltip" title="View Barber" ui-sref="requester-details({id:res.barber_id})" src="images/people.jpeg">
+                        </span> 
+                        <span ng-if="!res.barber_id"><img src="images/chair@4x.png"  ng-click="nobarbers()"> </span></div>
+                    <h3>Chair {{$index + 1}}</h3>
+                    <p ng-if="res.barber_id"><span>{{res.barber_name}}</span></p>
+                    <p ng-if="res.type == 'percentage'"><span>Chair Split</span> : {{res.shop_percentage}}/{{res.barber_percentage}}</p>
+                    <p ng-if="res.type == 'weekly' || res.type == 'monthly'"><span>{{res.type}}</span> : ${{res.amount}}</p>
+                    <p ng-if="res.type != 'weekly' && res.type != 'monthly' && res.type != 'percentage'">Empty</p>
+                    <p ng-if="res.availability">{{res.availability}}</p>
+                </div>
+                <span ng-if="res.barber_id"><a class="book_nw" ui-sref="chairwithbarber({id:res._id,name:$index+1})"> Manage <i class="fa  fa-angle-right"></i> </a></span>
+                <span ng-if="!res.barber_id"><a class="book_nw" ui-sref="chairaction({id:res._id,name:$index+1})"> Manage <i class="fa  fa-angle-right"></i> </a></span>
+
+            </div>
+        </div>  
+        <!-- <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+          <div class="barber toshop">
+            <div class="cont">
+              <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
+              <h3>Chair 2</h3>
+              
+                <p><span>Edward Scissorhands</span></p>
+                <p><span>Chair Split</span> :60/40</p>
+           
+            </div>
+            <a ui-sref="chairaction" class="book_nw" > Manage <i class="fa  fa-angle-right"></i> </a>
+         </div>
+        </div> -->
+
+
+
+        <!--   <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+          <div class="barber toshop">
+            <div class="cont">
+              <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
+              <h3>Chair 3</h3>
+              <p><span>Edward Scissorhands</span></p>
+           
+            </div>
+            <a  class="book_nw" ui-sref="chairaction"  > Manage <i class="fa  fa-angle-right"></i> </a>
+         </div>
         </div>
-          <span ng-if="res.barber_id"><a class="book_nw" ui-sref="chairwithbarber({id:res._id,name:$index+1})"> Manage <i class="fa  fa-angle-right"></i> </a></span>
-          <span ng-if="!res.barber_id"><a class="book_nw" ui-sref="chairaction({id:res._id,name:$index+1})"> Manage <i class="fa  fa-angle-right"></i> </a></span>
-        
-     </div>
-    </div>  
-    <!-- <div class="col-md-4 col-sm-4 col-xs-6 fullb">
-      <div class="barber toshop">
-        <div class="cont">
-          <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
-          <h3>Chair 2</h3>
+        -->
+
+
+        <!-- <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+        <div class="barber toshop">
+          <div class="cont">
+            <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
+            <h3>Chair 4</h3>
+            <p><span>Chair Split</span> : 50/50</p>
+         
+          </div>
+          <a ui-sref="chairaction" class="book_nw" > Manage <i class="fa  fa-angle-right"></i> </a>
+       </div>
+      </div> -->
+
+
+        <!--  <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+         <div class="barber toshop">
+           <div class="cont">
+             <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
+             <h3>Chair 5</h3>
+             <p><span>Chair Split</span> : 50/50</p>
           
-            <p><span>Edward Scissorhands</span></p>
-            <p><span>Chair Split</span> :60/40</p>
-       
+           </div>
+           <a  class="book_nw" ui-sref="chairaction" > Manage <i class="fa  fa-angle-right"></i> </a>
         </div>
-        <a ui-sref="chairaction" class="book_nw" > Manage <i class="fa  fa-angle-right"></i> </a>
-     </div>
-    </div> -->
-      
-      
-      
-    <!--   <div class="col-md-4 col-sm-4 col-xs-6 fullb">
-      <div class="barber toshop">
-        <div class="cont">
-          <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
-          <h3>Chair 3</h3>
-          <p><span>Edward Scissorhands</span></p>
-       
+       </div> -->
+
+
+        <!--  <div class="col-md-4 col-sm-4 col-xs-6 fullb">
+         <div class="barber toshop">
+           <div class="cont">
+             <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
+             <h3>Chair 6</h3>
+             <p><span>Chair Split</span> : 50/50</p>
+          
+           </div>
+           <a  class="book_nw" ui-sref="chairaction" > Manage <i class="fa  fa-angle-right"></i> </a>
         </div>
-        <a  class="book_nw" ui-sref="chairaction"  > Manage <i class="fa  fa-angle-right"></i> </a>
-     </div>
+       </div> -->
+
+
     </div>
-       -->
-      
-      
-      <!-- <div class="col-md-4 col-sm-4 col-xs-6 fullb">
-      <div class="barber toshop">
-        <div class="cont">
-          <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
-          <h3>Chair 4</h3>
-          <p><span>Chair Split</span> : 50/50</p>
-       
-        </div>
-        <a ui-sref="chairaction" class="book_nw" > Manage <i class="fa  fa-angle-right"></i> </a>
-     </div>
-    </div> -->
-      
-      
-     <!--  <div class="col-md-4 col-sm-4 col-xs-6 fullb">
-      <div class="barber toshop">
-        <div class="cont">
-          <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
-          <h3>Chair 5</h3>
-          <p><span>Chair Split</span> : 50/50</p>
-       
-        </div>
-        <a  class="book_nw" ui-sref="chairaction" > Manage <i class="fa  fa-angle-right"></i> </a>
-     </div>
-    </div> -->
-      
-      
-     <!--  <div class="col-md-4 col-sm-4 col-xs-6 fullb">
-      <div class="barber toshop">
-        <div class="cont">
-          <div class="user_pic"> <img src="images/chair@4x.png" alt="" ></div>
-          <h3>Chair 6</h3>
-          <p><span>Chair Split</span> : 50/50</p>
-       
-        </div>
-        <a  class="book_nw" ui-sref="chairaction" > Manage <i class="fa  fa-angle-right"></i> </a>
-     </div>
-    </div> -->
-   
-      
-  </div>
 </div>

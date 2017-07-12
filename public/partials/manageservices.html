@@ -1,38 +1,42 @@
-
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
 <div class="crumb"> <span>Book Appointment</span> </div>
 <div class="wrapper">
   <div class="block">
     <h2>Manage Service</h2>
-    <div class="row">
-      <div class="col-md-6" ng-repeat = "service in barberservices" >
-        <div class="serve">
-          <p >{{service.name}} </p>
-          <p data-ng-hide="editMode">$ {{service.price}}</p><input type="text" data-ng-show="editMode" ng-model="service.price" placeholder="price" style="color: #000000;" />
-          <div> 
-          <a href="#" data-ng-hide="editMode" data-ng-click="editMode = true"> <i class="fa  fa-edit " style="color: #000000;"></i> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-          <a href="#"  data-ng-click="deleteservice(service)" data-ng-hide="editMode"> <i class="fa  fa-trash " style="color: #000000;"></i> </a>
-          <a  href="#" data-ng-show="editMode" data-ng-click="editMode = false;editservices(service._id,service.price,service.name)"  data-toggle="tooltip" title="Save"><i class="fa fa-floppy-o" aria-hidden="true" style="color: #000000;"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <a href="#" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" data-toggle="tooltip" title="Cancel"><i class="fa fa-ban" aria-hidden="true" style="color: #000000;"></i></a> </div>
+    <span ng-if="barberservices==''"><h3 align="center"><br><br>No Services.</h3></span>
+     <span ng-if="barberservices!=''" >
+    <div class="row" >
+      <div class="col-md-6" ng-repeat = "service in barberservices">
+        <div class="serve barber">
+          <p class="servicename">{{service.name}} <span>-</span> 
+           <span data-ng-hide="editMode"> $ {{service.price}}  </span>
+           <input type="text" data-ng-show="editMode" ng-model="service.price" placeholder="price" style="color: #000000;height: 20px; width: 120px;" />
+          </p>
+          <div class="editservice"> 
+          <a href="#" data-ng-hide="editMode" data-ng-click="editMode = true"> <i class="fa  fa-edit "></i> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          <a href="#"  data-ng-click="barberservice(service)" data-ng-hide="editMode" data-toggle="modal" data-target="#delete"> <i class="fa  fa-trash " ></i> </a>
+          <a  href="#" data-ng-show="editMode" data-ng-click="editMode = false;editservices(service.service_id,service.price,service.name)"  data-toggle="tooltip" title="Save"><i class="fa fa-floppy-o" aria-hidden="true" ></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <a href="#" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" data-toggle="tooltip" title="Cancel"><i class="fa fa-ban" aria-hidden="true" ></i></a>
+          </div>
         </div>
       </div>
-       <!--  <div class="col-md-6">
-        <div class="serve">
-          <p>Beard Trim <span>$13</span></p>
-          <div class="option"> <a ui-sref="addservice"> <i class="fa  fa-edit "></i> </a> <a href="#"> <i class="fa  fa-trash "></i> </a> </div>
-        </div>
-      </div>
-        <div class="col-md-6">
-        <div class="serve">
-          <p>Clippers hair Cut <span>$13</span></p>
-          <div class="option"> <a ui-sref="addservice"> <i class="fa  fa-edit "></i> </a> <a href="#"> <i class="fa  fa-trash "></i> </a> </div>
-        </div>
-      </div>
-        <div class="col-md-6">
-        <div class="serve">
-          <p>Clippers hair Cut <span>$13</span></p>
-          <div class="option"> <a ui-sref="addservice"> <i class="fa  fa-edit "></i> </a> <a href="#"> <i class="fa  fa-trash "></i> </a> </div>
-        </div>
-      </div> -->
     </div>
+    </span>
   </div>
+</div>
+
+
+<div class="modal " id="delete" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p> Are you Sure !! You want to Delete this Service </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" data-ng-click="deleteservice()">YES</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
+            </div>
+        </div>
+    </div>
 </div>

@@ -26,7 +26,13 @@ angular.module('BarbrDoApp')
         });
       },
       shopChairs: function(data) {
-        return $http.get('/api/v1/shops/chair/'+data._id, data);
+        return $http({
+          method: 'get',
+          url: '/api/v1/shops/chair/'+data._id,
+          headers: {
+            'user_id': data._id
+          }
+        });
       },
       requestChair: function(data) {
         return $http({
@@ -110,7 +116,7 @@ angular.module('BarbrDoApp')
         console.log("data",data)
          return $http({
           method: 'put',
-          url: '/api/v1/barber/services/'+data._id,
+          url: '/api/v1/barber/services/'+data.service_id,
           headers: {
             'user_id' : obj._id
           },

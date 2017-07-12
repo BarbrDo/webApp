@@ -25,6 +25,7 @@
       <div class="col-sm-3 col-md-6 col-xs-5" >
           <div class="pername">
       <h3 style="color: #1860f0;"> {{particularAppointment.customer_name}} </h3>
+      <h4> {{particularAppointment.appointment_date | date:dd/mm/yyyy}} @  {{particularAppointment.appointment_date | date:'h:mma'}} </h4>
       </div>
      </div>
    </div>
@@ -51,7 +52,7 @@
  <div class="row">
      <div class="col-sm-12">
      <div class="reschedappoint">
-         <span>Can we move appointment back by </span>
+         <span style="font-size: 20px;">Can we move appointment back by </span>
          <span>  <div class="id_100">
                                     <select ng-model="mySelect">
                                         <option value="">00</option>
@@ -60,15 +61,47 @@
                                         <option value="45">45</option>
                                     </select>
                                 </div> </span>
-         <span>min </span>
+         <span style="font-size: 20px;" >min </span>
      </div>
                        
         <textarea rows="4" cols="70" placeholder="Describe yourself here..." name="comments" class="reschedule_area">
         </textarea>
      </div>
     <div class="reschedule">
-      <button class="bkap" ng-click="timeReschedule(mySelect)">Send</button>
-      <button class="bkap" ng-click="cancelAppointment()">Cancel Appointment</button>
+      <span ng-if="mySelect"><button class="bkap" ng-click="rescheduleappoint(mySelect)" data-toggle="modal" data-target="#reschedule">Send</button></span>
+      <span ng-if="!mySelect"><button class="bkap" ng-click="rescheduleappoint(mySelect)">Send</button></span>  
+      <button class="bkap" data-toggle="modal" data-target="#cancelappoint" >Cancel Appointment</button>
     </div>
   </div>
+</div>
+
+
+<div class="modal " id="reschedule" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p> Are you Sure !! You want to Reschedule the Appointment</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="timeReschedule()">YES</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal " id="cancelappoint" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p> Are you Sure !! You want to Cancel the Appointment</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancelAppointment()">YES</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
+            </div>
+        </div>
+    </div>
 </div>

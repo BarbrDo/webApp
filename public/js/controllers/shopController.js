@@ -28,6 +28,7 @@
 		      .then(function(response) {
 		      	$scope.loaderStart = false;
 		        $rootScope.barbers = response.data.data;
+		        console.log(response.data.data)
 		      }).catch (function(result) {
                             console.log(result)
                            toastr.error('Error');
@@ -56,18 +57,19 @@
 
 
 		$scope.requestbarber = function(barber) {
-				shop.requestBarber($window.localStorage.shop_id,$stateParams.id,barber)
+				shop.requestBarber($window.localStorage.shop_id,$stateParams.id,barber,'shop')
 					.then(function(response) {
-						toastr.success('Request is Sended to the barber successfully ! Check Your Mail');
+						toastr.success('Request is Sended to the barber successfully!');
 						$state.go('chairaction', { id: $stateParams.id,name: $stateParams.name});					
 					}).catch(function(result) {
-						toastr.error('Sorry!! This Chair is not available');
-
+						toastr.error(result.data.msg);
+						console.log(result)
 					})
 
 		};
 
 		$scope.rejectrequest = function(chair) {
+			console.log("decline",chair)
 			shop.declineRequest(chair).then(function(response) {
 				toastr.success('Request is Declined successfully');
 				$scope.chairrequest();
@@ -156,6 +158,7 @@
 
 
 		$scope.acceptrequest = function(chair) {
+			console.log("here",chair)
 			shop.acceptRequest(chair).then(function(response) {
 				toastr.success('Request is Accepted successfully');
 				$scope.chairrequest();
@@ -166,7 +169,6 @@
 		}
 
 		$scope.shopDashboard = function(){
-			console.log("here")
             $scope.loaderStart = true;
 			var obj = {
 				obj:JSON.parse($window.localStorage.user)

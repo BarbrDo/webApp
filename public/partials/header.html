@@ -88,7 +88,7 @@
                                             <div class="form-control-placeholder">Password</div>
                                             <!-- <a href="#" class="eye"><i class="fa fa-eye"></i></a> -->
                                         </div>
-                                        <a ui-sref="forgot" class="forgot">Forgot Password ?</a>
+                                        <a class="forgot" data-toggle="modal" data-target="#forgotpassword" >Forgot Password ?</a>
                                         <button type="submit" class="sb_button" ng-click="login()" ng-disabled="loginForm.$invalid">Login</button>
                                         <p class="msg">New User? <span>   <a data-toggle="tab" href="#signup" ng-click="activeTab('signup')">Signup</a> </span>
                                         </p>
@@ -238,3 +238,29 @@
         </div>
     </div>
 </script>
+
+ <div class="modal " id="forgotpassword" role="dialog" >
+        <div class="modal-dialog">
+        <div ng-if="messages.error" role="alert" class="alert alert-danger">
+        <div ng-repeat="error in messages.error">{{error.msg}}</div>
+      </div>
+      <div ng-if="messages.success" role="alert" class="alert alert-success">
+        <div ng-repeat="success in messages.success">{{success.msg}}</div>
+      </div>
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #c2f7b5;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Forgot Password</h4>
+                </div>
+                <div class="modal-body" ng-init="pageChanged()">
+                    <p>Enter your email address below and we'll send you password reset instructions.</p>
+          <input type="email" name="email" id="email" placeholder="Email" class="form-control" ng-model="user.email" autofocus>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="forgotPassword()" >Reset Password</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>

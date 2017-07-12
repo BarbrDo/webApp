@@ -662,7 +662,8 @@ exports.shopdetail = function(req, res) {
             user_type: "$user_type",
             latLong: "$latLong",
             picture: "$picture",
-            shopinfo: "$shopinfo"
+            shopinfo: "$shopinfo",
+            gallery:"$gallery"
         }
     }]).exec(function(err, result) {
         if (err) {
@@ -779,7 +780,7 @@ exports.getDataForBookNowPage = function(req, res) {
                 },
                 "rating": {
                     "$first": "$barberInformation.rating"
-                }
+                },
             }
         }]).exec(function(err, result) {
             if (err) {

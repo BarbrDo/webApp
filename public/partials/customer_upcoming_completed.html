@@ -5,6 +5,8 @@
     <div class="tabs customtab">
       <uib-tabset active="activeJustified" justified="true">
         <uib-tab index="0" heading="Upcoming">
+        <span ng-if="data.data.upcoming==''"><h3 align="center"> No Upcoming appointments </h3></span>
+        <span ng-if="data.data.upcoming!=''">
           <div class="all_cuts">
             <div class="table-responsive">
               <table class="table table-bordered" ng-table="tableParams">
@@ -22,7 +24,10 @@
             </div>
           </div>
         </uib-tab>
+        </span>
         <uib-tab index="1" heading="Completed">
+        <span ng-if="data.data.complete==''"><h3 align="center"> No Completed appointments </h3></span>
+        <span ng-if="data.data.complete!=''">
           <div class="all_cuts">
             <div class="table-responsive">
               <table class="table table-bordered" ng-table="tableParams">
@@ -40,6 +45,7 @@
               </table>
             </div>
           </div>
+          </span>
         </uib-tab>
       </uib-tabset>
     </div>

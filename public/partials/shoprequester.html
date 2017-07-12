@@ -7,16 +7,28 @@
                 <div class="container ">
                     <div class="col-lg-2"></div>
                     <div class="col-lg-8">
-                        <img class="img-circle" src="/uploadedFiles/{{shoprequesterpic.picture}}" alt="Cinque Terre" width="304" height="236"></div>
+                        <div ng-if="shoprequesterpic.picture" class="profile_pic">
+                            <div class="profile_inner">
+                                <img ng-src="{{imgPath + shoprequesterpic.picture}} " class="img-circle" width="304" height="236">
+                            </div>  
+                        </div>
+                        <div ng-if="!shoprequesterpic.picture">
+                            <img ng-src="images/no-image-found.jpg " class="img-circle" width="304" height="236">
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
+                    <div class="col-sm-6 col-xs-6">
+                        <span class="top-head top-head1">
+                         Total Photos : &nbsp;&nbsp;&nbsp; <span ng-if="shoprequesterpic.gallery.length=='0'">{{shoprequesterpic.gallery.length}} </span><span ng-if="shoprequesterpic.gallery.length!='0'"> <a ui-sref="barbershopdashboard" > {{shoprequesterpic.gallery.length}} </a> </span>
+                        </span>
+                    </div>
                     <div class="col-sm-6">
-                        Total Photos : &nbsp;&nbsp;&nbsp; {{totalbarbers}} </div>
-                    <div class="col-sm-6">
-                        Total Cuts : &nbsp;&nbsp;&nbsp; 0 </div>
+                       <span class="top-head">
+                        Total Cuts : &nbsp;&nbsp;&nbsp;<span ng-if="shoprequester.ratings.length=='0'">{{shoprequester.ratings.length}}</span><span ng-if="shoprequester.ratings.length!='0'"> <a ui-sref="shopGallery">{{shoprequester.ratings.length}} </a> </span>
+                    </div>
                 </div>
-                <br>
-                <br>
+                <h4><b> SHOP DETAILS </b></h4><br>
                 <table class="table table-striped" >
                     <tr>
                         <td>

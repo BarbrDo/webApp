@@ -31,7 +31,7 @@
                 <h3>{{data.first_name}} {{data.last_name}}</h3>
                 <p><span>Distance</span> : {{data.distance}} {{data.units}}</p>
                 <p><span>Location</span> : {{data.location}}</p>
-                <div class="rating"> <img src="images/rating.png" alt="" > </div>
+                <div class="rating"> <input-stars max="5" ng-model="ratingavg" ng-attr-readonly="true"></input-stars> </div>
               </div>
               <a ui-sref="bookNow({shop_id:data.shop_id,barber_id:data._id})" class="book_nw" > Book Now <i class="fa  fa-angle-right"></i> </a> </div>
           </div>

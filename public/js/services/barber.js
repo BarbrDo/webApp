@@ -72,7 +72,6 @@ angular.module('BarbrDoApp')
         return $http.get('/api/v1/barber/shopchairrequests/'+obj._id);
       },
       RequesterDetail: function(data) {
-        console.log(data)
         return $http.get('/api/v1/shopdetail/' + data, data);
       },
       acceptRequest: function(data) {

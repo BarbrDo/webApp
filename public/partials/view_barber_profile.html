@@ -9,22 +9,28 @@
                         <!--h2>Your Profile</h2-->
                         <div class="pedetail contact-us cprofile">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="form-group">
+                                        <div >Email</div>
                                         <input type="text" class="form-control" required value="{{profileInfo.email}}" readonly="true"/>
-                                        <div class="form-control-placeholder">Email</div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" required value="{{profileInfo.mobile_number}}" />
-                                        <div class="form-control-placeholder">Phone</div>
+                                        <div >Phone</div>
+                                        <input type="text" class="form-control" required value="{{profileInfo.mobile_number}}" readonly/>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" required value="{{profileInfo.created_date | date}}" />
-                                        <div class="form-control-placeholder">Member Since</div>
+                                        <div >Member Since</div>
+                                        <input type="text" class="form-control" required value="{{profileInfo.created_date | date}}" readonly/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div >Overall Rating</div>
+                                        <input-stars max="5" ng-model="ratingavg" ng-attr-readonly="true"></input-stars>
                                     </div>
                                 </div>
                             </div>
@@ -34,7 +40,8 @@
             </uib-tab>
             <uib-tab index="1" heading="No.of cuts">
                 <div class="block">
-                    <!--<h2>No.of cuts</h2>-->
+                    <span ng-if="profileInfo.ratings==''"><h3 align="center">No Cuts for this Barber</h3></span>
+                    <span ng-if="profileInfo.ratings!=''">
                     <div class="all_cuts">
                         <div class="table-responsive">
                             <table class="table table-bordered">
@@ -56,11 +63,13 @@
                             </table>
                         </div>
                     </div>
+                    </span>
                 </div>
             </uib-tab>
             <uib-tab index="2" heading="Gallery">
                 <div class="block">
-                    <!-- <h2>Gallery</h2>-->
+                   <span ng-if="profileInfo.gallery==''"><h3 align="center">No Images in Gallery for this Barber</h3></span>
+                    <span ng-if="profileInfo.gallery!=''">
                     <div class="allgallery">
                         <div class="row">
                             <div class="col-md-3 col-sm-4 " ng-repeat="res in profileInfo.gallery">

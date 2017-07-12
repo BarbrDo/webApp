@@ -1,5 +1,5 @@
 angular.module('BarbrDoApp')
-	.controller('dashboardCtrl', function($scope, $rootScope, $location, customer, $stateParams, $state, $window, ngTableParams, $timeout, $http, toastr) {
+	.controller('dashboardCtrl', function($scope, $rootScope, $filter,$location, customer, $stateParams, $state, $window, ngTableParams, $timeout, $http, toastr) {
 		$scope.dollarAmmount = 0.00;
 		$scope.annualCost = "$" + $scope.dollarAmmount;
 		$scope.search = {};
@@ -33,6 +33,15 @@ angular.module('BarbrDoApp')
 				_id: id
 			});
 		}
+		$scope.markers = [];
+		$scope.map = {
+			center: {
+				latitude: 30.708225,
+				longitude: 76.7029445
+			},
+			zoom: 15
+		}
+
 		if ($state.current.name == 'shopContainsBarbers') {
 			$scope.loaderStart = true;
 			var obj = {
@@ -53,6 +62,7 @@ angular.module('BarbrDoApp')
 			customer.shopContainsBarbers(obj).then(function(response) {
 				$scope.loaderStart = false;
 				$scope.shopBarbers = response.data.data;
+				console.log(response.data.data)
 			})
 		}
 		if ($state.current.name == 'bookNow') {
@@ -64,6 +74,7 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.barberservice = response.data.data;
+					console.log("here",response.data.data)
 				});
 
 			var passObj = {
@@ -76,6 +87,13 @@ angular.module('BarbrDoApp')
 			customer.bookNowPageInfo(passObj)
 				.then(function(response) {
 					$scope.barberInformation = response.data.data;
+					console.log(response.data.data)
+					var sum = 0;
+					var len = response.data.data[0].rating.length;
+					for (var i = 0; i < len; i++) {
+						sum += response.data.data[0].rating[i].score
+					}
+					$scope.ratingavg = sum / len;
 				});
 
 			var myArray = [];
@@ -89,14 +107,27 @@ angular.module('BarbrDoApp')
 			}
 			$scope.selectDate = myArray;
 			// timeSlots defines in costant file
-			$scope.timeSlots = timeSlots;
+			console.log(timeSlots)
+			
 		}
 		$scope.selecteddd = 0;
 		$scope.setSelected = function(prop, index) {
 			$scope.selectedDate = prop.toISOString().slice(0, 10);
 			$scope.selecteddd = index;
+			$scope.formattedDate =   $filter('date')($scope.selectedDate, "yyyy-MM-dd");
+			var obj = {
+				barberid : $stateParams.barber_id,
+				date : $scope.formattedDate
+			}
+			customer.timeavailability(obj)
+			.then(function(response) {
+				console.log("hjjh",response.data.data)
+				$scope.timeSlots = response.data.data;
+			})
+
 		};
 		$scope.setSelectedTime = function(prop, index) {
+			console.log(prop)
 			$scope.choosedTime = prop;
 			$scope.selectedTime = index
 		};
@@ -107,6 +138,7 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.barbers = response.data.data;
+					console.log("jhgvj",response.data.data)
 				});
 		}
 		$scope.selection = {};
@@ -130,7 +162,6 @@ angular.module('BarbrDoApp')
 		};
 
 		$scope.payLater = function() {
-			console.log($scope.selected);
 			var myarr = [];
 			for (var i = 0; i < $scope.selected.length; i++) {
 				var cusObj = {};
@@ -147,6 +178,7 @@ angular.module('BarbrDoApp')
 			}
 			customer.takeAppointment(postObj)
 				.then(function(response) {
+					console.log("jkgbjk",response);
 					$state.go('pending', {
 						_id: response.data.data._id
 					});
@@ -280,6 +312,12 @@ angular.module('BarbrDoApp')
 			customer.barberInfo(obj)
 				.then(function(response) {
 					$scope.profileInfo = response.data.user;
+					var sum = 0;
+					var len = response.data.user.ratings.length;
+					for (var i = 0; i < len; i++) {
+						sum += response.data.user.ratings[i].score
+					}
+					$scope.ratingavg = sum / len;
 				})
 		}
 		$scope.goToNextpage = function(id) {

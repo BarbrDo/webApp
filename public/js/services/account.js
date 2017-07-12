@@ -21,9 +21,6 @@ angular.module('BarbrDoApp').factory('Account', function ($http, $window)
         deleteAccount: function () {
             return $http.delete('/api/v1/account');
         },
-        forgotPassword: function (data) {
-            return $http.post('/api/v1/forgot', data);
-        },
         activateAccount: function (data) {
             return $http.post('/api/v1/activate', data);
         },

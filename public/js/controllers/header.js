@@ -3,14 +3,11 @@ angular.module('BarbrDoApp')
     $scope.user = {};
     $scope.messages = {};
     $scope.tabActive='login';
-    console.log($scope.tabActive);
     $scope.activeTab = function (value) {
       $scope.tabActive = value;
-      console.log($scope.tabActive);
     }
 
     $scope.turnPage = function (value) {
-      console.log("turn page",value)
         $scope.obj = {
           value:value
       }
@@ -72,7 +69,6 @@ angular.module('BarbrDoApp')
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          console.log(response.data.user)
           if (response.data.imagesPath) {
             $window.localStorage.imagePath = response.data.imagesPath;
           }
@@ -84,7 +80,6 @@ angular.module('BarbrDoApp')
           }
         })
         .catch(function(response) {
-          console.log(response)
           if (response.error) {
             $scope.messages = {
               error: [{
@@ -102,11 +97,9 @@ angular.module('BarbrDoApp')
     if ($state.current.name == 'manageservices' || $state.current.name == 'addservice') {
       shop.barberServices().then(function(response) {
         $scope.barberservices = response.data.data.length
-        console.log("barbe", response.data.data.length)
       });
       shop.allServices().then(function(response) {
         $scope.servicesData = response.data.data.length
-        console.log("admin", response.data.data.length)
       })
 
     }
@@ -172,7 +165,6 @@ angular.module('BarbrDoApp')
         .then(function(response) {
           toastr.success("Please check your mail to activate your account.")
           $state.go('upcomingComplete')
-          console.log("response", response)
         })
         .catch(function(response) {
           $scope.messagess = {
@@ -204,10 +196,29 @@ angular.module('BarbrDoApp')
         size: ' holder'
       });
     }
+    $scope.forgotPassword = function() {
+      shop.forgotPassword($scope.user)
+        .then(function(response) {
+          toastr.success(response.data.msg);
+          $('#forgotpassword').modal('hide');
+        })
+        .catch(function(response) {
+          $scope.messages = {
+            error: Array.isArray(response.data) ? response.data : [response.data]
+          };
+        });
+    };
+
+    $scope.disMiss = function () {
+      $rootScope.$emit("closeEvent");
+    }
+
   })
 
-.controller('instanceController12', ['$uibModalInstance', '$scope',
-  function($uibModalInstance, $scope) {
+.controller('instanceController12', ['$uibModalInstance', '$scope','$rootScope', function($uibModalInstance, $scope,$rootScope) {
+    $rootScope.$on("closeEvent", function(evt, data) {
+        $scope.cancel();
+    })
     $scope.cancel = function() {
       $uibModalInstance.dismiss('cancel');
     }

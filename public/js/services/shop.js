@@ -15,6 +15,9 @@ angular.module('BarbrDoApp')
           }
         });
       },
+      forgotPassword: function (data) {
+            return $http.post('/api/v1/forgot', data);
+        },
       barbers: function(data) {
         console.log(data)
         if (data.search) {

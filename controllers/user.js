@@ -1271,26 +1271,26 @@ exports.activate = function(req, res) {
     let randomcode = req.body.randomString;
     console.log(email, randomcode)
     User.findOne({
-      email: email,
-      randomString: randomcode
-    })
-    .exec(function(err, user) {
-      console.log(err, user)
-      if (!user) {
-        return res.status(400).send({
-          msg: err
+        email: email,
+        randomString: randomcode
+      })
+      .exec(function(err, user) {
+        console.log(err, user)
+        if (!user) {
+          return res.status(400).send({
+            msg: err
+          });
+        }
+        user.randomString = undefined;
+        user.isActive = true;
+        user.is_verified = true;
+        user.remark = "You account is verfied now.";
+        user.save(function(err) {
+          res.status(200).send({
+            msg: "You have successfully activated Your Account !  Please Login again to continue."
+          })
         });
-      }
-      user.randomString = undefined;
-      user.isActive = true;
-      user.is_verified = true;
-      user.remark = "You account is verfied now.";
-      user.save(function(err) {
-        res.status(200).send({
-          msg: "You have successfully activated Your Account !  Please Login again to continue."
-        })
       });
-    });
   }
 }
 
@@ -1317,12 +1317,12 @@ exports.usersRecords = function(req, res) {
     res.status(200).send({
       msg: constantObj.messages.successRetreivingData,
       subscription: results.one,
-      customer:results.two
+      customer: results.two
     });
   });
 }
 
-exports.totalUsers = function (req,res) {
+exports.totalUsers = function(req, res) {
   async.parallel({
     one: function(parallelCb) {
       User.find({
@@ -1354,8 +1354,8 @@ exports.totalUsers = function (req,res) {
     res.status(200).send({
       msg: constantObj.messages.successRetreivingData,
       barber_subscription: results.one.length,
-      shop_subscription:results.two.length,
-      customer:results.three.length
+      shop_subscription: results.two.length,
+      customer: results.three.length
     });
   });
 }
@@ -1517,7 +1517,7 @@ exports.totalUsers = function (req,res) {
 }
 */
 
-/*
+
 exports.subscribe = function(req, res) {
   req.checkHeaders("user_id", "User id is required.").notEmpty();
   req.assert("card_number", "Card number is required.").notEmpty();
@@ -1543,61 +1543,18 @@ exports.subscribe = function(req, res) {
     } else {
       console.log("user_id", data);
       if (data.stripe_customer.length > 0) {
-        let customerId = data.stripe_customer[0].id
-        console.log(customerId);
-        stripe.customers.createSource(customerId, {
-          source: {
-            object: 'card',
-            exp_month: req.body.month,
-            exp_year: req.body.year,
-            number: req.body.card_number,
-            cvc: req.body.cvc
-          }
-        }).then(function(source) {
-          console.log("stripe.customers.createSource ", source)
-          return stripe.subscriptions.create({
-            customer: customerId,
-            plan: req.body.plan
-          }, function(err, subscription) {
-            if (err) {
-              res.status(400).send({
-                msg: "Error occurred in subscription.",
-                "err": err
-              });
-            } else {
-              console.log("subscription", subscription);
-              User.update({
-                _id: req.headers.user_id
-              }, {
-                $set: {
-                  stripe_subscription: subscription
-                }
-              }, function(err, result) {
-                if (err) {
-                  res.status(400).send({
-                    msg: "Error occurred in subscription.",
-                    "err": err
-                  });
-                } else {
-                  User.findOne({
-                    _id: req.headers.user_id
-                  }).exec(function(err, user) {
-                    res.send({
-                      token: generateToken(user),
-                      user: user.toJSON(),
-                      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-                    });
-                  })
-                }
-              })
-            }
-          }).catch(function(err) {
-            res.status(400).send({
-              msg: "Error occurred in subscription.",
-              "err": err
-            });
-          });
-        })
+        stripe.customers.create({
+            email: req.body.stripeEmail,
+            source: req.body.stripeToken
+          })
+          .then(customer =>
+            stripe.charges.create({
+              amount,
+              description: "Sample Charge",
+              currency: "usd",
+              customer: customer.id
+            }))
+          .then(charge => console.log(charge));
       } else {
         stripe.customers.create({
           email: data.email,
@@ -1682,7 +1639,7 @@ exports.subscribe = function(req, res) {
   })
 }
 
-*/
+
 
 exports.stripeWebhook = function(req, res, next) {
   console.log(req.body);

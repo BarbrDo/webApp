@@ -158,7 +158,7 @@ angular.module('BarbrDoApp')
         return $http.get('/api/v1/barberdetail/' + data, data);
       },
       plans: function(data) {
-        return $http.get('/api/v1/plans', data);
+        return $http.get('/api/v1/stripe/plans', data);
       },
       deleteImage: function(data) {
         return $http({

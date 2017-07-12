@@ -527,7 +527,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
         })
 
 
-        // Barbers from here
+        // Barbers URL's from here
 
         .state('barberDashboard', {
             url: '/dashboardOfBarber',
@@ -551,6 +551,40 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         name: 'BarbrDoApp',
                         files: ['js/controllers/barberController.js',
                             'js/services/barber.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
+            }
+        })
+
+        .state('subScribe', {
+            url: '/subScription',
+            params: {
+                _id: null
+            },
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/subscribe.html',
+                    controller: "subScriptionCtrl"
+                },
+                "header": {
+                    templateUrl: 'partials/barber_header_after_login.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/barberSideBar.html'
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/subScription.js',
+                            'js/services/shop.js'
                         ]
                     }).then(function() {
                         deferred.resolve();

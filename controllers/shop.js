@@ -626,8 +626,8 @@ exports.listshops = function(req, res) {
 };
 
 exports.shopdetail = function(req, res) {
-    req.checkParams("user_id", "user_id cannot be blank").notEmpty();
-
+    console.log(req.params);
+    req.checkParams("shop_id", "user_id cannot be blank").notEmpty();
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -635,35 +635,95 @@ exports.shopdetail = function(req, res) {
             err: errors
         });
     }
-    var query = {};
-    query._id = mongoose.Types.ObjectId(req.params.user_id);
-    console.log(req.params.user_id)
-    user.aggregate([{
-        $match: query
-    }, {
-        $lookup: {
-            from: "shops",
-            localField: "_id",
-            foreignField: "user_id",
-            as: "shopinfo"
+    let shop_id = mongoose.Types.ObjectId(req.params.shop_id);
+        
+    shop.aggregate([
+    {
+        $match: {
+            _id:shop_id
         }
-    }, {
+    }, 
+    {
+        $unwind:"$chairs"
+    },
+    {
+        $match:{
+            "chairs.availability":{$ne:"closed"}
+        }
+    },
+    {
+        $lookup:{
+            from: "chair_requests",
+            localField: "chairs._id",
+            foreignField: "chair_id",
+            as: "barberRequests"
+        }
+    },{
         $project: {
             _id: "$_id",
-            first_name: "$first_name",
-            last_name: "$last_name",
-            email: "$email",
-            mobile_number: "$mobile_number",
-            created_date: "$created_date",
+           
+            name: "$name",
+            user_id: "$user_id",
+            license_number: "$license_number",
             ratings: "$ratings",
-            is_deleted: "$is_deleted",
-            is_active: "$is_active",
-            is_verified: "$is_verified",
-            user_type: "$user_type",
             latLong: "$latLong",
-            picture: "$picture",
-            shopinfo: "$shopinfo",
-            gallery:"$gallery"
+            state: "$state",
+            city: "$city",
+            zip: "$zip",
+            address: "$address",
+            chairs:1,
+            barberRequests:"$barberRequests",
+        }
+    },
+    {
+        $lookup:{
+            from: "users",
+            localField: "chairs.barber_id",
+            foreignField: "_id",
+            as: "barberinfo"
+        }
+    },
+    {
+        $project:{
+            _id:"$_id",
+            name: "$shop.name",
+            user_id: "$user_id",
+            license_number: "$license_number",
+            ratings: "$ratings",
+            latLong: "$latLong",
+            state: "$state",
+            city: "$city",
+            zip: "$zip",
+            address: "$address",
+            chairs:{
+                 _id: "$chairs._id",
+                isActive: "$chairs.isActive",
+                availability: "$chairs.availability",
+                name: "$chairs.name",
+                shop_percentage: "$chairs.shop_percentage",
+                type: "$chairs.type",
+                barber_percentage: "$chairs.barber_percentage",
+                booking_start: "$chairs.booking_start",
+                booking_end: "$chairs.booking_end",
+                amount: "$chairs.amount",
+                barber_id: "$chairs.barber_id",
+                barberRequest:"$barberRequests",
+                barberInfo:"$barberinfo",
+            }
+        }
+    },
+    {
+        $group:{
+            _id:"$_id",
+            name:{$first:"$name"},
+            license_number: {$first: "$license_number"},
+            ratings: {$first: "$ratings"},
+            latLong: {$first: "$latLong"},
+            state: {$first: "$state"},
+            city: {$first: "$city"},
+            zip: {$first: "$zip"},
+            address: {$first: "$address"},
+            chairs:{$push:"$chairs"}, 
         }
     }]).exec(function(err, result) {
         if (err) {
@@ -1136,3 +1196,115 @@ exports.undeleteshop = function(req, res) {
     });
 
 };
+
+exports.financeScreenResult = function (req, res) {
+    req.checkHeaders("user_id", "user_id is required").notEmpty();
+    req.checkParams("startDate", "startDate is required.").notEmpty();
+    req.checkParams("endDate", "endDate is required").notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let barber_id = req.headers.user_id;
+    console.log(req.params.startDate);
+    console.log(req.params.endDate);
+    function firstDayOfMonth() {
+        var d = new Date(Date.apply(null, arguments));
+        d.setDate(1);
+        return d.toISOString();
+    }
+    function lastDayOfMonth() {
+        var d = new Date(Date.apply(null, arguments));
+        d.setMonth(d.getMonth() + 1);
+        d.setDate(0);
+        return d.toISOString();
+    }
+    var now = Date.now();
+    /*Below line for getting the first date of current month*/
+    let startDayOfMonth = firstDayOfMonth(now);
+    /*Below line for getting the last date of current month*/
+    let endDayOfMonth = lastDayOfMonth(now);
+    /*Below line for getting the current week first day*/
+    let currentDayOfweek = moment().day(0); // Sunday
+    /*Below line for getting the current week last day*/
+    let lastDayOfweek = moment().day(6); // saturday
+    async.parallel({
+        one: function (parallelCb) {
+            // This callback will get the total sale of barber
+            getBarberTotalSale(barber_id, function (err, result) {
+                parallelCb(null, result)
+            });
+        },
+        two: function (parallelCb) {
+            // get barber total sales of current month
+            getBarberTotalSaleOnDates(barber_id, startDayOfMonth, endDayOfMonth, function (err, result) {
+                parallelCb(null, result)
+            });
+        },
+        three: function (parallelCb) {
+            // get barber sale of current week
+            getBarberTotalSaleOnDates(barber_id, currentDayOfweek, lastDayOfweek, function (err, result) {
+                parallelCb(null, result)
+            });
+        },
+        four: function (parallelCb) {
+            getBarberAppointmentsDetail(barber_id, req.params.startDate, req.params.endDate, function (err, result) {
+                parallelCb(null, result)
+            });
+        }
+    }, function (err, results) {
+        // results will have the results of all 3
+        console.log("barber total sale", results.one);
+        console.log("barber month sale", results.two);
+        console.log("barber week sale", results.four);
+        console.log("barber sale b/w two dates", results.three);
+        res.status(200).send({
+            msg: constantObj.messages.successRetreivingData,
+            data: {
+                "totalSale": results.one,
+                "monthSale": results.two,
+                "weekSale": results.three,
+                "custom": results.four
+            }
+        })
+    });
+}
+
+// Total sale by barber
+let getShopTotalSale = function (id, cb) {
+    let barberId = mongoose.Types.ObjectId(id);
+    appointment.aggregate([{
+            $match: {
+                barber_id: barberId,
+                appointment_status: "completed"
+            }
+        }, {
+            $unwind: "$services"
+        }, {
+            $group: {
+                _id: "$_id",
+                barber_id: {
+                    $first: "$barber_id"
+                },
+                price: {
+                    $sum: "$services.price"
+                }
+            }
+        }, {
+            $group: {
+                _id: "$barber_id",
+                total_sale: {
+                    $sum: "$price"
+                }
+            }
+        }]).exec(function (err, result) {
+        if (err) {
+            cb(err, null);
+        } else {
+            cb(null, result)
+        }
+    })
+}

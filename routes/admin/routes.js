@@ -35,7 +35,6 @@ module.exports = function(app, express) {
     app.put('/api/v1/disapproveshop/:shop_id',shopController.disapproveshop);
     app.put('/api/v1/verifyshop/:shop_id',shopController.verifyshop);
  
-    app.get('/api/v1/shopdetail/:user_id', shopController.shopdetail);//get Shopdetails
     app.get('/api/v1/barberdetail/:barber_id', barberController.barberdetail);//get Barberdetails
     app.get('/api/v1/custdetail/:cust_id', customerController.custdetail);//get Customerdetails
     app.get('/api/v1/chairdetail/:chair_id', shopController.chairdetail);//get Chairdetails

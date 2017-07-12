@@ -34,7 +34,7 @@
                     <tbody>
                         <tr ng-repeat="shop in shops | orderBy:sort:reverse ">
                             <td>{{shop.shopsdata.shopinfo[0].name}}</td>
-                            <td><a data-toggle="tooltip" title="View {{shop.shopsdata.shopinfo[0].name}}'s detailed info" ui-sref="shopdetail({id:shop.shopsdata.shopinfo[0].user_id})">{{shop.shopsdata.first_name}} {{shop.shopsdata.last_name}}</a></td>
+                            <td><a data-toggle="tooltip" title="View {{shop.shopsdata.shopinfo[0].name}}'s detailed info" ui-sref="shopdetail({id:shop.shopsdata.shopinfo[0]._id})">{{shop.shopsdata.first_name}} {{shop.shopsdata.last_name}}</a></td>
                             <td>{{shop.shopsdata.shopinfo[0].state}} </td>
                             <td><a data-toggle="tooltip" title="View Chairs in {{shop.shopsdata.shopinfo[0].name}}" ui-sref="chairs({id:shop.shopsdata.shopinfo[0].user_id})"> {{shop.shopsdata.shopinfo[0].chairs.length}}</a> </td>
                             <td>{{shop.shopsdata.email}}</td>

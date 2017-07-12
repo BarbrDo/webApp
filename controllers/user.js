@@ -137,54 +137,54 @@ let saveShop = function(saveDataForShop, resetUrl, user, req, res) {
 }
 
 let accountActivateMailFunction = function(req, res, user, resetUrl) {
-  console.log("accountActivateMailFunction", user);
-  let auth = {
-    auth: {
-      api_key: process.env.MAILGUN_APIKEY,
-      domain: process.env.MAILGUN_DOMAIN
+    console.log("accountActivateMailFunction", user);
+    let auth = {
+      auth: {
+        api_key: process.env.MAILGUN_APIKEY,
+        domain: process.env.MAILGUN_DOMAIN
+      }
+    }
+    let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+    let mailOptions = {
+      to: user.email,
+      from: 'support@barbrdo.com',
+      subject: '✔ Activate Your Account',
+      text: 'Please Activate your account by clicking link \n\n' + resetUrl + '\n\n'
+    };
+    console.log(user);
+    if (!user.facebook) {
+      nodemailerMailgun.sendMail(mailOptions, function(err, info) {
+        res.send({
+          msg: 'An email has been sent to ' + user.email + ' with further instructions.'
+        });
+      });
+    } else {
+      res.status(200).send({
+        user: user,
+        token: generateToken(user),
+        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+      });
     }
   }
-  let nodemailerMailgun = nodemailer.createTransport(mg(auth));
-  let mailOptions = {
-    to: user.email,
-    from: 'support@barbrdo.com',
-    subject: '✔ Activate Your Account',
-    text: 'Please Activate your account by clicking link \n\n' + resetUrl + '\n\n'
-  };
-  console.log(user);
-  if (!user.facebook) {
-    nodemailerMailgun.sendMail(mailOptions, function(err, info) {
-      res.send({
-        msg: 'An email has been sent to ' + user.email + ' with further instructions.'
-      });
-    });
-  } else {
-    res.status(200).send({
-      user: user,
-      token: generateToken(user),
-      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-    });
-  }
-}
-/*
----------------------------------
-Pre version of sign up function
----------------------------------
-*/
-// exports.signupPost = function(req, res, next) {
-//   console.log(req.body);
-//   req.assert('first_name', 'First name cannot be blank.').notEmpty();
-//   req.assert('last_name', 'Last name cannot be blank.').notEmpty();
-//   req.assert('email', 'Email is not valid').isEmail();
-//   req.assert('email', 'Email cannot be blank').notEmpty();
-//   req.assert('mobile_number', 'Mobile number cannot be blank').notEmpty();
-//   if (!req.body.facebook) {
-//     req.assert('password', 'Password must be at least 6 characters long').len(6);
-//   }
-//   req.assert('user_type', 'User type cannot be blank').notEmpty();
-//   if (req.body.user_type == 'shop' || req.body.user_type == 'barber') {
-//     req.assert('license_number', 'License number cannot be blank').notEmpty();
-//   }
+  /*
+  ---------------------------------
+  Pre version of sign up function
+  ---------------------------------
+  */
+  // exports.signupPost = function(req, res, next) {
+  //   console.log(req.body);
+  //   req.assert('first_name', 'First name cannot be blank.').notEmpty();
+  //   req.assert('last_name', 'Last name cannot be blank.').notEmpty();
+  //   req.assert('email', 'Email is not valid').isEmail();
+  //   req.assert('email', 'Email cannot be blank').notEmpty();
+  //   req.assert('mobile_number', 'Mobile number cannot be blank').notEmpty();
+  //   if (!req.body.facebook) {
+  //     req.assert('password', 'Password must be at least 6 characters long').len(6);
+  //   }
+  //   req.assert('user_type', 'User type cannot be blank').notEmpty();
+  //   if (req.body.user_type == 'shop' || req.body.user_type == 'barber') {
+  //     req.assert('license_number', 'License number cannot be blank').notEmpty();
+  //   }
 
 //   req.sanitize('email').normalizeEmail({
 //     remove_dots: false
@@ -1268,11 +1268,9 @@ exports.activate = function(req, res) {
   console.log("req.body", req.body);
   if (req.body.email) {
     let email = commonObj.decrypt(req.body.email);
-  }
-  let randomcode = req.body.randomString;
-  console.log(email, randomcode)
-
-  User.findOne({
+    let randomcode = req.body.randomString;
+    console.log(email, randomcode)
+    User.findOne({
       email: email,
       randomString: randomcode
     })
@@ -1286,15 +1284,81 @@ exports.activate = function(req, res) {
       user.randomString = undefined;
       user.isActive = true;
       user.is_verified = true;
+      user.remark = "You account is verfied now.";
       user.save(function(err) {
         res.status(200).send({
           msg: "You have successfully activated Your Account !  Please Login again to continue."
         })
       });
     });
+  }
 }
 
+exports.usersRecords = function(req, res) {
+  async.parallel({
+    one: function(parallelCb) {
+      User.find({
+        "$where": "this.stripe_subscription.length>0"
+      }, function(err, result) {
+        parallelCb(null, result)
+      });
+    },
+    two: function(parallelCb) {
+      User.find({
+        "user_type": "customer"
+      }, function(err, result) {
+        parallelCb(null, result)
+      });
+    }
+  }, function(err, results) {
+    // results will have the results of all 3
+    console.log("subscription", results.one);
+    console.log("customer", results.two);
+    res.status(200).send({
+      msg: constantObj.messages.successRetreivingData,
+      subscription: results.one,
+      customer:results.two
+    });
+  });
+}
 
+exports.totalUsers = function (req,res) {
+  async.parallel({
+    one: function(parallelCb) {
+      User.find({
+        "user_type": "barber",
+        "$where": "this.stripe_subscription.length>0"
+      }, function(err, result) {
+        parallelCb(null, result)
+      });
+    },
+    two: function(parallelCb) {
+      User.find({
+        "user_type": "shop",
+        "$where": "this.stripe_subscription.length>0"
+      }, function(err, result) {
+        parallelCb(null, result)
+      });
+    },
+    three: function(parallelCb) {
+      User.find({
+        "user_type": "customer"
+      }, function(err, result) {
+        parallelCb(null, result)
+      });
+    }
+  }, function(err, results) {
+    // results will have the results of all 3
+    console.log("subscription", results.one);
+    console.log("customer", results.two);
+    res.status(200).send({
+      msg: constantObj.messages.successRetreivingData,
+      barber_subscription: results.one.length,
+      shop_subscription:results.two.length,
+      customer:results.three.length
+    });
+  });
+}
 
 /*exports.signupPostWeb = function(req, res, next) {
   req.assert('first_name', 'First name cannot be blank.').notEmpty();

@@ -1,5 +1,5 @@
 angular.module('BarbrDoApp')
-  .controller('ForgotCtrl', function($scope,$stateParams, $state,Account,toastr) {
+  .controller('ForgotCtrl', function($scope,$stateParams, $state,Account,toastr,$auth) {
     $scope.forgotPassword = function() {
       Account.forgotPassword($scope.user)
         .then(function(response) {

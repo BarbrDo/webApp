@@ -110,6 +110,8 @@ module.exports = function(app, express) {
 
     //Common
     app.get('/api/v1/allPayments',appointmentController.allPayments);
+    app.get('/api/v1/records',userController.usersRecords);
+    app.get('/api/v1/totalUsers',userController.totalUsers); /*Total number of customer,subscription based barbers,subscription based shops*/
     app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of any customer/barber/shop
     //app.get('/api/v1/timeslots',commonObj.viewTimeSlots); //Time slot to book an appointment
     //app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);

@@ -59,8 +59,8 @@ module.exports = function(app, express) {
     app.get('/api/v1/allshops',shopController.listshops); // All shops registered in system
     app.get('/api/v1/shops', shopController.allShops); // List barber associated shops only
     app.put('/api/v1/shops', shopController.updateShop); //Update shop
+    app.get('/api/v1/shopdetail/:shop_id', shopController.shopdetail);//get Shopdetails
     app.post('/api/v1/shops/chair', userController.addChair) //Add chair in shop
-    app.get('/api/v1/shops/chair',shopController.allShopsHavingChairs);// It will show all shops having number of chairs
     app.delete('/api/v1/shops/chair', userController.removeChair); // Remove chair from shop
     app.get('/api/v1/shops/barberchairrequests/:shop_id',chairRequestController.barberChairReqests); //Get all barber's request for chairs
     // app.post('/api/v1/shops/confirmchair', chairRequestController.bookChair);
@@ -93,6 +93,8 @@ module.exports = function(app, express) {
     app.put('/api/v1/barber/completeappointment/:appointment_id',barberServices.completeAppointment);//Barber mark appointment as completed
     app.put('/api/v1/barber/cancelappointment/:appointment_id', barberServices.cancelAppointment);//Barber cancelling an appointment
     app.put('/api/v1/barber/rescheduleappointment/:appointment_id',barberServices.rescheduleAppointment);//Barber reschedule an appointment
+    app.get('/api/v1/barber/shops/chair',shopController.allShopsHavingChairs);//For barbers. It will show all shops having number of chairs
+    app.get('/api/v1/barber/shop/:shop_id',shopController.allShopsHavingChairs);//For barbers. It will show all shops having number of chairs
     app.post('/api/v1/requestchair', chairRequestController.requestChair); //Barber/shop requesting chair to shop
     app.get('/api/v1/barber/services', barberServices.getAllServices); //Get all services
     app.post('/api/v1/barber/services', barberServices.addBarberServices); //Add new service

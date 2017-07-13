@@ -171,9 +171,10 @@ angular.module('BarbrDoApp')
         });
       },
       subScribe: function(data) {
+        console.log("data in ",data);
         return $http({
           method: 'post',
-          url: '/api/v1/subscribe',
+          url: '/api/v1/stripe/subscribe',
           data: data,
           headers: {
             'user_id': data.user_id

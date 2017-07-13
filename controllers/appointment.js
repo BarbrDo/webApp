@@ -7,7 +7,7 @@ let moment = require('moment');
 let mongoose = require('mongoose');
 
 exports.takeAppointment = function (req, res) {
-    console.log(req.body);
+    console.log("appointment",req.body);
     req.assert("shop_id", "shop_id cannot be blank").notEmpty();
     req.assert("barber_id", "barber_id cannot be blank").notEmpty();
     req.checkHeaders("user_id", "user_id cannot be blank").notEmpty();

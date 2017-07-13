@@ -98,7 +98,7 @@ angular.module('BarbrDoApp')
       chargeCustomer:function(data){
         return $http({
           method: 'post',
-          url: '/api/v1/createCharges',
+          url: '/api/v1/stripe/createCharges',
           headers: {
             'user_id': obj._id//obj._id
           },

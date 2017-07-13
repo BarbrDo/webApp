@@ -108,8 +108,8 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     controller: "HeaderCtrl"
                 },
                 "home": {
-                    templateUrl: 'partials/Subscription_design.html',
-                    controller: 'subScriptionCtrl'
+                    templateUrl: 'partials/subscribe.html',
+                    controller: "subScriptionCtrl"
                 },
                 "footer": {
                     templateUrl: 'partials/footer.html'

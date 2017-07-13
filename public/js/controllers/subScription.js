@@ -11,7 +11,6 @@ angular.module('BarbrDoApp')
     };
 
     $scope.featuringPlans = function() {
-      console.log("featuringPlans plans");
       shop.plans().then(function(response) {
         console.log(response)
         $scope.loaderStart = false;
@@ -19,47 +18,11 @@ angular.module('BarbrDoApp')
       })
     }
     $scope.subScription = function(data) {
-      console.log(data);
       $scope.cardDetails.selectPrice = data.id;
+      $scope.cardDetails.price = data.amount/100;
+      console.log($scope.cardDetails.price)
       console.log($scope.cardDetails.selectPrice);
     }
-
-    $scope.submitPayment = function() {
-      console.log($window.localStorage.user);
-      return false;
-      var myobj = {
-        user_id: $stateParams._id,
-        card_number: $scope.cardDetails.number,
-        month: $scope.cardDetails.month.substr(0, 2),
-        year: $scope.cardDetails.month.substr(3, 7),
-        cvc: $scope.cardDetails.cvc,
-        plan: $scope.cardDetails.selectPrice
-      }
-      shop.subScribe(myobj).then(function(response) {
-        toastr.success("subscribe successfully.");
-        var obj = {
-          "email":response.data.user.email,
-          "decrypt":"decrypt"
-        }
-        $auth.login(obj)
-          .then(function(response) {
-            toastr.success('Welcome');
-            $rootScope.currentUser = response.data.user;
-            $window.localStorage.user = JSON.stringify(response.data.user);
-            $window.localStorage.imagePath = response.data.imagesPath;
-            if (response.data.user.user_type == 'customer') {
-              $state.go('upcomingComplete');
-            }
-            if (response.data.user.user_type == 'barber') {
-              $state.go('barberDashboard');
-            }
-            if (response.data.user.user_type == 'shop') {
-              $state.go('barbershopdashboard')
-            }
-          })
-      })
-    }
-
 
 
     // Stripe Implementation
@@ -97,18 +60,28 @@ angular.module('BarbrDoApp')
           console.log("token here", result.token.id);
           successElement.querySelector('.token').textContent = result.token.id;
           successElement.classList.add('visible');
-           console.log($window.localStorage.user);
-      return false;
-
+          var userWindow = {};
+          if($stateParams._id){
+             userWindow = {"_id":$stateParams._id}
+          }
+          else{
+             userWindow = JSON.parse($window.localStorage.user);
+            console.log(userWindow._id);
+          }
           var obj = {
             token: result.token.id,
-            amount :$scope.annualCost
+            amount :$scope.cardDetails.price*100,
+            user_id:userWindow._id
           }
-          customer.chargeCustomer(obj)
-            .then(function(response) {
-              $scope.profileInfo = response.data.user;
+          console.log("obj",obj);
+          shop.subScribe(obj).then(function(response) {
+            if($stateParams._id){
+             toastr.success("subscription successfull. Please login.");
+            }
+            else{
+              toastr.success("subscribe successfully.");
+            }
             })
-
         } else if (result.error) {
           errorElement.textContent = result.error.message;
           errorElement.classList.add('visible');
@@ -125,7 +98,6 @@ angular.module('BarbrDoApp')
         var extraDetails = {
           name: form.querySelector('input[name=cardholder-name]').value,
         };
-        console.log(card,extraDetails);
         stripe.createToken(card, extraDetails).then(setOutcome);
       });
     }

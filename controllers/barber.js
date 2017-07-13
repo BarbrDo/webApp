@@ -69,8 +69,7 @@ exports.getAllServices = function(req, res) {
     })
 }
 
-exports.addBarberServices = function(req, res) {
-
+exports.addBarberServices = function (req, res) {
     req.checkHeaders("user_id", "user_id is required").notEmpty();
     req.assert("name", "name is required").notEmpty();
     req.assert("price", "price is required").notEmpty();

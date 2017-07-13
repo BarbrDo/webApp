@@ -14,7 +14,8 @@ const messages = {
     "saveSuccessfully": "Successfully saved.",
     "requiredFields": "Please pass the required fields.",
     "chairPostedSuccess": "Chair posted successfully",
-    "email": "ankushs.sdei@gmail.com"
+    "email": "ankushs.sdei@gmail.com",
+    "emailsend" : "Thank you! Your feedback has been submitted"
 
 }
 

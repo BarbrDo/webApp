@@ -1,3 +1,4 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
 <div class="crumb"> <span>Gallery</span> </div>
 <div class="wrapper" >
     <div class="customtab" ng-init="showgallery()">
@@ -45,7 +46,7 @@
                 <div class="row">
                     <form name="imageUploadForm">
                         <div class="col-md-4">
-                            <input type="file" ngf-select ng-model="uploadedImages" name="file" ngf-pattern="'image/*'" accept="image/*" ngf-max-size="10MB" class="text-center center-block well well-sm" style="color:#222222;font-size:14px;width:250px" required="" >
+                            <input type="file" id="fileupload" ngf-select ng-model="uploadedImages" name="file" ngf-pattern="'image/*'" accept="image/*" ngf-max-size="10MB" class="text-center center-block well well-sm" style="color:#222222;font-size:14px;width:250px" required="" >
                         </div>
                         <div class="col-md-4">
                             <button href="#"  ng-click="uploadImage(uploadedImages)" ng-disabled="imageUploadForm.$invalid" style="background-color: #f3ae65;"> <i class="fa fa-upload" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Upload

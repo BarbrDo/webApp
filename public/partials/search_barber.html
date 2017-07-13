@@ -1,6 +1,10 @@
 <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
-<div class="crumb" ng-init="searchbarber()"> <span>Search Barber</span> </div>
-<div class="wrapper">
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="barbershopdashboard">Shop Home</a></li>
+     <li class="breadcrumb-item">Manage Chair</li>
+    <li class="breadcrumb-item active">Search Barber</li>
+</ol>
+<div class="wrapper" ng-init="searchbarber()">
   <div class="block">
     <div class="col-md-6 col-md-offset-10">
      <span class="glyphicon glyphicon-search" style="color:purple"></span>

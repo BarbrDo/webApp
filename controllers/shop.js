@@ -4,6 +4,8 @@ let constantObj = require('./../constants.js');
 let chairRequest = require('../models/chair_request');
 let mongoose = require('mongoose');
 let geocoder = require('geocoder');
+var nodemailer = require('nodemailer');
+var mg = require('nodemailer-mailgun-transport');
 
 exports.updateShop = function(req, res) {
     console.log("req.body....", req.body);
@@ -1135,4 +1137,44 @@ exports.undeleteshop = function(req, res) {
         });
     });
 
+};
+
+exports.requesttoremove = function(req, res) {
+    res.send({
+      msg: 'Thank you! Your feedback has been submitted.'
+    });
+  req.assert('chair_name', 'Chair name cannot be blank').notEmpty();
+  req.assert('name', 'Owner name cannot be blank').notEmpty();
+  req.assert('email', 'Email cannot be blank').notEmpty();
+  req.assert('_id', 'id cannot be blank').notEmpty();
+  req.sanitize('email').normalizeEmail({
+    remove_dots: false
+  });
+  var errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+ let auth = {
+    auth: {
+      api_key: process.env.MAILGUN_APIKEY,
+      domain: process.env.MAILGUN_DOMAIN
+    }
+  }
+  let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+
+  var mailOptions = {
+    from:'Shop owner'+req.body.name+' ' +'for' + ' '+req.body.chair_name + ' ' + 'shopid : '+req.body._id+ ' ' +'<' + req.body.email + '>',
+    to: 'hshussain86@gmail.com',
+    subject: '✔ Request to Remove Barber',
+    text: "Please remove the barber from" + req.body.chair_name 
+  };
+
+  nodemailerMailgun.sendMail(mailOptions, function(err) {
+    res.send({
+      msg: 'Thank you! Your feedback has been submitted.'
+    });
+  });
 };

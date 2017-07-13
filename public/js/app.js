@@ -26,14 +26,13 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         controller: 'HeaderCtrl'
                     }
                 },
-<<<<<<< HEAD
             resolve: {
                 lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
                     var deferred = $q.defer();
                     $ocLazyLoad.load({
                         name: 'BarbrDoApp',
                         files: ['js/controllers/subScription.js',
-                            'js/services/shop.js'
+                            'js/services/shop.js','/js/services/account.js'
                         ]
                     }).then(function() {
                         deferred.resolve();
@@ -41,20 +40,6 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     return deferred.promise;
                 }]
             }
-=======
-                resolve: {
-                    lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
-                        var deferred = $q.defer();
-                        $ocLazyLoad.load({
-                            name: 'BarbrDoApp',
-                            files: ['/js/services/account.js']
-                        }).then(function() {
-                            deferred.resolve();
-                        });
-                        return deferred.promise;
-                    }]
-                }
->>>>>>> master
             })
 
         .state('barberHome', {

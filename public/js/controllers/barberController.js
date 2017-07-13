@@ -104,7 +104,6 @@ angular.module('BarbrDoApp')
         }
 
  	$scope.chairs = shp ;
- 	console.log(shp)
             
        
 			})

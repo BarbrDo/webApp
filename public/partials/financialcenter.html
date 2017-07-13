@@ -1,21 +1,21 @@
 
 <div class="crumb"> <span>Book Appointment</span> </div>
-<div class="wrapper">
+<div class="wrapper" ng-init="finacialcenter()">
   <div class="block">
     <h2>Sales Summary</h2>
     <div class="finance">
       <div class="row ">
         <div class="col-md-4 col-sm-4">
           <label>Total Sale</label>
-          <p>$0</p>
+          <p>${{sale.totalSale.length}}</p>
         </div>
         <div class="col-md-4 col-sm-4">
           <label>Current Month</label>
-          <p>$0</p>
+          <p>${{sale.monthSale.length}}</p>
         </div>
         <div class="col-md-4 col-sm-4">
           <label>Current Week</label>
-          <p>$0</p>
+          <p>${{sale.weekSale.length}}</p>
         </div>
       </div>
     </div>
@@ -28,13 +28,21 @@
         <div class="row finance">
         <div class="col-md-6 col-sm-6">
           <div class="contact-us  pz">
-            <input class="form-control" required="" value="" type="text">
+           <input type="text" class="form-control"  max-date="maxDate" uib-datepicker-popup="{{format}}" ng-model="startdate" is-open="popup1.opened"  ng-required="true" close-text="Close"  />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open1()" ><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+            <!-- <input class="form-control" required="" ng-model="startdate" type="text"> -->
             <div class="form-control-placeholder">Enter Start Date</div>
           </div>
         </div>
         <div class="col-md-6 col-sm-6">
           <div class="contact-us  pz">
-            <input class="form-control" required="" value="" type="text">
+          <input type="text" class="form-control" min-date="minDate" uib-datepicker-popup="{{format}}" ng-model="enddate" is-open="popup2.opened"  ng-required="true" close-text="Close" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+           <!--  <input class="form-control" required="" ng-model="enddate" type="text"> -->
             <div class="form-control-placeholder">Enter End Date</div>
           </div>
         </div> 
@@ -47,7 +55,7 @@
         <div class="row ">
         <div class="col-md-6 col-sm-6">
           <label>Total Sale</label>
-          <p>$0</p>
+          <p>${{sale.totalSale.length}}</p>
         </div>
        
         <div class="col-md-6 col-sm-6">

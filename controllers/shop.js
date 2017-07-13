@@ -1275,7 +1275,7 @@ exports.requesttoremove = function(req, res) {
       err: errors
     });
   }
-
+console.log("")
  let auth = {
     auth: {
       api_key: process.env.MAILGUN_APIKEY,
@@ -1292,8 +1292,8 @@ exports.requesttoremove = function(req, res) {
   };
 
   nodemailerMailgun.sendMail(mailOptions, function(err) {
-    res.send({
-      msg: 'Thank you! Your feedback has been submitted.'
+    res.status(200).send({
+      "msg": constantObj.messages.emailsend
     });
   });
 };

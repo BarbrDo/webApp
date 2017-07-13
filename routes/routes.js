@@ -71,6 +71,7 @@ module.exports = function(app, express) {
     app.put('/api/v1/shops/markchairasbooked/:chair_id',shopController.markChairAsBooked);
     app.put('/api/v1/shops/acceptrequest',chairRequestController.acceptRequest);
     app.get('/api/v1/shops/event',appointmentController.showEvents);
+    app.get('/api/v1/shops/sale/:startDate/:endDate',shopController.financeScreenResult);
     
     //Customer
     app.get('/api/v1/allcustomers',customerController.listcustomers);

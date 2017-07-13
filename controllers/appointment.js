@@ -2,6 +2,7 @@ let constantObj = require('./../constants.js');
 let appointment = require('../models/appointment');
 let user = require('../models/User');
 let shop = require('../models/shop');
+let barber = require('../models/barber');
 let moment = require('moment');
 let mongoose = require('mongoose');
 
@@ -245,16 +246,51 @@ exports.showEvents = function(req, res) {
 			appointment_status: 'confirm'
 		}
 	}]).exec(function(err, data) {
-		if (err) {
-			return res.status(400).send({
+            barber.aggregate([
+                    {
+                        $match: {
+                            "user_id":barber_id,
+                        }
+                    },
+                    {
+                        $unwind:"$events"
+                    },
+                    {
+                        $match:{
+                            "events.startsAt":{
+                                $gte: new Date(appointmentStartdate),
+                                $lt: new Date(appointmentEnddate)
+                            }
+                        }
+                    }
+
+                    ]).exec(function(err,eventsData){
+                        console.log(eventsData);
+                        if(err){
+                            return res.status(400).send({
 				msg: constantObj.messages.errorRetreivingData
-			});
-		} else {
-			return res.status(200).send({
-				msg: constantObj.messages.successRetreivingData,
-				data: data
-			});
-		}
+                            });
+                        }
+                        var events = [];
+                        if(eventsData.length > 0){
+                            return res.status(200).send({
+                                msg: constantObj.messages.successRetreivingData,
+                                data: {
+                                    events:[eventsData[0].events],
+                                    appointment:data
+
+                                }
+                            });
+                        } else {
+                            return res.status(200).send({
+                                msg: constantObj.messages.successRetreivingData,
+                                data: {
+                                    events:events,
+                                    appointment:data
+                                }
+                            });
+                        }
+                    })
 	})
 }
 exports.allPayments = function(req, res) {

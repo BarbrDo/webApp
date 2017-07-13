@@ -686,7 +686,7 @@ exports.shopdetail = function(req, res) {
     {
         $project:{
             _id:"$_id",
-            name: "$shop.name",
+            name: "$name",
             user_id: "$user_id",
             license_number: "$license_number",
             ratings: "$ratings",

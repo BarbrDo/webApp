@@ -629,7 +629,6 @@ exports.acceptRequest = function(req, res) {
                             })
                         }
                     ])
-                })
         }
     })
 }

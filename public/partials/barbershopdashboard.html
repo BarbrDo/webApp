@@ -1,7 +1,9 @@
-<div class="crumb" ng-init="shopInfo()"> <span>Manage Chair</span> </div>
-<div class="wrapper">
+<ol class="breadcrumb">
+    <li class="breadcrumb-item" active>Shop Home</li>
+</ol>
+<div class="wrapper" ng-init="shopInfo()">
     <div class="block">
-        <h2>Manage Chair</h2>
+        <h2>All Chairs</h2>
         <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat = "res in chairs.shop[0].chairs">
             <div class="barber toshop">
                 <div class="cont">

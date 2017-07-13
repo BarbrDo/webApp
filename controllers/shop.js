@@ -4,6 +4,8 @@ let constantObj = require('./../constants.js');
 let chairRequest = require('../models/chair_request');
 let mongoose = require('mongoose');
 let geocoder = require('geocoder');
+var nodemailer = require('nodemailer');
+var mg = require('nodemailer-mailgun-transport');
 
 exports.updateShop = function(req, res) {
     console.log("req.body....", req.body);
@@ -77,42 +79,46 @@ exports.shopContainsBarber = function(req, res) {
             console.log(result);
             // add ratings of a barber in result.chairs[i].barber_id.ratings
             // add ratings of a barber in result.chairs[i].barber_id.gallery
-            if(result){
-            if(result.chairs){
-                for (let i = 0; i < result.chairs.length; i++) {
-                    if (result.chairs[i].barber_id) {
-                        let obj = {
-                            _id: result.chairs[i].barber_id._id,
-                            first_name: result.chairs[i].barber_id.first_name,
-                            last_name: result.chairs[i].barber_id.last_name,
-                            picture: result.chairs[i].barber_id.picture,
-                            created_date: result.chairs[i].barber_id.created_date,
-                            ratings: result.chairs[i].barber_id.ratings,
-                            gallery: result.chairs[i].barber_id.gallery
+            if (result) {
+                if (result.chairs) {
+                    for (let i = 0; i < result.chairs.length; i++) {
+                        if (result.chairs[i].barber_id) {
+                            let obj = {
+                                _id: result.chairs[i].barber_id._id,
+                                first_name: result.chairs[i].barber_id.first_name,
+                                last_name: result.chairs[i].barber_id.last_name,
+                                picture: result.chairs[i].barber_id.picture,
+                                created_date: result.chairs[i].barber_id.created_date,
+                                ratings: result.chairs[i].barber_id.ratings,
+                                gallery: result.chairs[i].barber_id.gallery
+                            }
+                            resultTantArray.push(obj)
                         }
-                        resultTantArray.push(obj)
                     }
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": {
+                            name: result.name,
+                            _id: result._id,
+                            state: result.state,
+                            city: result.city,
+                            latLong: result.latLong,
+                            address: result.address,
+                            gallery: result.gallery,
+                            barber: resultTantArray,
+                            picture: result.picture,
+                            imagesPath: 'http://' + req.headers.host + '/' + 'uploadedFiles/'
+                        }
+                    })
+                } else {
+                    res.status(400).send({
+                        msg: "error in your request"
+                    });
                 }
-                res.status(200).send({
-                    "msg": constantObj.messages.successRetreivingData,
-                    "data": {
-                        name: result.name,
-                        _id: result._id,
-                        state: result.state,
-                        city: result.city,
-                        latLong: result.latLong,
-                        address: result.address,
-                        gallery: result.gallery,
-                        barber: resultTantArray,
-                        picture:result.picture,
-                        imagesPath: 'http://' + req.headers.host + '/' + 'uploadedFiles/'
-                    }
-                })
             } else {
                 res.status(400).send({
                     msg: "error in your request"
                 });
-            }
             }
         }
     })
@@ -693,39 +699,65 @@ exports.shopdetail = function(req, res) {
             license_number: "$license_number",
             ratings: "$ratings",
             latLong: "$latLong",
-            state: "$state",
-            city: "$city",
-            zip: "$zip",
-            address: "$address",
-            chairs:{
-                 _id: "$chairs._id",
-                isActive: "$chairs.isActive",
-                availability: "$chairs.availability",
-                name: "$chairs.name",
-                shop_percentage: "$chairs.shop_percentage",
-                type: "$chairs.type",
-                barber_percentage: "$chairs.barber_percentage",
-                booking_start: "$chairs.booking_start",
-                booking_end: "$chairs.booking_end",
-                amount: "$chairs.amount",
-                barber_id: "$chairs.barber_id",
-                barberRequest:"$barberRequests",
-                barberInfo:"$barberinfo",
-            }
+            picture: "$picture",
+            shopinfo: "$shopinfo",
+            gallery:"$gallery"
         }
-    },
-    {
-        $group:{
-            _id:"$_id",
-            name:{$first:"$name"},
-            license_number: {$first: "$license_number"},
-            ratings: {$first: "$ratings"},
-            latLong: {$first: "$latLong"},
-            state: {$first: "$state"},
-            city: {$first: "$city"},
-            zip: {$first: "$zip"},
-            address: {$first: "$address"},
-            chairs:{$push:"$chairs"}, 
+    }]).exec(function(err, result) {
+        if (err) {
+            res.status(400).send({
+                "msg": constantObj.messages.userStatusUpdateFailure,
+                "err": err
+            });
+        } else {
+            console.log(result)
+            res.status(200).send({
+                "msg": constantObj.messages.successRetreivingData,
+                "data": result
+            })
+        }
+    })
+};
+
+exports.shopownerhavingshops = function(req, res) {
+    req.checkParams("user_id", "user_id cannot be blank").notEmpty();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    var query = {};
+    query._id = mongoose.Types.ObjectId(req.params.user_id);
+    console.log(req.params.user_id)
+    user.aggregate([{
+        $match: query
+    }, {
+        $lookup: {
+            from: "shops",
+            localField: "_id",
+            foreignField: "user_id",
+            as: "shopinfo"
+        }
+    }, {
+        $project: {
+            _id: "$_id",
+            first_name: "$first_name",
+            last_name: "$last_name",
+            email: "$email",
+            mobile_number: "$mobile_number",
+            created_date: "$created_date",
+            ratings: "$ratings",
+            is_deleted: "$is_deleted",
+            is_active: "$is_active",
+            is_verified: "$is_verified",
+            user_type: "$user_type",
+            latLong: "$latLong",
+            picture: "$picture",
+            shopinfo: "$shopinfo",
+            gallery:"$gallery"
         }
     }]).exec(function(err, result) {
         if (err) {
@@ -842,7 +874,7 @@ exports.getDataForBookNowPage = function(req, res) {
                 },
                 "rating": {
                     "$first": "$barberInformation.rating"
-                }
+                },
             }
         }]).exec(function(err, result) {
             if (err) {
@@ -1197,6 +1229,44 @@ exports.undeleteshop = function(req, res) {
         });
     });
 
+};
+
+exports.requesttoremove = function(req, res) {
+  req.assert('chair_name', 'Chair name cannot be blank').notEmpty();
+  req.assert('name', 'Owner name cannot be blank').notEmpty();
+  req.assert('email', 'Email cannot be blank').notEmpty();
+
+  req.sanitize('email').normalizeEmail({
+    remove_dots: false
+  });
+  var errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+
+ let auth = {
+    auth: {
+      api_key: process.env.MAILGUN_APIKEY,
+      domain: process.env.MAILGUN_DOMAIN
+    }
+  }
+  let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+
+  var mailOptions = {
+    from: req.body.name + ' ' + '<' + req.body.email + '>',
+    to: 'hshussain86@gmail.com',
+    subject: '✔ Request to Remove Barber',
+    text: "Please remove the barber from" + ' ' +  req.body.chair_name 
+  };
+
+  nodemailerMailgun.sendMail(mailOptions, function(err) {
+    res.send({
+      msg: 'Thank you! Your feedback has been submitted.'
+    });
+  });
 };
 
 exports.financeScreenResult = function (req, res) {

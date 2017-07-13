@@ -6,7 +6,8 @@
         <uib-tabset active="activeJustified" justified="true" ng-init="requesterdetails()">
             <uib-tab index="0" heading="No.of cuts">
                 <div class="block">
-                    <!--<h2>No.of cuts</h2>-->
+                     <span ng-if="ratings==''"><h3 align="center">No Ratings are there</h3></span>
+                    <span ng-if="ratings!=''">
                     <div class="all_cuts">
                         <div class="table-responsive">
                             <table class="table table-bordered"  >
@@ -28,11 +29,13 @@
                             </table>
                         </div>
                     </div>
+                    </span>
                 </div>
             </uib-tab>
             <uib-tab index="1" heading="Gallery" >
                 <div class="block">
-                    <!-- <h2>Gallery</h2>-->
+                    <span ng-if="gallery==''"><h3 align="center">No images in gallery</h3></span>
+                    <span ng-if="gallery!=''">
                     <div class="allgallery">
                         <div class="row">
                             <div class="col-md-3 col-sm-4 " ng-repeat="pic in gallery">
@@ -40,6 +43,7 @@
                             </div>
                         </div>
                     </div>
+                    </span>
                 </div>
             </uib-tab>
         </uib-tabset>

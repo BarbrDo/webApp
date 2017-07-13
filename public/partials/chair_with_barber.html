@@ -1,4 +1,7 @@
-<div class="crumb"> <span>Manage Chair</span> </div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="barbershopdashboard">Shop Home</a></li>
+    <li class="breadcrumb-item active">Manage Chair</li>
+</ol>
 <div class="wrapper" ng-init="chairdetails()">
     <div class="col-md-12">
         <h3 class="actn"> Chair {{chairName}}</h3>
@@ -15,7 +18,7 @@
                          <p ng-if="chairs.type=='weekly' || chairs.type=='monthly'"><span>{{chairs.type}}</span> : ${{chairs.amount}}</p></div>
                          <div class="col-md-6">
                          <p ng-if="chairs.availability">Availability : <span>{{chairs.availability}}</span></p></div><br><br>
-                        <p align="center"><a href="#" class="btn btn-danger">Request to remove Barber</a></p>
+                        <p align="center"><a href="#" class="btn btn-danger" ng-click="removebarber(chairs)">Request to remove Barber</a></p>
                     </div>
                 </div>
             </div>

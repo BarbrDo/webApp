@@ -1,7 +1,7 @@
 angular.module('BarbrDoApp')
 	.controller('barberCtrl', function($scope, $rootScope, $location, barber, $stateParams, $state, $window, toastr) {
 		var objj = JSON.parse($window.localStorage.user);
-		$scope.imgPathselectedDate = $window.localStorage.imagePath;
+		$scope.imgPath = $window.localStorage.imagePath;
 		$scope.search = {};
 
 		
@@ -104,7 +104,6 @@ angular.module('BarbrDoApp')
         }
 
  	$scope.chairs = shp ;
- 	console.log(shp)
             
        
 			})
@@ -240,6 +239,7 @@ angular.module('BarbrDoApp')
 		$scope.managerequests = function() {
 			barber.manageRequest().then(function(response) {
 				$rootScope.shoprequest = response.data.result ;
+				console.log(response.data.result)
 				if(response.data.result=='')
 				{
 					console.log("rah",response)
@@ -269,6 +269,7 @@ angular.module('BarbrDoApp')
 			barber.acceptRequest(chair).then(function(response) {
 				toastr.success('Request is Accepted successfully');
 				$scope.managerequests();
+				console.log("heyyu",response)
 			}).catch(function(result) {
 				toastr.warning('Invalid request ! Chair split Required');
 			})

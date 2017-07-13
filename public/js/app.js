@@ -26,18 +26,20 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         controller: 'HeaderCtrl'
                     }
                 },
-                resolve: {
-                    lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
-                        var deferred = $q.defer();
-                        $ocLazyLoad.load({
-                            name: 'BarbrDoApp',
-                            files: ['/js/services/account.js']
-                        }).then(function() {
-                            deferred.resolve();
-                        });
-                        return deferred.promise;
-                    }]
-                }
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/subScription.js',
+                            'js/services/shop.js','/js/services/account.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
+            }
             })
 
         .state('barberHome', {
@@ -265,6 +267,37 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             views: {
                 "homeDash": {
                     templateUrl: 'partials/customer_upcoming_completed.html',
+                    controller: "dashboardCtrl"
+                },
+                "header": {
+                    templateUrl: 'partials/headerAfterLogin.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/afterLoginSideBar.html'
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/dashboard.js',
+                            'js/services/customer.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
+            }
+        })
+
+        .state('upcomingdetail', {
+            url: '/upcoming_appointment_details',
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/upcoming_details.html',
                     controller: "dashboardCtrl"
                 },
                 "header": {
@@ -1480,7 +1513,8 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             url: '/financialcenter',
             views: {
                 "homeDash": {
-                    templateUrl: 'partials/financialcenter.html'
+                    templateUrl: 'partials/financialcenter.html',
+                    controller: "shopCtrl"
                 },
                 "header": {
                     templateUrl: 'partials/barber_shop_header.html',
@@ -1489,6 +1523,20 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 "sideBar": {
                     templateUrl: 'partials/barbershopSideBar.html'
                 }
+            },
+             resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/shopController.js',
+                            'js/services/shop.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
             }
         })
 

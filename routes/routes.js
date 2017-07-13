@@ -72,6 +72,7 @@ module.exports = function(app, express) {
     app.put('/api/v1/shops/acceptrequest',chairRequestController.acceptRequest);
     app.get('/api/v1/shops/event',appointmentController.showEvents);
     app.get('/api/v1/shops/sale/:startDate/:endDate',shopController.financeScreenResult);
+     app.get('/api/v1/shopdetail/:user_id', shopController.shopdetail);//get Shopdetails
     
     //Customer
     app.get('/api/v1/allcustomers',customerController.listcustomers);

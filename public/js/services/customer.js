@@ -115,6 +115,13 @@ angular.module('BarbrDoApp')
           data:data,
         },data);
       },
+      timeavailability: function(data) {
+        return $http({
+          method: 'GET',
+          url: '/api/v1/barber/timeavailability/'+data.barberid,
+          params: {date:data.date},
+        });
+      },
       getEvents:function (data) {
         return $http({
           method: 'post',

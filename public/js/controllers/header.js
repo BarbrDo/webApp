@@ -197,15 +197,19 @@ angular.module('BarbrDoApp')
       });
     }
     $scope.forgotPassword = function() {
+      $scope.loaderStart = true;
       shop.forgotPassword($scope.user)
         .then(function(response) {
           toastr.success(response.data.msg);
           $('#forgotpassword').modal('hide');
+          $scope.loaderStart = false;
         })
         .catch(function(response) {
-          $scope.messages = {
-            error: Array.isArray(response.data) ? response.data : [response.data]
-          };
+          console.log(response)
+          toastr.error(response.data.msg);
+          $('#forgotpassword').modal('hide');
+          $scope.user.email = '' ;
+          $scope.loaderStart = false;
         });
     };
 

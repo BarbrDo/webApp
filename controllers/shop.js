@@ -669,7 +669,6 @@ exports.shopdetail = function(req, res) {
     },{
         $project: {
             _id: "$_id",
-           
             name: "$name",
             user_id: "$user_id",
             license_number: "$license_number",
@@ -699,9 +698,39 @@ exports.shopdetail = function(req, res) {
             license_number: "$license_number",
             ratings: "$ratings",
             latLong: "$latLong",
-            picture: "$picture",
-            shopinfo: "$shopinfo",
-            gallery:"$gallery"
+            state: "$state",
+            city: "$city",
+            zip: "$zip",
+            address: "$address",
+            chairs:{
+                 _id: "$chairs._id",
+                isActive: "$chairs.isActive",
+                availability: "$chairs.availability",
+                name: "$chairs.name",
+                shop_percentage: "$chairs.shop_percentage",
+                type: "$chairs.type",
+                barber_percentage: "$chairs.barber_percentage",
+                booking_start: "$chairs.booking_start",
+                booking_end: "$chairs.booking_end",
+                amount: "$chairs.amount",
+                barber_id: "$chairs.barber_id",
+                barberRequest:"$barberRequests",
+                barberInfo:"$barberinfo",
+            }
+        }
+    },
+    {
+        $group:{
+            _id:"$_id",
+            name:{$first:"$name"},
+            license_number: {$first: "$license_number"},
+            ratings: {$first: "$ratings"},
+            latLong: {$first: "$latLong"},
+            state: {$first: "$state"},
+            city: {$first: "$city"},
+            zip: {$first: "$zip"},
+            address: {$first: "$address"},
+            chairs:{$push:"$chairs"}, 
         }
     }]).exec(function(err, result) {
         if (err) {

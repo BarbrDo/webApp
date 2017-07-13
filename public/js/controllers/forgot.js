@@ -1,5 +1,5 @@
 angular.module('BarbrDoApp')
-  .controller('ForgotCtrl', function($scope,$stateParams, $state,Account,toastr,$auth) {
+  .controller('ForgotCtrl', function($scope,$stateParams, $state,Account,toastr,$auth,$window) {
     
     if($state.current.name == 'accountActivate'){
       $scope.loaderStart = true;

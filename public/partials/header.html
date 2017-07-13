@@ -1,3 +1,4 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
 <header ng-controller="HeaderCtrl">
     <!--top-header-->
     <div class="top-header">
@@ -241,12 +242,6 @@
 
  <div class="modal " id="forgotpassword" role="dialog" >
         <div class="modal-dialog">
-        <div ng-if="messages.error" role="alert" class="alert alert-danger">
-        <div ng-repeat="error in messages.error">{{error.msg}}</div>
-      </div>
-      <div ng-if="messages.success" role="alert" class="alert alert-success">
-        <div ng-repeat="success in messages.success">{{success.msg}}</div>
-      </div>
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header" style="background-color: #27499e;">

@@ -77,6 +77,7 @@ exports.shopContainsBarber = function(req, res) {
             console.log(result);
             // add ratings of a barber in result.chairs[i].barber_id.ratings
             // add ratings of a barber in result.chairs[i].barber_id.gallery
+            if(result){
             if(result.chairs){
                 for (let i = 0; i < result.chairs.length; i++) {
                     if (result.chairs[i].barber_id) {
@@ -111,6 +112,7 @@ exports.shopContainsBarber = function(req, res) {
                 res.status(400).send({
                     msg: "error in your request"
                 });
+            }
             }
         }
     })

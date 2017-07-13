@@ -8,9 +8,9 @@ angular.module('BarbrDoApp')
 			'longitude': "75.955033"
 		}
 		$scope.callFunctions = function() {
-				$scope.shoplist();
-				$scope.barberList();
-			}
+			$scope.shoplist();
+			$scope.barberList();
+		}
 		$scope.shoplist = function() {
 			obj.search = $scope.search.searchShop;
 			$scope.loaderStart = true;
@@ -150,6 +150,8 @@ angular.module('BarbrDoApp')
 					$state.go('pending', {
 						_id: response.data.data._id
 					});
+				}).catch(function(err) {
+					toastr.error('Something went wrong!Please try again later.');
 				});
 		}
 		$scope.appointments = function() {
@@ -229,11 +231,9 @@ angular.module('BarbrDoApp')
 						toastr.success('Image uploaded in gallery succesfully');
 						$scope.userGallery = res.data.user;
 					})
-
-
 				})
 				.error(function(err) {
-						$scope.loaderStart = false;
+					$scope.loaderStart = false;
 					toastr.error('There was some error uploading your files. Please try Uploading them again.');
 				});
 		}
@@ -321,14 +321,34 @@ angular.module('BarbrDoApp')
 					console.log("token here", result.token.id);
 					successElement.querySelector('.token').textContent = result.token.id;
 					successElement.classList.add('visible');
-					var obj = {
-						token: result.token.id,
-						amount :$scope.annualCost
+
+					console.log($scope.selected);
+					var myarr = [];
+					for (var i = 0; i < $scope.selected.length; i++) {
+						var cusObj = {};
+						cusObj.name = $scope.selected[i].name;
+						cusObj.price = $scope.selected[i].price;
+						myarr.push(cusObj);
 					}
+					var obj = {
+						"shop_id": $stateParams.shop_id,
+						"barber_id": $stateParams.barber_id,
+						"services": myarr,
+						"appointment_date": $scope.selectedDate + " " + $scope.choosedTime,
+						"payment_method": "cash",
+						"token": result.token.id,
+						"amount": $scope.annualCost
+					}
+
+					console.log("combined", obj);
 					customer.chargeCustomer(obj)
 						.then(function(response) {
-							$scope.profileInfo = response.data.user;
-						})
+							$state.go('pending', {
+								_id: response.data.data._id
+							});
+						}).catch(function(err) {
+							toastr.error('Something went wrong!Please try again later.');
+						});
 
 				} else if (result.error) {
 					errorElement.textContent = result.error.message;

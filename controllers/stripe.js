@@ -12,6 +12,8 @@ let commonObj = require('../common/common');
 let stripeToken = process.env.STRIPE
 let stripe = require('stripe')(stripeToken);
 let barberFile = require('./barber.js');
+let AppointmentController = require('./appointment.js')
+
 // let barberServices = require('./../controllers/barber');
 
 exports.featuringPlans = function(req, res) {
@@ -64,6 +66,7 @@ exports.createCharges = function(req, res) {
         stripe.charges.create({
           amount: chargeAmount,
           currency: "usd",
+          capture:false,
           customer: customer.id,
         }).then(function(charge) {
           res.status(200).send({
@@ -80,13 +83,15 @@ exports.createCharges = function(req, res) {
           return stripe.charges.create({
             amount: 1000,
             currency: "usd",
+            capture:false,
             customer: customer.id,
           });
         }).then(function(charge) {
-          res.status(200).send({
-            msg: "charges created.",
-            "data": charge
-          });
+          console.log("stripe",req.body)
+          req.body.payment_status = "confirm";
+          AppointmentController.takeAppointment(req,res,function (req,res) {
+              
+          })
         });
       }
     }

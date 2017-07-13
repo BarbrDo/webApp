@@ -121,7 +121,7 @@ module.exports = function(app, express) {
 
     // Stripe Implementation API
     app.get('/api/v1/stripe/plans', stripeController.featuringPlans);
-    //app.post('/api/v1/subscribe',userController.subscribe);
+    app.post('/api/v1/stripe/subscribe',userController.subscribe);
     app.post('/api/v1/stripe/createPlan',stripeController.createPlan);
     app.post('/api/v1/stripe/createCharges',stripeController.createCharges);
     app.post('/api/v1/stripe/webhooks',userController.stripeWebhook);

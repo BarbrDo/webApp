@@ -30,6 +30,10 @@ var userSchema = new mongoose.Schema({
         enum:["customer","barber","shop"],
         require: true,
     },
+    subscription:{
+        type: Boolean,
+        default: false
+    },
     stripe_customer:[],
     stripe_subscription:[],
     radius_search: Number,

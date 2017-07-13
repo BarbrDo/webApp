@@ -14,9 +14,7 @@ exports.takeAppointment = function (req, res) {
     req.assert("services", "servies cannot be blank").notEmpty();
     req.assert("appointment_date", "appointment_date cannot be blank").notEmpty();
     req.assert("payment_method", "payment_method cannot be blank").notEmpty();
-    if (req.body.payment_method == 'card') {
-        req.assert("card_lastfourdigit", "card_lastfourdigit cannot be blank").notEmpty();
-    }
+    
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({

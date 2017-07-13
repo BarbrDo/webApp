@@ -137,54 +137,54 @@ let saveShop = function(saveDataForShop, resetUrl, user, req, res) {
 }
 
 let accountActivateMailFunction = function(req, res, user, resetUrl) {
-  console.log("accountActivateMailFunction", user);
-  let auth = {
-    auth: {
-      api_key: process.env.MAILGUN_APIKEY,
-      domain: process.env.MAILGUN_DOMAIN
+    console.log("accountActivateMailFunction", user);
+    let auth = {
+      auth: {
+        api_key: process.env.MAILGUN_APIKEY,
+        domain: process.env.MAILGUN_DOMAIN
+      }
+    }
+    let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+    let mailOptions = {
+      to: user.email,
+      from: 'support@barbrdo.com',
+      subject: '✔ Activate Your Account',
+      text: 'Please Activate your account by clicking link \n\n' + resetUrl + '\n\n'
+    };
+    console.log(user);
+    if (!user.facebook) {
+      nodemailerMailgun.sendMail(mailOptions, function(err, info) {
+        res.send({
+          msg: 'An email has been sent to ' + user.email + ' with further instructions.'
+        });
+      });
+    } else {
+      res.status(200).send({
+        user: user,
+        token: generateToken(user),
+        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+      });
     }
   }
-  let nodemailerMailgun = nodemailer.createTransport(mg(auth));
-  let mailOptions = {
-    to: user.email,
-    from: 'support@barbrdo.com',
-    subject: '✔ Activate Your Account',
-    text: 'Please Activate your account by clicking link \n\n' + resetUrl + '\n\n'
-  };
-  console.log(user);
-  if (!user.facebook) {
-    nodemailerMailgun.sendMail(mailOptions, function(err, info) {
-      res.send({
-        msg: 'An email has been sent to ' + user.email + ' with further instructions.'
-      });
-    });
-  } else {
-    res.status(200).send({
-      user: user,
-      token: generateToken(user),
-      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-    });
-  }
-}
-/*
----------------------------------
-Pre version of sign up function
----------------------------------
-*/
-// exports.signupPost = function(req, res, next) {
-//   console.log(req.body);
-//   req.assert('first_name', 'First name cannot be blank.').notEmpty();
-//   req.assert('last_name', 'Last name cannot be blank.').notEmpty();
-//   req.assert('email', 'Email is not valid').isEmail();
-//   req.assert('email', 'Email cannot be blank').notEmpty();
-//   req.assert('mobile_number', 'Mobile number cannot be blank').notEmpty();
-//   if (!req.body.facebook) {
-//     req.assert('password', 'Password must be at least 6 characters long').len(6);
-//   }
-//   req.assert('user_type', 'User type cannot be blank').notEmpty();
-//   if (req.body.user_type == 'shop' || req.body.user_type == 'barber') {
-//     req.assert('license_number', 'License number cannot be blank').notEmpty();
-//   }
+  /*
+  ---------------------------------
+  Pre version of sign up function
+  ---------------------------------
+  */
+  // exports.signupPost = function(req, res, next) {
+  //   console.log(req.body);
+  //   req.assert('first_name', 'First name cannot be blank.').notEmpty();
+  //   req.assert('last_name', 'Last name cannot be blank.').notEmpty();
+  //   req.assert('email', 'Email is not valid').isEmail();
+  //   req.assert('email', 'Email cannot be blank').notEmpty();
+  //   req.assert('mobile_number', 'Mobile number cannot be blank').notEmpty();
+  //   if (!req.body.facebook) {
+  //     req.assert('password', 'Password must be at least 6 characters long').len(6);
+  //   }
+  //   req.assert('user_type', 'User type cannot be blank').notEmpty();
+  //   if (req.body.user_type == 'shop' || req.body.user_type == 'barber') {
+  //     req.assert('license_number', 'License number cannot be blank').notEmpty();
+  //   }
 
 //   req.sanitize('email').normalizeEmail({
 //     remove_dots: false
@@ -1268,33 +1268,97 @@ exports.activate = function(req, res) {
   console.log("req.body", req.body);
   if (req.body.email) {
     let email = commonObj.decrypt(req.body.email);
-  }
-  let randomcode = req.body.randomString;
-  console.log(email, randomcode)
-
-  User.findOne({
-      email: email,
-      randomString: randomcode
-    })
-    .exec(function(err, user) {
-      console.log(err, user)
-      if (!user) {
-        return res.status(400).send({
-          msg: err
+    let randomcode = req.body.randomString;
+    console.log(email, randomcode)
+    User.findOne({
+        email: email,
+        randomString: randomcode
+      })
+      .exec(function(err, user) {
+        console.log(err, user)
+        if (!user) {
+          return res.status(400).send({
+            msg: err
+          });
+        }
+        user.randomString = undefined;
+        user.isActive = true;
+        user.is_verified = true;
+        user.remark = "You account is verfied now.";
+        user.save(function(err) {
+          res.status(200).send({
+            msg: "You have successfully activated Your Account !  Please Login again to continue."
+          })
         });
-      }
-      user.randomString = undefined;
-      user.isActive = true;
-      user.is_verified = true;
-      user.save(function(err) {
-        res.status(200).send({
-          msg: "You have successfully activated Your Account !  Please Login again to continue."
-        })
       });
-    });
+  }
 }
 
+exports.usersRecords = function(req, res) {
+  async.parallel({
+    one: function(parallelCb) {
+      User.find({
+        "$where": "this.stripe_subscription.length>0"
+      }, function(err, result) {
+        parallelCb(null, result)
+      });
+    },
+    two: function(parallelCb) {
+      User.find({
+        "user_type": "customer"
+      }, function(err, result) {
+        parallelCb(null, result)
+      });
+    }
+  }, function(err, results) {
+    // results will have the results of all 3
+    console.log("subscription", results.one);
+    console.log("customer", results.two);
+    res.status(200).send({
+      msg: constantObj.messages.successRetreivingData,
+      subscription: results.one,
+      customer: results.two
+    });
+  });
+}
 
+exports.totalUsers = function(req, res) {
+  async.parallel({
+    one: function(parallelCb) {
+      User.find({
+        "user_type": "barber",
+        "$where": "this.stripe_subscription.length>0"
+      }, function(err, result) {
+        parallelCb(null, result)
+      });
+    },
+    two: function(parallelCb) {
+      User.find({
+        "user_type": "shop",
+        "$where": "this.stripe_subscription.length>0"
+      }, function(err, result) {
+        parallelCb(null, result)
+      });
+    },
+    three: function(parallelCb) {
+      User.find({
+        "user_type": "customer"
+      }, function(err, result) {
+        parallelCb(null, result)
+      });
+    }
+  }, function(err, results) {
+    // results will have the results of all 3
+    console.log("subscription", results.one);
+    console.log("customer", results.two);
+    res.status(200).send({
+      msg: constantObj.messages.successRetreivingData,
+      barber_subscription: results.one.length,
+      shop_subscription: results.two.length,
+      customer: results.three.length
+    });
+  });
+}
 
 /*exports.signupPostWeb = function(req, res, next) {
   req.assert('first_name', 'First name cannot be blank.').notEmpty();
@@ -1453,7 +1517,7 @@ exports.activate = function(req, res) {
 }
 */
 
-/*
+
 exports.subscribe = function(req, res) {
   req.checkHeaders("user_id", "User id is required.").notEmpty();
   req.assert("card_number", "Card number is required.").notEmpty();
@@ -1479,61 +1543,18 @@ exports.subscribe = function(req, res) {
     } else {
       console.log("user_id", data);
       if (data.stripe_customer.length > 0) {
-        let customerId = data.stripe_customer[0].id
-        console.log(customerId);
-        stripe.customers.createSource(customerId, {
-          source: {
-            object: 'card',
-            exp_month: req.body.month,
-            exp_year: req.body.year,
-            number: req.body.card_number,
-            cvc: req.body.cvc
-          }
-        }).then(function(source) {
-          console.log("stripe.customers.createSource ", source)
-          return stripe.subscriptions.create({
-            customer: customerId,
-            plan: req.body.plan
-          }, function(err, subscription) {
-            if (err) {
-              res.status(400).send({
-                msg: "Error occurred in subscription.",
-                "err": err
-              });
-            } else {
-              console.log("subscription", subscription);
-              User.update({
-                _id: req.headers.user_id
-              }, {
-                $set: {
-                  stripe_subscription: subscription
-                }
-              }, function(err, result) {
-                if (err) {
-                  res.status(400).send({
-                    msg: "Error occurred in subscription.",
-                    "err": err
-                  });
-                } else {
-                  User.findOne({
-                    _id: req.headers.user_id
-                  }).exec(function(err, user) {
-                    res.send({
-                      token: generateToken(user),
-                      user: user.toJSON(),
-                      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-                    });
-                  })
-                }
-              })
-            }
-          }).catch(function(err) {
-            res.status(400).send({
-              msg: "Error occurred in subscription.",
-              "err": err
-            });
-          });
-        })
+        stripe.customers.create({
+            email: req.body.stripeEmail,
+            source: req.body.stripeToken
+          })
+          .then(customer =>
+            stripe.charges.create({
+              amount,
+              description: "Sample Charge",
+              currency: "usd",
+              customer: customer.id
+            }))
+          .then(charge => console.log(charge));
       } else {
         stripe.customers.create({
           email: data.email,
@@ -1618,7 +1639,7 @@ exports.subscribe = function(req, res) {
   })
 }
 
-*/
+
 
 exports.stripeWebhook = function(req, res, next) {
   console.log(req.body);

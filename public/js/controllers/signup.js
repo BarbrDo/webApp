@@ -1,11 +1,7 @@
 angular.module('BarbrDoApp')
   .controller('SignupCtrl', function($scope, $rootScope, $location, $window, $auth) {
     $scope.messagess = {};
-    $scope.active={val:0};
-    $scope.changeTab = function(tab){
-      console.log('tab',tab);
-      $scope.active.val = tab;
-    }
+    
     $scope.signup = function() {
       $auth.signup($scope.user)
         .then(function(response) {

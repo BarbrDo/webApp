@@ -1,0 +1,67 @@
+<div ng-controller="reportCtrl as vm">
+    <div ng-if="vm.loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+        <li class="breadcrumb-item active">Payment</li>
+    </ol>
+    <div class="clearfix panel" ng-init="vm.graphicData()">
+    <div class="col-sm-4 clearfix">
+        <a  ><div class="panel-body dashboard-box clearfix">
+            <div class="col-md-6 box-left"><i class="icon" ng-include="'svgAdmin/user.svg'"></i></div>
+            <div class="col-md-6 box-right text-right"><label>Total Subscribed Barbers</label><span>{{vm.totalBarberSubscriptions}}</span></div>
+        </div></a>
+    </div>
+    <div class="col-sm-4 clearfix">
+        <a  ><div class="panel-body dashboard-box clearfix">
+            <div class="col-md-6 box-left"><i class="icon" ng-include="'svgAdmin/factory.svg'"></i></div>
+            <div class="col-md-6 box-right text-right"><label>Total Subscribed Shops</label><span>{{vm.totalShopSubscriptions}}</span></div>
+        </div></a>
+    </div>
+    <div class="col-sm-4 clearfix">
+        <a  ><div class="panel-body dashboard-box clearfix">
+            <div class="col-md-6 box-left"><i class="icon" ng-include="'svgAdmin/users.svg'"></i></div>
+            <div class="col-md-6 box-right text-right"><label>Total Customers</label><span>{{vm.totalCustomer}}</span></div>
+        </div>
+    </div></a>
+</div>
+    <div class="panel" ng-init="pageChanged()">
+        <div class="panel-heading">
+            All Payments
+        </div>
+        <div class="panel-body" ng-init="vm.allRecords()">
+            <!-- RAHUL  CODE -->
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-6" style="margin-left: 300px;">
+                        </div>
+                        <div>
+                            <!-- <button type="button" class="btn btn-default" ng-click="vm.open('open','add')('lg')">Add Plan</button> -->
+                            <!-- <input ng-model="myobj.search" placeholder="Search for..." ng-change="pageChanged()" /> -->
+                        </div>
+                    </div>
+                    <uib-tabset active="activeJustified" justified="true">
+                        <uib-tab index="0" heading="Subscription based customer">
+                            <table class="table table-bordered">
+                            </table>
+                            <div ng-if="vm.subscriptions.length==0"><center>No record found</center></div>
+                        </uib-tab>
+                         <uib-tab index="1" heading="Total Customer" >
+                         <table class="table table-bordered">
+                             
+                         </table>
+                         </uib-tab>
+                    </uib-tabset>
+                </div>
+                <div>
+                    <!-- <div class="col-sm-6">
+                        <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="pageChanged()"></ul>
+                    </div> -->
+                    <br>
+                </div>
+                <!-- Modal -->
+            </div>
+        </div>
+    </div>
+</div>

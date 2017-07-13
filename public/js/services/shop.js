@@ -15,6 +15,9 @@ angular.module('BarbrDoApp')
           }
         });
       },
+      forgotPassword: function (data) {
+            return $http.post('/api/v1/forgot', data);
+        },
       barbers: function(data) {
         console.log(data)
         if (data.search) {
@@ -155,7 +158,7 @@ angular.module('BarbrDoApp')
         return $http.get('/api/v1/barberdetail/' + data, data);
       },
       plans: function(data) {
-        return $http.get('/api/v1/plans', data);
+        return $http.get('/api/v1/stripe/plans', data);
       },
       deleteImage: function(data) {
         return $http({

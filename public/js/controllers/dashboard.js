@@ -1,7 +1,7 @@
 angular.module('BarbrDoApp')
 	.controller('dashboardCtrl', function($scope, $rootScope, $filter,$location, customer, $stateParams, $state, $window, ngTableParams, $timeout, $http, toastr) {
 		$scope.dollarAmmount = 0.00;
-		$scope.annualCost = "$" + $scope.dollarAmmount;
+		$scope.annualCost =  $scope.dollarAmmount;
 		$scope.search = {};
 		var obj = {
 			'latitude': "30.538994",
@@ -158,7 +158,7 @@ angular.module('BarbrDoApp')
 					}
 				}
 			}
-			$scope.annualCost = "$" + $scope.dollarAmmount;
+			$scope.annualCost = $scope.dollarAmmount;
 		};
 
 		$scope.payLater = function() {

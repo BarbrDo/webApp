@@ -204,7 +204,7 @@ button:active {
              </span>
         </div>
         <div class="totl" ng-if="barberservice!=''">
-            <p>Total <span>{{annualCost}}</span></p>
+            <p>Total <span>${{annualCost}}</span></p>
         </div>
         <div class="row" ng-if="barberservice!=''">
             <div class="col-md-6">
@@ -241,7 +241,7 @@ button:active {
     <span>Card</span>
     <div id="card-element" class="field"></div>
   </label>
-  <button type="submit">Pay {{annualCost}}</button>
+  <button type="submit">Pay ${{annualCost}}</button>
   <div class="outcome">
     <div class="error" role="alert"></div>
     <div class="success">

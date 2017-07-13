@@ -51,6 +51,7 @@ exports.createCharges = function(req, res) {
     }
     console.log(req.body);
     let chargeAmount = req.body.amount * 100;
+    console.log(chargeAmount);
     User.findOne({
         _id: req.headers.user_id
     }, function (err, data) {
@@ -69,7 +70,9 @@ exports.createCharges = function(req, res) {
                     capture: false,
                     customer: data.id,
                 }).then(function (charge) {
+                  console.log("charge",charge)
                     req.body.payment_status = "confirm";
+                    req.body.payment_detail = charge;
                     AppointmentController.takeAppointment(req, res, function (req, res) {
 
                     })
@@ -89,6 +92,9 @@ exports.createCharges = function(req, res) {
                 }).then(function (charge) {
                     console.log("stripe", req.body)
                     req.body.payment_status = "confirm";
+                     console.log("charge",charge)
+                    req.body.payment_status = "confirm";
+                    req.body.payment_detail = charge;
                     AppointmentController.takeAppointment(req, res, function (req, res) {
 
                     })

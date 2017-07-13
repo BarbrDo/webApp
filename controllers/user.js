@@ -1267,34 +1267,39 @@ exports.getProfiles = function(req, res) {
   })
 }
 
-exports.activate = function(req, res) {
-  console.log("req.body", req.body);
-  if (req.body.email) {
-    let email = commonObj.decrypt(req.body.email);
-    let randomcode = req.body.randomString;
-    console.log(email, randomcode)
-    User.findOne({
-        email: email,
-        randomString: randomcode
-      })
-      .exec(function(err, user) {
-        console.log(err, user)
-        if (!user) {
-          return res.status(400).send({
-            msg: err
-          });
-        }
-        user.randomString = undefined;
-        user.isActive = true;
-        user.is_verified = true;
-        user.remark = "You account is verfied now.";
-        user.save(function(err) {
-          res.status(200).send({
-            msg: "You have successfully activated Your Account !  Please Login again to continue."
-          })
+exports.activate = function (req, res) {
+    console.log("req.body", req.body);
+    if (req.body.email) {
+        let email = commonObj.decrypt(req.body.email);
+        let randomcode = req.body.randomString;
+        console.log(email, randomcode)
+        User.findOne({
+            email: email,
+            randomString: randomcode
+        }).exec(function (err, user) {
+            if (err) {
+                User.findOne({
+                    email: email,
+                    is_active: true,
+                    is_verified: true
+                }).exec(function (err, user) {
+                    return res.status(200).send({
+                        msg: "Already activated"
+                    });
+                })
+            } else {
+                user.randomString = undefined;
+                user.is_active = true;
+                user.is_verified = true;
+                user.remark = "";
+                user.save(function (err) {
+                    res.status(200).send({
+                        msg: "You have successfully activated Your Account !  Please Login again to continue."
+                    })
+                });
+            }
         });
-      });
-  }
+    }
 }
 
 exports.usersRecords = function(req, res) {

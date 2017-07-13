@@ -36,66 +36,66 @@ exports.featuringPlans = function(req, res) {
 }
 
 exports.createCharges = function(req, res) {
-  // Token is created using Stripe.js or Checkout!
-  // Get the payment token submitted by the form:
-  req.assert('token', 'Card token is required.').notEmpty();
-  req.assert('amount', 'Amount is required.').notEmpty();
-  req.checkHeaders('user_id', 'user_id is required.').notEmpty();
-  let errors = req.validationErrors();
+    // Token is created using Stripe.js or Checkout!
+    // Get the payment token submitted by the form:
+    req.assert('token', 'Card token is required.').notEmpty();
+    req.assert('amount', 'Amount is required.').notEmpty();
+    req.checkHeaders('user_id', 'user_id is required.').notEmpty();
+    let errors = req.validationErrors();
 
-  if (errors) {
-    res.status(400).send({
-      msg: "error in your request",
-      err: errors
-    });
-  }
-  console.log(req.body.token);
-  let chargeAmount = req.body.amount * 100;
-  User.findOne({
-    _id: req.headers.user_id
-  }, function(err, data) {
-    if (err) {
-      res.status(400).send({
-        msg: constantObj.messages.errorRetreivingData,
-        "err": err
-      });
-    } else {
-      console.log(data);
-      let email = data.email
-      if (data.stripe_customer.length > 0) {
-        stripe.charges.create({
-          amount: chargeAmount,
-          currency: "usd",
-          capture:false,
-          customer: customer.id,
-        }).then(function(charge) {
-          res.status(200).send({
-            msg: "charges created.",
-            "data": charge
-          });
+    if (errors) {
+        res.status(400).send({
+            msg: "error in your request",
+            err: errors
         });
-      } else {
-        stripe.customers.create({
-          email: email,
-          source: req.body.token,
-        }).then(function(customer) {
-          // YOUR CODE: Save the customer ID and other info in a database for later.
-          return stripe.charges.create({
-            amount: 1000,
-            currency: "usd",
-            capture:false,
-            customer: customer.id,
-          });
-        }).then(function(charge) {
-          console.log("stripe",req.body)
-          req.body.payment_status = "confirm";
-          AppointmentController.takeAppointment(req,res,function (req,res) {
-              
-          })
-        });
-      }
     }
-  })
+    console.log(req.body);
+    let chargeAmount = req.body.amount * 100;
+    User.findOne({
+        _id: req.headers.user_id
+    }, function (err, data) {
+        if (err) {
+            res.status(400).send({
+                msg: constantObj.messages.errorRetreivingData,
+                "err": err
+            });
+        } else {
+            console.log(data);
+            let email = data.email
+            if (data.stripe_customer.length > 0) {
+                stripe.charges.create({
+                    amount: chargeAmount,
+                    currency: "usd",
+                    capture: false,
+                    customer: data.id,
+                }).then(function (charge) {
+                    req.body.payment_status = "confirm";
+                    AppointmentController.takeAppointment(req, res, function (req, res) {
+
+                    })
+                });
+            } else {
+                stripe.customers.create({
+                    email: email,
+                    source: req.body.token,
+                }).then(function (customer) {
+                    // YOUR CODE: Save the customer ID and other info in a database for later.
+                    return stripe.charges.create({
+                        amount: chargeAmount,
+                        currency: "usd",
+                        capture: false,
+                        customer: customer.id,
+                    });
+                }).then(function (charge) {
+                    console.log("stripe", req.body)
+                    req.body.payment_status = "confirm";
+                    AppointmentController.takeAppointment(req, res, function (req, res) {
+
+                    })
+                });
+            }
+        }
+    })
 }
 
 exports.createPlan = function(req, res) {

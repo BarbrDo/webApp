@@ -22,7 +22,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
       }
     },
     shopDetail: function(data) {
-      return $http.get('/api/v1/shopdetail/' + data, data);
+      return $http.get('/api/v1/shopownerwithshops/' + data, data);
     },
     chairDetail: function(data) {
       return $http.get('/api/v1/chairdetail/' + data, data);
@@ -306,7 +306,11 @@ angular.module('barbrdo').factory('Admin', function($http) {
       return $http.put('/api/v1/stripe/deletePlan', data)
     },
     allPayments:function (data) {
-      return $http.get('/api/v1/allPayments', data);
+      if (data.search) {
+        return $http.get('/api/v1/allPayments?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);
+      } else {
+        return $http.get('/api/v1/allPayments?page=' + data.page + '&count=' + data.count);
+      }
     },
     allRecords:function (data) {
       return $http.get('/api/v1/records', data);

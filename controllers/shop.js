@@ -683,6 +683,62 @@ exports.shopdetail = function(req, res) {
     })
 };
 
+exports.shopownerhavingshops = function(req, res) {
+    req.checkParams("user_id", "user_id cannot be blank").notEmpty();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    var query = {};
+    query._id = mongoose.Types.ObjectId(req.params.user_id);
+    console.log(req.params.user_id)
+    user.aggregate([{
+        $match: query
+    }, {
+        $lookup: {
+            from: "shops",
+            localField: "_id",
+            foreignField: "user_id",
+            as: "shopinfo"
+        }
+    }, {
+        $project: {
+            _id: "$_id",
+            first_name: "$first_name",
+            last_name: "$last_name",
+            email: "$email",
+            mobile_number: "$mobile_number",
+            created_date: "$created_date",
+            ratings: "$ratings",
+            is_deleted: "$is_deleted",
+            is_active: "$is_active",
+            is_verified: "$is_verified",
+            user_type: "$user_type",
+            latLong: "$latLong",
+            picture: "$picture",
+            shopinfo: "$shopinfo",
+            gallery:"$gallery"
+        }
+    }]).exec(function(err, result) {
+        if (err) {
+            res.status(400).send({
+                "msg": constantObj.messages.userStatusUpdateFailure,
+                "err": err
+            });
+        } else {
+            console.log(result)
+            res.status(200).send({
+                "msg": constantObj.messages.successRetreivingData,
+                "data": result
+            })
+        }
+    })
+};
+
 exports.chairdetail = function(req, res) {
     req.checkParams("chair_id", "chair_id cannot be blank").notEmpty();
     let errors = req.validationErrors();
@@ -1140,13 +1196,10 @@ exports.undeleteshop = function(req, res) {
 };
 
 exports.requesttoremove = function(req, res) {
-    res.send({
-      msg: 'Thank you! Your feedback has been submitted.'
-    });
   req.assert('chair_name', 'Chair name cannot be blank').notEmpty();
   req.assert('name', 'Owner name cannot be blank').notEmpty();
   req.assert('email', 'Email cannot be blank').notEmpty();
-  req.assert('_id', 'id cannot be blank').notEmpty();
+
   req.sanitize('email').normalizeEmail({
     remove_dots: false
   });
@@ -1157,6 +1210,7 @@ exports.requesttoremove = function(req, res) {
       err: errors
     });
   }
+
  let auth = {
     auth: {
       api_key: process.env.MAILGUN_APIKEY,
@@ -1166,10 +1220,10 @@ exports.requesttoremove = function(req, res) {
   let nodemailerMailgun = nodemailer.createTransport(mg(auth));
 
   var mailOptions = {
-    from:'Shop owner'+req.body.name+' ' +'for' + ' '+req.body.chair_name + ' ' + 'shopid : '+req.body._id+ ' ' +'<' + req.body.email + '>',
+    from: req.body.name + ' ' + '<' + req.body.email + '>',
     to: 'hshussain86@gmail.com',
     subject: '✔ Request to Remove Barber',
-    text: "Please remove the barber from" + req.body.chair_name 
+    text: "Please remove the barber from" + ' ' +  req.body.chair_name 
   };
 
   nodemailerMailgun.sendMail(mailOptions, function(err) {

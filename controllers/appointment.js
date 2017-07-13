@@ -258,6 +258,41 @@ exports.showEvents = function(req, res) {
 	})
 }
 exports.allPayments = function(req, res) {
+    var page = parseInt(req.query.page) || 1;
+    var count = parseInt(req.query.count) || 30;
+    var skipNo = (page - 1) * count;
+    console.log(page)
+    console.log(count)
+    console.log(skipNo)
+    var query = {};
+    var searchStr = ""
+    if (req.query.search) {
+        searchStr = req.query.search;
+    }
+    if (searchStr) {
+        query.$or = [{
+                first_name: {
+                    $regex: searchStr,
+                    '$options': 'i'
+                }
+            }, {
+                last_name: {
+                    $regex: searchStr,
+                    '$options': 'i'
+                }
+            }, {
+                email: {
+                    $regex: searchStr,
+                    '$options': 'i'
+                }
+            }, {
+                name: {
+                    $regex: searchStr,
+                    '$options': 'i'
+                }
+            }]
+    }
+
 	appointment.aggregate([{
 		$unwind: "$services"
 	}, {
@@ -335,7 +370,14 @@ exports.allPayments = function(req, res) {
 			appointment_status: 1,
 
 		}
-	}]).exec(function(err,result) {
+	},{
+            $match: query
+        }, {
+                    "$skip": skipNo
+                }, {
+                    "$limit": count
+                }]).exec(function(err,result) {
+                     var length = result.length;
 		if (err) {
 			return res.status(400).send({
 				msg: constantObj.messages.errorRetreivingData
@@ -343,7 +385,8 @@ exports.allPayments = function(req, res) {
 		} else {
 			return res.status(200).send({
 				msg: constantObj.messages.successRetreivingData,
-				data: result
+				data: result,
+                count: length
 			});
 		}
 	})

@@ -6,8 +6,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   $scope.bigTotalItems = 175;
   $scope.bigCurrentPage = 1;
   $scope.fieldDisabled = false;
-  console.log("add_shops controller");
-
 
   // Disable weekend selection
   function disabled(data) {

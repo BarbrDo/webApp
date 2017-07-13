@@ -77,42 +77,46 @@ exports.shopContainsBarber = function(req, res) {
             console.log(result);
             // add ratings of a barber in result.chairs[i].barber_id.ratings
             // add ratings of a barber in result.chairs[i].barber_id.gallery
-            if(result){
-            if(result.chairs){
-                for (let i = 0; i < result.chairs.length; i++) {
-                    if (result.chairs[i].barber_id) {
-                        let obj = {
-                            _id: result.chairs[i].barber_id._id,
-                            first_name: result.chairs[i].barber_id.first_name,
-                            last_name: result.chairs[i].barber_id.last_name,
-                            picture: result.chairs[i].barber_id.picture,
-                            created_date: result.chairs[i].barber_id.created_date,
-                            ratings: result.chairs[i].barber_id.ratings,
-                            gallery: result.chairs[i].barber_id.gallery
+            if (result) {
+                if (result.chairs) {
+                    for (let i = 0; i < result.chairs.length; i++) {
+                        if (result.chairs[i].barber_id) {
+                            let obj = {
+                                _id: result.chairs[i].barber_id._id,
+                                first_name: result.chairs[i].barber_id.first_name,
+                                last_name: result.chairs[i].barber_id.last_name,
+                                picture: result.chairs[i].barber_id.picture,
+                                created_date: result.chairs[i].barber_id.created_date,
+                                ratings: result.chairs[i].barber_id.ratings,
+                                gallery: result.chairs[i].barber_id.gallery
+                            }
+                            resultTantArray.push(obj)
                         }
-                        resultTantArray.push(obj)
                     }
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": {
+                            name: result.name,
+                            _id: result._id,
+                            state: result.state,
+                            city: result.city,
+                            latLong: result.latLong,
+                            address: result.address,
+                            gallery: result.gallery,
+                            barber: resultTantArray,
+                            picture: result.picture,
+                            imagesPath: 'http://' + req.headers.host + '/' + 'uploadedFiles/'
+                        }
+                    })
+                } else {
+                    res.status(400).send({
+                        msg: "error in your request"
+                    });
                 }
-                res.status(200).send({
-                    "msg": constantObj.messages.successRetreivingData,
-                    "data": {
-                        name: result.name,
-                        _id: result._id,
-                        state: result.state,
-                        city: result.city,
-                        latLong: result.latLong,
-                        address: result.address,
-                        gallery: result.gallery,
-                        barber: resultTantArray,
-                        picture:result.picture,
-                        imagesPath: 'http://' + req.headers.host + '/' + 'uploadedFiles/'
-                    }
-                })
             } else {
                 res.status(400).send({
                     msg: "error in your request"
                 });
-            }
             }
         }
     })

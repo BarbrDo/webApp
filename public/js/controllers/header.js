@@ -2,6 +2,17 @@ angular.module('BarbrDoApp')
   .controller('HeaderCtrl', function($scope, $location, $window, $auth, $state, $rootScope, $uibModal, toastr, shop, geolocation) {
     $scope.user = {};
     $scope.messages = {};
+    $scope.tabActive='login';
+    $scope.activeTab = function (value) {
+      $scope.tabActive = value;
+    }
+
+    $scope.turnPage = function (value) {
+        $scope.obj = {
+          value:value
+      }
+    }
+    
     $scope.isActive = function(viewLocation) {
       return viewLocation === $location.path();
     };
@@ -31,6 +42,12 @@ angular.module('BarbrDoApp')
 
     $scope.usertype = function(type) {
       $scope.user.user_type = type;
+      if($scope.user.user_type=='barber' || $scope.user.user_type=='shop'){
+        $scope.show = true;
+      }
+      else{
+       $scope.show = false; 
+      }
     }
 
 
@@ -38,7 +55,7 @@ angular.module('BarbrDoApp')
       $auth.logout();
       delete $window.localStorage.user;
       delete $window.localStorage.lat;
-      delete $window.localStorage.long; 
+      delete $window.localStorage.long;
       delete $window.localStorage.imagePath;
       $state.go('home');
     };
@@ -52,7 +69,6 @@ angular.module('BarbrDoApp')
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          console.log(response.data.user)
           if (response.data.imagesPath) {
             $window.localStorage.imagePath = response.data.imagesPath;
           }
@@ -64,7 +80,6 @@ angular.module('BarbrDoApp')
           }
         })
         .catch(function(response) {
-          console.log(response)
           if (response.error) {
             $scope.messages = {
               error: [{
@@ -82,13 +97,11 @@ angular.module('BarbrDoApp')
     if ($state.current.name == 'manageservices' || $state.current.name == 'addservice') {
       shop.barberServices().then(function(response) {
         $scope.barberservices = response.data.data.length
-        console.log( "barbe",response.data.data.length)
       });
       shop.allServices().then(function(response) {
         $scope.servicesData = response.data.data.length
-        console.log("admin", response.data.data.length)
       })
-      
+
     }
 
     $scope.login = function() {
@@ -103,9 +116,9 @@ angular.module('BarbrDoApp')
       $auth.login($scope.user)
         .then(function(response) {
           $window.localStorage.user = JSON.stringify(response.data.user);
-          toastr.success('Welcome'+'  '+response.data.user.first_name+'  '+response.data.user.last_name);
+          toastr.success('Welcome' + '  ' + response.data.user.first_name + '  ' + response.data.user.last_name);
           $rootScope.currentUser = response.data.user;
-          
+
           $window.localStorage.imagePath = response.data.imagesPath;
           if (response.data.user.user_type == 'customer') {
             $state.go('upcomingComplete');
@@ -129,10 +142,6 @@ angular.module('BarbrDoApp')
         });
     };
 
-    $scope.changeTab = function(tab) {
-      console.log('tab', tab);
-      $scope.active.val = tab;
-    }
     $scope.signup = function() {
       $auth.signup($scope.user)
         .then(function(response) {
@@ -156,7 +165,6 @@ angular.module('BarbrDoApp')
         .then(function(response) {
           toastr.success("Please check your mail to activate your account.")
           $state.go('upcomingComplete')
-          console.log("response", response)
         })
         .catch(function(response) {
           $scope.messagess = {
@@ -188,11 +196,29 @@ angular.module('BarbrDoApp')
         size: ' holder'
       });
     }
+    $scope.forgotPassword = function() {
+      shop.forgotPassword($scope.user)
+        .then(function(response) {
+          toastr.success(response.data.msg);
+          $('#forgotpassword').modal('hide');
+        })
+        .catch(function(response) {
+          $scope.messages = {
+            error: Array.isArray(response.data) ? response.data : [response.data]
+          };
+        });
+    };
+
+    $scope.disMiss = function () {
+      $rootScope.$emit("closeEvent");
+    }
+
   })
 
-.controller('instanceController12', ['$uibModalInstance', '$scope',
-  function($uibModalInstance, $scope) {
-
+.controller('instanceController12', ['$uibModalInstance', '$scope','$rootScope', function($uibModalInstance, $scope,$rootScope) {
+    $rootScope.$on("closeEvent", function(evt, data) {
+        $scope.cancel();
+    })
     $scope.cancel = function() {
       $uibModalInstance.dismiss('cancel');
     }

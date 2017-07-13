@@ -45,7 +45,7 @@
 <script type="text/ng-template" id="myModalContent.html">
     <div class="">
         <div class="holder">
-            <div class="half left" >
+            <div class="half left">
                 <img src="images/b_chair.png" class="chair">
                 <ul>
                     <li><span><i class="fa fa-check"></i></span> Easy and Convenient Scheduling</li>
@@ -55,10 +55,14 @@
                 </ul>
             </div>
             <div class="half right">
-                <div class="ctabs">
-                    <uib-tabset active="active">
-                        <uib-tab index="0" heading="Login">
-                            <div class="tab-content contact-us">
+             <div class="ctabs">
+            <ul class="nav nav-tabs">
+                <li ng-class="{active:tabActive=='login'}" ng-click><a data-toggle="tab" href="#login" >Login</a></li>
+                <li ng-class="{active:tabActive=='signup'}"><a data-toggle="tab" href="#signup" >Signup</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="login" class="tab-pane fade in active">
+                    <div class="tab-content contact-us">
                                 <div role="tabpanel" class="tab-pane active" id="login">
                                     <div ng-if="messages.error" role="alert" class="alert alert-danger">
                                         <div ng-repeat="myerr in messages.error">{{myerr.msg}}</div>
@@ -66,7 +70,7 @@
                                     <div class="text-center">
                                         <a href="#" ng-click="authenticate('facebook')"><img src="images/fbb.png"></a>
                                     </div>
-                                    <form name="loginForm">
+                                    <form name="loginForm" >
                                         <div class="form-group">
                                             <input type="text" name="email" id="email" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" class="form-control" required/>
                                             <div class="form-control-placeholder">Email Address</div>
@@ -84,36 +88,34 @@
                                             <div class="form-control-placeholder">Password</div>
                                             <!-- <a href="#" class="eye"><i class="fa fa-eye"></i></a> -->
                                         </div>
-                                        <a class="forgot" data-toggle="modal" data-target="#forgotpassword" >Forgot Password ?</a>
+                                        <a class="forgot" data-toggle="modal" data-target="#forgotpassword" ng-click="disMiss()">Forgot Password ?</a>
                                         <button type="submit" class="sb_button" ng-click="login()" ng-disabled="loginForm.$invalid">Login</button>
-                                        
-                                        <p class="msg">New User? <span>   <button type="button" class="btn btn-default btn-sm" ng-click="$root.active = '1'">Signup</button> </span>
+                                        <p class="msg">New User? <span>   <a data-toggle="tab" href="#signup" ng-click="activeTab('signup')">Signup</a> </span>
                                         </p>
                                     </form>
                                 </div>
                             </div>
-                        </uib-tab>
-                        <uib-tab index="1" heading="Signup">
-                            <div role="tabpanel" class="tab-pane contact-us" id="signup" style="margin-top: 0px; padding:0px;">
+                </div>
+                <div id="signup" class="tab-pane fade">
+                    <div role="tabpanel" class="tab-pane contact-us" id="signup" style="margin-top: 0px; padding:0px;">
                                 <div ng-if="messagess.error" role="alert" class="alert alert-danger">
                                     <div ng-repeat="err in messagess.error">
                                         {{err[0].msg}}</div>
                                 </div>
                                 <form name="signUpForm">
-                                    <div class="type_selection" >
-                                        <label name="type" ng-click="usertype('customer')" ng-init="user.user_type = 'customer'" ng-class="{isactive:user.user_type=='customer'}" >
+                                    <div class="type_selection">
+                                        <label name="type" ng-click="usertype('customer')" ng-init="user.user_type = 'customer'" ng-class="{isactive:user.user_type=='customer'}">
                                             <img src="/images/p1.png">
-                                            <span>Customer</span> 
+                                            <span>Customer</span>
                                         </label>
-                                        <label  name="type" ng-click="usertype('barber')" ng-class="{isactive:user.user_type=='barber'}" >
-                        
+                                        <label name="type" ng-click="usertype('barber')" ng-class="{isactive:user.user_type=='barber'}">
                                             <img src="/images/p2.png">
                                             <span>Barber</span>
                                         </label>
-                                        <label name="type" ng-click="usertype('shop')" ng-class="{isactive:user.user_type=='shop'}" >
+                                        <label name="type" ng-click="usertype('shop')" ng-class="{isactive:user.user_type=='shop'}">
                                             <img src="/images/p3.png">
                                             <span>Barber Shop</span>
-                                            </label>
+                                        </label>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -134,13 +136,8 @@
                                             <span style="color:red ">First name maximum length exceeds</span>
                                         </div>
                                     </div>
-
-
-
                                 </div>
-
                                 <div class="col-md-6 ">
-
                                     <div class="form-group ">
                                         <input type="text " name="lastname " id="email " class="form-control " ng-model="user.last_name " ng-pattern="/^[a-z ,. '-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
                                         <div class="form-control-placeholder">Last Name</div>
@@ -209,7 +206,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" name="mobile_number" id="mobile_number" ng-model="user.mobile_number" mask="(999) 999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="10" ng-maxlength="15" maxlength="15" required />
+                                        <input type="text" class="form-control" name="mobile_number" id="mobile_number" ng-model="user.mobile_number" mask="(999) 999-9999" mask-clean='true ' mask-restrict='reject ' ng-minlength="10" ng-maxlength="15" maxlength="15" required />
                                         <div class="form-control-placeholder">Phone No.</div>
                                         <p class="help-block">
                                             <span style="color:red" ng-show="signUpForm.mobile_number.$touched && signUpForm.mobile_number.$invalid && signUpForm.mobile_number.$error.required">Mobile number is required.</span>
@@ -218,7 +215,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12">
-                                    <div ng-if="user.user_type == 'shop' || user.user_type == 'barber'" class="form-group">
+                                    <div ng-if="show">
                                         <input type="text" class="form-control" name="license_number" id="license_number" ng-model="user.license_number" required />
                                         <div class="form-control-placeholder">License No.</div>
                                         <div class="validationError" ng-messages="signUpForm.license_number.$error" ng-show="
@@ -227,19 +224,19 @@
                                             <span style="color:red" ng-message="required">License number is required</span>
                                         </div> 
                                     </div>
+                                </div><div>
                                     
                                 </div>
                                 <button type="submit" class="sb_button" ng-click="signup()" ng-disabled="signUpForm.$invalid">Sign Up</button>
-                                <p class="msg">Already have an account? <span> <button type="button" class="btn btn-default btn-sm" ng-click="active = 0">Login</button> </span></p>
+                                <p class="msg">Already have an account? <span> <a data-toggle="tab" href="#login" ng-click="activeTab('login')">Login</a> </span></p>
                             </form>
-                        </div>
-                    </uib-tab>
-                </uib-tabset>
+                            </div>
+                </div>
             </div>
+           </div>
+           </div>
         </div>
     </div>
-
-</div>
 </script>
 
  <div class="modal " id="forgotpassword" role="dialog" >
@@ -261,7 +258,7 @@
           <input type="email" name="email" id="email" placeholder="Email" class="form-control" ng-model="user.email" autofocus>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="forgotPassword()" >Reset Password</button>
+                    <button type="button" class="btn btn-default" ng-click="forgotPassword()" >Reset Password</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
                 </div>
             </div>

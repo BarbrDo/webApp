@@ -307,6 +307,12 @@ angular.module('barbrdo').factory('Admin', function($http) {
     },
     allPayments:function (data) {
       return $http.get('/api/v1/allPayments', data);
+    },
+    allRecords:function (data) {
+      return $http.get('/api/v1/records', data);
+    },
+    graphicData:function (data) {
+      return $http.get('/api/v1/totalUsers',data);
     }
   };
 });

@@ -1379,9 +1379,4 @@ let getShopTotalSale = function (id, cb) {
             cb(null, result)
         }
     })
-<<<<<<< HEAD
 }
-
-=======
-}
->>>>>>> master

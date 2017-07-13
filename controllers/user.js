@@ -1288,7 +1288,7 @@ exports.activate = function (req, res) {
                     });
                 })
             } else {
-                user.randomString = undefined;
+                user.randomString = '';
                 user.is_active = true;
                 user.is_verified = true;
                 user.remark = "";

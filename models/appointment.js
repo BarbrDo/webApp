@@ -35,6 +35,7 @@ var appointmentSchema = new mongoose.Schema({
     tax_percent: String,
     amount: String,
     currency_code: String,
+    payment_detail :[],
     payment_method: {
         type: String,
         enum: ["cash", "card"]

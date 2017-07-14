@@ -1277,17 +1277,7 @@ exports.activate = function (req, res) {
             email: email,
             randomString: randomcode
         }).exec(function (err, user) {
-            if (err) {
-                User.findOne({
-                    email: email,
-                    is_active: true,
-                    is_verified: true
-                }).exec(function (err, user) {
-                    return res.status(200).send({
-                        msg: "Already activated"
-                    });
-                })
-            } else {
+            if (user.length > 1) {
                 user.randomString = '';
                 user.is_active = true;
                 user.is_verified = true;
@@ -1297,7 +1287,19 @@ exports.activate = function (req, res) {
                         msg: "You have successfully activated Your Account !  Please Login again to continue."
                     })
                 });
-            }
+            }else {
+                User.findOne({
+                    email: email,
+                    is_active: true,
+                    is_verified: true
+                }).exec(function (err, user) {
+                    return res.status(200).send({
+                        msg: "Already activated"
+                    });
+                })
+            } 
+                
+            
         });
     }
 }

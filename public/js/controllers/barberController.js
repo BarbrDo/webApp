@@ -11,7 +11,6 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.pendingComplete = response.data.data;
-					console.log(response)
 				});
 		}
 		$scope.markers = [];
@@ -30,7 +29,6 @@ angular.module('BarbrDoApp')
 			barber.appointment(obj).then(function(response) {
 				$scope.loaderStart = false;
 				$scope.particularAppointment = response.data.data;
-				console.log("here",response.data.data)
 				var price = 0;
 				var sum = 0;
 				var len = response.data.data.customer_id.ratings.length;
@@ -82,7 +80,6 @@ angular.module('BarbrDoApp')
 			$scope.loaderStart = true;
 			barber.shopsHavingChairs(obj)
 				.then(function(response) {
-					console.log("alls hops having chair",response)
 					$scope.loaderStart = false;
 					$scope.shopChairs = response.data.data;
 					
@@ -95,7 +92,6 @@ angular.module('BarbrDoApp')
 			}
 			var shp = [];
 			barber.shopChairs(obj).then(function(response) {
-				console.log("chairdet",response.data.data[0])
 				$rootScope.particularShop = response.data.data[0];
 				var len = response.data.data[0].chairs.length;
         		for (var i = 0; i < len; i++) {
@@ -133,7 +129,6 @@ angular.module('BarbrDoApp')
 
 		}
 		$scope.requestChair = function(shopid,userType) {
-			console.log($rootScope)
 			if ($scope.chairId) {
 				$scope.loaderStart = true;
 				var passObj = {
@@ -152,7 +147,6 @@ angular.module('BarbrDoApp')
 					$state.go('request-chair');
 				}).catch(function(result) {
 					$scope.loaderStart = false;
-                                        console.log(result)
 					toastr.error(result.data.msg);
 				})
 			} else {
@@ -214,7 +208,6 @@ angular.module('BarbrDoApp')
 
 
 		$scope.timeReschedule = function() {
-			console.log($scope.time)
 					var myobj = {
                     minutes: $scope.time,
                     appointment_id: $stateParams._id,
@@ -241,15 +234,6 @@ angular.module('BarbrDoApp')
 		$scope.managerequests = function() {
 			barber.manageRequest().then(function(response) {
 				$rootScope.shoprequest = response.data.result ;
-				console.log(response.data.result)
-				if(response.data.result=='')
-				{
-					console.log("rah",response)
-				}
-				if(response.data.result!='')
-				{
-					console.log("jgjk")
-				}
 			})
 		}
 
@@ -271,7 +255,6 @@ angular.module('BarbrDoApp')
 			barber.acceptRequest(chair).then(function(response) {
 				toastr.success('Request is Accepted successfully');
 				$scope.managerequests();
-				console.log("heyyu",response)
 			}).catch(function(result) {
 				toastr.warning('Invalid request ! Chair split Required');
 			})
@@ -302,7 +285,6 @@ angular.module('BarbrDoApp')
 			barber.barberServices().then(function(response) {
 				$scope.loaderStart = false;
 				$scope.barberservices = response.data.data
-				console.log(response.data.data)
 			});
 			barber.allServices().then(function(response) {
 				$scope.loaderStart = false;
@@ -321,7 +303,6 @@ angular.module('BarbrDoApp')
 			toastr.success("Service Added Successfully");
 			$state.go('manageservices');
 			}).catch(function(result){
-				console.log("result",result)
 				toastr.error("This service is already added!! You cant add it again");
 			})
 			}

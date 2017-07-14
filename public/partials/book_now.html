@@ -118,7 +118,11 @@ button:active {
 }
 </style>
 <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
-<div class="crumb"> <span>Book Appointment</span> </div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item "><a ui-sref="upcomingComplete">Customer Home</a></li>
+    <li class="breadcrumb-item "><a ui-sref="dashboard">Book Appointment</a></li>
+    <li class="breadcrumb-item active">Select time and Pay</li>
+</ol>
 <div class="wrapper" ng-init= "stripeCall()">
     <div class="block">
         <h2>Your Barber</h2>

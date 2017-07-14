@@ -1,5 +1,8 @@
 <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
-<div class="crumb"> <span>Book Appointment</span> </div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="barbershopdashboard">Shop Home</a></li>
+    <li class="breadcrumb-item active">Manage Requests</li>
+</ol>
 <div class="wrapper" ng-init="chairrequest()">
     <div class="block">
         <h2>Barber Chair Request</h2>

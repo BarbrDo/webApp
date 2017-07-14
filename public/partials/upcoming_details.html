@@ -5,9 +5,10 @@
 }
 </style>
 <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
-<div class="crumb">
-    <span>Booked Appointment</span>
-</div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item "><a ui-sref="upcomingComplete">Customer Home</a></li>
+    <li class="breadcrumb-item active">Appointment Detail</li>
+</ol>
 <div class="wrapper" ng-init="appointmentdet()">
     <div class="block">
         <h2>Your Customer</h2>

@@ -10,9 +10,7 @@
  				.then(function(response) {
  					$scope.loaderStart = false;
  					$rootScope.requests = response.data.result;
- 					console.log(response.data.result)
  				}).catch(function(result) {
- 					console.log(result)
  					toastr.error('Error');
  				})
  		}
@@ -27,9 +25,7 @@
  				.then(function(response) {
  					$scope.loaderStart = false;
  					$rootScope.barbers = response.data.data;
- 					console.log("barber list",response.data.data)
  				}).catch(function(result) {
- 					console.log(result)
  					toastr.error('Error');
  				})
  		}
@@ -38,7 +34,6 @@
  			$scope.loaderStart = true;
  			shop.barberDetail($stateParams.id)
  				.then(function(response) {
- 					console.log(response.data.data)
  					$scope.loaderStart = false;
  					$rootScope.requester = response.data.data[0];
  					$rootScope.gallery = response.data.data[0].gallery;
@@ -63,7 +58,6 @@
  			}
  			shop.finacialCenter(obj)
  				.then(function(response) {
- 					console.log(response.data.data)
  					$scope.sale= response.data.data;
  				})
 
@@ -109,18 +103,15 @@
  					});
  				}).catch(function(result) {
  					toastr.error(result.data.msg);
- 					console.log(result)
  				})
 
  		};
 
  		$scope.rejectrequest = function(chair) {
- 			console.log("decline", chair)
  			shop.declineRequest(chair).then(function(response) {
  				toastr.success('Request is Declined successfully');
  				$scope.chairrequest();
  			}).catch(function(result) {
- 				console.log(result)
  				toastr.error('Error');
  			})
  		}
@@ -132,9 +123,7 @@
  			shop.shopInfo(obj).then(function(response) {
  				$scope.chairs = response.data.user;
  				if (response.data.user.shop[0].chairs.length == 0) {
- 					console.log("jgbjkg")
  				}
- 				console.log(response.data.user)
  				$window.localStorage.shop_id = response.data.user.shop[0]._id;
  			})
  		}
@@ -183,7 +172,6 @@
  				$scope.userGallery = res.data.user;
  				$scope.ratings = res.data.user.ratings;
  			}).catch(function(result) {
- 				console.log(result)
  			})
  		}
 
@@ -211,12 +199,10 @@
 
 
  		$scope.acceptrequest = function(chair) {
- 			console.log("here", chair)
  			shop.acceptRequest(chair).then(function(response) {
  				toastr.success('Request is Accepted successfully');
  				$scope.chairrequest();
  			}).catch(function(result) {
- 				console.log(result)
  				toastr.error('Error');
  			})
  		}
@@ -241,7 +227,6 @@
  					$rootScope.chairs = response.data.data[0].chairs[0];
  					$rootScope.chair_split = response.data.data[0].chairs[0].shop_percentage;
  				}).catch(function(result) {
- 					console.log(result)
  					toastr.error('Error');
  				})
  		}
@@ -303,7 +288,6 @@
  				toastr.success('Split fair successfully saved.');
  				$state.go('barbershopdashboard')
  			}).catch(function(result) {
- 				console.log(result)
  				toastr.error('Amount is required');
  			})
  		}
@@ -332,7 +316,6 @@
  				toastr.success('Chair successfully posted to all barbers.');
  				$state.go('barbershopdashboard')
  			}).catch(function(result) {
- 				console.log(result)
  				toastr.error('Chair Type is Required');
  			})
  		}
@@ -344,7 +327,6 @@
  				toastr.success('Chair successfully Booked to non-barberdo barber.');
  				$state.go('barbershopdashboard')
  			}).catch(function(result) {
- 				console.log(result)
  				toastr.error('Error');
  			})
  		}
@@ -357,13 +339,11 @@
  				toastr.success('Chair successfully removed.');
  				$state.go('barbershopdashboard')
  			}).catch(function(result) {
- 				console.log(result)
  				toastr.error('Error in deleting');
  			})
  		}
 
  		$scope.removebarber = function(chairs) {
- 			console.log($scope.shopData)
  			var obj = {
  				chair_name : chairs.name,
  				name : $scope.shopData.first_name + ' ' + $scope.shopData.last_name,

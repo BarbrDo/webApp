@@ -1,8 +1,8 @@
 <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
-<div class="crumb" ng-init="appointments()"> 
-    <!--<span>Book Appointment</span>--> 
-</div>
-<div class="wrapper">
+<ol class="breadcrumb">
+    <li class="breadcrumb-item active">Barber Home</li>
+</ol>
+<div class="wrapper" ng-init="appointments()">
   <div class="block">
     <div class="tabs customtab">
       <uib-tabset active="activeJustified" justified="true">

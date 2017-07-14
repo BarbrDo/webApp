@@ -13,7 +13,7 @@
             .state('login', {
                 resolve: {
                     mess: function($localStorage) {
-                        console.log($localStorage.loggedIn);
+                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn) {
                             $state.go('dashboard');
                         }

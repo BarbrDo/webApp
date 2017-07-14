@@ -19,7 +19,6 @@ angular.module('BarbrDoApp')
     }];
 
     customer.getEvents().then(function(response) {
-      console.log(response);
        vm.events = response.data.data.events;
     });
     // let date = moment('2017-07-03T13:00:00.000Z').subtract(19800, 'seconds');
@@ -108,9 +107,7 @@ angular.module('BarbrDoApp')
     };
 
     $scope.saveEvent = function(data) {
-      console.log(data);
       customer.createEvent(data).then(function(response) {
-        console.log(response);
       });
     }
 

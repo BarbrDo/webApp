@@ -308,24 +308,24 @@ exports.associatedBarbers = function(req, res) {
             if (err) {
                 console.log(err);
             } else {
-                console.log(data);
+                //console.log(data);
                 let resultTantArray = [];
                 for (let i = 0; i < data.length; i++) {
                     let obj = {};
-                    console.log('datafor',data);
+                    //console.log('datafor',data);
                     if (data[i].barberInformation) {
-                        obj._id = data[i].barberInformation[i]._id;
-                        obj.first_name = data[i].barberInformation[i].first_name;
-                        obj.last_name = data[i].barberInformation[i].last_name;
+                        obj._id = data[i].barberInformation[0]._id;
+                        obj.first_name = data[i].barberInformation[0].first_name;
+                        obj.last_name = data[i].barberInformation[0].last_name;
                         let distt = parseFloat(data[i].distance)
                         distt = Math.round(distt * 100) / 100
                         obj.distance = distt;
                         obj.units = "miles";
-                        obj.created_date = data[i].barberInformation[i].created_date;
-                        obj.ratings = data[i].barberInformation[i].ratings;
+                        obj.created_date = data[i].barberInformation[0].created_date;
+                        obj.ratings = data[i].barberInformation[0].ratings;
                         obj.location = data[i].location;
                         obj.shop_id = data[i]._id;
-                        obj.picture = data[i].barberInformation[i].picture;
+                        obj.picture = data[i].barberInformation[0].picture;
                         obj.chair_id = data[i].chair_id;
                         obj.chair_name = data[i].chair_name;
                         obj.chair_type = data[i].chair_type;

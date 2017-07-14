@@ -227,7 +227,7 @@ exports.allShops = function(req, res) {
     }
 }
 
-exports.associatedBarbers = function(req, res) {
+exports.associatedBarbers = function (req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
         let long = parseFloat(req.headers.device_longitude);
         let lati = parseFloat(req.headers.device_latitude);
@@ -236,75 +236,74 @@ exports.associatedBarbers = function(req, res) {
         if (req.query.search) {
             search = req.query.search;
         }
+        let searchDate = new Date(moment(currentDate, "YYYY-MM-DD").add(1, 'days').format("YYYY-MM-DD[T]HH:mm:ss.SSS")+'Z');
         shop.aggregate([{
-            $geoNear: {
-                near: {
-                    type: "Point",
-                    coordinates: [long, lati]
-                },
-                distanceField: "dist.calculated",
-                distanceMultiplier: constantObj.distance.distanceMultiplierInMiles, // it returns distance in kilometers
-                maxDistance: maxDistanceToFind,
-                includeLocs: "dist.location",
-                spherical: true
-            }
-        }, {
-            $unwind: "$chairs"
-        }, {
-            $lookup: {
-                from: "users",
-                localField: "chairs.barber_id",
-                foreignField: "_id",
-                as: "barberInformation"
-            }
-        }, {
-            $unwind: "$barberInformation"
-        }, {
-            $match: {
-                $or: [{
-                    "barberInformation.first_name": {
-                        $regex: search,
-                        $options: 'i'
-                    }
-                }, {
-                    "barberInformation.last_name": {
-                        $regex: search,
-                        $options: 'i'
-                    }
-                }]
-            }
-        }]).exec(function(err, data) {
+                $geoNear: {
+                    near: {
+                        type: "Point",
+                        coordinates: [long, lati]
+                    },
+                    distanceField: "dist.calculated",
+                    distanceMultiplier: constantObj.distance.distanceMultiplierInMiles, // it returns distance in kilometers
+                    maxDistance: maxDistanceToFind,
+                    includeLocs: "dist.location",
+                    spherical: true
+                }
+            }, {
+                $unwind: "$chairs"
+            },
+            {
+                $match: {
+                    "chairs.barber_id": {$exists: true, "$ne": ""},
+                    "chairs.booking_start": {$lte: searchDate},
+                    "chairs.booking_end": {$gte: searchDate}
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "chairs.barber_id",
+                    foreignField: "_id",
+                    as: "barberInfo"
+                }
+            },
+            {
+                $project: {
+                    shop_id: "$_id",
+                    location: "$name",
+                    created_date: "$created_date",
+                    distance: "$dist.calculated",
+                    units: {$literal: "miles"},
+                    barber: "$barberInfo",
+                    chair_id: "$chairs._id",
+                    chair_name: "$chairs.name"
+                }
+            }, 
+            {
+                $match: {
+                    $or: [{
+                            "barber.first_name": {
+                                $regex: search,
+                                $options: 'i'
+                            }
+                        }, {
+                            "barber.last_name": {
+                                $regex: search,
+                                $options: 'i'
+                            }
+                        }]
+                }
+            }]).exec(function (err, data) {
             if (err) {
                 console.log(err);
             } else {
-                
-                let resultTantArray = [];
-                for (let i = 0; i < data.length; i++) {
-                    let obj = {};
-                    if (data[i].barberInformation) {
-                        obj._id = data[i].barberInformation._id;
-                        obj.first_name = data[i].barberInformation.first_name;
-                        obj.last_name = data[i].barberInformation.last_name;
-                        let distt = parseFloat(data[i].dist.calculated)
-                        distt = Math.round(distt * 100) / 100
-                        obj.distance = distt;
-                        obj.units = "miles";
-                        obj.created_date = data[i].barberInformation.created_date;
-                        obj.ratings = data[i].barberInformation.ratings;
-                        obj.location = data[i].name;
-                        obj.shop_id = data[i]._id;
-                        obj.picture = data[i].barberInformation.picture;
-                        resultTantArray.push(obj);
-                    }
-                }
-                console.log("database",data)
+                console.log("database", data)
                 res.status(200).send({
                     "msg": constantObj.messages.successRetreivingData,
-                    "data": resultTantArray
+                    "data": data
                 })
             }
         })
-
     } else {
         res.status(400).send({
             "msg": constantObj.messages.requiredFields
@@ -1324,13 +1323,13 @@ exports.financeScreenResult = function (req, res) {
         return d.toISOString();
     }
     var now = Date.now();
-    /*Below line for getting the first date of current month*/
+    //Below line for getting the first date of current month
     let startDayOfMonth = firstDayOfMonth(now);
-    /*Below line for getting the last date of current month*/
+    //Below line for getting the last date of current month
     let endDayOfMonth = lastDayOfMonth(now);
-    /*Below line for getting the current week first day*/
+    //Below line for getting the current week first day
     let currentDayOfweek = moment().day(0); // Sunday
-    /*Below line for getting the current week last day*/
+    //Below line for getting the current week last day
     let lastDayOfweek = moment().day(6); // saturday
     async.parallel({
         one: function (parallelCb) {

@@ -1277,7 +1277,7 @@ exports.activate = function (req, res) {
             email: email,
             randomString: randomcode
         }).exec(function (err, user) {
-            if (user.length > 1) {
+            if (user) {
                 user.randomString = '';
                 user.is_active = true;
                 user.is_verified = true;

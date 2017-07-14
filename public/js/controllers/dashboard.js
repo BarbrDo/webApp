@@ -74,6 +74,14 @@ angular.module('BarbrDoApp')
 					$scope.barberservice = response.data.data;
 				});
 
+			customer.barberAll(obj)
+				.then(function(response) {
+					console.log("all dsgsdgsdgsdfg",response.data.data[0])
+					$scope.loaderStart = false;
+					$scope.barberdet = response.data.data[0];
+					
+				});	
+
 			var passObj = {
 				"shop_id": $stateParams.shop_id,
 				"barber_id": $stateParams.barber_id,
@@ -130,6 +138,7 @@ angular.module('BarbrDoApp')
 			$scope.loaderStart = true;
 			customer.barberAll(obj)
 				.then(function(response) {
+					console.log("all barbers",response)
 					$scope.loaderStart = false;
 					$scope.barbers = response.data.data;
 				});
@@ -154,7 +163,8 @@ angular.module('BarbrDoApp')
 			$scope.annualCost = $scope.dollarAmmount;
 		};
 
-		$scope.payLater = function() {
+		$scope.payLater = function(chair_amount,chair_id,chair_type,chair_name,chair_shop_percentage,chair_barber_percentage) {
+			console.log(chair_amount)
 			var myarr = [];
 			for (var i = 0; i < $scope.selected.length; i++) {
 				var cusObj = {};
@@ -203,7 +213,7 @@ angular.module('BarbrDoApp')
 				latitude: 30.708225,
 				longitude: 76.7029445
 			},
-			zoom: 4
+			zoom: 15
 		}
 		if ($state.current.name == 'pending') {
 			var passingObj = {

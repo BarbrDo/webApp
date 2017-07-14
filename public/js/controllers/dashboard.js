@@ -1,5 +1,5 @@
 angular.module('BarbrDoApp')
-	.controller('dashboardCtrl', function($scope, $rootScope, $filter,$location, customer, $stateParams, $state, $window, ngTableParams, $timeout, $http, toastr) {
+	.controller('dashboardCtrl', function($scope, $rootScope, $filter, $location, customer, $stateParams, $state, $window, ngTableParams, $timeout, $http, toastr) {
 		$scope.dollarAmmount = 0.00;
 		$scope.annualCost = "$" + $scope.dollarAmmount;
 		$scope.search = {};
@@ -18,7 +18,6 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.shops = response.data.data;
-					console.log(response)
 				});
 		}
 		$scope.dateSelectClass = function(index) {
@@ -62,7 +61,6 @@ angular.module('BarbrDoApp')
 			customer.shopContainsBarbers(obj).then(function(response) {
 				$scope.loaderStart = false;
 				$scope.shopBarbers = response.data.data;
-				console.log(response.data.data)
 			})
 		}
 		if ($state.current.name == 'bookNow') {
@@ -74,7 +72,6 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.barberservice = response.data.data;
-					console.log("here",response.data.data)
 				});
 
 			var passObj = {
@@ -87,7 +84,6 @@ angular.module('BarbrDoApp')
 			customer.bookNowPageInfo(passObj)
 				.then(function(response) {
 					$scope.barberInformation = response.data.data;
-					console.log(response.data.data)
 					var sum = 0;
 					var len = response.data.data[0].rating.length;
 					for (var i = 0; i < len; i++) {
@@ -107,27 +103,24 @@ angular.module('BarbrDoApp')
 			}
 			$scope.selectDate = myArray;
 			// timeSlots defines in costant file
-			console.log(timeSlots)
-			
+
 		}
 		$scope.selecteddd = 0;
 		$scope.setSelected = function(prop, index) {
 			$scope.selectedDate = prop.toISOString().slice(0, 10);
 			$scope.selecteddd = index;
-			$scope.formattedDate =   $filter('date')($scope.selectedDate, "yyyy-MM-dd");
+			$scope.formattedDate = $filter('date')($scope.selectedDate, "yyyy-MM-dd");
 			var obj = {
-				barberid : $stateParams.barber_id,
-				date : $scope.formattedDate
+				barberid: $stateParams.barber_id,
+				date: $scope.formattedDate
 			}
 			customer.timeavailability(obj)
-			.then(function(response) {
-				console.log("hjjh",response.data.data)
-				$scope.timeSlots = response.data.data;
-			})
+				.then(function(response) {
+					$scope.timeSlots = response.data.data;
+				})
 
 		};
 		$scope.setSelectedTime = function(prop, index) {
-			console.log(prop)
 			$scope.choosedTime = prop;
 			$scope.selectedTime = index
 		};
@@ -138,7 +131,6 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.barbers = response.data.data;
-					console.log("jhgvj",response.data.data)
 				});
 		}
 		$scope.selection = {};
@@ -178,7 +170,6 @@ angular.module('BarbrDoApp')
 			}
 			customer.takeAppointment(postObj)
 				.then(function(response) {
-					console.log("jkgbjk",response);
 					$state.go('pending', {
 						_id: response.data.data._id
 					});
@@ -200,7 +191,6 @@ angular.module('BarbrDoApp')
 					customer.fetchAppointments().then(function(response) {
 						$scope.loaderStart = false;
 						$scope.data = response.data;
-						console.log(response)
 						$defer.resolve($scope.data);
 					})
 				}
@@ -241,6 +231,71 @@ angular.module('BarbrDoApp')
 					$scope.markers = Markers;
 				});
 		}
+
+		$scope.appointmentdet = function() {
+			var obj = {
+				_id: $stateParams.id
+			}
+			customer.appointmentDetail(obj)
+				.then(function(response) {
+					$scope.viewmap = true;
+					$scope.appointmentdetail = response.data.data;
+					var sum = 0;
+					var price = 0;
+					var len = response.data.data.barber_id.ratings.length;
+					for (var i = 0; i < len; i++) {
+						sum += response.data.data.barber_id.ratings[i].score
+					}
+					if (response.data.data.services) {
+						for (var i = 0; i < response.data.data.services.length; i++) {
+							if (response.data.data.services[i].price) {
+								price += response.data.data.services[i].price
+							}
+						}
+					}
+					$scope.totoalPrice = price;
+					$scope.ratingavg = sum / len;
+				})
+		}
+
+		$scope.Showmaps = function() {
+			//If DIV is hidden it will be visible and vice versa.
+			$scope.viewmap = $scope.viewmap ? false : true;
+		}
+
+		$scope.rescheduleappoint = function(time,appoint)
+		{
+			if(time)
+			{
+				$scope.time = time
+				$scope.appoint = appoint
+			}
+			else
+			{
+				toastr.error('Please select time to Reschedule');
+			}
+		}
+
+
+		$scope.timeReschedule = function() {
+					var myobj = {
+                    minutes: $scope.time,
+                    appointment_id: $stateParams.id,
+                    appointment_date: $scope.appointmentdetail.appointment_date,
+                    barber_id: $scope.appoint.barber_id._id,
+                    name: $scope.appoint.barber_name,
+                    email: $scope.appoint.barber_id.email
+                }
+                customer.contactBarber(myobj).then(function(response) {
+                	$state.go('upcomingComplete');
+                    toastr.success(response.data.msg);
+                    
+                }).catch(function(result) {
+                    toastr.error(result.data.msg);
+                });
+        };
+
+
 		$scope.uploadImage = function(img) {
 			$scope.loaderStart = true;
 			var fs = new FormData();
@@ -356,11 +411,9 @@ angular.module('BarbrDoApp')
 				if (result.token) {
 					// Use the token to create a charge or a customer
 					// https://stripe.com/docs/charges
-					console.log("token here", result.token.id);
 					successElement.querySelector('.token').textContent = result.token.id;
 					successElement.classList.add('visible');
 
-					console.log($scope.selected);
 					var myarr = [];
 					for (var i = 0; i < $scope.selected.length; i++) {
 						var cusObj = {};
@@ -378,7 +431,7 @@ angular.module('BarbrDoApp')
 						"amount": $scope.annualCost
 					}
 
-					console.log("combined", obj);
+
 					customer.chargeCustomer(obj)
 						.then(function(response) {
 							$state.go('pending', {

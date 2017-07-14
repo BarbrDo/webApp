@@ -613,7 +613,7 @@ exports.particularAppointment = function (req, res) {
     }
     appointment.findOne({
         _id: req.params.appointment_id
-    }).populate('barber_id', 'first_name last_name ratings picture')
+    }).populate('barber_id', 'first_name last_name ratings picture email')
             .populate('customer_id', 'first_name last_name ratings picture')
             .populate('shop_id', 'name address city state gallery latLong')
             .exec(function (err, result) {

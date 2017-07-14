@@ -81,6 +81,7 @@ module.exports = function(app, express) {
     app.delete('/api/v1/customer/gallery/:image_id',userController.deleteImages); //Delete image from gallery
     app.get('/api/v1/appointment/pending/:_id',appointmentController.pendingConfiramtion);
     app.post('/api/v1/ratebarber',barberServices.rateBarber);
+    app.post('/api/v1/contactbarber',customerController.contactBarber);
     
     //Barber
     app.get('/api/v1/allbarbers', barberServices.availableBarber); //Get all barbers

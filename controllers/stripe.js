@@ -42,7 +42,6 @@ exports.createCharges = function(req, res) {
     req.assert('amount', 'Amount is required.').notEmpty();
     req.checkHeaders('user_id', 'user_id is required.').notEmpty();
     let errors = req.validationErrors();
-
     if (errors) {
         res.status(400).send({
             msg: "error in your request",

@@ -12,7 +12,6 @@ angular.module('BarbrDoApp')
 
     $scope.featuringPlans = function() {
       shop.plans().then(function(response) {
-        console.log(response)
         $scope.loaderStart = false;
         $scope.plans = response.data.data;
       })
@@ -20,8 +19,6 @@ angular.module('BarbrDoApp')
     $scope.subScription = function(data) {
       $scope.cardDetails.selectPrice = data.id;
       $scope.cardDetails.price = data.amount/100;
-      console.log($scope.cardDetails.price)
-      console.log($scope.cardDetails.selectPrice);
     }
 
 
@@ -29,7 +26,6 @@ angular.module('BarbrDoApp')
     $scope.stripeCall = function() {
       var stripe = Stripe('pk_test_fswpUdU8DBIKbLz1U637jNF7');
       var elements = stripe.elements();
-      console.log(elements);
       var card = elements.create('card', {
         style: {
           base: {
@@ -48,7 +44,6 @@ angular.module('BarbrDoApp')
       card.mount('#card-element');
 
       function setOutcome(result) {
-        console.log(result);
         var successElement = document.querySelector('.success');
         var errorElement = document.querySelector('.error');
         successElement.classList.remove('visible');
@@ -57,7 +52,6 @@ angular.module('BarbrDoApp')
         if (result.token) {
           // Use the token to create a charge or a customer
           // https://stripe.com/docs/charges
-          console.log("token here", result.token.id);
           successElement.querySelector('.token').textContent = result.token.id;
           successElement.classList.add('visible');
           var userWindow = {};
@@ -66,14 +60,12 @@ angular.module('BarbrDoApp')
           }
           else{
              userWindow = JSON.parse($window.localStorage.user);
-            console.log(userWindow._id);
           }
           var obj = {
             token: result.token.id,
             amount :$scope.cardDetails.price*100,
             user_id:userWindow._id
           }
-          console.log("obj",obj);
           shop.subScribe(obj).then(function(response) {
             if($stateParams._id){
              toastr.success("subscription successfull. Please login.");

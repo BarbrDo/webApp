@@ -1,8 +1,12 @@
 <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
-<div class="crumb"> <span>Book Appointment</span> </div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="barberDashboard">Barber Home</a></li>
+    <li class="breadcrumb-item "><a ui-sref="searchchair">Search Chair</a></li>
+    <li class="breadcrumb-item active">Request a Chair</li>
+</ol>
 <div class="wrapper" ng-init="shopchairdetail()">
     <div class="block ">
-        <h2>Your Barber</h2>
+        <h2>Your Barbeertgr</h2>
         <div class="selected_barber">
             <div class="selected_user"> <img src="images/brbr_pic.png" alt=""> </div>
             <div class="namertng">

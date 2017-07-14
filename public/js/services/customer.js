@@ -3,7 +3,6 @@ angular.module('BarbrDoApp')
     var obj = JSON.parse($window.localStorage.user);
     return {
       shopList: function(data) {
-          console.log("data",data)
         return $http({
           method: 'GET',
           url: '/api/v1/shops',

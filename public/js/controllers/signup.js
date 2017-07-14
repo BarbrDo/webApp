@@ -5,7 +5,6 @@ angular.module('BarbrDoApp')
     $scope.signup = function() {
       $auth.signup($scope.user)
         .then(function(response) {
-          console.log(response.data.user)
           $auth.setToken(response);
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
@@ -14,12 +13,10 @@ angular.module('BarbrDoApp')
           $('#bs-example-modal-lg').modal('hide');
         })
         .catch(function(response) {
-          console.log("modal need to dispaly");
           $('#bs-example-modal-lg').modal('show');
           $scope.messagess = {
             error: Array.isArray(response.data) ? response.data : response.data
           };
-          console.log($scope.messagess);
         });
     };
 

@@ -1,11 +1,6 @@
 angular.module('BarbrDoApp')
   .controller('EventCtrl', function($scope, $stateParams, $state, customer, toastr, moment, alert,$uibModal,$compile,uiCalendarConfig,$filter) {
-
-     var date = new Date();
-    var d = date.getDate();
-    var m = date.getMonth();
-    var y = date.getFullYear();
-    
+   
     $scope.changeTo = 'Hungarian';
     /* event source that pulls from google.com */
     $scope.eventSource = {
@@ -139,6 +134,11 @@ angular.module('BarbrDoApp')
             });
         };
 
+
+    $scope.saveEvent = function(data) {
+      customer.createEvent(data).then(function(response) {
+      });
+    }
 
         var myArray = [];
       var date = new Date();

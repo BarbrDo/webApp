@@ -205,7 +205,6 @@ angular.module('BarbrDoApp')
           $scope.loaderStart = false;
         })
         .catch(function(response) {
-          console.log(response)
           toastr.error(response.data.msg);
           $('#forgotpassword').modal('hide');
           $scope.user.email = '' ;

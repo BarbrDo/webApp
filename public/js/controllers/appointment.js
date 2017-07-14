@@ -7,7 +7,6 @@ angular.module('BarbrDoApp')
        
     Account.barberService($rootScope.currentId)
             .then(function(response) {
-             console.log("barber service",response.data.data);
              $rootScope.barberservice = response.data.data ;
             
             });
@@ -16,7 +15,7 @@ angular.module('BarbrDoApp')
     // Account.barberService(shop)
     //     .then(function(data) {
     //       $scope.service = data;
-    //       console.log("Serv",data);
+    //       .log("Serv",data);
     //       $location.path('/confirm');
             
     //     });
@@ -26,7 +25,7 @@ angular.module('BarbrDoApp')
     // Account.barberService(shop)
     //     .then(function(data) {
     //       $scope.service = data;
-    //       console.log("Serv",data);
+    //       .log("Serv",data);
     //       $location.path('/confirm');
             
     //     });

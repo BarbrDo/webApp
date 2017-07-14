@@ -17,7 +17,7 @@ angular.module('BarbrDoApp')
       shopsHavingChairs: function(data) {
          return $http({
           method: 'GET',
-          url: '/api/v1/shops/chair',
+          url: '/api/v1/barber/shops/chair',
           params: {search:data.search},
           headers: {
             'device_latitude': data.latitude,
@@ -28,7 +28,7 @@ angular.module('BarbrDoApp')
       shopChairs: function(data) {
         return $http({
           method: 'get',
-          url: '/api/v1/shops/chair/'+data._id,
+          url: '/api/v1/shopdetail/'+data._id,
           headers: {
             'user_id': data._id
           }
@@ -48,7 +48,6 @@ angular.module('BarbrDoApp')
         return $http.put('/api/v1/barber/confirmappointment/'+data.appointment_id, data);
       },
       completeAppointment: function(data) {
-        console.log(data)
         return $http({
           method: 'put',
           url: '/api/v1/barber/completeappointment/'+data.appointment_id,
@@ -75,7 +74,6 @@ angular.module('BarbrDoApp')
         return $http.get('/api/v1/shopdetail/' + data, data);
       },
       acceptRequest: function(data) {
-        console.log(data)
         return $http({
           method: 'put',
           url: '/api/v1/shops/acceptrequest',
@@ -112,7 +110,6 @@ angular.module('BarbrDoApp')
         })
       },
       editService: function(data) {
-        console.log("data",data)
          return $http({
           method: 'put',
           url: '/api/v1/barber/services/'+data.service_id,

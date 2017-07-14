@@ -19,7 +19,6 @@ angular.module('BarbrDoApp')
             return $http.post('/api/v1/forgot', data);
         },
       barbers: function(data) {
-        console.log(data)
         if (data.search) {
           return $http({
           method: 'get',
@@ -49,7 +48,6 @@ angular.module('BarbrDoApp')
         });   
       },
       deleteChair: function(data) {
-          console.log(data)
          return $http({
         method: 'DELETE',
         url: '/api/v1/shops/chair',
@@ -70,7 +68,6 @@ angular.module('BarbrDoApp')
         });
       },
       saveWeeklyFair: function(data) {
-          console.log("data",data);
         return $http({
           method: 'put',
           url: '/api/v1/shops/managechair',
@@ -171,7 +168,6 @@ angular.module('BarbrDoApp')
         });
       },
       subScribe: function(data) {
-        console.log("data in ",data);
         return $http({
           method: 'post',
           url: '/api/v1/stripe/subscribe',
@@ -188,7 +184,6 @@ angular.module('BarbrDoApp')
         return $http.get('/api/v1/barber/services/'+obj._id);
       },
       finacialCenter: function(data) {
-        console.log(data)
         return $http({
           method: 'get',
            url: '/api/v1/barber/sale/'+data.startdate+'/'+data.enddate,

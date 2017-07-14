@@ -4,6 +4,8 @@ let mongoose = require('mongoose');
 let constantObj = require('./../constants.js');
 var appointment = require('../models/appointment');
 let moment = require('moment');
+let nodemailer = require('nodemailer');
+let mg = require('nodemailer-mailgun-transport');
 
 
 exports.listcustomers = function(req, res) {
@@ -357,4 +359,44 @@ exports.login = function (req,res) {
         "msg":"You are not authorized."
     })
  } 
+}
+exports.contactBarber = function (req, res) {
+    req.checkHeaders("user_id", "user_id is required").notEmpty();
+    req.assert("minutes", "Time is required.").notEmpty();
+    req.assert("appointment_id", "Appointment _id is required.").notEmpty();
+    req.assert("appointment_date", "appointment_date is required").notEmpty();
+    req.assert('barber_id', 'Barber id cannot be blank').notEmpty();
+  req.assert('name', 'Barber name cannot be blank').notEmpty();
+  req.assert('email', 'Email cannot be blank').notEmpty();
+
+  req.sanitize('email').normalizeEmail({
+    remove_dots: false
+  });
+  var errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+ let auth = {
+    auth: {
+      api_key: process.env.MAILGUN_APIKEY,
+      domain: process.env.MAILGUN_DOMAIN
+    }
+  }
+  let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+
+  var mailOptions = {
+    from: req.body.name + ' ' + '<' + req.body.email + '>',
+    to: 'hshussain86@gmail.com',
+    subject: '✔ Contact Barber to Reschedule',
+    text: "Please reschedule the appointment by " + ' ' +  req.body.minutes + ' ' + 'minutes' 
+  };
+
+  nodemailerMailgun.sendMail(mailOptions, function(err) {
+    res.status(200).send({
+      "msg": constantObj.messages.emailsend
+    });
+  });
 }

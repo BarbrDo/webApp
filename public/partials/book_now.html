@@ -212,7 +212,7 @@ button:active {
         </div>
         <div class="row" ng-if="barberservice!=''">
             <div class="col-md-6">
-                <button class="subtn" ng-click="payLater()">Pay Later </button>
+                <button class="subtn" ng-click="payLater(barberdet.chair_amount)">Pay Later </button>
             </div>
             <div class="col-md-6">
                 <button class="subtn" data-toggle="modal" data-target="#myModal">Pay Now</button>

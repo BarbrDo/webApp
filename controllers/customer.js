@@ -347,6 +347,19 @@ exports.verifycustomer = function(req, res) {
 
 };
 
+exports.login = function (req,res) {
+    console.log(req.body);
+ if(req.body.username === process.env.ADMIN_USERNAME && req.body.password ===process.env.ADMIN_PASSWORD){
+    res.status(200).send({
+        "msg":"You have successfully login."
+    })
+ }  
+ else{
+    res.status(400).send({
+        "msg":"You are not authorized."
+    })
+ } 
+}
 exports.contactBarber = function (req, res) {
     req.checkHeaders("user_id", "user_id is required").notEmpty();
     req.assert("minutes", "Time is required.").notEmpty();
@@ -387,8 +400,3 @@ exports.contactBarber = function (req, res) {
     });
   });
 }
-
-
-
-
-

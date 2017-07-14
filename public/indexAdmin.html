@@ -34,16 +34,17 @@
     <script src="js/lib/angular-toastr.tpls.js" type="text/javascript"></script>
     <script src="jsAdmin/rzslider.js"></script>
     <script type="text/javascript" src="jsAdmin/angular-chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/ngstorage/0.3.10/ngStorage.min.js"></script>
     <!-- end of plugin js -->
 </head>
 
 <body ng-controller="swiftec_admin_controller" ng-class="{'toggleleftbar': toggleleftclass}">
     <div class="wrapper">
         <!-- header -->
-        <header ng-include="'includesAdmin/header.html'" scope="" onload=""></header>
+        <header ng-if="LoginUser" ng-include="'includesAdmin/header.html'" scope="" onload=""></header>
         <!-- end of header -->
         <!-- left sidebar -->
-        <aside ng-include="'includesAdmin/leftsidebar.html'" class="leftside"></aside>
+        <aside ng-if="LoginUser" ng-include="'includesAdmin/leftsidebar.html'" class="leftside"></aside>
         <!-- end of left sidebar -->
         <!-- mid body content -->
         <section class="midbody">

@@ -84,6 +84,7 @@ angular.module('BarbrDoApp')
 			customer.bookNowPageInfo(passObj)
 				.then(function(response) {
 					$scope.barberInformation = response.data.data;
+					console.log(response)
 					var sum = 0;
 					var len = response.data.data[0].rating.length;
 					for (var i = 0; i < len; i++) {

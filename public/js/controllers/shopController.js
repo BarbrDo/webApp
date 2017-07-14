@@ -27,7 +27,7 @@
  				.then(function(response) {
  					$scope.loaderStart = false;
  					$rootScope.barbers = response.data.data;
- 					console.log(response.data.data)
+ 					console.log("barber list",response.data.data)
  				}).catch(function(result) {
  					console.log(result)
  					toastr.error('Error');

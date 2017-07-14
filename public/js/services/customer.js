@@ -76,6 +76,9 @@ angular.module('BarbrDoApp')
           }
         },data);
       },
+      appointmentDetail: function(data) {
+        return $http.get('/api/v1/barber/particularAppointment/'+data._id, data);
+      },
       barberInfo: function(data) {
         return $http.get('/api/v1/userprofile/'+data._id, data);
       },
@@ -122,6 +125,16 @@ angular.module('BarbrDoApp')
           params: {date:data.date},
         });
       },
+      contactBarber : function(data) {
+        return $http({
+          method: 'post',
+          url: '/api/v1/contactbarber',
+          headers: {
+            'user_id': obj._id
+          },
+          data:data,
+        });
+      },
       getEvents:function (data) {
         return $http({
           method: 'post',
@@ -130,7 +143,7 @@ angular.module('BarbrDoApp')
             'user_id': obj._id//obj._id
           },
           data:data,
-        },data);
+        });
       }
     };
   });

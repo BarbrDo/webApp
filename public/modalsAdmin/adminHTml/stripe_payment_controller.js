@@ -1,7 +1,13 @@
 app_admin.controller("paymentCtrl", paymentCtrl);
 
-function paymentCtrl($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $uibModal, $timeout) {
-	  $scope.user = {};
+function paymentCtrl($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $uibModal, $timeout,$localStorage) {
+  if($localStorage.loggedIn=='true'){
+    $rootScope.LoginUser = true;
+  }
+  else{
+    $rootScope.LoginUser = false;
+  }
+	$scope.user = {};
   $scope.myobj = {};
   $scope.myobj.currentPage = 1;
   $scope.bigTotalItems = 175;

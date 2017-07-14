@@ -6,6 +6,8 @@ module.exports = function(app, express) {
     let barberController = require('./../../controllers/barber');
     
     //Count all Users, appointsments  
+    app.post('/api/v1/loginadmin',customerController.login);
+
     app.get('/api/v1/countbarber', barberController.countbarber); 
     app.get('/api/v1/countshop', shopController.countshop); 
     app.get('/api/v1/countcustomer', customerController.countcustomer); 

@@ -712,23 +712,23 @@ exports.particularAppointment = function(req, res) {
         });
     }
     appointment.findOne({
-            _id: req.params.appointment_id
-        }).populate('barber_id', 'first_name last_name ratings picture')
-        .populate('customer_id', 'first_name last_name ratings picture')
-        .populate('shop_id', 'name address city state gallery latLong')
-        .exec(function(err, result) {
-            if (err) {
-                res.status(400).send({
-                    msg: constantObj.messages.errorRetreivingData,
-                    "err": err
-                });
-            } else {
-                res.status(200).send({
-                    msg: 'Successfully retrieve data.',
-                    "data": result
-                });
-            }
-        })
+        _id: req.params.appointment_id
+    }).populate('barber_id', 'first_name last_name ratings picture email')
+            .populate('customer_id', 'first_name last_name ratings picture')
+            .populate('shop_id', 'name address city state gallery latLong')
+            .exec(function (err, result) {
+                if (err) {
+                    res.status(400).send({
+                        msg: constantObj.messages.errorRetreivingData,
+                        "err": err
+                    });
+                } else {
+                    res.status(200).send({
+                        msg: 'Successfully retrieve data.',
+                        "data": result
+                    });
+                }
+            })
 }
 
 

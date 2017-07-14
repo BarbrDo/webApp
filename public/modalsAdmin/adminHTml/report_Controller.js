@@ -1,6 +1,12 @@
 app_admin.controller("reportCtrl", reportCtrl);
 
-function reportCtrl($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $uibModal, $timeout) {
+function reportCtrl($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $uibModal, $timeout,$localStorage) {
+	 if($localStorage.loggedIn=='true'){
+    $rootScope.LoginUser = true;
+  }
+  else{
+    $rootScope.LoginUser = false;
+  }
 	var vm = this;
 	vm.allRecords = allRecords;
 	vm.graphicData = graphicData;

@@ -4,6 +4,7 @@ let constantObj = require('./../constants.js');
 let chairRequest = require('../models/chair_request');
 let mongoose = require('mongoose');
 let geocoder = require('geocoder');
+let moment = require('moment');
 var nodemailer = require('nodemailer');
 var mg = require('nodemailer-mailgun-transport');
 
@@ -227,16 +228,16 @@ exports.allShops = function(req, res) {
     }
 }
 
-exports.associatedBarbers = function (req, res) {
+exports.associatedBarbers = function(req, res) {
     if (req.headers.device_latitude && req.headers.device_longitude) {
         let long = parseFloat(req.headers.device_longitude);
         let lati = parseFloat(req.headers.device_latitude);
         let maxDistanceToFind = constantObj.distance.shopDistance; // in miles in km 0.001
-        let search = ""
+        let search = "";
+        let searchDate = new Date(moment(new Date(), "YYYY-MM-DD").add(1, 'days').format("YYYY-MM-DD[T]HH:mm:ss.SSS")+'Z');
         if (req.query.search) {
             search = req.query.search;
         }
-        let searchDate = new Date(moment(currentDate, "YYYY-MM-DD").add(1, 'days').format("YYYY-MM-DD[T]HH:mm:ss.SSS")+'Z');
         shop.aggregate([{
                 $geoNear: {
                     near: {
@@ -255,8 +256,8 @@ exports.associatedBarbers = function (req, res) {
             {
                 $match: {
                     "chairs.barber_id": {$exists: true, "$ne": ""},
-                    "chairs.booking_start": {$lte: searchDate},
-                    "chairs.booking_end": {$gte: searchDate}
+                    //"chairs.booking_start": {$lte: searchDate},
+                    //"chairs.booking_end": {$gte: searchDate}
                 }
             },
             {
@@ -264,7 +265,7 @@ exports.associatedBarbers = function (req, res) {
                     from: "users",
                     localField: "chairs.barber_id",
                     foreignField: "_id",
-                    as: "barberInfo"
+                    as: "barberInformation"
                 }
             },
             {
@@ -274,36 +275,68 @@ exports.associatedBarbers = function (req, res) {
                     created_date: "$created_date",
                     distance: "$dist.calculated",
                     units: {$literal: "miles"},
-                    barber: "$barberInfo",
+                    barberInformation: "$barberInformation",
                     chair_id: "$chairs._id",
-                    chair_name: "$chairs.name"
+                    chair_name: "$chairs.name",
+                    chair_type: "$chairs.type",
+                    chair_amount: "$chairs.amount",
+                    chair_shop_percentage: "$chairs.shop_percentage",
+                    chair_barber_percentage: "$chairs.barber_percentage"
                 }
             }, 
             {
                 $match: {
                     $or: [{
-                            "barber.first_name": {
+                            "barberInformation.first_name": {
                                 $regex: search,
                                 $options: 'i'
                             }
                         }, {
-                            "barber.last_name": {
+                            "barberInformation.last_name": {
                                 $regex: search,
                                 $options: 'i'
                             }
                         }]
                 }
-            }]).exec(function (err, data) {
+            }]).exec(function(err, data) {
             if (err) {
                 console.log(err);
             } else {
-                console.log("database", data)
+                console.log(data);
+                let resultTantArray = [];
+                for (let i = 0; i < data.length; i++) {
+                    let obj = {};
+                    console.log('datafor',data);
+                    if (data[i].barberInformation) {
+                        obj._id = data[i].barberInformation[i]._id;
+                        obj.first_name = data[i].barberInformation[i].first_name;
+                        obj.last_name = data[i].barberInformation[i].last_name;
+                        let distt = parseFloat(data[i].distance)
+                        distt = Math.round(distt * 100) / 100
+                        obj.distance = distt;
+                        obj.units = "miles";
+                        obj.created_date = data[i].barberInformation[i].created_date;
+                        obj.ratings = data[i].barberInformation[i].ratings;
+                        obj.location = data[i].location;
+                        obj.shop_id = data[i]._id;
+                        obj.picture = data[i].barberInformation[i].picture;
+                        obj.chair_id = data[i].chair_id;
+                        obj.chair_name = data[i].chair_name;
+                        obj.chair_type = data[i].chair_type;
+                        obj.chair_amount = data[i].chair_amount;
+                        obj.chair_shop_percentage = data[i].chair_shop_percentage;
+                        obj.chair_barber_percentage = data[i].chair_barber_percentage;
+                        resultTantArray.push(obj);
+                    }
+                }
+                console.log("resultTantArray",resultTantArray)
                 res.status(200).send({
                     "msg": constantObj.messages.successRetreivingData,
-                    "data": data
+                    "data": resultTantArray
                 })
             }
         })
+
     } else {
         res.status(400).send({
             "msg": constantObj.messages.requiredFields

@@ -1,12 +1,18 @@
-app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log', '$stateParams', '$state' ,'toastr', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state,toastr) {
-
+app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log', '$stateParams', '$state' ,'toastr','$localStorage', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state,toastr,$localStorage) {
+  $scope.loginUser = {};
   $scope.user = {};
   $scope.myobj = {};
   $scope.myobj.currentPage = 1;
   $scope.bigTotalItems = 175;
   $scope.bigCurrentPage = 1;
   $scope.fieldDisabled = false;
-
+  console.log("val",$localStorage.loggedIn);
+  if($localStorage.loggedIn=='true'){
+    $rootScope.LoginUser = true;
+  }
+  else{
+    $rootScope.LoginUser = false;
+  }
   // Disable weekend selection
   function disabled(data) {
     var date = data.date,
@@ -14,6 +20,21 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
   }
 
+  $scope.loginAdmin = function () {
+    Admin.login($scope.loginUser)
+      .then(function(response) {
+        toastr.success('Welcome Admin');
+        $localStorage.loggedIn = "true";
+
+        $state.go('dashboard')
+      }).catch(function(result) {
+        toastr.error('you are not Authorized');
+      })
+  }
+  $scope.logout = function () {
+    $localStorage.loggedIn = ""
+    $state.go('login');
+  }
 
   $scope.open1 = function() {
     $scope.popup1.opened = true;

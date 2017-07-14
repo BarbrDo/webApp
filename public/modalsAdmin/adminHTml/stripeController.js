@@ -1,6 +1,12 @@
 app_admin.controller("planCtrl", planCtrl);
 
-function planCtrl($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $uibModal, $timeout) {
+function planCtrl($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $uibModal, $timeout,$localStorage) {
+    if($localStorage.loggedIn=='true'){
+    $rootScope.LoginUser = true;
+  }
+  else{
+    $rootScope.LoginUser = false;
+  }
     var vm = this;
     vm.animationsEnabled = true;
     vm.edit = edit;

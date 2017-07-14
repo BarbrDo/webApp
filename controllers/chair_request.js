@@ -488,174 +488,185 @@ exports.acceptRequest = function(req, res) {
                 as: "barberInformation"
             }
         }]).exec(function(err, result) {
-                console.log("this is result", result)
-                if (err) {
-                    return res.status(400).send({
-                        msg: "error in finding",
-                        err: err
-                    });
-                } else {
-                    if (!result) {
-                        res.status(400).send({
-                            'msg': "Data for this chair request is not present."
-                        })
+            console.log("this is result", result)
+            if (err) {
+                return res.status(400).send({
+                    msg: "error in finding",
+                    err: err
+                });
+            } else {
+                if (!result) {
+                    res.status(400).send({
+                        'msg': "Data for this chair request is not present."
+                    })
+                }
+                let book_date = moment().format("YYYY-MM-DD");
+
+                if (result[0].booking_date) {
+                    book_date = moment(result[0].booking_date).format("YYYY-MM-DD");
+                }
+
+                let bookingEndDate = moment(book_date).add(1, 'M').format("YYYY-MM-DD");
+
+                if (result[0].chair_type == 'weekly') {
+                    bookingEndDate = moment(book_date).add(7, 'day').format("YYYY-MM-DD")
+                }
+
+                checkBarberBookingsBetweenDates(book_date, bookingEndDate, result[0].barber_id, function(err, data) {
+                    if (err) {
+                        console.log(err)
+                        return res.status(400).send({
+                            msg: "You are already have booking for this date"
+                        });
                     }
-                    let book_date = moment().format("YYYY-MM-DD");
+                    if (data) {
 
-                    if (result[0].booking_date) {
-                        book_date = moment(result[0].booking_date).format("YYYY-MM-DD");
+                        updateCollectionData = {
+                            "$set": {
+                                "chairs.$.booking_start": book_date,
+                                "chairs.$.booking_end": bookingEndDate,
+                                "chairs.$.barber_id": result[0].barber_id,
+                                "chairs.$.availability": "booked"
+                            }
+                        };
+
+                        console.log('updateCollectionData', updateCollectionData);
+                        /*
+                         1. In case of if type is weekly then booking_end date is one week ahead
+                         2. In case of if type is percentage then booking_end date is one month ahead
+                         3. In case of if type is monthly then booking_end date is one month ahead */
+
+                        async.waterfall([
+                            function(done) {
+                                var saveData = {
+                                    chair_id: result[0].chair_id,
+                                    barber_id: result[0].barber_id,
+                                    shop_id: result[0].shop_id,
+                                    release_date: bookingEndDate,
+                                    booking_date: book_date,
+                                    chair_type: result[0].chair_type,
+                                    is_booking_active: true
+                                }
+                                if (result[0].chair_type == 'percentage') {
+                                    saveData.shop_percentage = result[0].shop_percentage
+                                    saveData.barber_percentage = result[0].barber_percentage
+                                }
+                                if (result[0].chair_type == 'weekly' || result[0].chair_type == 'monthly') {
+                                    saveData.amount = result[0].amount;
+                                }
+                                chairBook(saveData).save(function(err, output) {
+                                    if (err) {
+                                        return res.status(400).send({
+                                            msg: "Error in chair book collection."
+                                        })
+                                    } else {
+
+                                        done(err, "Chair successfully booked.")
+                                    }
+                                })
+                            },
+                            function(message, done) {
+                                var bulk = chairRequest.collection.initializeUnorderedBulkOp();
+                                let query = {
+                                    "chair_id": mongoose.Types.ObjectId(result[0].chair_id),
+                                    "status": "pending",
+                                }
+                                let update = {
+                                    "$set": {
+                                        "status": "decline"
+                                    }
+                                }
+                                bulk.find(query).update(update);
+                                bulk.execute(function(error, rlt) {
+
+                                    // callback()
+                                });
+                                done(err, "all chair updated.")
+                            },
+                            function(message, done) {
+                                var bulk = chairRequest.collection.initializeUnorderedBulkOp();
+                                let query = {
+                                    "barber_id": mongoose.Types.ObjectId(result[0].barber_id),
+                                    "status": "pending"
+                                }
+                                let update = {
+                                    "$set": {
+                                        "status": "decline"
+                                    }
+                                }
+                                bulk.find(query).update(update);
+                                bulk.execute(function(error, rlt) {
+
+                                    // callback()
+                                });
+                                done(err, "all chair updated.")
+                            },
+                            function(message, done) {
+                                chairRequest.update({
+                                    _id: id
+                                }, {
+                                    $set: {
+                                        status: "accept"
+                                    }
+                                }, function(err, outt) {
+                                    if (err) {
+                                        return res.status(400).send({
+                                            msg: "Error in chair request collection."
+                                        })
+                                    } else {
+
+                                        done(err, message, "Chair request successfully updated.")
+                                    }
+                                })
+                            },
+                            function(message, chairReqeustMessage, done) {
+                                shop.update({
+                                    "_id": result[0].shop_id,
+                                    "chairs._id": result[0].chair_id
+                                }, updateCollectionData, function(err, findalResult) {
+                                    if (err) {
+                                        return res.status(400).send({
+                                            msg: "Error in updating the shop collection."
+                                        })
+                                    } else {
+                                        res.send({
+                                            msg: 'Shop chair request accepted successfully',
+                                            'msg1': message,
+                                            'msg2': chairReqeustMessage
+                                        });
+                                        done(err)
+                                    }
+                                })
+                            }
+                        ])
                     }
-
-                    let bookingEndDate = moment(book_date).add(1, 'M').format("YYYY-MM-DD");
-
-                    if (result[0].chair_type == 'weekly') {
-                        bookingEndDate = moment(book_date).add(7, 'day').format("YYYY-MM-DD")
-                    }
-                    updateCollectionData = {
-                        "$set": {
-                            "chairs.$.booking_start": book_date,
-                            "chairs.$.booking_end": bookingEndDate,
-                            "chairs.$.barber_id": result[0].barber_id,
-                            "chairs.$.availability": "booked"
-                        }
-                    };
-
-                    console.log('updateCollectionData', updateCollectionData);
-                    /*
-                     1. In case of if type is weekly then booking_end date is one week ahead
-                     2. In case of if type is percentage then booking_end date is one month ahead
-                     3. In case of if type is monthly then booking_end date is one month ahead */
-
-                    async.waterfall([
-                        function(done) {
-                            var saveData = {
-                                chair_id: result[0].chair_id,
-                                barber_id: result[0].barber_id,
-                                shop_id: result[0].shop_id,
-                                release_date: bookingEndDate,
-                                booking_date: book_date,
-                                chair_type: result[0].chair_type,
-                                is_booking_active: true
-                            }
-                            if (result[0].chair_type == 'percentage') {
-                                saveData.shop_percentage = result[0].shop_percentage
-                                saveData.barber_percentage = result[0].barber_percentage
-                            }
-                            if (result[0].chair_type == 'weekly' || result[0].chair_type == 'monthly') {
-                                saveData.amount = result[0].amount;
-                            }
-                            chairBook(saveData).save(function(err, output) {
-                                if (err) {
-                                    return res.status(400).send({
-                                        msg: "Error in chair book collection."
-                                    })
-                                } else {
-
-                                    done(err, "Chair successfully booked.")
-                                }
-                            })
-                        },
-                        function(message, done) {
-                            var bulk = chairRequest.collection.initializeUnorderedBulkOp();
-                            let query = {
-                                "chair_id": mongoose.Types.ObjectId(result[0].chair_id),
-                                "status": "pending",
-                            }
-                            let update = {
-                                "$set": {
-                                    "status": "decline"
-                                }
-                            }
-                            bulk.find(query).update(update);
-                            bulk.execute(function(error, rlt) {
-
-                                // callback()
-                            });
-                            done(err, "all chair updated.")
-                        },
-                        function(message, done) {
-                            var bulk = chairRequest.collection.initializeUnorderedBulkOp();
-                            let query = {
-                                "barber_id": mongoose.Types.ObjectId(result[0].barber_id),
-                                "status": "pending"
-                            }
-                            let update = {
-                                "$set": {
-                                    "status": "decline"
-                                }
-                            }
-                            bulk.find(query).update(update);
-                            bulk.execute(function(error, rlt) {
-
-                                // callback()
-                            });
-                            done(err, "all chair updated.")
-                        },
-                        function(message, done) {
-                            chairRequest.update({
-                                _id: id
-                            }, {
-                                $set: {
-                                    status: "accept"
-                                }
-                            }, function(err, outt) {
-                                if (err) {
-                                    return res.status(400).send({
-                                        msg: "Error in chair request collection."
-                                    })
-                                } else {
-
-                                    done(err, message, "Chair request successfully updated.")
-                                }
-                            })
-                        },
-                        function(message, chairReqeustMessage, done) {
-                            shop.update({
-                                "_id": result[0].shop_id,
-                                "chairs._id": result[0].chair_id
-                            }, updateCollectionData, function(err, findalResult) {
-                                if (err) {
-                                    return res.status(400).send({
-                                        msg: "Error in updating the shop collection."
-                                    })
-                                } else {
-                                    res.send({
-                                        msg: 'Shop chair request accepted successfully',
-                                        'msg1': message,
-                                        'msg2': chairReqeustMessage
-                                    });
-                                    done(err)
-                                }
-                            })
-                        }
-                    ])
-        }
-    })
-}
-else if (req.body.request_type == 'decline') {
-    let id = mongoose.Types.ObjectId(req.body.chair_request_id);
-    chairRequest.update({
-        _id: id
-    }, {
-        $set: {
-            status: "decline"
-        }
-    }, function(err, outt) {
-        if (err) {
-            return res.status(400).send({
-                msg: "Error in chair request collection."
-            })
-        } else {
-            return res.status(200).send({
-                msg: "Chair request is successfully declined."
-            })
-        }
-    })
-} else {
-    return res.status(400).send({
-        msg: "Error in request"
-    })
-}
+                })
+            }
+        })
+    } else if (req.body.request_type == 'decline') {
+        let id = mongoose.Types.ObjectId(req.body.chair_request_id);
+        chairRequest.update({
+            _id: id
+        }, {
+            $set: {
+                status: "decline"
+            }
+        }, function(err, outt) {
+            if (err) {
+                return res.status(400).send({
+                    msg: "Error in chair request collection."
+                })
+            } else {
+                return res.status(200).send({
+                    msg: "Chair request is successfully declined."
+                })
+            }
+        })
+    } else {
+        return res.status(400).send({
+            msg: "Error in request"
+        })
+    }
 }
 
 var checkBarberBookings = function(barber_id, bookDate, cb) {
@@ -680,10 +691,10 @@ let checkBarberBookingsBetweenDates = function(startdate, endDate, barber_id, cb
     chairBook.find({
         barber_id: barber_id,
         booking_date: {
-            $gte: startdate
+            $lte: new Date(startdate)
         },
         release_date: {
-            $lte: endDate
+            $gte: new Date(endDate)
         }
     }).exec(function(bookerr, bookresult) {
         console.log("bookresult", bookresult);

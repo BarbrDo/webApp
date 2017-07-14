@@ -1,6 +1,37 @@
 angular.module('BarbrDoApp')
   .controller('EventCtrl', function($scope, $stateParams, $state, customer, toastr, moment, alert,$uibModal,$compile,uiCalendarConfig,$filter) {
-   
+
+
+     var date = new Date();
+    var d = date.getDate();
+    var m = date.getMonth();
+    var y = date.getFullYear();
+    var vm = this;
+
+    //These variables MUST be set as a minimum for the calendar to work
+    vm.calendarView = 'month';
+    vm.viewDate = new Date();
+    var actions = [{
+      label: '<i class=\'glyphicon glyphicon-pencil\'></i>',
+      onClick: function(args) {
+        alert.show('Edited', args.calendarEvent);
+      }
+    }, {
+      label: '<i class=\'glyphicon glyphicon-remove\'></i>',
+      onClick: function(args) {
+        alert.show('Deleted', args.calendarEvent);
+      }
+    }];
+
+    customer.getEvents().then(function(response) {
+       vm.events = response.data.data.events;
+    });
+    // let date = moment('2017-07-03T13:00:00.000Z').subtract(19800, 'seconds');
+    // var d = new Date('2017-07-03T13:00:00.000Z');
+    // var olderDate = moment(d).subtract(330, 'minutes').toDate();
+    // console.log(olderDate)
+
+    
     $scope.changeTo = 'Hungarian';
     /* event source that pulls from google.com */
     $scope.eventSource = {
@@ -139,6 +170,7 @@ angular.module('BarbrDoApp')
       customer.createEvent(data).then(function(response) {
       });
     }
+
 
         var myArray = [];
       var date = new Date();

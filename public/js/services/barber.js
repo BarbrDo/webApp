@@ -17,7 +17,7 @@ angular.module('BarbrDoApp')
       shopsHavingChairs: function(data) {
          return $http({
           method: 'GET',
-          url: '/api/v1/shops/chair',
+          url: '/api/v1/barber/shops/chair',
           params: {search:data.search},
           headers: {
             'device_latitude': data.latitude,
@@ -28,7 +28,7 @@ angular.module('BarbrDoApp')
       shopChairs: function(data) {
         return $http({
           method: 'get',
-          url: '/api/v1/shops/chair/'+data._id,
+          url: '/api/v1/shopdetail/'+data._id,
           headers: {
             'user_id': data._id
           }

@@ -82,6 +82,7 @@ angular.module('BarbrDoApp')
 			$scope.loaderStart = true;
 			barber.shopsHavingChairs(obj)
 				.then(function(response) {
+					console.log("alls hops having chair",response)
 					$scope.loaderStart = false;
 					$scope.shopChairs = response.data.data;
 					
@@ -94,6 +95,7 @@ angular.module('BarbrDoApp')
 			}
 			var shp = [];
 			barber.shopChairs(obj).then(function(response) {
+				console.log("chairdet",response.data.data[0])
 				$rootScope.particularShop = response.data.data[0];
 				var len = response.data.data[0].chairs.length;
         		for (var i = 0; i < len; i++) {

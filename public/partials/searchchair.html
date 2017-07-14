@@ -1,6 +1,6 @@
 <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
-  <div class="crumb" ng-init="allShopsHavingChairs()"> <span>Book Appointment</span> </div>
-  <div class="wrapper">
+  <div class="crumb" > <span>Book Appointment</span> </div>
+  <div class="wrapper" ng-init="allShopsHavingChairs()">
     <div class="block">
       <h2>Search Chair</h2>
       <!-- Sorting -->
@@ -27,7 +27,7 @@
                   <div class="icon"><img src="images/miles.png" alt="" ></div>
                   <p>{{result._id.distance | number : 2}} miles</p>
                 </div>
-                <a ui-sref="shopChairs({_id:result._id.user_id})" class="byshop" >{{result._id.name}}<i class="fa  fa-angle-right"></i> </a> </div>
+                <a ui-sref="shopChairs({_id:result._id._id})" class="byshop" >{{result._id.name}}<i class="fa  fa-angle-right"></i> </a> </div>
             </div>
           </div>
           </span>

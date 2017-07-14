@@ -1,7 +1,6 @@
 angular.module('BarbrDoApp').controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account, toastr, $http, shop,$timeout) {
     if ($window.localStorage.user) {
         $scope.profile = JSON.parse($window.localStorage.user);
-        console.log($scope.profile)
     }
     $scope.imgPath = $window.localStorage.imagePath;
 
@@ -33,7 +32,6 @@ angular.module('BarbrDoApp').controller('ProfileCtrl', function($scope, $rootSco
     
     
     $scope.updateProfile = function() {
-        console.log($scope.profile);
         var fs = new FormData();
         fs.append("first_name", $scope.profile.first_name);
         fs.append("last_name", $scope.profile.last_name);

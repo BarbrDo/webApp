@@ -1,4 +1,4 @@
-angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ngTable', 'alexjoffroy.angular-loaders', 'uiGmapgoogle-maps', 'rzModule', 'ngFileUpload', 'uiSwitch', 'toastr', 'checklist-model', 'angular-input-stars', 'angularPayments', 'geolocation', 'mwl.calendar', 'ui.bootstrap', 'colorpicker.module'])
+angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad', 'ngMask', 'ngTable', 'alexjoffroy.angular-loaders', 'uiGmapgoogle-maps', 'rzModule', 'ngFileUpload', 'uiSwitch', 'toastr', 'checklist-model', 'angular-input-stars', 'angularPayments', 'geolocation', 'mwl.calendar', 'ui.bootstrap', 'colorpicker.module','ui.calendar'])
     .config(
         ['uiGmapGoogleMapApiProvider', function(GoogleMapApiProviders) {
             GoogleMapApiProviders.configure({
@@ -26,20 +26,20 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                         controller: 'HeaderCtrl'
                     }
                 },
-            resolve: {
-                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
-                    var deferred = $q.defer();
-                    $ocLazyLoad.load({
-                        name: 'BarbrDoApp',
-                        files: ['js/controllers/subScription.js',
-                            'js/services/shop.js','/js/services/account.js'
-                        ]
-                    }).then(function() {
-                        deferred.resolve();
-                    });
-                    return deferred.promise;
-                }]
-            }
+                resolve: {
+                    lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                        var deferred = $q.defer();
+                        $ocLazyLoad.load({
+                            name: 'BarbrDoApp',
+                            files: ['js/controllers/subScription.js',
+                                'js/services/shop.js', '/js/services/account.js'
+                            ]
+                        }).then(function() {
+                            deferred.resolve();
+                        });
+                        return deferred.promise;
+                    }]
+                }
             })
 
         .state('barberHome', {
@@ -324,7 +324,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         })
 
-         .state('contactbarber', {
+        .state('contactbarber', {
             url: '/contact_barber/:id',
             views: {
                 "homeDash": {
@@ -355,7 +355,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         })
 
-        
+
 
         .state('facebookSignup', {
             url: '/facebook/signup',
@@ -1557,7 +1557,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     templateUrl: 'partials/barbershopSideBar.html'
                 }
             },
-             resolve: {
+            resolve: {
                 lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
                     var deferred = $q.defer();
                     $ocLazyLoad.load({

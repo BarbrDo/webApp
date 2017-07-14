@@ -10,7 +10,6 @@ angular.module('BarbrDoApp')
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
           $scope.user = {};
-          console.log(JSON.stringify(response.data.user));
           if(response.data.user.user_type =='customer'){
             $state.go('dashboard');
           }
@@ -25,7 +24,6 @@ angular.module('BarbrDoApp')
           };
           setTimeout(function(){
             $scope.$apply()},1)
-          console.log("sdfsdfsd",$scope.messages);
         });
     };
     

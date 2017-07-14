@@ -423,6 +423,7 @@ exports.allPayments = function(req, res) {
     })
 }
 exports.payafterappointment = function(req, res) {
+    console.log(req.body);
     req.assert('appointmentId', 'appointmentId is required.').notEmpty();
     req.assert('date', 'Date is required.').notEmpty(); //YYYY-MM-DD
     req.checkHeaders('user_id','user_id is required').notEmpty();
@@ -437,7 +438,7 @@ exports.payafterappointment = function(req, res) {
     }
     let chargeAmount = req.body.amount * 100;
     console.log(chargeAmount);
-    User.findOne({
+    user.findOne({
         _id: req.headers.user_id
     }, function(err, data) {
         if (err) {
@@ -471,6 +472,7 @@ exports.payafterappointment = function(req, res) {
                         }).then(function(charge) {
                             let updateDate = {
                                 payment_status: "confirm",
+                                payment_method: "card",
                                 payment_detail: charge
                             }
                             appointment.update({"_id": req.body.appointmentId},updateDate, function(err, data) {

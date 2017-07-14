@@ -91,7 +91,13 @@ exports.shopContainsBarber = function(req, res) {
                                 picture: result.chairs[i].barber_id.picture,
                                 created_date: result.chairs[i].barber_id.created_date,
                                 ratings: result.chairs[i].barber_id.ratings,
-                                gallery: result.chairs[i].barber_id.gallery
+                                gallery: result.chairs[i].barber_id.gallery,
+                                chair_id: result.chairs[i]._id,
+                                chair_name: result.chairs[i].name,
+                                chair_type: result.chairs[i].type,
+                                chair_amount: result.chairs[i].amount,
+                                chair_shop_percentage: result.chairs[i].shop_percentage,
+                                chair_barber_percentage: result.chairs[i].barber_percentage
                             }
                             resultTantArray.push(obj)
                         }

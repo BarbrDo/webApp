@@ -82,6 +82,7 @@ module.exports = function(app, express) {
     app.get('/api/v1/appointment/pending/:_id',appointmentController.pendingConfiramtion);
     app.post('/api/v1/ratebarber',barberServices.rateBarber);
     app.post('/api/v1/contactbarber',customerController.contactBarber);
+    app.post('/api/v1/customer/payafterappointment',appointmentController.payafterappointment);
     
     //Barber
     app.get('/api/v1/allbarbers', barberServices.availableBarber); //Get all barbers

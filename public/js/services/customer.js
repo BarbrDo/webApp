@@ -125,6 +125,7 @@ angular.module('BarbrDoApp')
         });
       },
       contactBarber : function(data) {
+        console.log(data)
         return $http({
           method: 'post',
           url: '/api/v1/contactbarber',

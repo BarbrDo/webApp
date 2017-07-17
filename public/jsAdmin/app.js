@@ -11,14 +11,14 @@
         $stateProvider
         // Dashboard
             .state('login', {
-                resolve: {
-                    mess: function($localStorage) {
-                        console.log("here",$localStorage.loggedIn);
-                        if ($localStorage.loggedIn) {
-                            $state.go('dashboard');
-                        }
-                    }
-                },
+                // resolve: {
+                //     mess: function($localStorage) {
+                //         console.log("heree",$localStorage.loggedIn);
+                //         if ($localStorage.loggedIn) {
+                //             $state.go('dashboard');
+                //         }
+                //     }
+                // },
                 url: '/login',
                 controller: "AdminCtrl",
                 templateUrl: 'templatesAdmin/loginAdmin.html'
@@ -26,6 +26,7 @@
             .state('dashboard', {
                 resolve: {
                     mess: function($localStorage) {
+                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn != 'true') {
                             $state.go('login');
                         }
@@ -421,3 +422,6 @@
             }
         };
     })
+
+    
+

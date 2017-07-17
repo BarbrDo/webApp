@@ -885,10 +885,12 @@ font-size: 24px
 
 }
 
+
 .selected_barber.chairdet {
 padding: 10px;
 min-height: auto;
 }
+
 
 .selected_barber.chairdet h3{
 margin: 0;
@@ -972,6 +974,18 @@ margin-top: 15px;
     margin-top: 9px;
     padding: 8px 19px;
 }
+
+.bkapbarber {
+    background: #ce2029 none repeat scroll 0 0;
+    border-radius: 2px;
+    color: #fff;
+    float: left;
+    font-size: 21px;
+    margin-left: 500px;
+    margin-top: 9px;
+    padding: 8px 19px;
+}
+
 .bkap:hover, .bkap:focus {
     background: #bf1f27;
     color: #fff;
@@ -1817,6 +1831,14 @@ td.action {
 .reschedappoint{padding: 10px 0px;}
 .isactive {
      background: #fb1313;
+}
+
+.isselected {
+     background: #27499e;
+}
+
+.timeselect button{
+     background: #27499e
 }
 
 

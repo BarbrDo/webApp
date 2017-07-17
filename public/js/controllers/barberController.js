@@ -1,10 +1,10 @@
 angular.module('BarbrDoApp')
-	.controller('barberCtrl', function($scope, $rootScope, $location, barber, $stateParams, $state, $window, toastr) {
+	.controller('barberCtrl', function($scope, $rootScope, $location, barber, $stateParams, $state, $window, toastr, $filter) {
 		var objj = JSON.parse($window.localStorage.user);
 		$scope.imgPath = $window.localStorage.imagePath;
 		$scope.search = {};
+		$scope.userid = objj._id
 
-		
 		$scope.appointments = function() {
 			$scope.loaderStart = true;
 			barber.appointments()
@@ -82,63 +82,125 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.shopChairs = response.data.data;
-					
+					if ($scope.shopChairs.length == 0) {
+						console.log("ghereebjk", $scope.shopChairs)
+					}
+
 				});
 		}
 
-		$scope.shopchairdetail = function() {
-			var obj = {
-				_id: $stateParams._id
-			}
-			var shp = [];
-			barber.shopChairs(obj).then(function(response) {
-				$rootScope.particularShop = response.data.data[0];
-				var len = response.data.data[0].chairs.length;
-        		for (var i = 0; i < len; i++) {
-        			if (response.data.data[0].chairs[i].isActive==true && response.data.data[0].chairs[i].availability!='closed') {
-        				 var objj = response.data.data[0].chairs[i];
-        				 shp.push(objj);
-            		}
-        }
-
- 	$scope.chairs = shp ;
-            
-       
-			})
-			var myArray = [];
-		// Below code is generating current date + 6 days more
-		var date = new Date();
-		myArray.push(date)
-		for (var i = 1; i <= 6; i++) {
-			var date = new Date();
-			date.setDate(date.getDate() + i);
-			myArray.push(date)
-		}
-			$rootScope.selectDate = myArray;
-		};
-
-		
-
-		$scope.setSelected = function(prop,index) {
+		$scope.setSelected = function(prop, index) {
 			$rootScope.selectedDate = prop.toISOString().slice(0, 10);
 			$scope.selecteddd = index;
+			$scope.shopchairdetail();
 		};
+
 		$scope.changeObject = function(chair) {
 			$scope.chairId = chair._id;
 			$rootScope.chair = chair;
 
 		}
-		$scope.requestChair = function(shopid,userType) {
+		$scope.shopchairdetail = function() {
+			var obj = {
+				_id: $stateParams._id
+			}
+			var shp = [];
+
+			barber.shopChairs(obj).then(function(response) {
+				$rootScope.particularShop = response.data.data[0];
+				var len = response.data.data[0].chairs.length;
+
+				for (var i = 0; i < len; i++) {
+					if (response.data.data[0].chairs[i].isActive == true && response.data.data[0].chairs[i].availability != 'closed') {
+						var objj = response.data.data[0].chairs[i];
+						shp.push(objj);
+					}
+				}
+				$rootScope.chairs = shp;
+				$scope.chairsinshop();
+
+			})
+			var myArray = [];
+			// Below code is generating current date + 6 days more
+			var date = new Date();
+			myArray.push(date)
+			for (var i = 1; i <= 6; i++) {
+				var date = new Date();
+				date.setDate(date.getDate() + i);
+				myArray.push(date)
+			}
+			$rootScope.selectDate = myArray;
+
+		};
+
+		$scope.chairsinshop = function() {
+			if ($rootScope.selectedDate) {
+				console.log("now fine", $rootScope.chairs)
+				var len = $rootScope.chairs.length;
+				for (var i = 0; i < len; i++) {
+
+					if ($rootScope.chairs[i].availability == 'booked' && $rootScope.chairs[i].type == 'self') {
+						let objjj = {
+							_id: $rootScope.chairs[i]._id,
+							text: "Non-barber"
+						}
+					} else if ($rootScope.chairs[i].availability == 'booked' && $rootScope.chairs[i].type != 'self' && $rootScope.selectedDate >= $rootScope.chairs[i].booking_start && $rootScope.selectedDate <= $rootScope.chairs[i].booking_end) {
+						let objjj = {
+							_id: $rootScope.chairs[i]._id,
+							text: "Already Booked"
+						}
+					} else if($rootScope.chairs[i].availability == 'available' && $rootScope.chairs[i].type != 'self') {
+						if ($rootScope.chairs[i].barberRequest.length > 0) {
+							for (j = 0; j < $rootScope.chairs[i].barberRequest.length; j++) {
+								if ($rootScope.chairs[i].barberRequest[j].requstedBy == 'barber') {
+									// pending
+									if ($scope.userid == $rootScope.chairs[i].barberRequest[j].barber_id && $rootScope.selectedDate == $rootScope.chairs[i].barberRequest[j].booking_date) {
+										let objjj = {
+											text: "Pending"
+										}
+
+									}
+								}
+								if ($rootScope.chairs[i].barberRequest[j].requstedBy == 'shop') {
+									//accept decline
+									if ($scope.userid == $rootScope.chairs[i].barberRequest[j].barber_id && $rootScope.selectedDate == $rootScope.chairs[i].barberRequest[j].booking_date) {
+										let objjj = {
+											text: "Accept Reject"
+										}
+
+									}
+								}
+							}
+						}
+						else
+						{
+							let objjj = {
+							text: "Request"
+						}
+						}
+						
+					}
+					
+				}
+				$rootScope.text = objjj;
+				console.log("text here",objjj)
+			}
+
+		};
+
+
+
+		$scope.requestChair = function(shopid, userType) {
 			if ($scope.chairId) {
 				$scope.loaderStart = true;
 				var passObj = {
 					shop_id: shopid,
 					chair_id: $scope.chairId,
 					barber_id: objj._id,
-					barber_name: objj.first_name+' '+objj.last_name,
+					barber_name: objj.first_name + ' ' + objj.last_name,
 					booking_date: $rootScope.selectedDate,
-                                        chair_type:$rootScope.chair.type,
-                                        user_type:userType
+					chair_type: $rootScope.chair.type,
+					user_type: userType
 				}
 
 				barber.requestChair(passObj).then(function(response) {
@@ -155,10 +217,10 @@ angular.module('BarbrDoApp')
 
 		}
 
-		$scope.barbertasks = function(id,customer){
+		$scope.barbertasks = function(id, customer) {
 			$scope.id = id;
 			$scope.customer = customer._id
-			$rootScope.custname = customer ; 
+			$rootScope.custname = customer;
 		}
 
 
@@ -194,32 +256,28 @@ angular.module('BarbrDoApp')
 			})
 		}
 
-		$scope.rescheduleappoint = function(time)
-		{
-			if(time)
-			{
+		$scope.rescheduleappoint = function(time) {
+			if (time) {
 				$scope.time = time
-			}
-			else
-			{
+			} else {
 				toastr.error('Please select time to Reschedule');
 			}
 		}
 
 
 		$scope.timeReschedule = function() {
-					var myobj = {
-                    minutes: $scope.time,
-                    appointment_id: $stateParams._id,
-                    appointment_date: $scope.appointmentData.appointment_date
-                }
-                barber.reschedule(myobj).then(function(response) {
-                    toastr.success('Your appointment is successfully rescheduled');
-                    $state.go('barberDashboard');
-                }).catch(function(result) {
-                    toastr.error('Error');
-                });
-        };
+			var myobj = {
+				minutes: $scope.time,
+				appointment_id: $stateParams._id,
+				appointment_date: $scope.appointmentData.appointment_date
+			}
+			barber.reschedule(myobj).then(function(response) {
+				toastr.success('Your appointment is successfully rescheduled');
+				$state.go('barberDashboard');
+			}).catch(function(result) {
+				toastr.error('Error');
+			});
+		};
 
 
 		$scope.cancelAppointment = function() {
@@ -233,7 +291,7 @@ angular.module('BarbrDoApp')
 
 		$scope.managerequests = function() {
 			barber.manageRequest().then(function(response) {
-				$rootScope.shoprequest = response.data.result ;
+				$rootScope.shoprequest = response.data.result;
 			})
 		}
 
@@ -273,10 +331,10 @@ angular.module('BarbrDoApp')
 		}
 
 		$scope.cancel = function(index) {
-	      if ($scope.editing !== false) {
-	        $scope.editing = false;
-	      }
-	    };
+			if ($scope.editing !== false) {
+				$scope.editing = false;
+			}
+		};
 
 
 
@@ -292,59 +350,101 @@ angular.module('BarbrDoApp')
 			})
 		}
 
-		$scope.addservice = function(service,price) {
-			if(price) {
-				var obj={
-				service_id: service._id,
-				name : service.name,
-				price: price
-			}
-			barber.addService(obj).then(function(response) {
-			toastr.success("Service Added Successfully");
-			$state.go('manageservices');
-			}).catch(function(result){
-				toastr.error("This service is already added!! You cant add it again");
-			})
-			}
-			else {
+		$scope.addservice = function(service, price) {
+			if (price) {
+				var obj = {
+					service_id: service._id,
+					name: service.name,
+					price: price
+				}
+				barber.addService(obj).then(function(response) {
+					toastr.success("Service Added Successfully");
+					$state.go('manageservices');
+				}).catch(function(result) {
+					toastr.error("This service is already added!! You cant add it again");
+				})
+			} else {
 				toastr.error("Please add price");
 
 			}
-			
+
 		}
 
-		$scope.editservices = function(service_id,price,name) {
-			var obj={
-				service_id : service_id,
+		$scope.editservices = function(service_id, price, name) {
+			var obj = {
+				service_id: service_id,
 				price: price,
-				name:name
+				name: name
 			}
 			barber.editService(obj).then(function(response) {
-			toastr.success("Service Edited Successfully");
+				toastr.success("Service Edited Successfully");
 			})
 		}
 
 		$scope.deleteservice = function() {
 			$scope.loaderStart = true;
 			barber.deleteService($scope.service).then(function(response) {
-			barber.barberServices().then(function(res) {
-				$scope.loaderStart = false;
-				$scope.barberservices = res.data.data
-			});
-			barber.allServices().then(function(response) {
-				$scope.loaderStart = false;
-				$scope.servicesData = response.data.data
-			})
-			toastr.success("Service Deleted Successfully");
-			
+				barber.barberServices().then(function(res) {
+					$scope.loaderStart = false;
+					$scope.barberservices = res.data.data
+				});
+				barber.allServices().then(function(response) {
+					$scope.loaderStart = false;
+					$scope.servicesData = response.data.data
+				})
+				toastr.success("Service Deleted Successfully");
+
 			})
 		};
 
-		
-        
-        $scope.Showmaps = function () {
-                //If DIV is hidden it will be visible and vice versa.
-                $scope.viewmap = $scope.viewmap ? false : true;
-            }
+
+
+		$scope.Showmaps = function() {
+			//If DIV is hidden it will be visible and vice versa.
+			$scope.viewmap = $scope.viewmap ? false : true;
+		}
+
+		$scope.finacialcenter = function() {
+
+			var myArray = [];
+			var date = new Date();
+			var ddate = new Date();
+			ddate.setDate(date.getDate() - 6);
+			$scope.startdate = $filter('date')(ddate, "yyyy-MM-dd");
+			$scope.enddate = $filter('date')(date, "yyyy-MM-dd");
+			var obj = {
+				startdate: $scope.startdate,
+				enddate: $scope.enddate
+			}
+			barber.finacialCenter(obj)
+				.then(function(response) {
+					$scope.sale = response.data.data;
+				})
+
+		}
+
+		var max = new Date();
+		max.setDate(max.getDate() - 1);
+		$scope.maxDate = max;
+		var min = new Date();
+		$scope.minDate = min;
+
+		$scope.open1 = function() {
+			$scope.popup1.opened = true;
+		};
+		$scope.open2 = function() {
+			$scope.popup2.opened = true;
+		};
+
+
+		$scope.formats = ['yyyy-MM-dd'];
+		$scope.format = $scope.formats[0];
+
+		$scope.popup1 = {
+			opened: false
+		};
+		$scope.popup2 = {
+			opened: false
+		};
 
 	});

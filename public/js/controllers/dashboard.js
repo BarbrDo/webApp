@@ -91,6 +91,7 @@ angular.module('BarbrDoApp')
 
 			customer.bookNowPageInfo(passObj)
 				.then(function(response) {
+					$scope.loaderStart = false;
 					$scope.barberInformation = response.data.data;
 					console.log(response)
 					var sum = 0;
@@ -126,6 +127,7 @@ angular.module('BarbrDoApp')
 			customer.timeavailability(obj)
 				.then(function(response) {
 					$scope.timeSlots = response.data.data;
+					console.log(response.data.data)
 				})
 
 		};
@@ -216,11 +218,13 @@ angular.module('BarbrDoApp')
 			zoom: 15
 		}
 		if ($state.current.name == 'pending') {
+			$scope.loaderStart = true;
 			var passingObj = {
 				_id: $stateParams._id
 			}
 			customer.pendingConfirmation(passingObj)
 				.then(function(response) {
+					$scope.loaderStart = false;
 					$scope.pendingData = response.data.data;
 					$scope.time = response.data.data.appointment_date.substring(11, 19);
 					var sum = 0;
@@ -244,11 +248,13 @@ angular.module('BarbrDoApp')
 		}
 
 		$scope.appointmentdet = function() {
+			$scope.loaderStart = true;
 			var obj = {
 				_id: $stateParams.id
 			}
 			customer.appointmentDetail(obj)
 				.then(function(response) {
+					$scope.loaderStart = false;
 					$scope.viewmap = true;
 					$scope.appointmentdetail = response.data.data;
 					var sum = 0;
@@ -289,6 +295,7 @@ angular.module('BarbrDoApp')
 
 
 		$scope.timeReschedule = function() {
+			$scope.loaderStart = true;
 					var myobj = {
                     minutes: $scope.time,
                     appointment_id: $stateParams.id,
@@ -298,6 +305,7 @@ angular.module('BarbrDoApp')
                     email: $scope.appoint.barber_id.email
                 }
                 customer.contactBarber(myobj).then(function(response) {
+                	$scope.loaderStart = false;
                 	$state.go('upcomingComplete');
                     toastr.success(response.data.msg);
                     
@@ -340,7 +348,9 @@ angular.module('BarbrDoApp')
 		$scope.imgPath = $window.localStorage.imagePath;
 
 		$scope.showgallery = function() {
+			$scope.loaderStart = true;
 			customer.getImages().then(function(res) {
+				$scope.loaderStart = false;
 				$scope.userGallery = res.data.user;
 				$scope.ratings = res.data.user.ratings;
 			})
@@ -372,11 +382,13 @@ angular.module('BarbrDoApp')
 
 
 		if ($state.current.name == 'barberInfo') {
+			$scope.loaderStart = true;
 			var obj = {
 				_id: $stateParams._id
 			}
 			customer.barberInfo(obj)
 				.then(function(response) {
+					$scope.loaderStart = false;
 					$scope.profileInfo = response.data.user;
 					var sum = 0;
 					var len = response.data.user.ratings.length;

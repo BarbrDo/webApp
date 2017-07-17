@@ -167,10 +167,10 @@ button:active {
             </div>
             <div class="sttimes" ng-if="checkTime=='morning'">
                 <ul>
-                    <li ng-repeat="time in timeSlots.morning" ng-click="setSelectedTime(time.time,$index)">
+                    <li ng-repeat="time in timeSlots.morning" ng-click="setSelectedTime(time.time,$index)" >
                         <span ng-if="time.isAvailable==false"><button class="btn btn-default" ng-class="{active: $index == selectedTime}" disabled>{{time.time}} am</button></span>
-                        <span ng-if="time.isAvailable==true">
-                        <button class="btn btn-primary" ng-class="{active: $index == selectedTime}">{{time.time}} am</button> </span>
+                        <span ng-if="time.isAvailable==true" class="timeselect">
+                        <button class="btn btn-danger" ng-class="{isselected:checkTime=='morning'}">{{time.time}} am</button> </span>
                     </li>
                 </ul>
             </div>
@@ -178,16 +178,16 @@ button:active {
                 <ul>
                     <li ng-repeat="time in timeSlots.afternoon" ng-click="setSelectedTime(time.time,$index)">
                         <span ng-if="time.isAvailable==false"><button class="btn btn-default" ng-class="{active: $index == selectedTime}" disabled>{{time.time}} pm</button></span>
-                        <span ng-if="time.isAvailable==true">
-                        <button class="btn btn-primary" ng-class="{active: $index == selectedTime}">{{time.time}} pm</button> </span>
+                        <span ng-if="time.isAvailable==true" class="timeselect">
+                        <button class="btn btn-danger" ng-class="{isselected:checkTime=='afternoon'}">{{time.time}} pm</button> </span>
                 </ul>
             </div>
             <div class="sttimes" ng-if="checkTime=='evening'">
                 <ul>
                     <li ng-repeat="time in timeSlots.evening" ng-click="setSelectedTime(time.time,$index)">
                         <span ng-if="time.isAvailable==false"><button class="btn btn-default" ng-class="{active: $index == selectedTime}" disabled>{{time.time}} pm</button></span>
-                        <span ng-if="time.isAvailable==true">
-                        <button class="btn btn-primary" ng-class="{active: $index == selectedTime}">{{time.time}} pm</button> </span
+                        <span ng-if="time.isAvailable==true" class="timeselect">
+                        <button class="btn btn-danger" ng-class="{isselected:checkTime=='evening'}">{{time.time}} pm</button> </span>
                 </ul>
             </div>
         </div>
@@ -199,8 +199,14 @@ button:active {
         <span ng-if="barberservice!=''">
             <div class="stsr">
                 <div class="col-md-6" ng-repeat="services in barberservice">
-                    <label class="" for="{{services._id}}">
-                        <input type="checkbox" value="{{services._id}}" ng-click="cost(services.price,$event,services)" name="group" id="{{services._id}}" /> {{services.name}}>$ {{services.price}}</label>
+                  <div class="funkyradio">
+                      <div  class="funkyradio-primary">
+                        <input type="checkbox" value="{{services._id}}" ng-click="cost(services.price,$event,services)" name="group" id="{{services._id}}"/>
+                        <label for="{{services._id}}">{{services.name}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ {{services.price}}</label>
+                      </div>
+                  </div>
+                   <!--  <label class="" for="{{services._id}}">
+                        <input type="checkbox" value="{{services._id}}" ng-click="cost(services.price,$event,services)" name="group" id="{{services._id}}" /> {{services.name}}>$ {{services.price}}</label> -->
                     <!-- <input type="checkbox" data-checklist-model="selection.barberservice" data-checklist-value="services"> 
                     {{services.name}}<span>${{services.price}}</span> -->
                 </div>
@@ -212,7 +218,7 @@ button:active {
         </div>
         <div class="row" ng-if="barberservice!=''">
             <div class="col-md-6">
-                <button class="subtn" ng-click="payLater(barberdet.chair_amount)">Pay Later </button>
+                <button class="subtn" ng-click="payLater(barberdet.chair_amount,barberdet.chair_id,barberdet.chair_type,barberdet.chair_name,barberdet.chair_shop_percentage,barberdet.chair_barber_percentage)">Pay Later </button>
             </div>
             <div class="col-md-6">
                 <button class="subtn" data-toggle="modal" data-target="#myModal">Pay Now</button>

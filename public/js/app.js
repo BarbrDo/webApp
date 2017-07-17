@@ -626,6 +626,37 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         })
 
+        .state('barberfinance', {
+            url: '/finacial_center',
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/barberfinance.html',
+                    controller: "barberCtrl"
+                },
+                "header": {
+                    templateUrl: 'partials/barber_header_after_login.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/barberSideBar.html'
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/barberController.js',
+                            'js/services/barber.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
+            }
+        })
+
         .state('subScribe', {
             url: '/subScription',
             params: {

@@ -12,10 +12,15 @@
         // Dashboard
             .state('login', {
                 resolve: {
-                    mess: function($localStorage) {
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
                         console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn) {
-                            $state.go('dashboard');
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
                         }
                     }
                 },
@@ -25,9 +30,15 @@
             })
             .state('dashboard', {
                 resolve: {
-                    mess: function($localStorage) {
-                        if ($localStorage.loggedIn != 'true') {
-                            $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
                         }
                     }
                 },
@@ -38,25 +49,37 @@
 
         .state('cust_appointments', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/appointments',
             controller: "AdminCtrl",
             templateUrl: '/modalsAdmin/adminHTml/views/appointments.html'
         })
 
         .state('assoc', {
-            resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+           resolve: {
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/assoc',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/assoc.html"
@@ -65,12 +88,18 @@
 
         .state('barber-appointments', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/barber/appointments/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/barber-appointments.html"
@@ -78,10 +107,16 @@
         })
 
         .state('edit_barbers', {
-                resolve: {
-                    mess: function($localStorage) {
-                        if ($localStorage.loggedIn != 'true') {
-                            $state.go('login');
+               resolve: {
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
                         }
                     }
                 },
@@ -92,9 +127,15 @@
             })
             .state('detailed_appointment', {
                 resolve: {
-                    mess: function($localStorage) {
-                        if ($localStorage.loggedIn != 'true') {
-                            $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
                         }
                     }
                 },
@@ -106,12 +147,18 @@
 
         .state('barbers', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/barbers',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/barberAdmin.html"
@@ -119,12 +166,18 @@
 
         .state('view_cust_appointment', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/customer/appointment/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/customer-appointments.html"
@@ -132,29 +185,38 @@
 
 
         .state('editshop', {
-            resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+           resolve: {
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/shop/edit/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/shop-edit.html"
-                // resolve: {
-                //      checklogin: login
-                //  }
         })
 
         .state('editcust', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/customer/edit/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/customer-edit.html"
@@ -165,28 +227,37 @@
 
         .state('editchair', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/chair/edit/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/chair-edit.html"
-                // resolve: {
-                //      checklogin: login
-                //  }
         })
 
         .state('shops', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/shops',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/shopAdmin.html"
@@ -197,12 +268,18 @@
 
         .state('chairs', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/chairs/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/chairs-details.html"
@@ -210,28 +287,37 @@
 
         .state('barbdetail', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/shop/barbdetail/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/shopsHaving-barbers.html"
-                // resolve: {
-                //      checklogin: login
-                //  }
         })
 
         .state('customer_detail', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/customer/details/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/customer-details.html"
@@ -242,28 +328,37 @@
 
         .state('barbersdetail', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/barberDetail/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/barber-details.html"
-                // resolve: {
-                //      checklogin: login
-                //  }
         })
 
         .state('customers', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/customers',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/customerAdmin.html"
@@ -272,12 +367,18 @@
 
         .state('add_barbers', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/add_barbers',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/barber-add.html"
@@ -286,12 +387,18 @@
 
         .state('add_shops', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/add_shops',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/shop-add.html"
@@ -300,12 +407,18 @@
 
         .state('add_customers', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/add_customers',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/customer-add.html"
@@ -314,12 +427,18 @@
 
         .state('shopdetail', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/shops/details/:id',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/shop-details.html"
@@ -328,12 +447,18 @@
 
         .state('plans', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/plans',
             controller: "planCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/stripe_plans.html"
@@ -341,12 +466,18 @@
 
         .state('payments', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/payments',
             controller: "paymentCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/stripe_payment.html"
@@ -354,12 +485,18 @@
 
         .state('reports', {
             resolve: {
-                mess: function($localStorage) {
-                    if ($localStorage.loggedIn != 'true') {
-                        $state.go('login');
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        console.log("here",$localStorage.loggedIn);
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('dashboard');
+                            }, 0);
+                            return deferred.promise;
+                        }
                     }
-                }
-            },
+                },
             url: '/report',
             controller: "reportCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/reports.html"
@@ -421,3 +558,13 @@
             }
         };
     })
+    //  .run(['$rootScope', '$q', '$state', '$window', 'toastr','$localStorage', function($rootScope, $q, $state, $window, toastr,$localStorage) {
+    //     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+    //         if($localStorage.loggedIn=='true'){
+    //             $rootScope.LoginUser = true;
+    //           }
+    //           else{
+    //             $rootScope.LoginUser = false;
+    //           }
+    //     })
+    // }]);

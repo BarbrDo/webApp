@@ -1,7 +1,7 @@
 app_admin.controller("planCtrl", planCtrl);
 
 function planCtrl($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $uibModal, $timeout,$localStorage) {
-    if($localStorage.loggedIn=='true'){
+   if($localStorage.loggedIn){
     $rootScope.LoginUser = true;
   }
   else{

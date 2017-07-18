@@ -33,7 +33,7 @@ var appointmentSchema = new mongoose.Schema({
     },
     tax_amount: Number,
     tax_percent: String,
-    amount: String,
+    totalPrice: Number,
     currency_code: String,
     payment_detail :[],
     payment_method: {
@@ -55,7 +55,9 @@ var appointmentSchema = new mongoose.Schema({
         default: Date.now()
     },
     barber_share:Number,
-    shop_share:Number
+    shop_share:Number,
+    chair_barber_percentage:Number,
+    chair_shop_percentage:Number,
 }, {strict: false});
 
 var appointment = mongoose.model('appointments', appointmentSchema);

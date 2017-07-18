@@ -48,19 +48,22 @@
                 </div>
                    
                 </div> -->
-        <div class="col-md-4 col-sm-6 col-xs-12 fullb"  ng-repeat = "chair in chairs">
+        <div class="col-md-4 col-sm-6 col-xs-12 fullb"  ng-repeat = "chair in chairsLoop">
             <div class="barber toshop" >
                 <div class="cont">
                     <div class="user_pic">
-                        <span ng-if="chair.barber_id"><img src="{{imgPath + chair.barber[0].picture}}" > </span> 
+                        <span ng-if="chair.barber_id"><img src="{{imgPath + chair.barber_info[0].picture}}" > </span> 
                         <span ng-if="!chair.barber_id"><img src="images/chair@4x.png" > </span></div>
-                    <h3>{{chair.name}}</h3>
-                    <p ng-if="chair.type == 'percentage'"><span>Chair Split</span> : {{chair.shop_percentage}}/{{chair.barber_percentage}}</p>
-                    <p ng-if="chair.type == 'weekly' || chair.type == 'monthly'"><span>Rental</span> : ${{chair.amount}} / {{chair.type}}</p>
-                    <p ng-if="chair.availability == 'booked' && !chair.barber_id">Booked by Non-BarbrDo Barber</p>{{}}
-                    <p ng-if="chair.availability">{{chair.barber[0].first_name}} {{chair.barber[0].last_name}}</p>
+                    <h3>{{chair.chair_name}}</h3>
+                    <p ng-if="chair.chair_type == 'percentage' "><span>Chair Split</span> : {{chair.shop_percentage}}/{{chair.barber_percentage}}</p>
+                    <p ng-if="chair.chair_type == 'weekly' || chair.chair_type == 'monthly'"><span>Chair Rental</span> : ${{chair.chair_amount}} / {{chair.chair_type}}</p>
+                    <p ng-if="chair.text == 'Non-barber'">Booked by Non-BarbrDo Barber</p>
+                    <p ng-if="chair.barber_id">{{chair.barber_info[0].first_name}} {{chair.barber_info[0].last_name}}</p>
                 </div>
-                <span >{{text.text}} </span>
+                <span ng-if="chair.text == 'Already Booked' "><a class="book_nw" style="background-color: #f21a2d;">{{chair.text}}</a> </span>
+                <span ng-if="chair.text == 'Non-barber' " ><a class="book_nw" style="background-color: #f21a2d;"> Non-Barber </a></span>
+                <span ng-if="chair.text == 'Request' "><a class="book_nw" href="#" ng-click="changeObject(chair);requestChair(particularShop._id,'barber')">{{chair.text}}</a> </span>
+                <span ng-if="chair.text == 'Pending' " class="pending">{{chair.text}}</span>
                 <!-- <span ng-if="chair.availability == 'booked' && chair.type!='self' && selectedDate>=chair.booking_start &&  selectedDate<=chair.booking_end"><a class="book_nw" style="background-color: #f21a2d;"> Already Booked</a></span>
                 <span ng-if="chair.availability == 'booked' && chair.type=='self'"><a class="book_nw" style="background-color: #f21a2d;"> Booked by a Non Barber</a></span>
                 <span  ng-else>

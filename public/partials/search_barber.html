@@ -6,7 +6,9 @@
 </ol>
 <div class="wrapper" ng-init="searchbarber()">
   <div class="block">
+  <span ng-if="barbers.length=='0'"><h3 align="center"> No Barbers </h3></span>
     <div class="col-md-6 col-md-offset-10">
+    <span ng-if="barbers.length!=0">
      <span class="glyphicon glyphicon-search" style="color:purple"></span>
       <input ng-model="myobj.search" placeholder="Search Barber" ng-change="searchbarber()" /></div><br>
     <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat = "barber in barbers">
@@ -26,6 +28,7 @@
         </div>
          <a class="book_nw" href="#" ng-click="requestbarber(barber)"> Request <i class="fa fa-paper-plane"></i> </a>
      </div>
-    </div>      
+    </div>  
+    </span>    
   </div>
 </div>

@@ -3,6 +3,9 @@ angular.module('barbrdo').factory('Admin', function($http) {
     login: function(data) {
       return $http.post('/api/v1/loginadmin', data);
     },
+    loggedin : function(data) {
+      return $http.get('/api/v1/loggedin', data);
+    },
     barbers: function(data) {
       if (data.search) {
         return $http.get('/api/v1/allbarbers?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);

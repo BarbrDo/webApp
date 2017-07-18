@@ -399,3 +399,9 @@
   color: #fff;
   background-color: #f0ad4e;
 }
+
+.funkyradio-primary input[type="radio"]:checked ~ label:before,
+.funkyradio-primary input[type="checkbox"]:checked ~ label:before {
+  color: #fff;
+  background-color: #337ab7;
+}

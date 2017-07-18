@@ -17,9 +17,9 @@
       <div class="org_content">
         <div class="row">
           <!-- By shop -->
+          <span ng-if="shopChairs.length==0"> <h3 align="center"> No Chairs are there </h3></span>
+          <span ng-if="shopChairs.length!=0">
           <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat = "result in shopChairs">
-          <span ng-if="!result"> No Chairs are there</span>
-          <span ng-if="result">
             <div class="shop"> <img class="shopimage" src="images/shop.png" alt="" >
               <div class="above">
                 <div class="dtll shpdtl">

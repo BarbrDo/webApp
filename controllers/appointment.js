@@ -102,6 +102,7 @@ exports.takeAppointment = function(req, res) {
     let appointmentdate = new Date(removeOffset(req.body.appointment_date));
     let customerName = "";
     let barberName = ""
+    let shopShare = 0,barberShare = 0;
     getChairData(chair_id, function(err,chair) {
         if(err && !(chair.chairs.length>0)){
             return res.status(400).send({
@@ -112,7 +113,7 @@ exports.takeAppointment = function(req, res) {
         else{
             console.log("code is started to work");
             console.log(chair.chairs[0].type);
-            let shopShare = 0,barberShare = 0;
+            
             if(chair.chairs[0].type=='percentage'){
                 shopShare = (req.body.totalPrice*chair.chairs[0].shop_percentage)/100;
                 barberShare = (req.body.totalPrice*chair.chairs[0].barber_percentage)/100;
@@ -136,6 +137,7 @@ exports.takeAppointment = function(req, res) {
                 saveData.customer_id = user_id;
                 saveData.appointment_date = appointmentdate;
                 console.log(saveData);
+                return false;
                 appointment(saveData).save(function(err, data) {
                     if (err) {
                         return res.status(400).send({
@@ -608,7 +610,12 @@ exports.sentMessage = function  (req,res) {
     })
 }
 exports.pushNotificationForIOS = function (req,res) {
-    commonObj.pushSendToIOS('108FBEDD34AC9826751562522C201163B2369AAB62553094FBC47BEADB0B0F6F',function  () {
+    commonObj.pushSendToIOS('D412F80A2CB04FF69752480EE5CAE1EF7E35350E1A2F52614F0D662BA3EDC21F',function  () {
+        console.log("working");
+    })
+}
+exports.pushNotificationForAndroid = function  (req,res) {
+   commonObj.pushToAndroid('ezm1u0Fr6W0:APA91bGb0HMrRAEYhbG5pmnzY_Har1Ewk-8FEiakXerY0tkJpBaH_wAlqav5ZJ_cZUsS6ScOW6vrZocWbuUInn2UybAey7vkhuBRrr4KloxSzjj5ZVuLNg9Jcd9J474l7IyhPlrXNoZU',function  () {
         console.log("working");
     })
 }

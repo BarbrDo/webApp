@@ -1,8 +1,9 @@
 // let userObj = require('./../app/models/users/users.js');
-let gcm = require('android-gcm');
+let FCM = require('fcm-node');
 let apn = require("apn");
 let path = require('path');
-let gcmObject = new gcm.AndroidGcm('AAAAo_5rgkA:APA91bGOkkX0yNhWIKv4bHZ-f-M5bIPTup2iFpbeW5L1AfXkIeXYLAI6NfRzX4QJQZT7yBeBO5XTrfRk0tKH_iT8XqOwOh6NvQE3HXLePttvtNnK4hffAZok2rtz4NyY385Ag22f5V25');
+var serverKey = 'AIzaSyAxYVocgXGryOjwZ-7WIW4KB1fQtZ5tXFY'; 
+var fcm = new FCM(serverKey);
 let moment = require('moment');
 // let geocoder = require('geocoder');
 let constantObj = require('./../constants.js');
@@ -16,49 +17,37 @@ let notification;
 options = {
   token: {
     key: path.resolve("./common/AuthKey_4MVSAKPE86.p8"),
-    cert: path.resolve('./common/Certificates_both.pem'),
     keyId: "4MVSAKPE86",
     teamId: "UKZ733R4T6"
   },
-  production: true
+  production: false
 };
 
 let note = new apn.Notification();
 
-// exports.pushRequest = function(body, headers, cb) {
+exports.pushToAndroid = function  (token) {
+    var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera) 
+        to: token, 
+        // collapse_key: 'your_collapse_key', 
+        notification: {
+            title: 'Title of your push notification', 
+            body: 'Body of your push notification' 
+        },
+        
+        data: {  //you can send only notification or only data(or include both) 
+            my_key: 'my value',
+            my_another_key: 'my another value'
+        }
+    };
 
-//     console.log("req.body is pushRequest", body);
-//     console.log("req.headers", headers);
-//     if (headers.device_type == 'ios') {
-//         pushSendToIOS(headers.device_token)
-//     }
-//     if (headers.device_type == 'Android') {
-//         console.log("else part for android");
-//         pushSendToAndroid(headers.device_token);
-//     }
-//     userObj.findOne({
-//         _id: body.to
-//     }, function(userErr, userDetail) {
-//         if (userErr) {
-//             res.jsonp({
-//                 'status': 'faliure',
-//                 'messageId': 401,
-//                 'message': 'There is problem in sending push notification when getting source name',
-//                 "userdata": userErr
-//             });
-//         } else {
-//             console.log("userDetail", userDetail);
-//             if (userDetail.device_type == 'ios') {
-//                 pushSendToIOS(userDetail.device_token);
-//                 cb(null, "Notification send.");
-//             }
-//             if (userDetail.device_type == 'android') {
-//                 pushSendToAndroid(userDetail.device_token);
-//                 cb(null, "Notification send.");
-//             }
-//         }
-//     });
-// }
+    fcm.send(message, function(err, response){
+        if (err) {
+            console.log("Something has gone wrong!");
+        } else {
+            console.log("Successfully sent with response: ", response);
+        }
+    });
+}
 
 exports.pushSendToIOS = function(token) {
     console.log("token here", token);
@@ -68,11 +57,11 @@ exports.pushSendToIOS = function(token) {
     note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
     note.badge = 3;
     note.sound = "ping.aiff";
-    note.alert = "You have a new match.";
+    note.alert = "You have a new notification.";
     note.payload = {
         'messageFrom': 'John Appleseed'
     };
-    note.topic = "com.smartData.squad";
+    note.topic = "com.development.BarbrDo";
     note.notifyType = "matchNotification"
     apnProvider.send(note, deviceToken).then((result) => {
         console.log("result is", JSON.stringify(result));

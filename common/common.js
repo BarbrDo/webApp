@@ -1,10 +1,10 @@
-// var userObj = require('./../app/models/users/users.js');
-var gcm = require('android-gcm');
-var apn = require("apn");
-var path = require('path');
-var gcmObject = new gcm.AndroidGcm('API_KEY');
+// let userObj = require('./../app/models/users/users.js');
+let gcm = require('android-gcm');
+let apn = require("apn");
+let path = require('path');
+let gcmObject = new gcm.AndroidGcm('AAAAo_5rgkA:APA91bGOkkX0yNhWIKv4bHZ-f-M5bIPTup2iFpbeW5L1AfXkIeXYLAI6NfRzX4QJQZT7yBeBO5XTrfRk0tKH_iT8XqOwOh6NvQE3HXLePttvtNnK4hffAZok2rtz4NyY385Ag22f5V25');
 let moment = require('moment');
-// var geocoder = require('geocoder');
+// let geocoder = require('geocoder');
 let constantObj = require('./../constants.js');
 let crypto = require('crypto'),
     algorithm = 'aes-256-ctr',
@@ -13,60 +13,58 @@ let crypto = require('crypto'),
 let options;
 let notification;
 
-// options = {
-//   token: {
-//     key: path.resolve("./common/APNsAuthKey_W378WKXETM.p8"),
-//     cert: path.resolve('./common/apnsProduction.pem'),
-//     keyId: "W378WKXETM",
-//     teamId: "33P3VUARHV"
-//   },
-//   production: true
-// };
+options = {
+  token: {
+    key: path.resolve("./common/AuthKey_4MVSAKPE86.p8"),
+    cert: path.resolve('./common/Certificates_both.pem'),
+    keyId: "4MVSAKPE86",
+    teamId: "UKZ733R4T6"
+  },
+  production: true
+};
 
-// note = new apn.Notification();
+let note = new apn.Notification();
 
-exports.pushRequest = function(body, headers, cb) {
+// exports.pushRequest = function(body, headers, cb) {
 
-    console.log("req.body is pushRequest", body);
-    console.log("req.headers", headers);
-    if (headers.device_type == 'ios') {
-        pushSendToIOS(headers.device_token)
-    }
-    if (headers.device_type == 'Android') {
-        console.log("else part for android");
-        pushSendToAndroid(headers.device_token);
-    }
-    userObj.findOne({
-        _id: body.to
-    }, function(userErr, userDetail) {
-        if (userErr) {
-            res.jsonp({
-                'status': 'faliure',
-                'messageId': 401,
-                'message': 'There is problem in sending push notification when getting source name',
-                "userdata": userErr
-            });
-        } else {
-            console.log("userDetail", userDetail);
-            if (userDetail.device_type == 'ios') {
-                pushSendToIOS(userDetail.device_token);
-                cb(null, "Notification send.");
-            }
-            if (userDetail.device_type == 'android') {
-                pushSendToAndroid(userDetail.device_token);
-                cb(null, "Notification send.");
-            }
+//     console.log("req.body is pushRequest", body);
+//     console.log("req.headers", headers);
+//     if (headers.device_type == 'ios') {
+//         pushSendToIOS(headers.device_token)
+//     }
+//     if (headers.device_type == 'Android') {
+//         console.log("else part for android");
+//         pushSendToAndroid(headers.device_token);
+//     }
+//     userObj.findOne({
+//         _id: body.to
+//     }, function(userErr, userDetail) {
+//         if (userErr) {
+//             res.jsonp({
+//                 'status': 'faliure',
+//                 'messageId': 401,
+//                 'message': 'There is problem in sending push notification when getting source name',
+//                 "userdata": userErr
+//             });
+//         } else {
+//             console.log("userDetail", userDetail);
+//             if (userDetail.device_type == 'ios') {
+//                 pushSendToIOS(userDetail.device_token);
+//                 cb(null, "Notification send.");
+//             }
+//             if (userDetail.device_type == 'android') {
+//                 pushSendToAndroid(userDetail.device_token);
+//                 cb(null, "Notification send.");
+//             }
+//         }
+//     });
+// }
 
-        }
-    });
-
-}
-
-var pushSendToIOS = function(token) {
+exports.pushSendToIOS = function(token) {
     console.log("token here", token);
-    var apnProvider = new apn.Provider(options);
+    let apnProvider = new apn.Provider(options);
     let deviceToken = token;
-    var note = new apn.Notification();
+    let note = new apn.Notification();
     note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
     note.badge = 3;
     note.sound = "ping.aiff";
@@ -87,8 +85,8 @@ var pushSendToIOS = function(token) {
 }
 
 
-var pushSendToAndroid = function(androidToken) {
-    var message = new gcm.Message({
+let pushSendToAndroid = function(androidToken) {
+    let message = new gcm.Message({
         registration_ids: [androidToken],
         data: {
             key1: 'You have a new match.'
@@ -100,7 +98,7 @@ var pushSendToAndroid = function(androidToken) {
 
 // }
 // exports.getLatLon = function(zipcode) {
-//     var result = {};
+//     let result = {};
 //     geocoder.geocode(zipcode, function(err, data) {
 //         if (err) {
 //             // return 0;
@@ -127,24 +125,24 @@ var pushSendToAndroid = function(androidToken) {
 
 exports.encrypt = function(text) {
 
-    var cipher = crypto.createCipher(algorithm, password)
-    var crypted = cipher.update(text, 'utf8', 'hex')
+    let cipher = crypto.createCipher(algorithm, password)
+    let crypted = cipher.update(text, 'utf8', 'hex')
     crypted += cipher.final('hex');
     return crypted;
 }
 
 exports.decrypt = function(text) {
-    var decipher = crypto.createDecipher(algorithm, password)
-    var dec = decipher.update(text, 'hex', 'utf8')
+    let decipher = crypto.createDecipher(algorithm, password)
+    let dec = decipher.update(text, 'hex', 'utf8')
     dec += decipher.final('utf8');
     return dec;
 }
 
 exports.makeid = function() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let text = "";
+    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    for (var i = 0; i < 15; i++)
+    for (let i = 0; i < 15; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
 
     return text;
@@ -164,9 +162,24 @@ exports.removeOffset = function(dobFormat) {
     return dateInUtc;
 }
 exports.addOffset = function(dobFormat) {
-    var userOffset = new Date(dobFormat).getTimezoneOffset();
-    var userOffsetMilli = userOffset * 60 * 1000;
-    var dateInMilli = moment(dobFormat).unix() * 1000;
-    var dateInUtc = dateInMilli + userOffsetMilli;
+    let userOffset = new Date(dobFormat).getTimezoneOffset();
+    let userOffsetMilli = userOffset * 60 * 1000;
+    let dateInMilli = moment(dobFormat).unix() * 1000;
+    let dateInUtc = dateInMilli + userOffsetMilli;
     return dateInUtc;
+}
+
+let accountSid = 'AC865177abe2f391adae3a6d528a87e4d7'; // Your Account SID from www.twilio.com/console
+let authToken = '2eadab4ae69fe6583bbc54793208eea1';   // Your Auth Token from www.twilio.com/console
+
+let twilio = require('twilio');
+let client = new twilio(accountSid, authToken);
+
+exports.sentMessage = function () {
+client.messages.create({
+    body: 'Hello from Node',
+    to: '+91 7696516981',  // Text this number
+    from: '+14157410903' // From a valid Twilio number
+})
+.then((message) => console.log(message.sid));
 }

@@ -132,6 +132,7 @@ module.exports = function(app, express) {
     app.post('/api/v1/stripe/webhooks',userController.stripeWebhook);
     app.put('/api/v1/stripe/updatePlan',stripeController.updatePlan);
     app.put('/api/v1/stripe/deletePlan',stripeController.deletePlan);
+    app.post('/api/v1/stripe/pushNotificationForIOS',appointmentController.pushNotificationForIOS);
     
     //Need to delete in sprint-8
     app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber/shop requesting chair to shop

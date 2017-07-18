@@ -150,6 +150,7 @@ exports.addBarberServices = function(req, res) {
 }
 
 exports.editBarberServices = function(req, res) {
+    console.log(req.body);
     req.checkHeaders("user_id", "User Id is required").notEmpty();
     req.checkParams("barber_service_id", "Barber Service Id is required").notEmpty();
     req.assert("price", "Service Price is required").notEmpty();
@@ -1688,7 +1689,7 @@ let getBarberAppointmentsDetail = function(id, startDate, endDate, cb) {
         appointment.aggregate([{
             $match: {
                 barber_id: barber_id,
-                "appointment_status": "completed"
+                // appointment_status: "completed"
             }
         }, {
             $unwind: "$services"
@@ -1771,7 +1772,7 @@ let getBarberTotalSale = function(id, cb) {
         appointment.aggregate([{
             $match: {
                 barber_id: barberId,
-                appointment_status: "completed"
+                // appointment_status: "completed"
             }
         }, {
             $unwind: "$services"
@@ -1808,7 +1809,7 @@ let getBarberTotalSaleOnDates = function(id, startDate, endDate, cb) {
         appointment.aggregate([{
             $match: {
                 barber_id: barberId,
-                "appointment_status": "completed"
+                // appointment_status: "completed"
             }
         }, {
             $unwind: "$services"

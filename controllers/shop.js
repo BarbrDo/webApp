@@ -1,12 +1,14 @@
 let shop = require('../models/shop');
 let user = require('../models/User');
 let constantObj = require('./../constants.js');
-let chairRequest = require('../models/chair_request');
+let appointment = require('../models/appointment');
 let mongoose = require('mongoose');
 let geocoder = require('geocoder');
 let moment = require('moment');
-var nodemailer = require('nodemailer');
-var mg = require('nodemailer-mailgun-transport');
+let nodemailer = require('nodemailer');
+let mg = require('nodemailer-mailgun-transport');
+let async = require('async');
+let chairBook = require('../models/chair_booking');
 
 exports.updateShop = function(req, res) {
     console.log("req.body....", req.body);
@@ -1347,8 +1349,9 @@ exports.financeScreenResult = function (req, res) {
             err: errors
         });
     }
-    let barber_id = req.headers.user_id;
-    console.log(req.params.startDate);
+    let shop_id = req.params.shop_id;
+    let startDate = req.params.startDate;
+    let endDate = req.params.endDate;
     console.log(req.params.endDate);
     function firstDayOfMonth() {
         var d = new Date(Date.apply(null, arguments));
@@ -1373,73 +1376,190 @@ exports.financeScreenResult = function (req, res) {
     async.parallel({
         one: function (parallelCb) {
             // This callback will get the total sale of barber
-            getBarberTotalSale(barber_id, function (err, result) {
+            getShopTotalSale(shop_id, function (err, result) {
                 parallelCb(null, result)
             });
         },
         two: function (parallelCb) {
             // get barber total sales of current month
-            getBarberTotalSaleOnDates(barber_id, startDayOfMonth, endDayOfMonth, function (err, result) {
+            getShopTotalSaleOnDates(shop_id, startDayOfMonth, endDayOfMonth, function (err, result) {
                 parallelCb(null, result)
             });
         },
         three: function (parallelCb) {
             // get barber sale of current week
-            getBarberTotalSaleOnDates(barber_id, currentDayOfweek, lastDayOfweek, function (err, result) {
+            getShopTotalSaleOnDates(shop_id, currentDayOfweek, lastDayOfweek, function (err, result) {
                 parallelCb(null, result)
             });
         },
         four: function (parallelCb) {
-            getBarberAppointmentsDetail(barber_id, req.params.startDate, req.params.endDate, function (err, result) {
+            getShopAppointmentsDetail(shop_id, startDate, endDate, function (err, result) {
+                parallelCb(null, result)
+            });
+        },
+        five: function (parallelCb) {
+            getShopChairRevenue(shop_id, startDate, endDate, function (err, result) {
                 parallelCb(null, result)
             });
         }
     }, function (err, results) {
         // results will have the results of all 3
-        console.log("barber total sale", results.one);
+        console.log("shop total sale", results.one);
         console.log("barber month sale", results.two);
         console.log("barber week sale", results.four);
         console.log("barber sale b/w two dates", results.three);
         res.status(200).send({
             msg: constantObj.messages.successRetreivingData,
             data: {
-                "totalSale": results.one,
-                "monthSale": results.two,
-                "weekSale": results.three,
-                "custom": results.four
+                totalSale: results.one,
+                monthSale: results.two,
+                weekSale: results.three,
+                custom: results.four,
+                chairRevenue: results.five,
             }
         })
     });
 }
 
 // Total sale by barber
-let getShopTotalSale = function (id, cb) {
-    let barberId = mongoose.Types.ObjectId(id);
+let getShopTotalSale = function (shop_id, cb) {
+    let shopId = mongoose.Types.ObjectId(shop_id);
     appointment.aggregate([{
             $match: {
-                barber_id: barberId,
-                appointment_status: "completed"
+                shop_id: shopId,
+                //appointment_status: "completed"
             }
-        }, {
-            $unwind: "$services"
-        }, {
+        },{
             $group: {
-                _id: "$_id",
-                barber_id: {
-                    $first: "$barber_id"
-                },
+                _id: null,
                 price: {
-                    $sum: "$services.price"
-                }
-            }
-        }, {
-            $group: {
-                _id: "$barber_id",
-                total_sale: {
-                    $sum: "$price"
+                    $sum: "$shop_share"
                 }
             }
         }]).exec(function (err, result) {
+        if (err) {
+            cb(err, null);
+        } else {
+            cb(null, result)
+        }
+    })
+}
+
+let getShopTotalSaleOnDates = function(shop_id, startDate, endDate, cb) {
+    let shopId = mongoose.Types.ObjectId(shop_id);
+    let appointmentStartdate = new Date(moment(startDate, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+    let appointmentEnddate = new Date(moment(endDate, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+    appointment.aggregate([{
+        $match: {
+            shop_id: shopId,
+            // appointment_status: "completed"
+        }
+    }, {
+        $match: {
+            appointment_date: {
+                $gte: appointmentStartdate,
+                $lt: appointmentEnddate
+            }
+        }
+    },{
+        $group: {
+            _id: null,
+            price: {
+                $sum: "$shop_share"
+            }
+        }
+    }]).exec(function(err, result) {
+    console.log(result);
+        if (err) {
+            cb(err, null);
+        } else {
+            cb(null, result)
+        }
+    })
+}
+
+let getShopAppointmentsDetail = function(shop_id, startDate, endDate, cb) {
+    let shopId = mongoose.Types.ObjectId(shop_id);
+    let appointmentStartdate = new Date(moment(startDate, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+    let appointmentEnddate = new Date(moment(endDate, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+
+    appointment.aggregate([{
+        $match: {
+            shop_id: shopId,
+            //appointment_status: "completed"
+        }
+    },{
+        $match: {
+            appointment_date: {
+                $gte: appointmentStartdate,
+                $lt: appointmentEnddate
+            }
+        }
+    }, {
+        $project: {
+            _id: "$_id",
+            services: 1,
+            totalPrice:1,
+            shop_share:1,
+            appointment_Date: {
+                $dateToString: {
+                    format: "%Y-%m-%d",
+                    date: "$appointment_date"
+                }
+            },
+            appointment_id: "$_id",
+        }
+    },{
+        $group: {
+            _id: "$appointment_Date",
+            appointment_Date: {
+                $first: "$appointment_Date"
+            },
+            shop_sale: {
+                $sum: "$shop_share"
+            },
+            total_sale:{
+                $sum: "$totalPrice"
+            },
+            appointments: {
+                $sum: 1
+            },
+        }
+
+    }]).exec(function(err, result) {
+        if (err) {
+            cb(err, null);
+        } else {
+            cb(null, result)
+        }
+    })
+}
+
+getShopChairRevenue = function (shop_id, startDate, endDate, cb) {
+    let shopId = mongoose.Types.ObjectId(shop_id);
+    //let appointmentStartdate = new Date(moment(startDate, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+    //let appointmentEnddate = new Date(moment(endDate, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+
+
+    chairBook.aggregate([
+        {
+            $match: {
+                shop_id: shopId,
+                //booking_date: {$gte: appointmentStartdate},
+                //release_date: {$lte: appointmentEnddate}
+
+            }
+        },
+        {
+            $group: {
+                _id: "$chair_id",
+                chair_revenue: {
+                    $sum: "$amount"
+                }
+            }
+
+        }
+    ]).exec(function(err, result) {
         if (err) {
             cb(err, null);
         } else {

@@ -1609,6 +1609,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             views: {
                 "homeDash": {
                     templateUrl: 'partials/contactbarbrDO.html'
+                    // controller:
                 },
                 "header": {
                     templateUrl: 'partials/barber_shop_header.html',

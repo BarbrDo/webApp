@@ -71,8 +71,10 @@ module.exports = function(app, express) {
     app.put('/api/v1/shops/markchairasbooked/:chair_id',shopController.markChairAsBooked);
     app.put('/api/v1/shops/acceptrequest',chairRequestController.acceptRequest);
     app.get('/api/v1/shops/event',appointmentController.showEvents);
-    app.get('/api/v1/shops/sale/:startDate/:endDate',shopController.financeScreenResult);
+    app.get('/api/v1/shops/sale/:shop_id/:startDate/:endDate',shopController.financeScreenResult);
     app.post('/api/v1/shop/removebarber', shopController.requesttoremove);
+    
+    
     //Customer
     app.get('/api/v1/allcustomers',customerController.listcustomers);
     app.get('/api/v1/appointment', appointmentController.customerAppointments); //View appointment
@@ -82,6 +84,7 @@ module.exports = function(app, express) {
     app.get('/api/v1/appointment/pending/:_id',appointmentController.pendingConfiramtion);
     app.post('/api/v1/ratebarber',barberServices.rateBarber);
     app.post('/api/v1/contactbarber',customerController.contactBarber);
+    app.post('/api/v1/customer/payafterappointment',appointmentController.payafterappointment);
     app.post('/api/v1/customer/pushNotificationForIOS',appointmentController.pushNotificationForIOS);
     
     //Barber
@@ -135,7 +138,7 @@ module.exports = function(app, express) {
     app.post('/api/v1/stripe/pushNotificationForIOS',appointmentController.pushNotificationForIOS);
     
     //Need to delete in sprint-8
-    app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber/shop requesting chair to shop
+    //app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber/shop requesting chair to shop
     app.get('/admin', function(req, res) {
         res.sendFile(path.join(__dirname + './../public/indexAdmin.html'));
     });

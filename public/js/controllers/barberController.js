@@ -83,13 +83,13 @@ angular.module('BarbrDoApp')
 					$scope.loaderStart = false;
 					$scope.shopChairs = response.data.data;
 					if ($scope.shopChairs.length == 0) {
-						console.log("ghereebjk", $scope.shopChairs)
 					}
 
 				});
 		}
 
 		$scope.setSelected = function(prop, index) {
+
 			$rootScope.selectedDate = prop.toISOString().slice(0, 10);
 			$scope.selecteddd = index;
 			$scope.shopchairdetail();
@@ -98,6 +98,7 @@ angular.module('BarbrDoApp')
 		$scope.changeObject = function(chair) {
 			$scope.chairId = chair._id;
 			$rootScope.chair = chair;
+			console.log(chair._id)
 
 		}
 		$scope.shopchairdetail = function() {
@@ -135,55 +136,140 @@ angular.module('BarbrDoApp')
 
 		$scope.chairsinshop = function() {
 			if ($rootScope.selectedDate) {
-				console.log("now fine", $rootScope.chairs)
 				var len = $rootScope.chairs.length;
+				var resultArray = [];
 				for (var i = 0; i < len; i++) {
+					if ($rootScope.chairs[i].booking_start) {
+						var booking_start = new Date($rootScope.chairs[i].booking_start);
+						var month = booking_start.getUTCMonth() + 1; //months from 1-12
+						var day = booking_start.getUTCDate();
+						var year = booking_start.getUTCFullYear();
+						$scope.booking_start = year + "-" + '0' + month + "-" + day
+						var booking_end = new Date($rootScope.chairs[i].booking_end);
+						var month = booking_end.getUTCMonth() + 1; //months from 1-12
+						var day = booking_end.getUTCDate();
+						var year = booking_end.getUTCFullYear();
+						$scope.booking_end = year + "-" + '0' + month + "-" + day
 
+					}
+					var request = {};
+					let k = 0;
 					if ($rootScope.chairs[i].availability == 'booked' && $rootScope.chairs[i].type == 'self') {
-						let objjj = {
+						 request = {
 							_id: $rootScope.chairs[i]._id,
+							chair_name: $rootScope.chairs[i].name,
+							shop_percentage: $rootScope.chairs[i].shop_percentage,
+							chair_availability: $rootScope.chairs[i].availability,
+							barber_percentage: $rootScope.chairs[i].barber_percentage,
+							chair_type: $rootScope.chairs[i].type,
+							chair_amount: $rootScope.chairs[i].amount,
+							barber_info: $rootScope.chairs[i].barberInfo,
 							text: "Non-barber"
 						}
-					} else if ($rootScope.chairs[i].availability == 'booked' && $rootScope.chairs[i].type != 'self' && $rootScope.selectedDate >= $rootScope.chairs[i].booking_start && $rootScope.selectedDate <= $rootScope.chairs[i].booking_end) {
-						let objjj = {
+					} else if ($rootScope.chairs[i].availability == 'booked' && $rootScope.chairs[i].type != 'self' && $rootScope.selectedDate >= $scope.booking_start && $rootScope.selectedDate <= $scope.booking_end) {
+						 request = {
 							_id: $rootScope.chairs[i]._id,
+							chair_name: $rootScope.chairs[i].name,
+							shop_percentage: $rootScope.chairs[i].shop_percentage,
+							chair_availability: $rootScope.chairs[i].availability,
+							barber_percentage: $rootScope.chairs[i].barber_percentage,
+							chair_type: $rootScope.chairs[i].type,
+							chair_amount: $rootScope.chairs[i].amount,
+							barber_info: $rootScope.chairs[i].barberInfo,
+							barber_id: $rootScope.chairs[i].barber_id,
 							text: "Already Booked"
 						}
-					} else if($rootScope.chairs[i].availability == 'available' && $rootScope.chairs[i].type != 'self') {
+					} else {
+
 						if ($rootScope.chairs[i].barberRequest.length > 0) {
-							for (j = 0; j < $rootScope.chairs[i].barberRequest.length; j++) {
-								if ($rootScope.chairs[i].barberRequest[j].requstedBy == 'barber') {
+							var abc = false;
+							for (var j = 0; j < $rootScope.chairs[i].barberRequest.length; j++) {
+								var booking_date = new Date($rootScope.chairs[i].barberRequest[j].booking_date);
+								var month = booking_date.getUTCMonth() + 1; //months from 1-12
+								var day = booking_date.getUTCDate();
+								var year = booking_date.getUTCFullYear();
+								$scope.booking_date = year + "-" + '0' + month + "-" + day
+								if ($rootScope.chairs[i].barberRequest[j].requested_by == 'barber') {
 									// pending
-									if ($scope.userid == $rootScope.chairs[i].barberRequest[j].barber_id && $rootScope.selectedDate == $rootScope.chairs[i].barberRequest[j].booking_date) {
-										let objjj = {
+									if ($scope.userid == $rootScope.chairs[i].barberRequest[j].barber_id && $rootScope.selectedDate == $scope.booking_date) {
+
+										request = {
+											_id: $rootScope.chairs[i]._id,
+											chair_name: $rootScope.chairs[i].name,
+											chair_availability: $rootScope.chairs[i].availability,
+											shop_percentage: $rootScope.chairs[i].shop_percentage,
+											barber_percentage: $rootScope.chairs[i].barber_percentage,
+											chair_type: $rootScope.chairs[i].type,
+											chair_amount: $rootScope.chairs[i].amount,
+											barber_info: $rootScope.chairs[i].barberInfo,
+											selecteddate: $rootScope.selectedDate,
+											booking: $scope.booking_date,
+											check: $scope.booking_date == $rootScope.selectedDate,
 											text: "Pending"
 										}
-
+										abc = true;
+										resultArray.push(request);
+										++k;
+										break;
+										
 									}
 								}
-								if ($rootScope.chairs[i].barberRequest[j].requstedBy == 'shop') {
+								if ($rootScope.chairs[i].barberRequest[j].requested_by == 'shop') {
 									//accept decline
-									if ($scope.userid == $rootScope.chairs[i].barberRequest[j].barber_id && $rootScope.selectedDate == $rootScope.chairs[i].barberRequest[j].booking_date) {
-										let objjj = {
+									if ($scope.userid == $rootScope.chairs[i].barberRequest[j].barber_id && $rootScope.selectedDate == $scope.booking_date) {
+										 request = {
+											_id: $rootScope.chairs[i]._id,
+											chair_name: $rootScope.chairs[i].name,
+											chair_availability: $rootScope.chairs[i].availability,
+											shop_percentage: $rootScope.chairs[i].shop_percentage,
+											barber_percentage: $rootScope.chairs[i].barber_percentage,
+											chair_type: $rootScope.chairs[i].type,
+											chair_amount: $rootScope.chairs[i].amount,
+											barber_info: $rootScope.chairs[i].barberInfo,
 											text: "Accept Reject"
 										}
+										abc = true;
+										resultArray.push(request);
+										++k;
+										break;
+									}
 
+								}
+
+								if (abc == false) {
+									request = {
+										_id: $rootScope.chairs[i]._id,
+										chair_name: $rootScope.chairs[i].name,
+										chair_availability: $rootScope.chairs[i].availability,
+										shop_percentage: $rootScope.chairs[i].shop_percentage,
+										barber_percentage: $rootScope.chairs[i].barber_percentage,
+										chair_type: $rootScope.chairs[i].type,
+										chair_amount: $rootScope.chairs[i].amount,
+										barber_info: $rootScope.chairs[i].barberInfo,
+										text: "Request"
 									}
 								}
 							}
+						} else {
+							request = {
+								_id: $rootScope.chairs[i]._id,
+								chair_name: $rootScope.chairs[i].name,
+								chair_availability: $rootScope.chairs[i].availability,
+								shop_percentage: $rootScope.chairs[i].shop_percentage,
+								barber_percentage: $rootScope.chairs[i].barber_percentage,
+								chair_type: $rootScope.chairs[i].type,
+								chair_amount: $rootScope.chairs[i].amount,
+								barber_info: $rootScope.chairs[i].barberInfo,
+								text: "Request"
+							}
 						}
-						else
-						{
-							let objjj = {
-							text: "Request"
-						}
-						}
-						
 					}
-					
+					if (k == 0) {
+						resultArray.push(request);
+					}
+
 				}
-				$rootScope.text = objjj;
-				console.log("text here",objjj)
+				$rootScope.chairsLoop = resultArray;
 			}
 
 		};
@@ -209,6 +295,7 @@ angular.module('BarbrDoApp')
 					$state.go('request-chair');
 				}).catch(function(result) {
 					$scope.loaderStart = false;
+					console.log(result)
 					toastr.error(result.data.msg);
 				})
 			} else {

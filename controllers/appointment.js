@@ -3,82 +3,14 @@ let appointment = require('../models/appointment');
 let user = require('../models/User');
 let shop = require('../models/shop');
 let barber = require('../models/barber');
+let barberServices = require('../models/barber_service');
 let moment = require('moment');
 let mongoose = require('mongoose');
 let stripeToken = process.env.STRIPE;
 let stripe = require('stripe')(stripeToken);
 let commonObj = require('../common/common');
 
-// exports.takeAppointment = function(req, res) {
-//     console.log("appointment", req.body);
-//     req.assert("shop_id", "shop_id cannot be blank").notEmpty();
-//     req.assert("barber_id", "barber_id cannot be blank").notEmpty();
-//     req.checkHeaders("user_id", "user_id cannot be blank").notEmpty();
-//     req.assert("services", "servies cannot be blank").notEmpty();
-//     req.assert("appointment_date", "appointment_date cannot be blank").notEmpty();
-//     req.assert("payment_method", "payment_method cannot be blank").notEmpty();
-
-//     let errors = req.validationErrors();
-//     if (errors) {
-//         return res.status(400).send({
-//             msg: "error in your request",
-//             err: errors
-//         });
-//     }
-//     console.log("req.body.appointment_date", req.body.appointment_date);
-//     let appointmentdate = removeOffset(req.body.appointment_date);
-//     console.log("appointmentdate", appointmentdate);
-//     console.log(new Date(appointmentdate));
-//     let shopName = "";
-//     let customerName = "";
-//     let barberName = ""
-//     findShopData(req.body.shop_id, function(result) {
-//         shopName = result;
-//         findUserId(req.headers.user_id, function(result) {
-//             customerName = result
-//             console.log("customerName", customerName)
-//             findUserId(req.body.barber_id, function(result) {
-//                 barberName = result;
-//                 console.log("barberName,customerName,shopName", barberName, customerName, shopName);
-//                 let saveData = req.body;
-//                 saveData.customer_name = customerName;
-//                 saveData.shop_name = shopName;
-//                 saveData.barber_name = barberName;
-//                 saveData.customer_id = req.headers.user_id;
-//                 saveData.appointment_date = new Date(appointmentdate);
-//                 console.log(saveData);
-
-//                 appointment(saveData).save(function(err, data) {
-//                     if (err) {
-//                         return res.status(400).send({
-//                             msg: constantObj.messages.errorInSave
-//                         });
-//                     } else {
-//                         appointment.findOne({
-//                                 "_id": data._id
-//                             }).populate('barber_id', 'first_name last_name ratings picture created_date')
-//                             .populate('customer_id', 'first_name last_name ratings picture created_date')
-//                             .populate('shop_id', 'name address city state gallery created_date')
-//                             .exec(function(err, result) {
-//                                 if (err) {
-//                                     return res.status(400).send({
-//                                         msg: constantObj.messages.errorRetreivingData
-//                                     });
-//                                 } else {
-//                                     return res.status(200).send({
-//                                         msg: constantObj.messages.successRetreivingData,
-//                                         data: result
-//                                     });
-//                                 }
-//                             })
-//                     }
-//                 })
-//             });
-//         });
-//     });
-// }
-
-exports.takeAppointment = function(req, res) {
+exports.takeAppointment = function (req, res) {
     console.log("appointment Body", req.body);
     req.checkHeaders("user_id", "User Id cannot be blank").notEmpty();
     req.assert("shop_id", "Shop Id cannot be blank").notEmpty();
@@ -95,61 +27,84 @@ exports.takeAppointment = function(req, res) {
             err: errors
         });
     }
-    let shop_id = req.body.shop_id;
-    let user_id = req.header.user_id;
+    let user_id = req.headers.user_id;
     let barber_id = req.body.barber_id;
     let chair_id = req.body.chair_id;
     let appointmentdate = new Date(removeOffset(req.body.appointment_date));
-    let customerName = "";
-    let barberName = ""
-    let shopShare = 0,barberShare = 0;
-    getChairData(chair_id, function(err,chair) {
-        if(err && !(chair.chairs.length>0)){
+    let services = req.body.services;
+
+    getChairData(chair_id, function (err, chairResult) {
+        if (!chairResult) {
             return res.status(400).send({
-                       msg: constantObj.messages.successRetreivingData,
-                       data: result
+                msg: constantObj.messages.errorRetreivingData
+            });
+        }
+        getBarberServices(services, function (err, servicesResult) {
+            if (!servicesResult) {
+                return res.status(400).send({
+                    msg: constantObj.messages.errorRetreivingData
+                });
+            }
+            findUserId(user_id, function (err,customerResult) {
+                if(!customerResult){
+                    return res.status(400).send({
+                        msg: constantObj.messages.errorRetreivingData
                     });
-        }
-        else{
-            console.log("code is started to work");
-            console.log(chair.chairs[0].type);
-            
-            if(chair.chairs[0].type=='percentage'){
-                shopShare = (req.body.totalPrice*chair.chairs[0].shop_percentage)/100;
-                barberShare = (req.body.totalPrice*chair.chairs[0].barber_percentage)/100;
-            }
-            else{
-                barberShare = req.body.totalPrice
-            }
-        }
-        findUserId(user_id, function(result) {
-            customerName = result
-            console.log("customerName", customerName)
-            findUserId(barber_id, function(result) {
-                barberName = result;
-                console.log("barberName,customerName,shopName", barberName, customerName);
-                let saveData = req.body;
-                saveData.barber_share = barberShare;
-                saveData.shop_share = shopShare;
-                saveData.customer_name = customerName;
-                saveData.shop_name = chair.name;
-                saveData.barber_name = barberName;
-                saveData.customer_id = user_id;
-                saveData.appointment_date = appointmentdate;
-                console.log(saveData);
-                return false;
-                appointment(saveData).save(function(err, data) {
-                    if (err) {
+                }
+                findUserId(barber_id, function (err,barberResult) {
+                    if (!barberResult) {
                         return res.status(400).send({
-                            msg: constantObj.messages.errorInSave
+                            msg: constantObj.messages.errorRetreivingData
                         });
-                    } else {
-                        appointment.findOne({
-                                "_id": data._id
+                    }
+                    let shopShare = 0;
+                    let barberShare = 0;
+                    let totalPrice = 0;
+                    let barber_percentage = 0;
+                    let shop_percentage = 0;
+                    let chair_amount = 0;
+
+                    for (let i = 0; i < servicesResult.length; i++) {
+                        totalPrice += servicesResult[i].price;
+                    }
+                    barberShare = totalPrice;
+                    if (chairResult.chairs[0].type == 'percentage') {
+                        shopShare = (totalPrice * chairResult.chairs[0].shop_percentage) / 100;
+                        barberShare = (totalPrice * chairResult.chairs[0].barber_percentage) / 100;
+                        barber_percentage = chairResult.chairs[0].barber_percentage;
+                        shop_percentage = chairResult.chairs[0].shop_percentage;
+                        chair_amount = chairResult.chairs[0].amount
+                    }
+
+                    let saveData = req.body;
+
+                    saveData.shop_name = chairResult.name;
+                    saveData.barber_name = barberResult.first_name + ' ' + barberResult.last_name;
+                    saveData.customer_id = user_id;
+                    saveData.customer_name = customerResult.first_name + ' ' + customerResult.last_name;
+                    saveData.appointment_date = appointmentdate;
+                    saveData.totalPrice = totalPrice;
+                    saveData.currency_code = constantObj.currency.USD;
+                    saveData.barber_share = barberShare;
+                    saveData.shop_share = shopShare;
+                    saveData.chair_amount = chair_amount;
+                    saveData.chair_barber_percentage = barber_percentage;
+                    saveData.chair_shop_percentage = shop_percentage;
+                    saveData.chair_name = chairResult.chairs[0].name;
+                    saveData.chair_type = chairResult.chairs[0].type;
+
+                    appointment(saveData).save(function (err, data) {
+                        if (err) {
+                            return res.status(400).send({
+                                msg: constantObj.messages.errorInSave
+                            });
+                        } else {
+                            appointment.findOne({
+                                _id: data._id
                             }).populate('barber_id', 'first_name last_name ratings picture created_date')
                             .populate('customer_id', 'first_name last_name ratings picture created_date')
                             .populate('shop_id', 'name address city state gallery created_date')
-                            .exec(function(err, result) {
+                            .exec(function (err, result) {
                                 if (err) {
                                     return res.status(400).send({
                                         msg: constantObj.messages.errorRetreivingData
@@ -161,74 +116,59 @@ exports.takeAppointment = function(req, res) {
                                     });
                                 }
                             })
-                    }
-                })
+                        }
+                    })
+                });
             });
-        });
+        })
     });
 }
 
 let getChairData = function(chair_id,cb){
-    shop.findOne(
-        {
-            chairs:
-            { 
-                $elemMatch : {"_id": chair_id}
-            }
-        },
-        { 'chairs.$': 1, "name":1 }
+    shop.findOne({
+        chairs: { 
+            $elemMatch : {"_id": chair_id}
+        }
+    },
+    { 'chairs.$': 1, "name":1 }
     ).exec(function(err, chairResult) {
-        console.log(chairResult);
         if (err) {
             cb(err,null);
         }
         cb(null,chairResult)
     })
 }
-let removeOffset = function(dobFormat) {
-    let userOffset = new Date(dobFormat).getTimezoneOffset();
-    let userOffsetMilli = userOffset * 60 * 1000;
-    let dateInMilli = moment(dobFormat).unix() * 1000;
-    let dateInUtc = dateInMilli - userOffsetMilli;
-    return dateInUtc;
-}
 
+let getBarberServices = function(services,cb){
+    let serviceIds = []
+    for(let i=0; i<services.length; i++){
+        serviceIds.push(services[i].id);
+    }
+    barberServices.find({
+        _id:{ 
+            $in : serviceIds 
+        }
+    }).exec(function(err, servicesResult) {
+        if (err) {
+            cb(err,null);
+        }
+        cb(null,servicesResult)
+    })
+}
 
 let findUserId = function(id, cb) {
+    console.log('idddd',id)
     user.findOne({
         _id: id
-    }, function(err, result) {
+    }).exec(function(err, userResult) {
         if (err) {
-            console.log("err in FindUserId", err);
-        } else {
-            if (result) {
-                // console.log("customer "result.first_name);
-                cb(result.first_name + " " + result.last_name);
-            } else {
-                let allResult = ""
-                cb(allResult)
-                    // return allResult;
-            }
+            cb(err,null);
         }
+        cb(null,userResult)
     })
 }
-let findShopData = function(shopp, cb) {
-    shop.findOne({
-        _id: shopp
-    }, function(err, result) {
-        if (err) {
-            console.log("err in FindUserId", err);
-        } else {
-            if (result.name) {
-                // console.log(result.name);
-                cb(result.name);
-            } else {
-                let allResult = ""
-                cb(allResult);
-            }
-        }
-    })
-}
+
+
 exports.customerAppointments = function(req, res) {
     req.checkHeaders("user_id", "user_id cannot be blank").notEmpty();
     let errors = req.validationErrors();
@@ -618,4 +558,12 @@ exports.pushNotificationForAndroid = function  (req,res) {
    commonObj.pushToAndroid('ezm1u0Fr6W0:APA91bGb0HMrRAEYhbG5pmnzY_Har1Ewk-8FEiakXerY0tkJpBaH_wAlqav5ZJ_cZUsS6ScOW6vrZocWbuUInn2UybAey7vkhuBRrr4KloxSzjj5ZVuLNg9Jcd9J474l7IyhPlrXNoZU',function  () {
         console.log("working");
     })
+}
+
+let removeOffset = function(dobFormat) {
+    let userOffset = new Date(dobFormat).getTimezoneOffset();
+    let userOffsetMilli = userOffset * 60 * 1000;
+    let dateInMilli = moment(dobFormat).unix() * 1000;
+    let dateInUtc = dateInMilli - userOffsetMilli;
+    return dateInUtc;
 }

@@ -138,10 +138,20 @@ const timeSlots = {
         {"time": "8:45", "isAvailable": true}
     ]
 }
+
+
+const currency = {
+    USD: "usd",
+}
+
+
 var obj = {
     messages: messages,
     distance: distance,
     timeSlots: timeSlots,
-    offTimeSlots:offTimeSlots
+    offTimeSlots:offTimeSlots,
+    currency: currency
 };
+
+
 module.exports = obj;

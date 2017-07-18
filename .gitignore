@@ -46,6 +46,6 @@ db.js
 
 
 *.DS_Store
-/nbproject/private/
+/nbproject
 
 /bower_components

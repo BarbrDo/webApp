@@ -550,7 +550,12 @@ exports.sentMessage = function  (req,res) {
     })
 }
 exports.pushNotificationForIOS = function (req,res) {
-    commonObj.pushSendToIOS('108FBEDD34AC9826751562522C201163B2369AAB62553094FBC47BEADB0B0F6F',function  () {
+    commonObj.pushSendToIOS('D412F80A2CB04FF69752480EE5CAE1EF7E35350E1A2F52614F0D662BA3EDC21F',function  () {
+        console.log("working");
+    })
+}
+exports.pushNotificationForAndroid = function  (req,res) {
+   commonObj.pushToAndroid('ezm1u0Fr6W0:APA91bGb0HMrRAEYhbG5pmnzY_Har1Ewk-8FEiakXerY0tkJpBaH_wAlqav5ZJ_cZUsS6ScOW6vrZocWbuUInn2UybAey7vkhuBRrr4KloxSzjj5ZVuLNg9Jcd9J474l7IyhPlrXNoZU',function  () {
         console.log("working");
     })
 }

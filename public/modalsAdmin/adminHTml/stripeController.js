@@ -40,7 +40,7 @@ function planCtrl($scope, $rootScope, $location, Admin, $filter, $log, $statePar
     }
     function del(data) {
       console.log(data);
-        let obj = {
+        var obj = {
           "id":data.id
         }
         console.log(obj);

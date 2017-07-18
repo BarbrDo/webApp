@@ -25,24 +25,11 @@ exports.featuringPlans = function(req, res) {
   );
 }
 
-exports.createCharges = function(req, res) {
-    // Token is created using Stripe.js or Checkout!
-    // Get the payment token submitted by the form:
-    req.assert('token', 'Card token is required.').notEmpty();
-    req.assert('amount', 'Amount is required.').notEmpty();
-    req.checkHeaders('user_id', 'user_id is required.').notEmpty();
-    let errors = req.validationErrors();
-    if (errors) {
-        res.status(400).send({
-            msg: "error in your request",
-            err: errors
-        });
-    }
-    console.log(req.body);
-    let chargeAmount = req.body.amount * 100;
+exports.createCharges = function(token, price,user_id,cb) {
+    let chargeAmount = price * 100;
     console.log(chargeAmount);
     User.findOne({
-        _id: req.headers.user_id
+        _id: user_id
     }, function (err, data) {
         if (err) {
             res.status(400).send({
@@ -51,57 +38,39 @@ exports.createCharges = function(req, res) {
             });
         } else {
             console.log(data);
-            let email = data.email
+            let email = data.email;
             if (data.stripe_customer.length > 0) {
                 stripe.charges.create({
                     amount: chargeAmount,
                     currency: "usd",
                     capture: false,
-                    customer: data.id,
+                    customer: data.id
                 }).then(function (charge) {
-                  console.log("charge",charge)
-                    req.body.payment_status = "confirm";
-                    req.body.payment_detail = charge;
-                    AppointmentController.takeAppointment(req, res, function (req, res) {
-
-                    })
+                    cb(null,charge);
                 }).catch(function(err){
-                    console.log("Stripe error",err);
-                    return res.status(400).send({
-                        msg: err.message
-                    })
+                    cb(err,null);
                 });
             } else {
                 stripe.customers.create({
                     email: email,
-                    source: req.body.token,
+                    source: token
                 }).then(function (customer) {
                     // YOUR CODE: Save the customer ID and other info in a database for later.
                     return stripe.charges.create({
                         amount: chargeAmount,
                         currency: "usd",
                         capture: false,
-                        customer: customer.id,
+                        customer: customer.id
                     });
                 }).then(function (charge) {
-                    console.log("stripe", req.body)
-                    req.body.payment_status = "confirm";
-                     console.log("charge",charge)
-                    req.body.payment_status = "confirm";
-                    req.body.payment_detail = charge;
-                    AppointmentController.takeAppointment(req, res, function (req, res) {
-
-                    })
+                    cb(null,charge);
                 }).catch(function(err){
-                    console.log("Stripe error",err);
-                    return res.status(400).send({
-                        msg: err.message
-                    })
+                     cb(err,null);
                 });
             }
         }
-    })
-}
+    });
+};
 
 exports.createPlan = function(req, res) {
   req.assert('amount', 'Amount cannot be blank.').notEmpty();

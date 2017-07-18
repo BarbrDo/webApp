@@ -103,10 +103,13 @@ exports.takeAppointment = function(req, res) {
     let customerName = "";
     let barberName = ""
     getChairData(chair_id, function(err,chair) {
-        if(err){
-
+        if(err && !(chair.chairs.length>0)){
+            return res.status(400).send({
+                       msg: constantObj.messages.successRetreivingData,
+                       data: result
+                    });
         }
-        else if(chair.chairs.length>0){
+        else{
             console.log("code is started to work");
             console.log(chair.chairs[0].type);
             let shopShare = 0,barberShare = 0;
@@ -118,10 +121,6 @@ exports.takeAppointment = function(req, res) {
                 barberShare = req.body.totalPrice
             }
         }
-        else{
-            console.log("chair data is not present");
-        }
-        return false;
         findUserId(user_id, function(result) {
             customerName = result
             console.log("customerName", customerName)
@@ -129,15 +128,14 @@ exports.takeAppointment = function(req, res) {
                 barberName = result;
                 console.log("barberName,customerName,shopName", barberName, customerName);
                 let saveData = req.body;
-                saveData.barberShare = barberShare;
-                saveData.shopShare = shopShare;
+                saveData.barber_share = barberShare;
+                saveData.shop_share = shopShare;
                 saveData.customer_name = customerName;
                 saveData.shop_name = chair.name;
                 saveData.barber_name = barberName;
                 saveData.customer_id = user_id;
                 saveData.appointment_date = appointmentdate;
                 console.log(saveData);
-
                 appointment(saveData).save(function(err, data) {
                     if (err) {
                         return res.status(400).send({

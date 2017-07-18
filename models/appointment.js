@@ -54,8 +54,8 @@ var appointmentSchema = new mongoose.Schema({
         type: Date,
         default: Date.now()
     },
-    barberShare:Number,
-    shopShare:Number
+    barber_share:Number,
+    shop_share:Number
 }, {strict: false});
 
 var appointment = mongoose.model('appointments', appointmentSchema);

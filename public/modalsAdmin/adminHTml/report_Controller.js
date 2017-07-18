@@ -1,7 +1,7 @@
 app_admin.controller("reportCtrl", reportCtrl);
 
 function reportCtrl($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $uibModal, $timeout,$localStorage) {
-	 if($localStorage.loggedIn=='true'){
+	if($localStorage.loggedIn){
     $rootScope.LoginUser = true;
   }
   else{

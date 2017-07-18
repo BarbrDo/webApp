@@ -24,15 +24,14 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     Admin.login($scope.loginUser)
       .then(function(response) {
         toastr.success('Welcome Admin');
-        $localStorage.loggedIn = "true";
-
+        $localStorage.loggedIn = true;
         $state.go('dashboard')
       }).catch(function(result) {
         toastr.error('you are not Authorized');
       })
   }
   $scope.logout = function () {
-    $localStorage.loggedIn = ""
+    $localStorage.loggedIn = false;
     $state.go('login');
   }
 

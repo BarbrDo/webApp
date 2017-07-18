@@ -6,8 +6,8 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   $scope.bigTotalItems = 175;
   $scope.bigCurrentPage = 1;
   $scope.fieldDisabled = false;
-  // console.log("val",$localStorage.loggedIn);
-  if($localStorage.loggedIn=='true'){
+  console.log("val",$localStorage.loggedIn);
+  if($localStorage.loggedIn==true){
     $rootScope.LoginUser = true;
   }
   else{

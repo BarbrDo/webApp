@@ -112,7 +112,6 @@ exports.addBarberServices = function(req, res) {
                     })
                 } else {
                     if (data[0].is_deleted == true) {
-                        console.log("deleted service")
                         barber_service.update({
                             service_id: data[0].service_id,
                             barber_id: data[0].barber_id
@@ -124,11 +123,11 @@ exports.addBarberServices = function(req, res) {
                         }, function(err, result) {
                             if (err) {
                                 res.status(400).send({
-                                    msg: constantObj.messages.userStatusUpdateFailure
+                                    msg: constantObj.messages.errorInSave
                                 })
                             } else {
                                 res.status(200).send({
-                                    msg: constantObj.messages.userStatusUpdateSuccess
+                                    msg: constantObj.messages.saveSuccessfully
                                 })
                             }
                         })

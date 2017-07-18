@@ -194,6 +194,10 @@ angular.module('BarbrDoApp')
       },
       requestRemoveBarber: function(data) {
         return $http.post('/api/v1/shop/removebarber',data);
+      },
+      ContactBarbrdo: function(data) {
+        console.log("here")
+        return $http.post('/api/v1/contact',data);
       }
     }
   });

@@ -390,7 +390,26 @@
  			})
  		}
 
-    $scope.contact = function(shop) {
-      console.log(shop)
+    $scope.contact = function(data,message) {
+      $scope.loaderStart = true;
+      if(message)
+      {
+          var obj = {
+            message: message,
+            name: data.first_name + ' ' + data.last_name,
+            email: data.email
+          }
+          shop.ContactBarbrdo(obj)
+            .then(function(response) {
+              $scope.loaderStart = false;
+              toastr.success(response.data.msg)
+              $state.go('barbershopdashboard')
+            })
+      }
+      else
+      {
+        toastr.error('Please Enter the Message')
+      }
+      
     }
  	});

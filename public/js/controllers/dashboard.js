@@ -1,7 +1,7 @@
 angular.module('BarbrDoApp')
 	.controller('dashboardCtrl', function($scope, $rootScope, $filter, $location, customer, $stateParams, $state, $window, ngTableParams, $timeout, $http, toastr) {
 		$scope.dollarAmmount = 0.00;
-		$scope.annualCost =  $scope.dollarAmmount;
+		$scope.annualCost = $scope.dollarAmmount;
 		$scope.search = {};
 		var obj = {
 			'latitude': "30.538994",
@@ -76,11 +76,11 @@ angular.module('BarbrDoApp')
 
 			customer.barberAll(obj)
 				.then(function(response) {
-					console.log("all dsgsdgsdgsdfg",response.data.data[0])
+					console.log("all dsgsdgsdgsdfg", response.data.data[0])
 					$scope.loaderStart = false;
 					$scope.barberdet = response.data.data[0];
-					
-				});	
+
+				});
 
 			var passObj = {
 				"shop_id": $stateParams.shop_id,
@@ -131,6 +131,36 @@ angular.module('BarbrDoApp')
 				})
 
 		};
+
+		$scope.nextdates =function(){
+			var myArray = [];
+			// Below code is generating current date + 6 days more
+			var date = new Date($scope.selectDate[6]);
+			myArray.push(date)
+			for (var i = 1; i <= 6; i++) {
+				var date = new Date($scope.selectDate[6]);
+				date.setDate(date.getDate() + i);
+				myArray.push(date)
+			}
+			console.log(myArray)
+			$scope.selectDate = myArray;
+		}
+
+		$scope.previousdates = function(){
+			// Below code is generating current date + 6 days more
+			// var date = new Date($scope.selectDate[0]);
+			// date.setDate(date.getDate() - 6)
+			// myArray.push(date)
+			// for (var i = 1; i <= 6; i++) {
+			// 	var date = new Date($scope.selectDate[0]);
+			// 	date.setDate(date.getDate() + i);
+			// 	myArray.push(date)
+			// }
+			// console.log(myArray)
+			// $scope.selectDate = myArray;	
+		}
+
+		$scope.selectedTime = 0;
 		$scope.setSelectedTime = function(prop, index) {
 			$scope.choosedTime = prop;
 			$scope.selectedTime = index
@@ -140,7 +170,7 @@ angular.module('BarbrDoApp')
 			$scope.loaderStart = true;
 			customer.barberAll(obj)
 				.then(function(response) {
-					console.log("all barbers",response)
+					console.log("all barbers", response)
 					$scope.loaderStart = false;
 					$scope.barbers = response.data.data;
 				});
@@ -165,9 +195,9 @@ angular.module('BarbrDoApp')
 			$scope.annualCost = $scope.dollarAmmount;
 		};
 
-		$scope.payLater = function(chair_amount,chair_id,chair_type,chair_name,chair_shop_percentage,chair_barber_percentage) {
-			console.log(chair_amount)
+		$scope.payLater = function(chair_amount, chair_id, chair_type, chair_name, chair_shop_percentage, chair_barber_percentage) {
 			var myarr = [];
+			console.log("this is date",$scope.selected.length)
 			for (var i = 0; i < $scope.selected.length; i++) {
 				var cusObj = {};
 				cusObj.name = $scope.selected[i].name;
@@ -187,6 +217,7 @@ angular.module('BarbrDoApp')
 						_id: response.data.data._id
 					});
 				}).catch(function(err) {
+					console.log(err)
 					toastr.error('Something went wrong!Please try again later.');
 				});
 		}
@@ -252,8 +283,27 @@ angular.module('BarbrDoApp')
 			var obj = {
 				_id: $stateParams.id
 			}
+			$scope.markers = [];
+			$scope.map = {
+				center: {
+					latitude: 30.708225,
+					longitude: 76.7029445
+				},
+				zoom: 15
+			}
 			customer.appointmentDetail(obj)
 				.then(function(response) {
+					var Markers = [{
+						"id": "0",
+						"coords": {
+							"latitude": "30.708225",
+							"longitude": "76.7029445"
+						},
+						"window": {
+							"title": ""
+						}
+					}];
+					$scope.markers = Markers;
 					$scope.loaderStart = false;
 					$scope.viewmap = true;
 					$scope.appointmentdetail = response.data.data;
@@ -280,15 +330,11 @@ angular.module('BarbrDoApp')
 			$scope.viewmap = $scope.viewmap ? false : true;
 		}
 
-		$scope.rescheduleappoint = function(time,appoint)
-		{
-			if(time)
-			{
+		$scope.rescheduleappoint = function(time, appoint) {
+			if (time) {
 				$scope.time = time
 				$scope.appoint = appoint
-			}
-			else
-			{
+			} else {
 				toastr.error('Please select time to Reschedule');
 			}
 		}
@@ -296,23 +342,23 @@ angular.module('BarbrDoApp')
 
 		$scope.timeReschedule = function() {
 			$scope.loaderStart = true;
-					var myobj = {
-                    minutes: $scope.time,
-                    appointment_id: $stateParams.id,
-                    appointment_date: $scope.appointmentdetail.appointment_date,
-                    barber_id: $scope.appoint.barber_id._id,
-                    name: $scope.appoint.barber_name,
-                    email: $scope.appoint.barber_id.email
-                }
-                customer.contactBarber(myobj).then(function(response) {
-                	$scope.loaderStart = false;
-                	$state.go('upcomingComplete');
-                    toastr.success(response.data.msg);
-                    
-                }).catch(function(result) {
-                    toastr.error(result.data.msg);
-                });
-        };
+			var myobj = {
+				minutes: $scope.time,
+				appointment_id: $stateParams.id,
+				appointment_date: $scope.appointmentdetail.appointment_date,
+				barber_id: $scope.appoint.barber_id._id,
+				name: $scope.appoint.barber_name,
+				email: $scope.appoint.barber_id.email
+			}
+			customer.contactBarber(myobj).then(function(response) {
+				$scope.loaderStart = false;
+				$state.go('upcomingComplete');
+				toastr.success(response.data.msg);
+
+			}).catch(function(result) {
+				toastr.error(result.data.msg);
+			});
+		};
 
 
 		$scope.uploadImage = function(img) {

@@ -1608,8 +1608,8 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             url: '/contactbarbrDO',
             views: {
                 "homeDash": {
-                    templateUrl: 'partials/contactbarbrDO.html'
-                    // controller:
+                    templateUrl: 'partials/contactbarbrDO.html',
+                    controller:   "shopCtrl"
                 },
                 "header": {
                     templateUrl: 'partials/barber_shop_header.html',
@@ -1618,6 +1618,20 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 "sideBar": {
                     templateUrl: 'partials/barbershopSideBar.html'
                 }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/shopController.js',
+                            'js/services/shop.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
             }
         });
 

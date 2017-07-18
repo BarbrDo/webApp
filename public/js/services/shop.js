@@ -184,9 +184,10 @@ angular.module('BarbrDoApp')
         return $http.get('/api/v1/barber/services/'+obj._id);
       },
       finacialCenter: function(data) {
+        console.log(data)
         return $http({
           method: 'get',
-           url: '/api/v1/barber/sale/'+data.startdate+'/'+data.enddate,
+           url: '/api/v1/shops/sale/'+data.shop_id+'/'+data.startdate+'/'+data.enddate,
           headers: {
             'user_id': obj._id
           }

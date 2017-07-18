@@ -69,7 +69,7 @@ exports.getAllServices = function(req, res) {
     })
 }
 
-exports.addBarberServices = function (req, res) {
+exports.addBarberServices = function(req, res) {
     req.checkHeaders("user_id", "user_id is required").notEmpty();
     req.assert("name", "name is required").notEmpty();
     req.assert("price", "price is required").notEmpty();
@@ -80,7 +80,6 @@ exports.addBarberServices = function (req, res) {
             err: errors
         });
     }
-    console.log("here", req.body);
     var saveData = req.body;
     saveData.barber_id = req.headers.user_id;
     var barber_id = objectID.isValid(req.headers.user_id)
@@ -95,7 +94,7 @@ exports.addBarberServices = function (req, res) {
                     err: err
                 });
             } else {
-                console.log("len of data is", data.length)
+                console.log(data.length)
                 if (data.length == 0) {
                     barber_service(saveData).save(function(err, data) {
                         if (err) {
@@ -111,9 +110,34 @@ exports.addBarberServices = function (req, res) {
                         }
                     })
                 } else {
-                    res.status(400).send({
+                    if (data[0].is_deleted == true) {
+                        console.log("deleted service")
+                        barber_service.update({
+                            service_id: data[0].service_id,
+                            barber_id: data[0].barber_id
+                        }, {
+                            $set: {
+                                "is_deleted": false,
+                                "price" : req.body.price
+                            }
+                        }, function(err, result) {
+                            if (err) {
+                                res.status(400).send({
+                                    msg: constantObj.messages.userStatusUpdateFailure
+                                })
+                            } else {
+                                res.status(200).send({
+                                    msg: constantObj.messages.userStatusUpdateSuccess
+                                })
+                            }
+                        })
+                    }
+                    else
+                    {
+                        res.status(400).send({
                         msg: 'Service already added'
                     });
+                    }  
                 }
             }
         })
@@ -712,23 +736,23 @@ exports.particularAppointment = function(req, res) {
         });
     }
     appointment.findOne({
-        _id: req.params.appointment_id
-    }).populate('barber_id', 'first_name last_name ratings picture email')
-            .populate('customer_id', 'first_name last_name ratings picture')
-            .populate('shop_id', 'name address city state gallery latLong')
-            .exec(function (err, result) {
-                if (err) {
-                    res.status(400).send({
-                        msg: constantObj.messages.errorRetreivingData,
-                        "err": err
-                    });
-                } else {
-                    res.status(200).send({
-                        msg: 'Successfully retrieve data.',
-                        "data": result
-                    });
-                }
-            })
+            _id: req.params.appointment_id
+        }).populate('barber_id', 'first_name last_name ratings picture email')
+        .populate('customer_id', 'first_name last_name ratings picture')
+        .populate('shop_id', 'name address city state gallery latLong')
+        .exec(function(err, result) {
+            if (err) {
+                res.status(400).send({
+                    msg: constantObj.messages.errorRetreivingData,
+                    "err": err
+                });
+            } else {
+                res.status(200).send({
+                    msg: 'Successfully retrieve data.',
+                    "data": result
+                });
+            }
+        })
 }
 
 

@@ -102,12 +102,14 @@ angular.module('BarbrDoApp')
 
 		}
 		$scope.shopchairdetail = function() {
+			$scope.loaderStart = true;
 			var obj = {
 				_id: $stateParams._id
 			}
 			var shp = [];
 
 			barber.shopChairs(obj).then(function(response) {
+				$scope.loaderStart = false;
 				$rootScope.particularShop = response.data.data[0];
 				var len = response.data.data[0].chairs.length;
 
@@ -312,21 +314,25 @@ angular.module('BarbrDoApp')
 
 
 		$scope.confirmAppointment = function() {
+			$scope.loaderStart = true;
 			var params = {
 				"appointment_id": $scope.id
 			}
 			barber.confirmAppointment(params).then(function(response) {
+				$scope.loaderStart = false;
 				toastr.success('Your have confirmed a request');
 				$scope.appointments();
 			})
 		}
 
 		$scope.completeAppointment = function() {
+			$scope.loaderStart = true;
 			var params = {
 				"appointment_id": $scope.id,
 				"customer_id": $scope.customer
 			}
 			barber.completeAppointment(params).then(function(response) {
+				$scope.loaderStart = false;
 				toastr.success('Your have completed a request');
 				$scope.appointments();
 			})
@@ -353,31 +359,38 @@ angular.module('BarbrDoApp')
 
 
 		$scope.timeReschedule = function() {
+			$scope.loaderStart = true;
 			var myobj = {
 				minutes: $scope.time,
 				appointment_id: $stateParams._id,
 				appointment_date: $scope.appointmentData.appointment_date
 			}
 			barber.reschedule(myobj).then(function(response) {
+				$scope.loaderStart = false;
 				toastr.success('Your appointment is successfully rescheduled');
 				$state.go('barberDashboard');
 			}).catch(function(result) {
+				$scope.loaderStart = false;
 				toastr.error('Error');
 			});
 		};
 
 
 		$scope.cancelAppointment = function() {
+			$scope.loaderStart = true;
 			var myobj = {
 				appointment_id: $stateParams._id,
 			}
 			barber.cancelAppoint(myobj).then(function(response) {
+				$scope.loaderStart = false;
 				toastr.success('Your appointment is successfully canceled.');
 			})
 		}
 
 		$scope.managerequests = function() {
+			$scope.loaderStart = true;
 			barber.manageRequest().then(function(response) {
+				$scope.loaderStart = false;
 				$rootScope.shoprequest = response.data.result;
 			})
 		}
@@ -387,27 +400,35 @@ angular.module('BarbrDoApp')
 		}
 
 		$scope.rejectrequest = function(chair) {
+			$scope.loaderStart = true;
 			barber.declineRequest(chair).then(function(response) {
+				$scope.loaderStart = false;
 				toastr.success('Request is Declined successfully');
 				$scope.managerequests();
 			}).catch(function(result) {
+				$scope.loaderStart = false;
 				toastr.warning('Invalid request ! Chair split Required');
 			})
 		}
 
 
 		$scope.acceptrequest = function(chair) {
+			$scope.loaderStart = true;
 			barber.acceptRequest(chair).then(function(response) {
+				$scope.loaderStart = false;
 				toastr.success('Request is Accepted successfully');
 				$scope.managerequests();
 			}).catch(function(result) {
+				$scope.loaderStart = false;
 				toastr.warning('Invalid request ! Chair split Required');
 			})
 		}
 
 
 		$scope.shopdetails = function() {
+			$scope.loaderStart = true;
 			barber.RequesterDetail($stateParams.id).then(function(response) {
+				$scope.loaderStart = false;
 				$rootScope.shoprequesterpic = response.data.data[0];
 				$rootScope.shoprequester = response.data.data[0].shopinfo[0];
 			})
@@ -439,15 +460,18 @@ angular.module('BarbrDoApp')
 
 		$scope.addservice = function(service, price) {
 			if (price) {
+				$scope.loaderStart = true;
 				var obj = {
 					service_id: service._id,
 					name: service.name,
 					price: price
 				}
 				barber.addService(obj).then(function(response) {
+					$scope.loaderStart = false;
 					toastr.success("Service Added Successfully");
 					$state.go('manageservices');
 				}).catch(function(result) {
+					$scope.loaderStart = false;
 					toastr.error("This service is already added!! You cant add it again");
 				})
 			} else {
@@ -458,12 +482,14 @@ angular.module('BarbrDoApp')
 		}
 
 		$scope.editservices = function(service_id, price, name) {
+			$scope.loaderStart = true;
 			var obj = {
 				service_id: service_id,
 				price: price,
 				name: name
 			}
 			barber.editService(obj).then(function(response) {
+				$scope.loaderStart = false;
 				toastr.success("Service Edited Successfully");
 			})
 		}
@@ -492,7 +518,7 @@ angular.module('BarbrDoApp')
 		}
 
 		$scope.finacialcenter = function() {
-
+			$scope.loaderStart = true;
 			var myArray = [];
 			var date = new Date();
 			var ddate = new Date();
@@ -505,6 +531,7 @@ angular.module('BarbrDoApp')
 			}
 			barber.finacialCenter(obj)
 				.then(function(response) {
+					$scope.loaderStart = false;
 					$scope.sale = response.data.data;
 				})
 

@@ -82,9 +82,17 @@ const timeSlots = {
     ]
 }
 
+const currency = {
+    USD: "usd",
+}
+
+
 var obj = {
     messages: messages,
     distance: distance,
-    timeSlots: timeSlots
+    timeSlots: timeSlots,
+    currency: currency
 };
+
+
 module.exports = obj;

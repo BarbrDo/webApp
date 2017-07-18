@@ -12,7 +12,7 @@ let Shop = require('../models/shop');
 let Barber = require('../models/barber');
 let objectID = require('mongodb').ObjectID;
 let constantObj = require('./../constants.js');
-//let userTypes = require('../models/user_type');
+let chairRequest = require('../models/chair_request');
 let commonObj = require('../common/common');
 let mg = require('nodemailer-mailgun-transport');
 let fs = require('fs');
@@ -996,27 +996,36 @@ exports.removeChair = function(req, res) {
       } else {
         if (result[0].chairs[0].barber_id) {
           res.status(400).send({
-            msg: "You can't remove this chair.A Barber is already associated with this chair."
+            msg: "You can't remove this chair. A Barber is already associated with this chair."
           });
         } else {
-          Shop.update({
+            chairRequest.update({
             _id: req.body.shop_id,
             "chairs._id": req.body.chair_id
           }, {
             $set: {
-              "chairs.$.isActive": false,
-              "chairs.$.availability": "closed"
+              status: 'decline'
             }
-          }).exec(function(errInDelete, resultInDelete) {
-            if (errInDelete) {
-              res.status(400).send({
-                msg: 'Error in deleting chair.'
-              });
-            } else {
-              res.status(200).send({
-                msg: 'Chair successfully deleted.'
-              });
-            }
+          }).exec(function(err,requestCheck){
+            Shop.update({
+                _id: req.body.shop_id,
+                "chairs._id": req.body.chair_id
+              }, {
+                $set: {
+                  "chairs.$.isActive": false,
+                  "chairs.$.availability": "closed"
+                }
+              }).exec(function(errInDelete, resultInDelete) {
+                if (errInDelete) {
+                  res.status(400).send({
+                    msg: 'Error in deleting chair.'
+                  });
+                } else {
+                  res.status(200).send({
+                    msg: 'Chair successfully deleted.'
+                  });
+                }
+              })
           })
         }
       }

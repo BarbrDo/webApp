@@ -1,17 +1,7 @@
-let async = require('async');
 let User = require('../models/User');
-let moment = require('moment');
-let request = require('request');
-let mongoose = require('mongoose');
-let qs = require('querystring');
-let Shop = require('../models/shop');
-let Barber = require('../models/barber');
-let objectID = require('mongodb').ObjectID;
 let constantObj = require('./../constants.js');
-let commonObj = require('../common/common');
 let stripeToken = process.env.STRIPE
 let stripe = require('stripe')(stripeToken);
-let barberFile = require('./barber.js');
 let AppointmentController = require('./appointment.js')
 
 // let barberServices = require('./../controllers/barber');
@@ -75,6 +65,11 @@ exports.createCharges = function(req, res) {
                     AppointmentController.takeAppointment(req, res, function (req, res) {
 
                     })
+                }).catch(function(err){
+                    console.log("Stripe error",err);
+                    return res.status(400).send({
+                        msg: err.message
+                    })
                 });
             } else {
                 stripe.customers.create({
@@ -96,6 +91,11 @@ exports.createCharges = function(req, res) {
                     req.body.payment_detail = charge;
                     AppointmentController.takeAppointment(req, res, function (req, res) {
 
+                    })
+                }).catch(function(err){
+                    console.log("Stripe error",err);
+                    return res.status(400).send({
+                        msg: err.message
                     })
                 });
             }

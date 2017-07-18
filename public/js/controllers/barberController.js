@@ -533,6 +533,7 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.sale = response.data.data;
+					console.log(response)
 				})
 
 		}

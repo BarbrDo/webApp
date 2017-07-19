@@ -24,7 +24,8 @@
           <h3>{{barber.first_name}} {{barber.last_name}}</h3>
           <p >Location : <span>{{barber.location}}</span></p>
           <p >Member Since : <span>{{barber.created_date | date: dd/mm/yyyy}}</span></p>
-          <p> Rating : <span> <img src="images/rating.png" alt="" > </span> </p>
+          
+          <p> Rating : <span> <input-stars max="5" ng-model="ratingavg" ng-attr-readonly="true"></input-stars>  </span> </p>
         </div>
          <a class="book_nw" href="#" ng-click="requestbarber(barber)"> Request <i class="fa fa-paper-plane"></i> </a>
      </div>

@@ -91,8 +91,12 @@
 
                                     <span style="color:red ">Price maximum length exceeds</span>
                                 </div>
-                                <span ng-if="chairs.type=='monthly' || chairs.type=='weekly'" ng-hide="content == 'weekly' || chairs.type=='weekly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(chairs)" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair</button></span>
-                                <span ng-if="chairs.type!='monthly' || chairs.type!='weekly'" ng-hide="chairs.type=='monthly'"><button style="margin-top: 15px;" ng-click="saveWeeklyFair(content)" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair</button></span>
+                                <span ng-if="chairs.type=='monthly' || chairs.type=='weekly'" ng-hide="content == 'weekly' || chairs.type=='weekly'">
+                                    <button style="margin-top: 15px;" ng-click="saveWeeklyFair(chairs.type)" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair</button>
+                                </span>
+                                <span ng-if="chairs.type!='monthly' || chairs.type!='weekly'" ng-hide="chairs.type=='monthly'">
+                                    <button style="margin-top: 15px;" ng-click="saveWeeklyFair(content)" class="btn btn-primary" ng-disabled="secondForm.$invalid">Save Rent Fair</button>
+                                </span>
                             </form>
                         </div>
                     </div>
@@ -102,10 +106,10 @@
 
         <div class="col-md-12 alllnk"> <br><br><br>
             <h3 class="actn">Action to this Chair </h3>
-            <a href="" ng-click="markBooked()">Mark Booked</a>
-            <a href="" ng-click="postToAllBarbers()">Post to All</a>
-            <a href="" ui-sref="search_barber({id:chairId,name:chairName})">Search Barber</a>
-            <a href="" ng-click="deleteChair()">Remove Chair</a>
+            <a href="" ng-click="markBooked()">Mark chair as booked</a>
+            <a href="" ng-click="postToAllBarbers()">Post chair to all barber</a>
+            <a href="" ui-sref="search_barber({id:chairId,name:chairName})">Search barber</a>
+            <a href="" ng-click="deleteChair()">Remove chair</a>
         </div>
     </div>
 </div>

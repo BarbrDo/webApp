@@ -69,8 +69,12 @@ angular.module('BarbrDoApp')
     };
 
     $scope.check = function() {
-      console.log("fbauthe",$rootScope.user)
-      $rootScope.user = JSON.parse($window.localStorage.user);
+      console.log("here")
+      if($window.localStorage.user){
+        $rootScope.user = JSON.parse($window.localStorage.user);
+        // $scope.apply();
+        console.log("fbauthe",$rootScope.user)
+      }
     }
 
     $scope.authenticate = function(provider) {

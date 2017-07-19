@@ -1816,11 +1816,11 @@ td.action {
     width: 110px;}
 .perimg{margin: 0px 25px;}
 
-.perimgcontact img{height: 110px;
+/*.perimgcontact img{height: 110px;
     width: 510px;}
+*/
 
-
-.contactto{    padding: 40px;
+.contactto{    padding: 34px;
     text-align: center;
     background: red;
     padding-right: 10px;
@@ -1859,7 +1859,21 @@ td.action {
      background: #27499e
 }
 
-
+/*Tithi 19-7-2017*/
+.input-icon {
+    position: relative;
+}
+.input-icon .input-group-btn{
+    position: absolute; top: -4px; right: 28px;
+}
+.input-icon .btn {padding: 6px 10px; border: 0; border-radius: 0}
+.border-box{float: left;
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 15px; border-radius: 4px}
+.textarea-wrap {margin-top: 15px}
+.textarea-wrap .bkap{margin-left: 0;margin-top:0;border:0; margin-right: 15px;min-width: 100px;min-height: 44px; float: none;}
+/*Tithi 19-7-2017*/
 
 /* Media Queries Start over here */
 @media(max-width:1200px) {

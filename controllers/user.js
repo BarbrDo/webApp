@@ -1286,6 +1286,7 @@ exports.activate = function (req, res) {
             email: email,
             randomString: randomcode
         }).exec(function (err, user) {
+            console.log
             if (user) {
                 user.randomString = '';
                 user.is_active = true;
@@ -1293,7 +1294,7 @@ exports.activate = function (req, res) {
                 user.remark = "";
                 user.save(function (err) {
                     res.status(200).send({
-                        msg: "You have successfully activated Your Account !  Please Login again to continue."
+                        msg: "You have successfully activated your account"
                     })
                 });
             }else {

@@ -124,7 +124,7 @@ module.exports = function(app, express) {
     app.get('/api/v1/userprofile/:id', userController.getProfiles); //Get profile of any customer/barber/shop
     //app.get('/api/v1/timeslots',commonObj.viewTimeSlots); //Time slot to book an appointment
     //app.get('/api/v1/getUserType', userController.ensureAuthenticated, userController.getUserType);
-    app.post('/api/v1/contact', contactController.contactPost);
+    app.post('/api/v1/contact', contactController.contactBarbrDo);
     app.get('/api/v1/shops/barbers/:shop_id/:barber_id',shopController.getDataForBookNowPage)
 
     // Stripe Implementation API

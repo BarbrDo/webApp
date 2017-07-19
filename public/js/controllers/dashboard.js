@@ -76,7 +76,7 @@ angular.module('BarbrDoApp')
 
 			customer.barberAll(obj)
 				.then(function(response) {
-					console.log("all dsgsdgsdgsdfg", response.data.data[0])
+					console.log("all", response.data.data[0])
 					$scope.loaderStart = false;
 					$scope.barberdet = response.data.data[0];
 

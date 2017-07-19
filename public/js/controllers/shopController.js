@@ -17,7 +17,10 @@
 
      $scope.searchbarber = function() {
        $scope.loaderStart = true;
-       var passingObj = {};
+       var passingObj = {
+       'latitude': $rootScope.latLong.latitude,
+      'longitude': $rootScope.latLong.longitude
+       };
        if ($scope.myobj.search) {
          passingObj.search = $scope.myobj.search
        }
@@ -323,12 +326,25 @@
 
 
      $scope.saveWeeklyFair = function(type) {
+      console.log("this is type",type)
        $scope.loaderStart = true;
-       var obj = {
+       if($scope.myobj.priceValue)
+       {
+        var obj = {
          type: type,
          amount: $scope.myobj.priceValue,
          chair_id: $stateParams.id
+          }
        }
+       else
+       {
+         var obj = {
+         type: type.type,
+         amount:type.amount,
+         chair_id: $stateParams.id
+          }
+       }
+      
        shop.saveWeeklyFair(obj).then(function(response) {
          $scope.loaderStart = false;
          toastr.success(obj.type + '  ' + ' fair successfully saved.');

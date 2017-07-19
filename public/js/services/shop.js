@@ -19,14 +19,15 @@ angular.module('BarbrDoApp')
             return $http.post('/api/v1/forgot', data);
         },
       barbers: function(data) {
+        console.log(data)
         if (data.search) {
           return $http({
           method: 'get',
           url: '/api/v1/barbers/available?search=' + data.search,
           data: data,
          headers: {
-            'device_latitude': 30.538994,
-            'device_longitude': 75.955033
+            'device_latitude': data.latitude,
+            'device_longitude': data.longitude
           }
         });
         } else {
@@ -35,8 +36,8 @@ angular.module('BarbrDoApp')
           url: '/api/v1/barbers/available',
           data: data,
          headers: {
-            'device_latitude': 30.538994,
-            'device_longitude': 75.955033
+            'device_latitude': data.latitude,
+            'device_longitude': data.longitude
           }
         });
         }

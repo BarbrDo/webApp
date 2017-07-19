@@ -55,14 +55,22 @@ exports.loginPost = function(req, res, next) {
   });
 
   let errors = req.validationErrors();
-
+  
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",
       err: errors
     });
   }
-
+  let device_token = "";
+  let device_type = "";
+  if(req.headers.device_id){
+      let device_token = req.headers.device_id;
+  }
+  if(req.headers.device_type){
+     let device_type = req.headers.device_type; 
+  }
+  
   User.findOne({
     email: req.body.email
   }).exec(function(err, user) {
@@ -99,6 +107,8 @@ exports.loginPost = function(req, res, next) {
           _id: user._id
         }, {
           $set: {
+             "device_type":device_type,
+             "device_id":device_token,
             "is_active": false,
             'remark': "Subscription required."
           }
@@ -114,6 +124,20 @@ exports.loginPost = function(req, res, next) {
           }
         })
       } else {
+          User.update({
+          _id: user._id
+        }, {
+          $set: {
+             "device_type":device_type,
+             "device_id":device_token
+          }
+        }).exec(function(userErr, userUpdate) {
+          if (userErr) {
+            console.log(userErr)
+          } else {
+            console.log(userUpdate)
+          }
+        })
         res.status(200).send({
           token: generateToken(user),
           user: user.toJSON(),

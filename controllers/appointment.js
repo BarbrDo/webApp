@@ -567,6 +567,10 @@ exports.payafterappointment = function (req, res) {
                                     });
                                 }
                             })
+                        }).catch(function (err) {
+                            return res.status(400).send({
+                                msg: err.message
+                            })
                         });
                     }
                 }

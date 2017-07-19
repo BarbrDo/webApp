@@ -55,19 +55,19 @@ angular.module('BarbrDoApp')
         }
         }
 
-        setInterval(function () {
-        //           Below code is used to get location of the user
-        $scope.coords = geolocation.getLocation().then(function (data) {
-        $window.localStorage.lat = data.coords.latitude;
-                $window.localStorage.long = data.coords.longitude;
-                console.log($window.localStorage.lat, $window.localStorage.long)
-                return {
-                lat: data.coords.latitude,
-                        long: data.coords.longitude
-                };
-        });
-        }, 10000);
-                if ($window.localStorage.lat && $window.localStorage.long){
+//        setInterval(function () {
+//        //           Below code is used to get location of the user
+//        $scope.coords = geolocation.getLocation().then(function (data) {
+//        $window.localStorage.lat = data.coords.latitude;
+//                $window.localStorage.long = data.coords.longitude;
+//                console.log($window.localStorage.lat, $window.localStorage.long)
+//                return {
+//                lat: data.coords.latitude,
+//                        long: data.coords.longitude
+//                };
+//        });
+//        }, 10000);
+         if ($window.localStorage.lat && $window.localStorage.long){
         $rootScope.latLong = {
         'latitude': $window.localStorage.lat,
                 'longitude': $window.localStorage.long

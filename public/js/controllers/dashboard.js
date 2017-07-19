@@ -7,6 +7,7 @@ angular.module('BarbrDoApp')
 			'latitude': "30.538994",
 			'longitude': "75.955033"
 		}
+                console.log(latLong);
 		$scope.callFunctions = function() {
 			$scope.shoplist();
 			$scope.barberList();

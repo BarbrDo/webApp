@@ -1,0 +1,34 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="barbershopdashboard">Shop Home</a></li>
+     <li class="breadcrumb-item">Manage Chair</li>
+    <li class="breadcrumb-item active">Search Barber</li>
+</ol>
+<div class="wrapper" ng-init="searchbarber()">
+  <div class="block">
+  <span ng-if="barbers.length=='0'"><h3 align="center"> No Barbers </h3></span>
+    <div class="col-md-6 col-md-offset-10">
+    <span ng-if="barbers.length!=0">
+     <span class="glyphicon glyphicon-search" style="color:purple"></span>
+      <input ng-model="myobj.search" placeholder="Search Barber" ng-change="searchbarber()" /></div><br>
+    <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat = "barber in barbers">
+      <div class="barber toshop">
+        <div class="cont">
+          <div class="user_pic"> 
+              <span ng-if="profile.picture">
+                <img ng-src="{{imgPath + barber.picture}} "  ui-sref="requester-details({id:barber._id})">
+              </span>
+              <span ng-if="!profile.picture">
+                <img ng-src="images/no-image-found.jpg " class="profile " width="100 " height="100 ">
+          </div>
+          <h3>{{barber.first_name}} {{barber.last_name}}</h3>
+          <p >Location : <span>{{barber.location}}</span></p>
+          <p >Member Since : <span>{{barber.created_date | date: dd/mm/yyyy}}</span></p>
+          <p> Rating : <span> <img src="images/rating.png" alt="" > </span> </p>
+        </div>
+         <a class="book_nw" href="#" ng-click="requestbarber(barber)"> Request <i class="fa fa-paper-plane"></i> </a>
+     </div>
+    </div>  
+    </span>    
+  </div>
+</div>

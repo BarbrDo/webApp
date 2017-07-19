@@ -1,0 +1,83 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="barberDashboard">Barber Home</a></li>
+    <li class="breadcrumb-item "><a ui-sref="searchchair">Search Chair</a></li>
+    <li class="breadcrumb-item active">Request a Chair</li>
+</ol>
+<div class="wrapper" ng-init="shopchairdetail()">
+    <div class="block ">
+        <h2>Your Shop</h2>
+        <div class="selected_barber">
+            <div class="selected_user"> <img src="images/brbr_pic.png" alt=""> </div>
+            <div class="namertng">
+                <h3>{{particularShop.name}}</h3>
+                <div class="rtng"><input-stars max="5" ng-model="particularShop.ratings[0].score" ng-attr-readonly="true"></input-stars> </div>
+            </div>
+            <div class="locdis">
+                <p><span>Location :</span> {{particularShop.address}} ,{{particularShop.city}}, {{particularShop.state}}</p>
+                <!--  <p><span>Distance :</span> {{particularShop.distance | number}} Miles</p> -->
+            </div>
+        </div>
+    </div>
+    <div class="block block_bar">
+        <h2>Select Date</h2>
+        <div class="sldt">
+            <ul>
+                <li ng-repeat = "dates in selectDate" ng-click="setSelected(dates, $index)">
+                    <a href="" ng-class="{active: $index == selecteddd}">
+                        <p>{{dates| date: EEEE}}</p>
+                        <!-- <p>{{dates | date: dd}}</p> -->
+                    </a>
+                </li>
+                <li class="chairavail">
+                    <a href="#" class="clndrbtn"> <img src="images/clndr.png" alt=""> </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="block block_bar" ng-if="selectedDate">
+        <h2>Select Chair</h2>
+        <!-- <div class="row">
+            <div class="stsr">
+                <div class="col-md-4 avail_stsr" ng-repeat = "chair in particularShop.chairs" >
+                <input type="radio" class="select" name="chairs" ng-model="$parent.selectChair" ng-change="changeObject(chair)" ng-value="chair._id"><span class="chairname">{{chair.name}}</span>
+                <span ng-if="chair.type=='percentage'" class="split">Split - {{chair.barber_percentage}}/{{chair.shop_percentage}}</span>
+                <span ng-if="chair.type=='weekly' || chair.type=='monthly'" class="split">${{chair.amount}}/{{chair.type}}</span>
+                <span ng-if="chair.availability" class="split">{{chair.availability}}</span>
+                <span ng-if="chair.type!='percentage' && chair.type!='weekly' && chair.type!='monthly'" class="split">Empty</span>
+                </div>
+                   
+                </div> -->
+        <div class="col-md-4 col-sm-6 col-xs-12 fullb"  ng-repeat = "chair in chairsLoop">
+            <div class="barber toshop" >
+                <div class="cont">
+                    <div class="user_pic">
+                        <span ng-if="chair.barber_id"><img src="{{imgPath + chair.barber_info[0].picture}}" > </span> 
+                        <span ng-if="!chair.barber_id"><img src="images/chair@4x.png" > </span></div>
+                    <h3>{{chair.chair_name}}</h3>
+                    <p ng-if="chair.chair_type == 'percentage' "><span>Chair Split</span> : {{chair.shop_percentage}}/{{chair.barber_percentage}}</p>
+                    <p ng-if="chair.chair_type == 'weekly' || chair.chair_type == 'monthly'"><span>Chair Rental</span> : ${{chair.chair_amount}} / {{chair.chair_type}}</p>
+                    <p ng-if="chair.text == 'Non-barber'">Booked by Non-BarbrDo Barber</p>
+                    <p ng-if="chair.barber_id">{{chair.barber_info[0].first_name}} {{chair.barber_info[0].last_name}}</p>
+                </div>
+                <span ng-if="chair.text == 'Already Booked' "><a class="book_nw" style="background-color: #f21a2d;">{{chair.text}}</a> </span>
+                <span ng-if="chair.text == 'Non-barber' " ><a class="book_nw" style="background-color: #f21a2d;"> Non-Barber </a></span>
+                <span ng-if="chair.text == 'Request' "><a class="book_nw" href="#" ng-click="changeObject(chair);requestChair(particularShop._id,'barber')">{{chair.text}}</a> </span>
+                <span ng-if="chair.text == 'Pending' " class="pending">{{chair.text}}</span>
+                <!-- <span ng-if="chair.availability == 'booked' && chair.type!='self' && selectedDate>=chair.booking_start &&  selectedDate<=chair.booking_end"><a class="book_nw" style="background-color: #f21a2d;"> Already Booked</a></span>
+                <span ng-if="chair.availability == 'booked' && chair.type=='self'"><a class="book_nw" style="background-color: #f21a2d;"> Booked by a Non Barber</a></span>
+                <span  ng-else>
+                    <span  ng-if="chair.barberRequest!=0">
+                        <span ng-repeat="barberrequests in chair.barberRequest"  ng-if="barberrequests.barber_id==userid && barberrequests.requested_by=='barber'">{{barberrequests.booking_date}}
+                        <a class="book_nw"> Pending</a></span>
+                        <span ng-if="barberrequests.barber_id==userid && barberrequests.requested_by=='shop' && barberrequests.booking_date==selectedDate">
+                         <a href="#" class="" tooltip-placement="top" uib-tooltip="Accept"> <i class="fa fa-check "></i> </a> 
+                        <a href="#" class="" tooltip-placement="top" uib-tooltip="Reject" style="background-color: #fd3b3b;"> <i class="fa fa-close"></i> </a> </span>
+                        <span ng-else ng-show="$first">
+                         <a class="book_nw" ng-click="changeObject(chair);requestChair(particularShop._id,'barber')" href="#"> Request <i class="fa  fa-angle-right"></i> </a></span>
+                         </span>
+                    </span> -->
+            </div>
+        </div>  
+    </div>
+</div>

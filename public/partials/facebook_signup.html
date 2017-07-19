@@ -1,0 +1,106 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+    <div role="tabpanel" class="tab-pane contact-us col-md-10 col-md-offset-2" id="signup" style="margin-top: 0px; padding:0px;">
+                                <div ng-if="messagess.error" role="alert" class="alert alert-danger">
+                                    <div ng-repeat="err in messagess.error">
+                                        {{err[0].msg}}</div>
+                                </div>
+                                <form name="signUpForm">
+                                    <div class="type_selection">
+                                        <label>
+                                            <input type="radio" name="type" ng-model="currentUser.user_type" value="customer" ng-init="currentUser.user_type = 'customer'"> <span>Customer</span> </label>
+                                        <label>
+                                            <input type="radio" name="type" ng-model="currentUser.user_type" value="barber"> <span>Barber</span> </label>
+                                        <label>
+                                            <input type="radio" name="type" ng-model="currentUser.user_type" value="shop"> <span>Barber Shop</span> </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" name="firstname" id="email" class="form-control" ng-model="currentUser.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                                            <div class="form-control-placeholder">First Name</div>
+                                            <div class="validationError" ng-messages="signUpForm.firstname.$error" ng-show="
+                                                signUpForm.firstname.$error.required && signUpForm.firstname.$touched &&
+                                                        signUpForm.firstname.$invalid
+                                            " role="alert">
+                                                <span style="color:red" ng-message="required">First name is required</span>
+                                            </div>
+                                            <div class="validationError" ng-messages="signUpForm.firstname.$error" ng-show="
+                                                signUpForm.firstname.$error.pattern && (!signUpForm.firstname.$pristine || signUpForm.$submitted)" role="alert">
+                                                <span style="color:red" ng-message="pattern">Enter valid character </span>
+                                            </div>
+                                            <div class="validationError" ng-show="signUpForm.firstname.$error.maxlength && signUpForm.firstname.$dirty" ">
+
+                                            <span style="color:red ">First name maximum length exceeds</span>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+
+                                <div class="col-md-6 ">
+
+                                    <div class="form-group ">
+                                        <input type="text " name="lastname " id="email " class="form-control " ng-model="currentUser.last_name " ng-pattern="/^[a-z ,. '-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                                        <div class="form-control-placeholder">Last Name</div>
+
+                                        <div class="validationError" ng-messages="signUpForm.lastname.$error" ng-show="
+                                                signUpForm.lastname.$error.required && signUpForm.lastname.$touched &&
+                                                        signUpForm.lastname.$invalid
+                                            " role="alert">
+                                            <span style="color:red" ng-message="required">Last name is required</span>
+                                        </div>
+                                        <div class="validationError" ng-messages="signUpForm.lastname.$error" ng-show="
+                                                signUpForm.lastname.$error.pattern && (!signUpForm.lastname.$pristine || signUpForm.$submitted)" role="alert">
+                                            <span style="color:red" ng-message="pattern">Enter valid character </span>
+                                        </div>
+                                        <div class="validationError"  ng-show="signUpForm.lastname.$error.maxlength && signUpForm.lastname.$dirty"">
+
+                                            <span style="color:red">Last name maximum length exceeds</span>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" name="email" id="email" class="form-control" ng-model="currentUser.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" required/>
+                                        <div class="form-control-placeholder">Email Address</div>
+                                        <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="
+                                                signUpForm.email.$touched && signUpForm.email.$invalid && (!signUpForm.email.$pristine || signUpForm.$submitted)" role="alert">
+                                            <span style="color:red" ng-message="pattern" class="error-message">Email is not valid</span>
+                                        </div>
+                                        <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="signUpForm.email.$error.required &&
+                                                        signUpForm.email.$touched && signUpForm.email.$invalid" role="alert">
+                                            <span style="color:red" ng-message="required" class="error-message">Email is required</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="mobile_number" id="mobile_number" ng-model="currentUser.mobile_number" mask="(999) 999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="10" ng-maxlength="15" maxlength="15" required />
+                                        <div class="form-control-placeholder">Phone No.</div>
+                                        <p class="help-block">
+                                            <span style="color:red" ng-show="signUpForm.mobile_number.$touched && signUpForm.mobile_number.$invalid && signUpForm.mobile_number.$error.required">Mobile number is required.</span>
+                                            <span style="color:red" ng-show="signUpForm.mobile_number.$error.minlength">Phone have 10-digits minimum.</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div ng-if="currentUser.user_type == 'shop' || currentUser.user_type == 'barber'" class="form-group">
+                                        <input type="text" class="form-control" name="license_number" id="license_number" ng-model="currentUser.license_number" required />
+                                        <div class="form-control-placeholder">License No.</div>
+                                        <div class="validationError" ng-messages="signUpForm.license_number.$error" ng-show="
+                                                signUpForm.license_number.$error.required && signUpForm.license_number.$touched &&
+                                                        signUpForm.license_number.$invalid" role="alert">
+                                            <span style="color:red" ng-message="required">License number is required</span>
+                                        </div> 
+                                    </div>
+                                    
+                                </div>
+                                <button type="submit" class="sb_button" ng-click="signup()" ng-disabled="signUpForm.$invalid">Sign Up</button>
+                            </form>
+                        </div>
+        <br><br>
+

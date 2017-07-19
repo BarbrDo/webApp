@@ -1,0 +1,158 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item"><a ui-sref="barbers">Barbers</a></li>
+    <li class="breadcrumb-item active">View Barber Details</li>
+</ol>
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a ui-sref="barbersdetail({id:barberdetail._id})" style="color: black;font-size: 15px;">View Barber</a></li>
+        <li><a ui-sref="assoc" style="color: black;font-size: 15px;">Associated Shops-Chairs</a></li>
+        <li><a ui-sref="barber-appointments({id:barberdetail._id})"  style="color: black;font-size: 15px;">Appointments</a></li>
+    </ul>
+<br>
+<div class="container" ng-init="barberdetails()">
+    <div>
+        <div ng-if="messages" role="alert" class="alert alert-danger">
+            <div>
+                {{messages}}</div>
+        </div>
+        <div class="row list-group">
+            <div class="item  col-xs-12 col-lg-12">
+                <div class="thumbnail">
+                    <div class="caption">
+                        <h4 class="group inner list-group-item-heading" align="center"><b>
+                       <font color="blue"> {{barberdetail.first_name}} &nbsp; {{barberdetail.last_name}} </font></b></h4>
+                        <hr/>
+                        <div class="col-lg-6">
+                            <h4 class="group inner list-group-item-heading" align="center"><b>
+                        Shop Associated With</b></h4>
+                            <span ng-if="!barberdetail.name[0]"><br><br><br>Not Assiciated With Any Shop</span>
+                            <table class="table table-striped" ng-if="barberdetail.name[0]">
+                                <tr style="cursor:pointer" data-toggle="tooltip" title="Go on Shop Detail" ui-sref="shopdetail({id:barberdetail.shop[0].user_id})">
+                                    <td width="50%">
+                                        <h5>SHOPNAME </h5></td>
+                                    <td style="color: blue;"> {{barberdetail.name[0]}}</td>
+                                </tr>
+                                <!-- <tr data-toggle="tooltip" title="View Chairs in the Shop" style="cursor:pointer" ng-click="viewshop(barberdetail.shop[0])" ui-sref="chairs({id:barberdetail.shop[0].user_id})">
+                                    <td>
+                                        <h5>CHAIRS </h5></td>
+                                    <td> {{barberdetail.shop[0].chairs.length}}</td>
+                                </tr> -->
+                                <tr>
+                                    <td>
+                                        <h5>ADDRESS</h5></td>
+                                    <td> {{barberdetail.shop[0].address}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>CITY</h5></td>
+                                    <td> {{barberdetail.shop[0].city}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>STATE</h5></td>
+                                    <td> {{barberdetail.shop[0].state}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>ZIP</h5></td>
+                                    <td> {{barberdetail.shop[0].zip}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>LATTITUDE</h5></td>
+                                    <td> {{barberdetail.shop[0].latLong[0]}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>LONGITUDE</h5></td>
+                                    <td> {{barberdetail.shop[0].latLong[1]}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>RATINGS</h5></td>
+                                    <td> {{barberdetail.shop[0].ratings}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>PAYMENT METHODS</h5></td>
+                                    <td> {{barberdetail.shop[0].payment_methods}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>DATE OF CREATION</h5></td>
+                                    <td> {{barberdetail.shop[0].created_date | date: dd/mm/yyyy}} </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="  col-lg-6">
+                            <h4 class="group inner list-group-item-heading" align="center"><b>
+                        Barber Details </b></h4>
+                            <table class="table table-striped">
+                                <tr>
+                                    <td width="50%">
+                                        <h5>BARBER NAME</h5></td>
+                                    <td> {{barberdetail.first_name}} &nbsp; {{barberdetail.last_name}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5> MOBILE</h5></td>
+                                    <td> {{barberdetail.mobile_number}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5> EMAIL</h5></td>
+                                    <td> {{barberdetail.email}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>DATE OF CREATION</h5></td>
+                                    <td> {{barberdetail.created_date | date :dd/mm/yyyys}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>IS BARBER ACTIVE</h5></td>
+                                    <td> {{barberdetail.is_active}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>IS BARBER VERIFIED</h5></td>
+                                    <td> {{barberdetail.is_verified}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>IS BARBER DELETED</h5></td>
+                                    <td> {{barberdetail.is_deleted}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>GALLERY</h5></td>
+                                    <td> {{barberdetail.gallery}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>RATINGS</h5></td>
+                                    <td> {{barberdetail.ratings[0].score}}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>LAT LONG</h5></td>
+                                    <td>{{barberdetail.latLong}} </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 text-center">
+                                <br>
+                                <br>
+                                <button class="btn btn-success" ui-sref="edit_barbers({id:barberdetail._id})">Edit Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    <img src="/uploadedFiles/{{barberdetail.picture}}" style="margin-left: 30px;" height="20%" width="20%" />
+                </div>
+            </div>
+        </div>
+    </div>

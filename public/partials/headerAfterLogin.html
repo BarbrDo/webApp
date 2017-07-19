@@ -1,0 +1,27 @@
+<div>
+    <div class="afheader">
+        <div class="head">
+            <div class="log "> <a href="#"><img src="images/logo.png" alt=""> </a> </div>
+            <!--  <a href="#" class="bkap">Book Appointment</a> -->
+            <div class="right_links">
+                <ul>
+                    <li> 
+                        <a href="#" class="noti"> <!-- <img src="images/noti.png" alt="" > --> <!-- <span>8</span> --> </a> 
+                    </li>
+                    <li class="userimage dropdown"> 
+                        <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
+                            <span class="uimg"><img ng-src="{{imgPath + userInfo.picture}}"></span> 
+                            <span class="name">{{userInfo.first_name}} {{userInfo.last_name}}</span> 
+                            <span class="caret"></span> 
+                        </a>
+                        <ul class="dropdown-menu csdwon" aria-labelledby="dLabel">
+                            <li><a ui-sref="viewProfile">My Profile</a></li>
+                            <li><a href="" ng-click="logout()">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="nav_header"> <a href="#" class="bkap">Book Appointment</a> <a href="#" class="right_menu"><img src="images/hamburger.png" alt="" ></a> </div>
+    </div>
+</div>

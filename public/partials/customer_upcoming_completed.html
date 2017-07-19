@@ -1,0 +1,55 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item active">Customer Home</li>
+</ol>
+<div class="wrapper" ng-init="appointments()">
+  <div class="block">
+    <div class="tabs customtab">
+      <uib-tabset active="activeJustified" justified="true">
+        <uib-tab index="0" heading="Upcoming">
+        <span ng-if="data.data.upcoming==''"><h3 align="center"> No Upcoming appointments </h3></span>
+        <span ng-if="data.data.upcoming!=''">
+          <div class="all_cuts">
+            <div class="table-responsive">
+              <table class="table table-bordered" ng-table="tableParams">
+                <tr ng-repeat = "user in data.data.upcoming">
+                  <td data-title="'Picture'"><span><img src="{{imgPath+user.barber_id.picture}}" height="100" width="100"></span></td>
+                  <td data-title="'barber Name'">{{user.barber_id.first_name}} {{user.barber_id.last_name}}</td>
+                  <td data-title="'When'">{{user.appointment_date | date:yyyy:mm:dd}}</td>
+                  <td data-title="'Where'">{{user.shop_name}}</td>
+                  <td class="action" data-title="'Action'">
+                      <div class="ac_btn"> <a ui-sref="upcomingdetail({id:user._id})" class=""  tooltip-placement="top" uib-tooltip="View Detail" > <i class="fa fa-eye"></i> </a>
+                      <!-- <a href="#" class="" tooltip-placement="top" uib-tooltip="Confirmed" > <i class="fa fa-check "></i> </a> <a href="#" class="" tooltip-placement="top" uib-tooltip="Reschedule" > <i class="fa fa-repeat "></i> </a> --> </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </uib-tab>
+        </span>
+        <uib-tab index="1" heading="Completed">
+        <span ng-if="data.data.complete==''"><h3 align="center"> No Completed appointments </h3></span>
+        <span ng-if="data.data.complete!=''">
+          <div class="all_cuts">
+            <div class="table-responsive">
+              <table class="table table-bordered" ng-table="tableParams">
+                <tr ng-repeat = "users in data.data.complete">
+                  <td data-title="'Picture'">
+                    <span><img src="{{imgPath+users.barber_id.picture}}" width="100"></span>
+                  </td>
+                  <td data-title="'barber Name'">{{users.barber_id.first_name}} {{users.barber_id.last_name}}</td>
+                  <td data-title="'When'">{{users.appointment_date | date:yyyy:mm:dd}}</td>
+                  <td data-title="'Where'">{{users.shop_name}}</td>
+                  <td class="action" data-title="'Action'">
+                      <div class="ac_btn"> <a ui-sref="bookNow({shop_id:users.shop_id._id,barber_id:users.barber_id._id})" class=""  tooltip-placement="top" uib-tooltip="Re-book" > <i  class="fa fa-refresh"></i> </a>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          </span>
+        </uib-tab>
+      </uib-tabset>
+    </div>
+  </div>
+</div>

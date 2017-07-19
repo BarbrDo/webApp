@@ -1,0 +1,100 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item active">Barber Home</li>
+</ol>
+<div class="wrapper" ng-init="appointments()">
+  <div class="block">
+    <div class="tabs customtab">
+      <uib-tabset active="activeJustified" justified="true">
+        <uib-tab index="0" heading="Pending Request">
+        <span ng-if="pendingComplete.pending.length=='0'"><h3 align="center"> No Pending Request till now </h3></span>
+        <span ng-if="pendingComplete.pending.length!='0'">
+          <div class="all_cuts">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <tr>
+                  <th>Picture</th>
+                  <th>Name</th>
+                  <th>When</th>
+                  <th>Where</th>
+                  <th class="action">Action</th>
+                </tr>
+                <tr ng-repeat = "result in pendingComplete.pending">
+                  <td> <span class="lspic"> 
+                  <span ng-if="!result.customer_id.picture">
+                  <img src="/images/no-image-found.jpg"></span>
+                  <span ng-if="result.customer_id.picture"><img src="{{imgPath+result.customer_id.picture}}" alt=""> </span> 
+                  </span> </td>
+                  <td>{{result.customer_id.first_name}} {{result.customer_id.last_name}}</td>
+                  <td>{{result.appointment_date | date:'medium'}}</td>
+                  <td>{{result.shop_id.name}}</td>
+                  <td class="ac_btn"> <a ui-sref="appointmentDetailOfBarber({_id:result._id})" class=""  tooltip-placement="top" uib-tooltip="View Detail" > <i class="fa fa-eye"></i> </a> 
+                      <a href="#" data-toggle="modal" data-target="#confirm" class="" tooltip-placement="top" uib-tooltip="Confirmed" ng-click="barbertasks(result._id,result.customer_id)"> <i class="fa fa-check "></i> </a> <a ui-sref="rescheduleAppointment({_id:result._id})" class=""  tooltip-placement="top" uib-tooltip="Reschedule" > <i class="fa fa-repeat " ng-click="barbertasks(result._id,result.customer_id)"></i> </a> </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          </span>
+        </uib-tab>
+        <uib-tab index="1" heading="Confirmed">
+        <span ng-if="pendingComplete.booked.length=='0'"><h3 align="center"> No Confirmed Request till now </h3></span>
+        <span ng-if="pendingComplete.booked.length!='0'">
+          <div class="all_cuts">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <tr>
+                  <th>Picture</th>
+                  <th>Name</th>
+                  <th>When</th>
+                  <th>Where</th>
+                  <th class="action">Action</th>
+                </tr>
+                <tr ng-repeat = "results in pendingComplete.booked">
+                  <td> <span class="lspic"> 
+                  <span ng-if="!results.customer_id.picture">
+                  <img src="/images/no-image-found.jpg"></span>
+                   <span ng-if="results.customer_id.picture"><img src="{{imgPath+results.customer_id.picture}}" alt="No image"> </span></span> </td>
+                  <td>{{results.customer_id.first_name}} {{results.customer_id.last_name}}</td>
+                  <td>{{results.appointment_date | date:'medium'}}</td>
+                  <td>{{results.shop_id.name}}</td>
+                  <td class="ac_btn"> <a ui-sref="appointmentDetailOfBarber({_id:results._id})" class=""  tooltip-placement="top" uib-tooltip="View Detail" > <i class="fa fa-eye"></i> </a> <a  data-toggle="modal" data-target="#markcompleted" href="#"  class="" tooltip-placement="top" uib-tooltip="Mark as Complete" ng-click="barbertasks(results._id,results.customer_id)"> <i class="fa fa-check-square-o "></i> </a> </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          </span>
+        </uib-tab>
+      </uib-tabset>
+    </div>
+  </div>
+</div>
+
+<div class="modal " id="markcompleted" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p> Are you Sure !! You want to Complete Appointment</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="completeAppointment()">OK</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal " id="confirm" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p> Are you Sure !! You want to Confirm Appointment</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="confirmAppointment()">YES</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
+            </div>
+        </div>
+    </div>
+</div>

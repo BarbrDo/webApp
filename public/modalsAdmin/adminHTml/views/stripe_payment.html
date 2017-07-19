@@ -1,0 +1,62 @@
+<div ng-controller="paymentCtrl as vm">
+    <div ng-if="vm.loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+        <li class="breadcrumb-item active">Payment</li>
+    </ol>
+    <div class="panel" ng-init="pageChanged()">
+        <div class="panel-heading">
+            All Payments
+        </div>
+        <div class="panel-body" ng-init="vm.allPayments()">
+            <!-- RAHUL  CODE -->
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-6" style="margin-left: 300px;">
+                        </div>
+                        <div>
+                            <!-- <button type="button" class="btn btn-default" ng-click="vm.open('open','add')('lg')">Add Plan</button> -->
+                             <span class="glyphicon glyphicon-search" style="color:purple"></span>
+                            <input ng-model="myobj.search" placeholder="Search for..." ng-change="vm.allPayments()" />
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="font-size: 13px;" width="20%"><a ng-click="Sort('customerInfo[0].first_name')" class="cust_name" style="color: #ffffff;">Customer Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                                <th style="font-size: 13px;" width="20%"><a ng-click="Sort('barberInfo[0].first_name')" class="barb_name" style="color: #ffffff;">Barber Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                                 <th style="font-size: 13px;" width="20%"><a ng-click="Sort('shopInfo[0].name')" class="shop_name" style="color: #ffffff;">Shop Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                                <th style="font-size: 13px;"><a ng-click="Sort('appointment_date')" class="appointment_date" style="color: #ffffff;">Appointment Date<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                                <th style="font-size: 13px;"><a ng-click="Sort('totalAmount')" class="totalAmount" style="color: #ffffff;">Total Price<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                                <th style="font-size: 13px;"><a ng-click="Sort('payment_method')" class="payment_method" style="color: #ffffff;">Payment Method<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                                <th style="font-size: 13px;"><a ng-click="Sort('appointment_status')" class="appointment_status" style="color: #ffffff;">Appointment Status<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                                <th style="font-size: 13px;"><a ng-click="Sort('payment_status')" class="payment_status" style="color: #ffffff;">Payment Status<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="results in vm.payments.data| orderBy:sort:reverse ">
+                                <td>{{results.customerInfo[0].first_name}} {{results.customerInfo[0].last_name}}</td>
+                                <td>{{results.barberInfo[0].first_name}} {{results.barberInfo[0].last_name}}</td>
+                                <td>{{results.shopInfo[0].name}}</td>
+                                <td>{{results.appointment_date | date}}</td>
+                                <td>{{results.totalAmount}}</td>
+                                <td>{{results.payment_method}}</td>
+                                <td>{{results.appointment_status}}</td>
+                                <td>{{results.payment_status}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <div class="col-sm-6">
+                        <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="vm.allPayments()"></ul>
+                    </div>
+                    <br>
+                </div>
+                <!-- Modal -->
+            </div>
+        </div>
+    </div>
+</div>

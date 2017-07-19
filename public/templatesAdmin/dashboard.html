@@ -1,0 +1,85 @@
+<div class="clearfix panel" ng-init="countall()">
+	<div class="col-sm-4 clearfix">
+    	<a  ui-sref="barbers"><div class="panel-body dashboard-box clearfix">
+        	<div class="col-md-6 box-left"><i class="icon" ng-include="'svgAdmin/user.svg'"></i></div>
+        	<div class="col-md-6 box-right text-right"><label>Total Barbers</label><span>{{totalbarber.length}}</span></div>
+        </div></a>
+    </div>
+    <div class="col-sm-4 clearfix">
+    	<a  ui-sref="shops"><div class="panel-body dashboard-box clearfix">
+        	<div class="col-md-6 box-left"><i class="icon" ng-include="'svgAdmin/factory.svg'"></i></div>
+        	<div class="col-md-6 box-right text-right"><label>Total Shops</label><span>{{totalshop.length}}</span></div>
+        </div></a>
+    </div>
+    <div class="col-sm-4 clearfix">
+    	<a  ui-sref="customers"><div class="panel-body dashboard-box clearfix">
+        	<div class="col-md-6 box-left"><i class="icon" ng-include="'svgAdmin/users.svg'"></i></div>
+        	<div class="col-md-6 box-right text-right"><label>Total Customers</label><span>{{totalcustomer.length}}</span></div>
+        </div>
+    </div></a>
+</div>
+<div class="clearfix panel">
+	<div class="col-lg-8">
+    	<div class="clearfix panel-body">
+        	<canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-series="series" chart-options="options" chart-dataset-override="datasetOverride" chart-click="onClick"></canvas
+        </div>
+    </div>
+    </div>
+    <div class="col-lg-4">
+    	<div class="row">
+        	<div class="col-lg-12 col-sm-6 beacon-box">
+            	<div class="panel-body">
+                	<div class="title clearfix">
+                    	Appointments
+                        <a href="#" class=" text-right">Check new requests</a>
+                    </div>
+                    <div class="dashboard-strip clearfix">
+                    	<label class="col-xs-7">Total Appointments</label>
+                        <div class="col-xs-5 text-right">{{totalappointment.length}}</div>
+                    </div>
+                    <div class="dashboard-strip clearfix" >
+                    	<label class="col-xs-7">Completed</label>
+                        <div class="col-xs-5 text-right">17</div>
+                    </div>
+                    <div class="dashboard-strip clearfix">
+                    	<label class="col-xs-7">Confirmed</label>
+                        <div class="col-xs-5 text-right">8</div>
+                    </div>
+                    <div class="dashboard-strip clearfix">
+                    	<label class="col-xs-7">Payment Completed</label>
+                        <div class="col-xs-5 text-right">0</div>
+                    </div>
+                    <div class="dashboard-strip clearfix">
+                    	<label class="col-xs-7">Payment Pending s</label>
+                        <div class="col-xs-5 text-right">50</div>
+                    </div>
+                    <div class="dashboard-strip clearfix">
+                    	<label class="col-xs-7">Uncompleted requests</label>
+                        <div class="col-xs-5 text-right">20</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12 col-sm-6">
+            	<div class="panel-body">
+                	<div class="title clearfix">
+                    	Users
+                      
+                    </div>
+                    <div class="dashboard-strip clearfix">
+                    	<label class="col-xs-7">Total Users</label>
+                        <div class="col-xs-5 text-right">{{totalbarber.length + totalshop.length + totalcustomer.length}} </div>
+                    </div>
+                    <div class="dashboard-strip clearfix">
+                    	<label class="col-xs-7">Active Users</label>
+                        <div class="col-xs-5 text-right">12</div>
+                    </div>
+                    <div class="dashboard-strip clearfix">
+                    	<label class="col-xs-7">Inactive Users</label>
+                        <div class="col-xs-5 text-right">19</div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

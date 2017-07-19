@@ -1,0 +1,79 @@
+<!-- <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div> -->
+<div class="crumb"> <span>Reschedule Appointments</span> </div>
+<div class="wrapper">
+
+ <div class="block">
+        <h2>Contact Barber</h2>
+        
+
+
+      </div>
+
+
+  <div class="block appoint_block" ng-init="appointmentdet()">
+   <div class="row">
+     <div class="col-sm-3 col-md-2 col-xs-4">
+         <div class="contactto">
+       To :
+       </div>
+     </div>
+     <div class="col-sm-3 col-md-2 col-xs-3">
+         <div class="perimg">
+     <img src="/images/brbr_pic.png" alt=""> 
+     </div>
+     </div>
+      <div class="col-sm-3 col-md-6 col-xs-5" >
+          <div class="pername">
+      <h3 style="color: #1860f0;"> {{appointmentdetail.barber_name}} </h3>
+        <h4>Cut :  {{appointmentdetail.barber_id.ratings[0].appointment_date | date:medium}} @ {{appointmentdetail.barber_id.ratings[0].appointment_date | date :'h:mma'}} </h4> <div class="rtng"> <h4>Rating :
+                    <input-stars max="5" ng-model="ratingavg" ng-attr-readonly="true">
+                    </input-stars></h4>
+                </div>
+      </div>
+     </div>
+   </div>
+  </div>
+
+<div class="block higlght">
+    <h2>Move appointment back</h2>
+
+ <div class="row">
+     <div class="col-sm-12">
+     <div class="reschedappoint">
+         <span style="font-size: 20px;">Can we move appointment back by </span>
+         <span>  <div class="id_100">
+                                    <select ng-model="mySelect">
+                                        <option value="">00</option>
+                                        <option value="15">15</option>
+                                        <option value="30">30</option>
+                                        <option value="45">45</option>
+                                    </select>
+                                </div> </span>
+         <span style="font-size: 20px;" >min </span>
+     </div>
+                       
+        <textarea rows="4" cols="70" placeholder="Describe yourself here..." name="comments" class="reschedule_area">
+        </textarea>
+     </div>
+    <div class="reschedule">
+      <span ng-if="mySelect"><button class="bkap" ng-click="rescheduleappoint(mySelect,appointmentdetail)" data-toggle="modal" data-target="#reschedule">Send</button></span>
+      <span ng-if="!mySelect"><button class="bkap" ng-click="rescheduleappoint(mySelect,appointmentdetail)">Send</button></span>  
+    </div>
+  </div>
+</div>
+
+
+<div class="modal " id="reschedule" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p> Are you Sure !! You want to Reschedule the Appointment</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="timeReschedule()">YES</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
+            </div>
+        </div>
+    </div>
+</div>

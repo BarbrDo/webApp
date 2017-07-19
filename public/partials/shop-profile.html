@@ -1,0 +1,110 @@
+<div class="crumb"> <span>Shop Profile</span> </div>
+<div class="wrapper wrapper_cus">
+    <div class="block">
+        <div class="panel panel_1">
+            <div class="panel-body brdr_btm">
+                <div class="row">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-8">
+                            <div ng-if="profile.picture" class="profile_pic">
+                                <div class="profile_inner">
+                                    <img ng-src="{{imgPath + profile.picture}} " class="img-circle" width="304" height="236">
+                                </div>
+                                
+                            </div>
+                            <div ng-if="!profile.picture" class="profile_pic">
+                                <img ng-src="images/no-image-found.jpg " class="img-circle" width="304" height="236">
+                            </div>
+                    </div>
+                    <div class="col-lg-2">
+                        
+                        <a ui-sref="editShopProfile">
+                            <span align="right right_span" class="glyphicon glyphicon-pencil" style="font-size: 20px;float:right;"></span> </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-xs-6">
+                        <span class="top-head top-head1">
+                         Total Barbers : &nbsp;&nbsp;&nbsp; <span ng-if="totalbarbers=='0'">{{totalbarbers}} </span><span ng-if="totalbarbers!='0'"> <a ui-sref="barbershopdashboard" > {{totalbarbers}} </a> </span>
+                        </span>
+                    </div>
+                    <div class="col-sm-6 col-xs-6">
+                        <span class="top-head">
+                        Total Cuts : &nbsp;&nbsp;&nbsp;<span ng-if="profile.ratings.length=='0'">{{profile.ratings.length}}</span><span ng-if="profile.ratings.length!='0'"> <a ui-sref="shopGallery">{{profile.ratings.length}} </a> </span>
+                         </span>
+                    </div>
+                </div>
+                <h4><b> SHOP OWNER </b></h4><br>
+                <table class="table table-striped">
+                    <tr >
+                        <td>
+                            <h5>First Name </h5></td>
+                        <td> {{profile.first_name}}</td>
+                    </tr>
+                    <tr >
+                        <td>
+                            <h5>Last Name </h5></td>
+                        <td> {{profile.last_name}}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Email</h5></td>
+                        <td> {{profile.email}} </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Phone</h5></td>
+                        <td> {{profile.mobile_number}} </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Licence Number</h5></td>
+                        <td >{{shopinfo.license_number}} </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Member Since</h5></td>
+                        <td> {{profile.created_date | date: dd/mm/yyyy}} </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="wrapper" ng-init="shop()">
+    <div class="block">
+        <div class="panel panel_1">
+            <div class="panel-body">
+           <h4><b> SHOP DETAILS </b></h4><br>
+                <table class="table table-striped">
+                
+                    <tr>
+                        <td>
+                            <h5>Shop Name </h5></td>
+                        <td > {{shopinfo.name}}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Address </h5></td>
+                        <td > {{shopinfo.address}}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>City</h5></td>
+                        <td> {{shopinfo.city}} </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>State</h5></td>
+                        <td> {{shopinfo.state}} </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Zip</h5></td>
+                        <td> {{shopinfo.zip}} </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

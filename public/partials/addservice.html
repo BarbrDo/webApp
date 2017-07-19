@@ -1,0 +1,29 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<div class="crumb"> <span>Book Appointment</span> </div>
+<div class="wrapper">
+  <div class="block">
+    <h2>Create Service</h2>
+ <div class="pedetail contact-us cprofile">
+     <div class="table-responsive">
+        <table class="table table-striped table-bordered toth">
+         <tr>
+            <th>Service Name</th>
+            <th width="150px">Add Price</th>
+            <th width="150px" class="text-center" align="center" >Add to list</th>
+         </tr>
+        <tr ng-repeat="data in servicesData">
+            <td class="sname">{{data.name}}</td>
+            <td>
+              <input type="text" class="form-control" required value="$" ng-model="price" />
+            </td>
+            <td align="center">
+             <!-- <switch name="enabled" ng-model="enabled"  class="green"></switch> -->
+             <button class="adds_Btn" ng-click="addservice(data,price)">Save</button> 
+            </td>
+         </tr>
+        </table>
+     </div>
+</div>
+       <!-- <button class="adds_Btn" ng-click="addservice(data)">Save</button>  -->
+  </div>
+</div>

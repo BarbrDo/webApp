@@ -1,0 +1,271 @@
+<style type="text/css">
+{
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 15px;
+  font-variant: normal;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  background: #F6F9FC;
+  display: flex;
+  align-items: center;
+  min-height: 100%;
+}
+
+form {
+  width: 480px;
+  margin: 20px auto;
+}
+
+label {
+  position: relative;
+  color: #6A7C94;
+  font-weight: 400;
+  height: 48px;
+  line-height: 48px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+label > span {
+  float: left;
+}
+
+.field {
+  background: white;
+  box-sizing: border-box;
+  font-weight: 400;
+  border: 1px solid #CFD7DF;
+  border-radius: 24px;
+  color: #32315E;
+  outline: none;
+  height: 48px;
+  line-height: 48px;
+  padding: 0 20px;
+  cursor: text;
+  width: 76%;
+  float: right;
+}
+
+.field::-webkit-input-placeholder { color: #CFD7DF; }
+.field::-moz-placeholder { color: #CFD7DF; }
+.field:-ms-input-placeholder { color: #CFD7DF; }
+
+.field:focus,
+.field.StripeElement--focus {
+  border-color: #F99A52;
+}
+
+button {
+  float: left;
+  display: block;
+  background-image: linear-gradient(-180deg, #F8B563 0%, #F99A52 100%);
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.10), inset 0 -1px 0 0 #E57C45;
+  color: white;
+  border-radius: 24px;
+  border: 0;
+  margin-top: 20px;
+  font-size: 17px;
+  font-weight: 500;
+  width: 100%;
+  height: 48px;
+  line-height: 48px;
+  outline: none;
+}
+
+button:focus {
+  background: #EF8C41;
+}
+
+button:active {
+  background: #E17422;
+}
+
+.outcome {
+  float: left;
+  width: 100%;
+  padding-top: 8px;
+  min-height: 20px;
+  text-align: center;
+}
+
+.success, .error {
+  display: none;
+  font-size: 13px;
+}
+
+.success.visible, .error.visible {
+  display: inline;
+}
+
+.error {
+  color: #E4584C;
+}
+
+.success {
+  color: #F8B563;
+}
+
+.success .token {
+  font-weight: 500;
+  font-size: 13px;
+}
+</style>
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item "><a ui-sref="upcomingComplete">Customer Home</a></li>
+    <li class="breadcrumb-item "><a ui-sref="dashboard">Book Appointment</a></li>
+    <li class="breadcrumb-item active">Select time and Pay</li>
+</ol>
+<div class="wrapper" ng-init= "stripeCall()">
+    <div class="block">
+        <h2>Your Barber</h2>
+        <div class="selected_barber">
+            <div class="selected_user"> <img src="images/index.png" alt=""> </div>
+            <div class="namertng">
+                <h3>{{barberInformation[0].barberfname[0]}} {{barberInformation[0].barberlname[0]}}</h3>
+                <div class="rtng"><input-stars max="5" ng-model="ratingavg" ng-attr-readonly="true"></input-stars> </div>
+            </div>
+            <div class="locdis">
+                <p><span>Location :</span> {{barberInformation[0].shopName}}</p>
+                <p><span>Distance :</span> {{barberInformation[0].distance | number}} Miles</p>
+            </div>
+        </div>
+    </div>
+    <div class="block block_bar">
+        <h2>Select Date</h2>
+        <div class="sldt">
+            <ul>
+                <li>
+                    <a href="#" class="clndrbtn" ng-click="previousdates()"><span class="glyphicon glyphicon-chevron-left" style="margin-top: 20px;"></span> </a>
+                </li>
+                <li ng-repeat="dates in selectDate" ng-click="setSelected(dates,$index)">
+                    <a href="" ng-class="{active: $index == selecteddd}">
+                        {{dates | date: EEEE}}
+                        <!-- <p>{{dates | date: dd}}</p> -->
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="clndrbtn" ng-click="nextdates()"><span class="glyphicon glyphicon-chevron-right" style="margin-top: 20px;"></span> </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="block block_bar" ng-if="selectedDate">
+        <h2>Select Time</h2>
+        <div class="sttime">
+            <div class="slt">
+                <label>
+                    <input type="radio" name="a" value="morning" ng-model="checkTime"> Morning </label>
+                <label>
+                    <input type="radio" name="a" value="afternoon" ng-model="checkTime"> Afternoon </label>
+                <label>
+                    <input type="radio" name="a" value="evening" ng-model="checkTime"> Evening </label>
+            </div>
+            <div class="sttimes" ng-if="checkTime=='morning'">
+                <ul>
+                    <li ng-repeat="time in timeSlots.morning" ng-click="setSelectedTime(time.time,$index)" >
+                        <span ng-if="time.isAvailable==false"><button class="btn btn-default" ng-class="{active: $index == selectedTime}" disabled>{{time.time}} am</button></span>
+                        <span ng-if="time.isAvailable==true" class="timeselect">
+                        <button class="btn btn-danger" ng-class="{isselected:checkTime=='morning'}">{{time.time}} am</button> </span>
+                    </li>
+                </ul>
+            </div>
+            <div class="sttimes" ng-if="checkTime=='afternoon'">
+                <ul>
+                    <li ng-repeat="time in timeSlots.afternoon" ng-click="setSelectedTime(time.time,$index)">
+                        <span ng-if="time.isAvailable==false"><button class="btn btn-default" ng-class="{active: $index == selectedTime}" disabled>{{time.time}} pm</button></span>
+                        <span ng-if="time.isAvailable==true" class="timeselect">
+                        <button class="btn btn-danger" ng-class="{isselected:checkTime=='afternoon'}">{{time.time}} pm</button> </span>
+                </ul>
+            </div>
+            <div class="sttimes" ng-if="checkTime=='evening'">
+                <ul>
+                    <li ng-repeat="time in timeSlots.evening" ng-click="setSelectedTime(time.time,$index)">
+                        <span ng-if="time.isAvailable==false"><button class="btn btn-default" ng-class="{active: $index == selectedTime}" disabled>{{time.time}} pm</button></span>
+                        <span ng-if="time.isAvailable==true" class="timeselect">
+                        <button class="btn btn-danger" ng-class="{isselected:checkTime=='evening'}">{{time.time}} pm</button> </span>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="block block_bar" ng-if="choosedTime">
+        <h2>Select Service</h2>
+        <div class="row">
+        <span ng-if="barberservice==''"><h3 align="center">No services for this Barber </h3></span>
+        <span ng-if="barberservice!=''">
+            <div class="stsr">
+                <div class="col-md-6" ng-repeat="services in barberservice">
+                  <div class="funkyradio">
+                      <div  class="funkyradio-primary">
+                        <input type="checkbox" value="{{services._id}}" ng-click="cost(services.price,$event,services)" name="group" id="{{services._id}}"/>
+                        <label for="{{services._id}}">{{services.name}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ {{services.price}}</label>
+                      </div>
+                  </div>
+                   <!--  <label class="" for="{{services._id}}">
+                        <input type="checkbox" value="{{services._id}}" ng-click="cost(services.price,$event,services)" name="group" id="{{services._id}}" /> {{services.name}}>$ {{services.price}}</label> -->
+                    <!-- <input type="checkbox" data-checklist-model="selection.barberservice" data-checklist-value="services"> 
+                    {{services.name}}<span>${{services.price}}</span> -->
+                </div>
+            </div>
+             </span>
+        </div>
+        <div class="totl" ng-if="barberservice!=''">
+            <p>Total <span>${{annualCost}}</span></p>
+        </div>
+        <div class="row" ng-if="barberservice!=''">
+            <div class="col-md-6">
+                <button class="subtn" ng-click="payLater(barberdet.chair_amount,barberdet.chair_id,barberdet.chair_type,barberdet.chair_name,barberdet.chair_shop_percentage,barberdet.chair_barber_percentage)">Pay Later </button>
+            </div>
+            <div class="col-md-6">
+                <button class="subtn" data-toggle="modal" data-target="#myModal">Pay Now</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+  <label>
+    <span>Name</span>
+    <input name="cardholder-name" class="field" placeholder="Jane Doe" />
+  </label>
+  <label>
+    <span>Phone</span>
+    <input class="field" placeholder="(123) 456-7890" type="tel" />
+  </label>
+  <label>
+    <span>ZIP code</span>
+    <input name="address-zip" class="field" placeholder="94110" />
+  </label>
+  <label>
+    <span>Card</span>
+    <div id="card-element" class="field"></div>
+  </label>
+  <button type="submit">Pay ${{annualCost}}</button>
+  <div class="outcome">
+    <div class="error" role="alert"></div>
+    <div class="success">
+      Success! Your Stripe token is <span class="token"></span>
+    </div>
+  </div>
+</form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

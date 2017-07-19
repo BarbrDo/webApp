@@ -1,0 +1,59 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item"><a ui-sref="shops">Shops</a></li>
+    <li class="breadcrumb-item active">View Barber in Shops</li>
+</ol>
+<div class="panel" ng-init="shopdetail()">
+    <div class="panel-heading">
+        Barber Details
+    </div>
+    <div ng-if="messages" role="alert" class="alert alert-danger">
+            <div>
+                {{messages}}</div>
+        </div>
+    <div class="panel-body">
+        <!-- RAHUL  CODE -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-6" style="margin-left: 300px;">
+                    </div>
+                    <div>
+                        <span class="glyphicon glyphicon-search" style="color:purple"></span>
+                        <input ng-model="myobj.search" placeholder="Search for..." ng-change="shoppageChanged()" />
+                    </div>
+                </div>
+             
+
+<table class="table">
+    <thead>
+        <tr >
+         
+            <th style="font-size: 13px;color: #ffffff;"><a ng-click="Sort('barber_name')" class="barber_name"  style="color: #ffffff;">Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a>
+                </th>
+                <th style="font-size: 13px;"><a ng-click="Sort('shop_percentage')" class="shop_percentage" style="color: #ffffff;">Shop Percentage<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                <th style="font-size: 13px;"><a ng-click="Sort('barber_percentage')" class="barber_percentage" style="color: #ffffff;">Barber Percentage<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                <th style="font-size: 13px;"><a ng-click="Sort('name')" class="name" style="color: #ffffff;">Chair - name <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="barbersinshop in chairdetails | orderBy:sort:reverse" ng-hide="!barbersinshop.barber_id">
+                        <td>
+                            {{barbersinshop.barber_name}}
+                        </td>
+                        <td>
+                            {{barbersinshop.shop_percentage}}
+                        </td>
+                        <td>{{barbersinshop.barber_percentage}}
+                        </td>
+                        <td>{{barbersinshop.name}}
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

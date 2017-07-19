@@ -1,0 +1,155 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item"><a ui-sref="shops">Shops</a></li>
+    <li class="breadcrumb-item active">View Shop Detail</li>
+</ol>
+<div class="container" ng-init="shopdetail()">
+    <div>
+        <div ng-if="messages" role="alert" class="alert alert-danger">
+            <div>
+                {{messages}}</div>
+        </div>
+        <div class="row list-group">
+            <div class="item  col-xs-12 col-lg-12">
+                <div class="thumbnail">
+                    <div class="caption">
+                        <h4 class="group inner list-group-item-heading" align="center"><b>
+                       <font color="blue"> {{shopdetailview.shopinfo[0].name}} </font></b></h4>
+                        <hr/>
+                        <div class="col-lg-6">
+                            <h4 class="group inner list-group-item-heading" align="center"><b>
+                        Shop Details</b></h4>
+                            <table class="table table-striped">
+                                <tr ui-sref="barbdetail({id:shopdetailview.shopinfo[0].user_id})" style="cursor:pointer" data-toggle="tooltip" title="View Barbers in the Shop">
+                                    <td>
+                                        <h5>BARBERS </h5></td>
+                                    <td style="color: blue;"> {{totalbarbers.totalBarbers}}</td>
+                                </tr>
+                                <tr ui-sref="chairs({id:shopdetailview.shopinfo[0].user_id})" style="cursor:pointer" data-toggle="tooltip" title="View Chairs in the Shop">
+                                    <td>
+                                        <h5>CHAIRS </h5></td>
+                                    <td style="color: blue;"> {{shopdetailview.shopinfo[0].chairs.length}}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>ADDRESS</h5></td>
+                                    <td> {{shopdetailview.shopinfo[0].address}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>CITY</h5></td>
+                                    <td> {{shopdetailview.shopinfo[0].city}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>STATE</h5></td>
+                                    <td> {{shopdetailview.shopinfo[0].state}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>ZIP</h5></td>
+                                    <td> {{shopdetailview.shopinfo[0].zip}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>LATTITUDE</h5></td>
+                                    <td> {{shopdetailview.shopinfo[0].latLong[0]}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>LONGITUDE</h5></td>
+                                    <td> {{shopdetailview.shopinfo[0].latLong[1]}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>RATINGS</h5></td>
+                                    <td> {{shopdetailview.shopinfo[0].ratings}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>PAYMENT METHODS</h5></td>
+                                    <td> {{shopdetailview.shopinfo[0].payment_methods}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>DATE OF CREATION</h5></td>
+                                    <td> {{shopdetailview.shopinfo[0].created_date | date:dd/mm/yyyy }} </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="  col-lg-6">
+                            <h4 class="group inner list-group-item-heading" align="center"><b>
+                        Owner Details </b></h4>
+                            <table class="table table-striped">
+                                <tr>
+                                    <td>
+                                        <h5>SHOP OWNER</h5></td>
+                                    <td> {{shopdetailview.first_name}} {{shopdetailview.last_name}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5> MOBILE</h5></td>
+                                    <td> {{shopdetailview.mobile_number}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5> EMAIL</h5></td>
+                                    <td> {{shopdetailview.email}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>DATE OF CREATION</h5></td>
+                                    <td> {{shopdetailview.created_date | date:dd/mm/yyyy}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>IS OWNER ACTIVE</h5></td>
+                                    <td> {{shopdetailview.is_active}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>IS OWNER VERIFIED</h5></td>
+                                    <td> {{shopdetailview.is_verified}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>IS OWNER DELETED</h5></td>
+                                    <td> {{shopdetailview.is_deleted}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>GALLERY</h5></td>
+                                    <td> {{shopdetailview.gallery}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>RATINGS</h5></td>
+                                    <td> {{shopdetailview.ratings}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>LATTITUDE</h5></td>
+                                    <td> {{shopdetailview.latLong[0]}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>LONGITUDE</h5></td>
+                                    <td> {{shopdetailview.latLong[1]}} </td>
+                                </tr>
+                            </table>
+                        </div>
+                         <div class="clearfix"></div>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 text-center">
+                                <br>
+                                <br>
+                                <button class="btn btn-success" align="center" ui-sref="editshop({id:shopdetailview._id})">Edit Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    <img src="/uploadedFiles/{{shopdetailview.picture}}" style="margin-left: 30px;" height="20%" width="20%" />
+                </div>
+            </div>
+        </div>
+    </div>

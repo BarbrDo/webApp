@@ -1,0 +1,63 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item "><a ui-sref="upcomingComplete">Customer Home</a></li>
+    <li class="breadcrumb-item active">Book Appointment</li>
+</ol>
+  <div class="wrapper" ng-init="callFunctions()">
+    <div class="block">
+      <h2>Book Appointment</h2>
+      <!-- Sorting -->
+      <div class="sorting mbft">
+        <div class="view">
+          <label> View by </label>
+          <select name="singleSelect" id="singleSelect" ng-model="valueOfSelect" ng-init="valueOfSelect='shop'">
+            <option value="shop">Shop</option>
+            <option value="barber">Barber</option>
+          </select>
+        </div>
+        <div class="search" ng-if="valueOfSelect=='shop'">
+          <input type="text" placeholder="Search" ng-model="search.searchShop" ng-change="shoplist()">
+          <input type="submit" value="" name="" >
+        </div>
+        <div class="search" ng-if="valueOfSelect=='barber'">
+          <input type="text" placeholder="Search" ng-model="search.searchBarber" ng-change="barberList()">
+          <input type="submit" value="" name="" >
+        </div>
+      </div>
+      <!-- Sorting -->
+      <div class="org_content" ng-if="valueOfSelect=='barber'">
+        <div class="row">
+          <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat="data in barbers">
+            <div class="barber">
+              <div class="cont">
+                <div class="user_pic"> <img src="{{imgPath+data.picture}}" alt="" ng-click="barberInfopage(data._id)"></div>
+                <h3>{{data.first_name}} {{data.last_name}}</h3>
+                <p><span>Distance</span> : {{data.distance}} {{data.units}}</p>
+                <p><span>Location</span> : {{data.location}}</p>
+                <div class="rating"> <input-stars max="5" ng-model="ratingavg" ng-attr-readonly="true"></input-stars> </div>
+              </div>
+              <a ui-sref="bookNow({shop_id:data.shop_id,barber_id:data._id})" class="book_nw" > Book Now <i class="fa  fa-angle-right"></i> </a> </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- shop data -->
+    <div ng-if="valueOfSelect=='shop'">
+    <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat ="data in shops">
+            <div class="shop">
+             <img class="shopimage" src="images/shop.png" alt="" >
+              <div class="above">
+                <div class="dtll shpdtl">
+                  <div class="icon"><img src="images/barbr_icon.png" alt="" ></div>
+                  <p>{{data.barbers}}</p>
+                </div>
+                <div class="dtlr shpdtl">
+                  <div class="icon"><img src="images/miles.png" alt="" ></div>
+                  <p>{{data.distance|number:2}} {{data.units}}</p>
+                </div>
+                  <a href="" ng-click="allShopsHavingBarbers(data._id)" class="byshop" style="font-weight: normal"> {{data.name}} <i class="fa  fa-angle-right"></i> </a>
+              </div>
+            </div>
+          </div>
+        </div>
+  </div>

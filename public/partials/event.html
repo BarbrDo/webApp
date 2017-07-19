@@ -1,0 +1,69 @@
+<div ng-controller="EventCtrl">
+  <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+  <div class="crumb" ng-init="callFunctions()"> <span>Events</span> </div>
+   <div class="wrapper">
+    <div class="block">
+    <h1 class="custom-font"><a href ng-click="addAppointment();" title="Add New Appointment" align='right' class="btn btn-greensea mb-10">Add Appointment</a></h1>          
+      <div ui-calendar="uiConfig.calendar" class="span8 calendar" ng-model="eventSources"></div> 
+   </div>
+   </div>
+</div>
+
+<script type="text/ng-template" id="mymodel.html">
+  <div id="modal-tithi" class="task-failed task-sucess" >
+    <div class="modal-header googlemodal-header">
+        <button type="button" ng-click="close()" style="opacity:1" class="close" data-dismiss="modal" aria-hidden="true"> <span style="color:red; ">x</span> </button>
+        <div align="center"><h3 class="modal-title">Add Appointment </h3></div>
+    </div>
+    <div class="modal-body">
+        <form name="appointmentForm" id="appointmentForm" role="form" action="">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <label>Appointment Date<span class="asterisk">*</span></label>
+                        <div class="form-group" ng-class="{'has-error':(appointmentForm.apptDate.$touched && appointmentForm.apptDate.$invalid)}">
+        <!-- Date Picker -->
+                           <div class="col-md-6">
+                             <input type="text" class="form-control"  max-date="maxDate" uib-datepicker-popup="{{format}}" ng-model="startdate" is-open="popup1.opened"  ng-required="true" close-text="Close"  />
+                              <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open1()" ><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+                          </div>
+                            <label class="control-label errorColor" ng-show="appointmentForm.apptDate.$touched && appointmentForm.apptDate.$invalid">Appointment date is required.</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <label>Appointment Time <span class="asterisk">*</span></label>
+                        <div class="form-group" ng-class="{'has-error':(appointmentForm.apptTime.$touched && appointmentForm.apptTime.$invalid)}">
+                            <div uib-timepicker ng-model="mytime" name="apptTime" required hour-step="1" minute-step="1" show-meridian="true"  max="max" min="min"></div>
+                        </div>
+                        <label class="control-label errorColor" ng-show="appointmentForm.apptTime.$touched && appointmentForm.apptTime.$invalid">Appointment time is required.</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer googlemodal-header">
+        <button ng-disabled="appointmentForm.$invalid" class="btn btn-primary btn-sm" ng-click="saveAppointment(appointment,mytime)">Set Appointment</button>
+        <button class="btn btn-primary btn-sm" ng-click="close()">CLOSE</button>
+    </div>
+</div>
+
+
+
+</script>
+
+<style type="text/css">
+   .full button span {
+    background-color: limegreen;
+    border-radius: 32px;
+    color: black;
+  }
+  .partially button span {
+    background-color: orange;
+    border-radius: 32px;
+    color: black;
+  }
+</style>

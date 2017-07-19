@@ -1,0 +1,127 @@
+<div class="header" ng-controller="AdminCtrl">	
+	<div class="container-fluid">
+		<div class="headerlogo"><img src="imagesAdmin/logo.png" width="150px"/></div>
+		<div class="header-content clearfix">
+			<button class="navicon" ng-click="togglebodyclass()">
+				<i class="icon toggleicon ">
+					<?xml version="1.0" encoding="iso-8859-1"?>
+						<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 317.825 317.825" style="enable-background:new 0 0 317.825 317.825;" xml:space="preserve" width="22px" height="22px">
+						<g>
+							<g>
+								<g>
+									<g>
+										<path d="M301.934,143.021H15.891C7.119,143.021,0,150.14,0,158.912c0,8.772,7.119,15.891,15.891,15.891      h286.042c8.74,0,15.891-7.119,15.891-15.891C317.825,150.14,310.674,143.021,301.934,143.021z" fill="#FFFFFF"/>
+										<path d="M15.891,79.456h286.042c8.74,0,15.891-7.119,15.891-15.891s-7.151-15.891-15.891-15.891H15.891      C7.119,47.674,0,54.793,0,63.565S7.119,79.456,15.891,79.456z" fill="#FFFFFF"/>
+										<path d="M301.934,238.369H15.891C7.119,238.369,0,245.52,0,254.26c0,8.74,7.119,15.891,15.891,15.891      h286.042c8.74,0,15.891-7.151,15.891-15.891C317.825,245.52,310.674,238.369,301.934,238.369z" fill="#FFFFFF"/>
+									</g>
+								</g>
+							</g>
+						</g>
+						 
+						</svg>
+				</i>
+			</button>
+
+			<div class="header-right">
+				<div class="header-notification"  uib-dropdown>
+					<!-- <button uib-dropdown-toggle ng-disabled="disabled">
+						<i class="icon flaticon-ring"></i>
+						<span class="badge-count">4</span>
+					</button> -->
+					 <div class="dropdown-menu alertnotification" uib-dropdown-menu >
+					 	<ul  class="notification-list">
+					 		<li> <a href="javascript:void(0);">
+					 			<figure class="image"><img src="" alt="Company Logo" /></figure>
+					 			<div class="notification-info">
+                                  <div class="text">
+                                  	<span class="user-name">Jessica Caruso</span> accepted your invitation to join the team.
+                                  </div>
+                                  <span class="date">2 min ago</span>
+                                </div>
+                                </a>
+					 		</li>
+					 		<li> <a href="javascript:void(0);">
+					 			<figure class="image"><img src="" alt="Company Logo" /></figure>
+					 			<div class="notification-info">
+                                  <div class="text">
+                                  	<span class="user-name">Jessica Caruso</span> accepted your invitation to join the team.
+                                  </div>
+                                  <span class="date">2 min ago</span>
+                                </div>
+                                </a>
+					 		</li>
+					 		<li> <a href="javascript:void(0);">
+					 			<figure class="image"><img src="" alt="Company Logo" /></figure>
+					 			<div class="notification-info">
+                                  <div class="text">
+                                  	<span class="user-name">Jessica Caruso</span> accepted your invitation to join the team.
+                                  </div>
+                                  <span class="date">2 min ago</span>
+                                </div>
+                                </a>
+					 		</li>
+
+					 	</ul>
+					 	<div class="footer"> <a href="#">View all notifications</a></div>
+					 </div>
+				</div>
+				<div class="header-message"  uib-dropdown>
+					<!-- <button uib-dropdown-toggle ng-disabled="disabled">
+						<i class="icon flaticon-contact"></i>
+						<div class="badge-count">3</div>
+					</button> -->
+					<div class="dropdown-menu alertnotification" uib-dropdown-menu >
+					 	<ul  class="notification-list">
+					 		<li> <a href="javascript:void(0);">
+					 			<figure class="image"><img src="" alt="Company Logo" /></figure>
+					 			<div class="notification-info">
+                                  <div class="text">
+                                  	<span class="user-name">Jessica Caruso</span>Messaged You
+                                  </div>
+                                  <span class="date">2 min ago</span>
+                                </div>
+                                </a>
+					 		</li>
+					 		<li> <a href="javascript:void(0);">
+					 			<figure class="image"><img src="" alt="Company Logo" /></figure>
+					 			<div class="notification-info">
+                                  <div class="text">
+                                  	<span class="user-name">Jessica Caruso</span> Messaged You to join the team.
+                                  </div>
+                                  <span class="date">6 min ago</span>
+                                </div>
+                                </a>
+					 		</li>
+					 		<li> <a href="javascript:void(0);">
+					 			<figure class="image"><img src="" alt="Company Logo" /></figure>
+					 			<div class="notification-info">
+                                  <div class="text">
+                                  	<span class="user-name">Jessica Caruso</span>Messaged You to join the team.
+                                  </div>
+                                  <span class="date">10 min ago</span>
+                                </div>
+                                </a>
+					 		</li>
+
+					 	</ul>
+					 	<div class="footer"> <a href="#">View all Messages</a></div>
+					 </div>
+				</div>
+				<div class="header-user" uib-dropdown>
+					<div class="clearfix pointer"  uib-dropdown-toggle >
+						<figure class="userpic"><img src="imagesAdmin/userpic2.png" alt="user pic" /></figure>
+						<div class="username">Admin Admin
+						<i class="fa fa-caret-down dropdown-icon" aria-hidden="true"></i>
+						</div>
+					</div>
+					<div class="dropdown-menu profiledropdwn" uib-dropdown-menu >
+					 	<ul class="nav"> 
+					 		<li><a ng-click="logout()"><i class="flaticon-logout icon"></i>  Log Out</a></li>   
+					 	</ul>
+					 </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

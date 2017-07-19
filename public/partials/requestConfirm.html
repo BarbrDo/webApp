@@ -1,0 +1,76 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<div class="crumb"> 
+    <!--    <span>Book Appointment</span> -->
+</div>
+<div class="wrapper">
+    <div class="block">
+        <h2>Your Request for Chair</h2>
+        <div class="selected_barber chairdet">
+            <img src="images/clndr.png" alt="">
+            <div class="namertng">
+                <h2>{{selectedDate | date:'EEEE'}},{{selectedDate |  date:'MMMM dd'}} </h2>
+            </div>
+            
+        </div>
+    </div>
+    <div class="block higlght appointbooked">
+        <h2>Barber Shop Address</h2>
+        <div class="row">
+            <div class="col-md-4 col-sm-6">
+                <p> 
+                 <span>{{particularShop.name}}</span>
+                <span>{{particularShop.address}}</span>
+                <span>{{particularShop.city}} , {{particularShop.state}} </span>
+                </p> 
+            </div>
+            <!-- <div class="col-md-4 col-sm-6">
+              <p><i class="fa  fa-clock-o"> </i> 9:00 AM</p>
+            </div> -->
+            <!-- <div class="col-md-4"> <a href="#" class="cmbtn">Add to Calendar</a> </div> -->
+        </div>
+    </div>
+    <div class="block higlght appointbooked">
+        <h2>Chair Details </h2>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="imagechair"><img src="/images/2.png" alt="chair"> </div>
+            </div>
+            <div class="col-md-10">
+                <div class="details">
+                    <p>  <span> {{chair.name}}</span> </p><br>
+                    <p ng-if="chair.type=='percentage'"> Split :<span> {{chair.shop_percentage}} / {{chair.barber_percentage}} </span> </p>
+                    <p ng-if="chair.type=='monthly' || chair.type=='weekly'">  Amount  : <span> {{chair.amount}} </span> </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div >
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <button class="subtn" data-toggle="modal" data-target="#contactshop" ><i class="fa fa-envelope"></i> Contact Shop</button>
+            </div>
+        </div>
+    </div>
+   
+       <div class="modal " id="contactshop" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #52ebfa;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Contact Shop</h4>
+                </div>
+                <div class="modal-body">
+                <h3> Shop Address</h3>
+                    <p> {{particularShop.name}}</p>
+                {{particularShop.address}}<br>
+                {{particularShop.city}} , {{particularShop.state}}<br>
+                <button class="subtn"><i class="fa fa-phone"></i> Contact Shop : &nbsp;&nbsp;&nbsp; 9876543211</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" >OK</button>
+                </div>
+            </div>
+        </div>
+    </div> 

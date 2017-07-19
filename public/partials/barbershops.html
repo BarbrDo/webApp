@@ -1,0 +1,306 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<div class="bs-example">
+    <div class="panel-group" id="accordion">
+        
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" class="disabled">Shop List</a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="container">
+                        <ul class="nav nav-tabs">
+                        <li class="active"><a href="/barbershops">View Shops</a></li>
+                        <li><a href="/barbers">View Barbers</a></li>
+                        </ul>
+                    </div>
+
+                    <font color="green">
+                    <h2 align="center"><font color="orange">SHOPS</h2></font>
+                    <br><br> 
+                    </font>    
+                    <div  class="row list-group">
+                        <div class="item  col-xs-4 col-lg-3" ng-repeat="shop in shops">
+                            <div class="thumbnail">
+                                <img class="group list-group-image" src="/images/shop.jpg"  />
+                                <div class="caption">
+                                    <h4 class="group inner list-group-item-heading" align="center"><b>
+                                    <font color="red"> {{shop.shopName}} </font></b></h4>
+                                    <hr/>
+                                    <table>
+                                    <tr>
+                                        <td><h5>NO. OF BARBERS </h5></td>
+                                        <td>&nbsp;&nbsp;&nbsp;  {{shop.barbers}}</td>
+                                    </tr>
+                                     <tr>
+                                        <td><h5>DISTANCE</h5></td>
+                                        <td>{{shop.distance}}</td>
+                                    </tr>
+                                    </table>
+                                         
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-6" align="right">
+                                            <button class="btn btn-success" ng-click="shopdetails(shop)" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Details</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" class="disabled">Barber's List</a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+                <div class="panel-body">
+                   <font color="green">
+                   <h2 align="center"><font color="orange">SHOP DETAILS</h2></font>
+                   <br><br> 
+                   </font>    
+                   <div  class="row list-group">
+                        <div class="item  col-xs-8 col-lg-8" style="margin-left: 250px;">
+                            <div class="thumbnail">
+                                <img class="group list-group-image" src="/images/shop.jpg"  height="500px" />
+                                    <div class="caption" >
+                                         <h3 class="group inner list-group-item-heading">
+                                         <table>
+                                         <tr>
+                                         <td>
+                                         <img   src="/images/maps.png" height="80px" ></td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                         <b><td >
+                                        <font color="blue" > {{shopname.shopName}} <br></h3>
+                                         <h4>{{shopname.address}}<br>
+                                        {{shopname.city}}<br>
+                                        {{shopname.state}} </font></b></h4>
+                                        </td>
+                                        </tr>
+                                        </table>
+                                        <hr size="2" width="100%" noshade style="color:#000000"/>
+                                        <table ng-repeat="barber in barbers" ng-hide="!barber.first_name">
+                                        <tr >
+                                        <td> <a ng-click="barberprof(barber)"><img  src="/images/people.jpeg"  ></a></td>
+                                        <td>
+                                        <table >
+                                            <tr>
+                                          <td> <h4 ><a ng-click="barberprof(barber)"><font color="red">
+                                                     {{barber.first_name}} &nbsp; {{barber.last_name}}</h4></a> 
+                                           </td>
+                                        </tr>
+                                        <tr><td><font size="2px"> MEMBER SINCE : {{barber.created_date}} </font> </td></tr>
+                                        <tr><td><font size="2px"> RATINGS :  {{barber.ratings[0].score}}</font> </td></tr>
+                                            <tr><td><font size="2px"> LOCATION : {{shopname.shopName}} </font> </td></tr>
+                                        </table>
+                                        </td>
+                                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                        <td><BUTTON ng-click="appointment(barber)"  data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Book</BUTTON></td>
+                                        </font>
+                                        </tr>
+                                        </table>
+                                    </div>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+      
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" class="disabled">Time Slots</a>
+                </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse">
+                <div class="panel-body">
+                   
+
+<table style="margin-left: 30px;">
+    <tr>
+        <td ><img src="/images/people.jpeg"></td>
+        
+        <td >
+        <table>
+        <tr><td>
+        <h3 style="margin-left: 100px;"><font color="red">{{barber.first_name}} &nbsp; {{barber.last_name}}
+        </td></tr>
+        <tr><td><h6 style="margin-left: 100px;"> MEMBER SINCE : {{barber.created_date}}  </td></tr>
+        <tr><td><h6 style="margin-left: 100px;"> RATINGS :  {{barber.ratings[0].score}} </td></tr>
+         </table>                   
+        </td>
+    </tr>
+</table>
+<hr style="border: 1px solid #f00" />
+<hr style="border: 1px solid #f00" />
+
+<table>
+<tr>
+<h3>Select Any Time Slot   </h3>
+<td> 
+<input type="radio" name="content" id="radio1" ng-model="content" value="radio1" style="margin-left: 300px;"/>
+            <label for="radio1"><font color="green"><h4>Morning</h4></font></label></td>
+<td ><input type="radio" name="content" id="radio2" ng-model="content" value="radio2" style="margin-left: 300px;" />
+            <label for="radio2"><font color="green"><h4>Afternoon</h4></label></font></td>
+<td> <input type="radio" name="content" id="radio3" ng-model="content" value="radio3" style="margin-left: 300px;"/>
+            <label for="radio3"><font color="green"><h4>Evening</h4></font></label></td>
+</tr>
+</table>
+<div ng-show="content=='radio1'" ng-repeat="t in time.morning" style="margin-left: 320px;">
+<a  data-toggle="collapse" data-parent="#accordion" href="#collapseFour" ng-click="timeslot(t)">{{t}}</a>
+</div>
+<div ng-show="content=='radio2'" ng-repeat="t in time.afternoon" style="margin-left: 710px;">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapseFour" ng-click="timeslot(t)">{{t}}</a>
+</div>
+<div ng-show="content=='radio3'" ng-repeat="t in time.evening" style="margin-left: 1115px;">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapseFour" ng-click="timeslot(t)">{{t}}</a>
+</div>
+
+
+
+
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour" class="disabled">Barber Sevices</a>
+                </h4>
+            </div>
+            <div id="collapseFour" class="panel-collapse collapse">
+                <div class="panel-body">
+                   <table style="margin-left: 30px;">
+    <tr>
+        <td ><img src="/images/people.jpeg"></td>
+        
+        <td >
+        <table>
+        <tr><td>
+        <h3 style="margin-left: 100px;"><font color="red">{{barber.first_name}} &nbsp; {{barber.last_name}}
+        </td></tr>
+        <tr><td><h6 style="margin-left: 100px;"> {{shopname.shopName}}  </td></tr>
+        <tr><td><h6 style="margin-left: 100px;"> {{shopname.address}},{{shopname.city}} </td>
+        </tr>
+         </table>                   
+        </td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>
+                    <table >
+                        <tr>
+                        <td ><h2 ><font color="green"> {{selectedtime}} </td></font></h2>
+                        </tr>
+                        <tr>
+                        <td ><h2 ><font color="green"> May 12 </td></font></h2>
+                        </tr>
+                    </table>
+    </tr>
+</table>
+<div class="alert alert-info" role="alert">
+    <h3 align="center">Services </h3>
+</div>
+
+
+
+<div class="container" ng-repeat="services in barberservice" style="margin-left: 50px;">
+   
+<label class="checkbox" for="{{services._id}}">
+
+        <input type="checkbox" value="{{services._id}}" ng-click="cost(services.price,$event,services)" name="group" id="{{services._id}}"   />
+      {{services.name}} <font style="margin-left: 400px;">$ {{services.price}} </font>
+                
+</div>
+
+<div class="alert alert-info" role="alert">
+    <div class="row"><h4>
+        <a class="col-xs-3">TAX</a>
+        <a  class="col-xs-3">TOTAL</a>
+        
+        <a data-toggle="collapse"  class="col-xs-3" ng-click="toggle('collapseFour', 'collapseFive')" >PAY NOW</a>
+        <a data-toggle="collapse" class="col-xs-3" ng-click="toggle('collapseFour', 'collapseFive')" >PAY LATER</a>
+    </div>
+    <div class="row">
+    <div class="col-md-3"> 4 % </div>
+    <div class="col-md-3"> {{annualCost}}</div>
+    <div class="col-md-3"><span class="glyphicon glyphicon-ok" ></span></div>
+    <div class="col-md-3"><span class="glyphicon glyphicon-paste" ></span></div>
+</div>
+    
+</div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion"  data-target="#collapseFive"  class="disabled" >Confirm Appointment and Pay</a>
+                </h4>
+            </div>
+            <div id="collapseFive" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <img src="/images/confirm.jpeg" style="margin-left: 520px;">
+<h3 align="center"># PENDING CONFIRMATION # </h3>
+<h2 align="center" style="color:red;">Saturday May 9<br>at {{selectedtime}} </h2>
+<hr style="border: 1px solid black; width: 100%">
+
+ <table align="center">
+                 <tr>
+                 <td>
+                <img   src="/images/maps.png" height="60px" ></td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                       <b><td >
+                       <font color="blue" ><h4> {{shopname.shopName}} <br><br>
+                   
+                        {{shopname.address}}<br>
+                        {{shopname.city}}<br>
+                        {{shopname.state}} </font></b></h4>
+                       
+                    </td>
+                    </tr>
+</table>
+<hr style="border: 1px solid black; width: 100%">
+<div class="alert alert-info" role="alert" ng-repeat="sel in selected" ng-hide="!sel._id">
+    {{sel.name}} <font style="margin-left: 400px;">$ {{sel.price}} </font>
+</div>
+
+ <table style="margin-left: 100px;">
+                                             
+                    <tr >
+                    <td> <img  src="/images/people.jpeg"  ></a></td>
+                    <td>
+                        <table >
+                            <tr>
+                          <td> <h4 ><font color="red">
+                                     {{barber.first_name}} &nbsp; {{barber.last_name}}</h4></a> 
+                           </td>
+                        </tr>
+                        <tr><td><font size="2px"> CUT : 5/10/2107 </font> </td></tr>
+                        <tr><td><font size="2px"> RATINGS :  {{barber.ratings[0].score}}</font> </td></tr>
+                        </table>
+                    </td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>
+                    <table >
+                        <tr>
+                        <td ><h2 ><font color="green"> TOTAL DUE </td></font></h2>
+                        </tr>
+                        <tr>
+                        <td ><h2 ><font color="green"> {{annualCost}} </td></font></h2>
+                        </tr>
+                    </table>
+                    </td>
+                    </font>
+                    </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+</div>
+

@@ -1,0 +1,40 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="barberDashboard">Barber Home</a></li>
+    <li class="breadcrumb-item active">Search Chair</li>
+</ol>
+  <div class="wrapper" ng-init="allShopsHavingChairs()">
+    <div class="block">
+      <h2>Search Chair</h2>
+      <!-- Sorting -->
+      <div class="sorting mbft pad10">
+        <div class="search">
+          <input type="text" placeholder="Search" ng-model="search.searchChair" ng-change="allShopsHavingChairs()">
+          <input type="submit" value="" name="" >
+        </div>
+      </div>
+      <!-- Sorting -->
+      <div class="org_content">
+        <div class="row">
+          <!-- By shop -->
+          <span ng-if="shopChairs.length==0"> <h3 align="center"> No Chairs are there </h3></span>
+          <span ng-if="shopChairs.length!=0">
+          <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat = "result in shopChairs">
+            <div class="shop"> <img class="shopimage" src="images/shop.png" alt="" >
+              <div class="above">
+                <div class="dtll shpdtl">
+                  <div class="icon"><img src="images/barbr_icon.png" alt="" ></div>
+                  <p>{{result.chair_barber.length}}</p>
+                </div>
+                <div class="dtlr shpdtl">
+                  <div class="icon"><img src="images/miles.png" alt="" ></div>
+                  <p>{{result._id.distance | number : 2}} miles</p>
+                </div>
+                <a ui-sref="shopChairs({_id:result._id._id})" class="byshop" >{{result._id.name}}<i class="fa  fa-angle-right"></i> </a> </div>
+            </div>
+          </div>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>

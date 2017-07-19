@@ -1,0 +1,132 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item"><a ui-sref="customers">Customers</a></li>
+    <li class="breadcrumb-item active">View Customers's Appointments</li>
+</ol>
+<div class="panel" ng-init="viewappointment()">
+    <div ng-if="messages" role="alert" class="alert alert-danger">
+            <div>
+                {{messages}}</div>
+        </div>
+    <div class="panel-heading">
+        {{custname}}'s Appointments
+    </div>
+    <div class="panel-body">
+        <!-- RAHUL  CODE -->
+        <ul class="nav nav-pills left" style="margin-left: 500px;">
+            <li class="dropdown active span8">
+                <a class="dropdown-toggle" data-toggle="dropdown" style="background-color: #000000;">
+             Upcoming Appointments<span class="caret"></span></a>
+                <ul ID="divNewNotifications" class="dropdown-menu">
+                    <li><a ng-click="showme=true">Completed</a></li>
+                    <li><a ng-click="showme=false">Upcoming</a></li>
+                </ul>
+            </li>
+        </ul>
+        <br>
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-6" style="margin-left: 300px;">
+                    </div>
+                    <div>
+                        <span class="glyphicon glyphicon-search" style="color:purple"></span>
+                        <input ng-model="query[queryBy]" placeholder="Search for..." ng-change="shoppageChanged()" />
+                    </div>
+                </div>
+                <span ng-show="showme">
+<table class="table" >
+    <thead>
+        <tr >
+            <th style="font-size: 15px;" ><a ng-click="Sort('customer_name')" class="name" style="color: #ffffff;" >Customer<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a>
+                </th>
+                <th style="font-size: 15px;"><a ng-click="Sort('barber_name')" class="name" style="color: #ffffff;">Barber<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+                <th style="font-size: 15px;"><a ng-click="Sort('shop_name')" class="name" style="color: #ffffff;">Shop<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+                <th style="font-size: 15px;"><a ng-click="Sort('payment_status')" class="name" style="color: #ffffff;">Payment Status<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+                <th style="font-size: 15px;"><a ng-click="Sort('appointment_status')" class="name" style="color: #ffffff;">Appointment Status<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+                <th style="font-size: 15px;"><a ng-click="Sort('appointment_date')" class="name" style="color: #ffffff;">Appointment Date<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+                <th style="font-size: 15px;">View Detail</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="appoint in complete | orderBy:sort:reverse | filter:query">
+                        <td><a data-toggle="tooltip" title="View Details" ui-sref="customer_detail({id:appoint.customer_id._id})" ng-click="custdetails(appoint.customer_id)">
+            {{appoint.customer_name}} </a>
+                        </td>
+                        <td><a data-toggle="tooltip" title="View Details" ui-sref="barbersdetail({id:appoint.barber_id._id})" >
+            {{appoint.barber_name}}</a>
+                        </td>
+                        <td><a data-toggle="tooltip" title="View Details" ui-sref="shopdetail({id:appoint.shop_id.user_id})" >
+            {{appoint.shop_name}}</a>
+                        </td>
+                        <td>
+                            {{appoint.payment_status}}
+                        </td>
+                        <td>
+                            {{appoint.appointment_status}}
+                        </td>
+                        <td>
+                            {{appoint.appointment_date | date : dd/mm/yyyy}}
+                        </td>
+                        <td>
+                            <a type="submit" ui-sref="detailed_appointment" ng-click="appointdetail(appoint)" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+                </span>
+                <span ng-hide="showme">
+<table class="table" >
+    <thead>
+        <tr >
+            <th style="font-size: 15px;" ><a ng-click="Sort('customer_name')" class="name" style="color: #ffffff;" >Customer<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a>
+                </th>
+                <th style="font-size: 15px;"><a ng-click="Sort('barber_name')" class="name" style="color: #ffffff;">Barber<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+                <th style="font-size: 15px;"><a ng-click="Sort('shop_name')" class="name" style="color: #ffffff;">Shop<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+                <th style="font-size: 15px;"><a ng-click="Sort('payment_status')" class="name" style="color: #ffffff;">Payment Status<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+                <th style="font-size: 15px;"><a ng-click="Sort('appointment_status')" class="name" style="color: #ffffff;">Appointment Status<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+                <th style="font-size: 15px;"><a ng-click="Sort('appointment_date')" class="name" style="color: #ffffff;">Appointment Date<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; color: black;"></span></a></th>
+                <th style="font-size: 15px;">View Detail</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="appoint in upcoming | orderBy:sort:reverse | filter:query">
+                        <td><a data-toggle="tooltip" title="View Details" ui-sref="customer_detail({id:appoint.customer_id._id})" ng-click="custdetails(appoint.customer_id)">
+            {{appoint.customer_name}}</a>
+                        </td>
+                        <td><a data-toggle="tooltip" title="View Details" ui-sref="barbersdetail({id:appoint.barber_id._id})" >
+            {{appoint.barber_name}} </a>
+                        </td>
+                        <td><a data-toggle="tooltip" title="View Details" ui-sref="shopdetail({id:appoint.shop_id.user_id})" >
+            {{appoint.shop_name}}</a>
+                        </td>
+                        <td>
+                            {{appoint.payment_status}}
+                        </td>
+                        <td>
+                            {{appoint.appointment_status}}
+                        </td>
+                        <td>
+                            {{appoint.appointment_date | date : dd/mm/yyyy}}
+                        </td>
+                        <td>
+                            <a type="submit" ui-sref="detailed_appointment" ng-click="appointdetail(appoint)" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+                </span>
+            </div>
+            <div>
+            </div>
+            <!-- Modal -->
+            <script type="text/javascript">
+            $('.dropdown-toggle').dropdown();
+
+            $('.dropdown-menu > li').click(function() {
+                var $toggle = $(this).parent().siblings('.dropdown-toggle');
+                $toggle.html("<i class=\"icon icon-envelope icon-white\"></i> " + $(this).text() + "<span class=\"caret\"></span>")
+            });
+            </script>

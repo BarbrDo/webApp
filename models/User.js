@@ -105,7 +105,7 @@ var userSchema = new mongoose.Schema({
     },
     remark :{
         type:String,
-        default:"You account is not verified yet."
+        default:"Your account is not verified yet."
     },
     is_email_marketing: Boolean,
     info_source: String,

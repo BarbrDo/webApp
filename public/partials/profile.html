@@ -114,12 +114,12 @@
                     <div class="form-group ">
                          <label for="name" class="col-sm-3">Shop name </label>
                         <div class="col-sm-7">
-                            <input type="text" name="name" id="name" class="form-control" ng-model="shopinfo.name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required>
+                            <input type="text" name="name" id="name" class="form-control" ng-model="shopinfo.name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="30" maxlength="30" required>
                             <div class="validationError" ng-messages="profileForm.name.$error" ng-show="
                                     profileForm.name.$error.required && profileForm.name.$touched &&
                                             profileForm.name.$invalid
                                  " role="alert">
-                                <span style="color:red" ng-message="required">First name is required</span>
+                                <span style="color:red" ng-message="required">Shop name is required</span>
                             </div>
                             <div class="validationError" ng-messages="profileForm.name.$error" ng-show="
                                     profileForm.name.$error.pattern && (!profileForm.name.$pristine || profileForm.$submitted)" role="alert">
@@ -127,7 +127,7 @@
                             </div>
                             <div class="validationError" ng-show="profileForm.name.$error.maxlength && profileForm.name.$dirty" ">
 
-                                <span style="color:red ">First name maximum length exceeds</span>
+                                <span style="color:red ">Shop name maximum length exceeds</span>
                             </div>
                         </div>
                     </div>

@@ -72,7 +72,7 @@ module.exports = function(app, express) {
     app.put('/api/v1/shops/acceptrequest',chairRequestController.acceptRequest);
     app.get('/api/v1/shops/event',appointmentController.showEvents);
     app.get('/api/v1/shops/sale/:shop_id/:startDate/:endDate',shopController.financeScreenResult);
-    app.post('/api/v1/shop/removebarber', shopController.requesttoremove);
+    app.post('/api/v1/shops/removebarber', shopController.requesttoremove);
     
     
     //Customer

@@ -117,9 +117,15 @@ angular.module('BarbrDoApp')
             $window.localStorage.imagePath = response.data.imagesPath;
           }
           if (response.data.err) {
+            console.log(response.data)
             $state.go('upcomingComplete');
           } else {
-            $scope.tabActive = 'signup';
+            if(response.data.user)
+            {
+              console.log("heree") 
+              $scope.tabActive = 'signup';
+            }
+            
           }
         })
         .catch(function(response) {
@@ -201,20 +207,16 @@ angular.module('BarbrDoApp')
         })
     }
     $scope.signup = function() {
+       console.log("user",$scope.user);
       $auth.signup($scope.user)
         .then(function(response) {
-          if (response.data.user) {
-            $state.go('subScription', {
-              _id: response.data.user._id
-            })
-          } else {
             toastr.success("Please check your mail to activate your account.");
-          }
+            console.log($scope.tabActive)
         })
         .catch(function(response) {
-          $scope.messagess = {
-            error: Array.isArray(response.data) ? response.data : response.data
-          };
+          console.log(response)
+          $scope.messages = response.data.msg
+
         });
     };
     $scope.fbsignup = function(user) {

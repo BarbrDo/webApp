@@ -351,7 +351,8 @@
          $state.go('barbershopdashboard')
        }).catch(function(result) {
          $scope.loaderStart = false;
-         toastr.error('Amount is required');
+         console.log(result)
+         toastr.error(result.data.msg);
        })
 
      }

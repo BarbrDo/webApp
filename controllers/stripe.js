@@ -2,9 +2,6 @@ let User = require('../models/User');
 let constantObj = require('./../constants.js');
 let stripeToken = process.env.STRIPE
 let stripe = require('stripe')(stripeToken);
-let AppointmentController = require('./appointment.js')
-
-// let barberServices = require('./../controllers/barber');
 
 exports.featuringPlans = function(req, res) {
   stripe.plans.list(

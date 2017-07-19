@@ -39,7 +39,7 @@ exports.updateShop = function(req, res) {
 
 };
 
-var saveData = function(updateData, id, req, res) {
+let saveData = function(updateData, id, req, res) {
     shop.update({
         _id: id
     }, updateData, function(err, data) {
@@ -562,10 +562,26 @@ exports.postChairToAllBarbers = function(req, res) {
                         "msg": constantObj.messages.userStatusUpdateFailure
                     })
                 } else {
-                    // chairRequsett(req.headers.user_id, req.body.chair_id)
-                    res.status(200).send({
-                        "msg": constantObj.messages.chairPostedSuccess
-                    });
+                    let auth = {
+                        auth: {
+                          api_key: process.env.MAILGUN_APIKEY,
+                          domain: process.env.MAILGUN_DOMAIN
+                        }
+                      }
+                      let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+
+                      var mailOptions = {
+                        from: req.body.name + ' ' + '<' + req.body.email + '>',
+                        to: constantObj.messages.email,
+                        subject: '✔ Chair Available',
+                        text: "Chair posted to all barbers" 
+                      };
+
+                      nodemailerMailgun.sendMail(mailOptions, function(err) {
+                        res.status(200).send({
+                          "msg": constantObj.messages.chairPostedSuccess
+                        });
+                      });
                 }
             })
         } else {
@@ -1326,7 +1342,7 @@ console.log("")
 
   var mailOptions = {
     from: req.body.name + ' ' + '<' + req.body.email + '>',
-    to: 'hshussain86@gmail.com',
+    to: constantObj.messages.email,
     subject: '✔ Request to Remove Barber',
     text: "Please remove the barber from" + ' ' +  req.body.chair_name 
   };
@@ -1535,7 +1551,7 @@ let getShopAppointmentsDetail = function(shop_id, startDate, endDate, cb) {
     })
 }
 
-getShopChairRevenue = function (shop_id, startDate, endDate, cb) {
+let getShopChairRevenue = function (shop_id, startDate, endDate, cb) {
     let shopId = mongoose.Types.ObjectId(shop_id);
     //let appointmentStartdate = new Date(moment(startDate, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
     //let appointmentEnddate = new Date(moment(endDate, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');

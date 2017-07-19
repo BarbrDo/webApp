@@ -22,7 +22,7 @@ angular.module('BarbrDoApp')
         if (data.search) {
           return $http({
           method: 'get',
-          url: '/api/v1/barbers?search=' + data.search,
+          url: '/api/v1/barbers/available?search=' + data.search,
           data: data,
          headers: {
             'device_latitude': 30.538994,
@@ -32,7 +32,7 @@ angular.module('BarbrDoApp')
         } else {
           return $http({
           method: 'get',
-          url: '/api/v1/barbers',
+          url: '/api/v1/barbers/available',
           data: data,
          headers: {
             'device_latitude': 30.538994,

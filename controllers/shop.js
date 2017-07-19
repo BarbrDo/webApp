@@ -991,8 +991,10 @@ exports.shopContainsChairs = function(req, res) {
     shop.findOne({
         user_id: shop_user_id
     }, function (err, shopData) {
-
-
+        var shop_id = '';
+        if(shopData){
+            var shop_id = shopData._id
+        }
         shop.aggregate([
             {
                 $match: {
@@ -1065,7 +1067,7 @@ exports.shopContainsChairs = function(req, res) {
                 res.status(200).send({
                     msg: constantObj.messages.successRetreivingData,
                     data: result,
-                    shop_id:shopData._id
+                    shop_id:shop_id
                 })
             }
         })

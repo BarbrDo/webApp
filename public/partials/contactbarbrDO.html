@@ -4,9 +4,37 @@
     <li class="breadcrumb-item active">Contact BarbrDo  office</li>
 </ol>
 <div class="wrapper">
-    <div class="block">
+
+ <div class="block appoint_block">
+   <div class="row">
+     <div class="col-sm-3 col-md-2 col-xs-4">
+         <div class="contactto">
+       To :
+       </div>
+     </div>
+     <div class="col-sm-3 col-md-2 col-xs-3">
+         <div class="perimgcontact">
+     <img src="/images/logo.png" alt=""> 
+     </div>
+     </div>
+      <div class="col-sm-3 col-md-6 col-xs-5" >
+          
+     </div>
+      <div class="reschedule">
+      <div class="form-group" >
+
+                   <textarea class="form-control" rows="10" cols="10" required ng-model="message"/></textarea>
+              <!-- <div class="form-control-placeholder">Enter Message here</div> -->
+            </div>
+      <button class="bkap" ng-click="contact(shopData,message)" >Send</button>
+      <a class="bkap" href="tel:9177173813">Call US</a> 
+    </div>
+   </div>
+  </div>
+
+   <!--  <div class="block">
         <h2>Street 121 , New york City</h2>
-        <!-- <div class="col-sm-4"><h2> </h2></div> -->
+       
      <div class="contact-us  pz foremail ">
                
                <div class="form-group" >
@@ -16,13 +44,13 @@
              <div class="row">
             <div class="col-sm-6"><button class="adds_Btn " ng-click="contact(shopData,message)"><i class="fa fa-paper-plane" aria-hidden="true"></i>  &nbsp;&nbsp;&nbsp;
             Send </button></div>
-            <div class="col-sm-6"> <button class="adds_Btn " style="background-color: #395b96;" data-toggle="modal" data-target="#contact"><i class="fa fa-phone" aria-hidden="true"></i> &nbsp;&nbsp;&nbsp; Call Us 
-            </button></div>
+            <div class="col-sm-6"> <a class="bkap " style="background-color: #395b96;"  href="tel:9177173813"><i class="fa fa-phone" aria-hidden="true"></i> &nbsp;&nbsp;&nbsp; Call Us </a>
+            </div>
           </div> 
           
           
         </div>
-    </div>  
+    </div>   -->
 </div>
 
 

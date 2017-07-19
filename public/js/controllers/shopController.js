@@ -415,6 +415,7 @@
            })
        } else {
          toastr.error('Please Enter the Message')
+         $scope.loaderStart = false;
        }
 
      }

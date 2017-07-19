@@ -148,10 +148,9 @@ angular.module('BarbrDoApp')
         }
 
         $scope.login = function () {
-
         $auth.login($scope.user)
                 .then(function (response) {
-//                            Below code is used to get location of the user
+//                Below code is used to get location of the user
                 $scope.coords = geolocation.getLocation().then(function (data) {
                 $window.localStorage.lat = data.coords.latitude;
                         $window.localStorage.long = data.coords.longitude;
@@ -182,11 +181,12 @@ angular.module('BarbrDoApp')
                         _id: response.data.user._id
                         })
                         }
+
                         $scope.messages = {
                         error: Array.isArray(response.data) ? response.data : [response.data]
                         };
                         });
-                };
+                })}
                         $scope.signup = function() {
                         $auth.signup($scope.user)
                                 .then(function(response) {

@@ -1,5 +1,6 @@
 var nodemailer = require('nodemailer');
 var mg = require('nodemailer-mailgun-transport');
+let constantObj = require('./../constants.js');
 /**
  * GET /contact
  */
@@ -12,7 +13,7 @@ exports.contactGet = function(req, res) {
 /**
  * POST /contact
  */
-exports.contactPost = function(req, res) {
+exports.contactBarbrDo = function(req, res) {
   req.assert('name', 'Name cannot be blank').notEmpty();
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
@@ -37,14 +38,14 @@ exports.contactPost = function(req, res) {
 
   var mailOptions = {
     from: req.body.name + ' ' + '<' + req.body.email + '>',
-    to: 'barbrdoapp@gmail.com',
+    to: constantObj.messages.email,
     subject: '✔ Contact Form',
     text: req.body.message
   };
 
   nodemailerMailgun.sendMail(mailOptions, function(err) {
     res.send({
-      msg: 'Thank you! Your feedback has been submitted.'
+      msg: constantObj.messages.emailsend
     });
   });
 };

@@ -2,6 +2,11 @@ angular.module('BarbrDoApp')
   .controller('HeaderCtrl', function($scope, $location, $window, $auth, $state, $rootScope, $uibModal, toastr, shop, geolocation) {
     $scope.user = {};
     $scope.messages = {};
+    
+    if ($state.current.name == 'pageNotFound') {
+//        console.log("header controller is working");
+    }
+    
     $scope.tabActive='login';
     $scope.activeTab = function (value) {
       $scope.tabActive = value;

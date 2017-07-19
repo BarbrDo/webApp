@@ -578,7 +578,6 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             resolve: {
                 lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
                     var deferred = $q.defer();
-                    console.log("yeh sunakshi ");
                     $ocLazyLoad.load({
                         name: 'BarbrDoApp',
                         files: ['js/controllers/barberController.js',
@@ -591,7 +590,6 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 }]
             }
         })
-
 
         // Barbers URL's from here
 
@@ -1391,14 +1389,15 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 controller: 'ShopCtrl'
             })
             .state('pageNotFound', {
-                url: '/partials/pageNotFound',
+                url: '/404',
                 views: {
                     "home": {
-                        templateUrl: 'partials/404.html'
+                        templateUrl: 'partials/404.html',
+                        controller: 'HeaderCtrl'
                     }
                 }
             })
-
+            
         .state('requestchair', {
             url: '/requestchair',
             views: {
@@ -1633,11 +1632,31 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     return deferred.promise;
                 }]
             }
-        });
+        })
+        
+         .state('login', {
+                url: '/login',
+                views: {
+                    "home": {
+                        templateUrl: 'partials/blankPage.html',
+                        controller: 'HeaderCtrl'
+                    }
+                }
+            })
+            
+             .state('signup', {
+                url: '/signup',
+                views: {
+                    "home": {
+                        templateUrl: 'partials/blankPage.html',
+                        controller: 'HeaderCtrl'
+                    }
+                }
+            });
 
 
 
-        $urlRouterProvider.otherwise('pageNotFound');
+        $urlRouterProvider.otherwise('404');
         $authProvider.loginUrl = '/api/v1/login';
         $authProvider.signupUrl = '/api/v1/signup';
         $authProvider.facebook({
@@ -1665,6 +1684,14 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
     .run(['$rootScope', '$q', '$state', '$auth', '$window', 'toastr', function($rootScope, $q, $state, $auth, $window, toastr) {
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
             // Following if will allow only Landing site routes 
+            if(toState.url=='/login' || toState.url=='/signup'){
+                var deferred = $q.defer();
+                setTimeout(function() {
+                    deferred.resolve()
+                        $state.go('home');
+                }, 1000);
+                return deferred.promise;
+            }
             if (toState.url == '/account/verification/:email/:random' || toState.url == '/reset/:token' || toState.url == '/subScribe/:_id') {
                 var deferred = $q.defer();
                 setTimeout(function() {
@@ -1692,7 +1719,6 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 // Following if will allow only customer routes
                 if (toState.url == '/dashboard' || toState.url == '/shopContainsBarbers/:_id' || toState.url == '/home' || toState.url == '/book/:shop_id/:barber_id' || toState.url == '/profile' || toState.url == '/pending-confirmation/:_id' || toState.url == '/gallery' || toState.url == '/appointmentdetail/:_id' || toState.url == '/barber_info/:_id') {
                     var deferred = $q.defer();
-                    // console.log(toState.name);
                     if (loggedInUser.user_type == 'customer') {
                         if (!$auth.isAuthenticated()) {
                             setTimeout(function() {

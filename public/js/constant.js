@@ -54,3 +54,7 @@ const timeSlots = {
 		"8:45"
 	]
 }
+const latLong :[
+    {"latitude":"30.708225"},
+    {"longitude":"76.7029445"}
+]

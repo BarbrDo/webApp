@@ -56,7 +56,7 @@ angular.module('BarbrDoApp').controller('ProfileCtrl', function($scope, $rootSco
             })
             .error(function(err) {
                 $scope.messages = {
-                    error: Array.isArray(response.user) ? response.user : [response.user]
+                    error: Array.isArray(err.user) ? err.user : [err.user]
                 };
                 toastr.error("Error while updating.");
             });

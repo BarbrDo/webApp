@@ -27,7 +27,7 @@
            $rootScope.barbers = response.data.data;
            if (response.data.data.length != 0)
              console.log(response.data.data)
-         }).catch(function(result) {
+         }).catch(function(response) {
            toastr.error('Error');
          })
      }

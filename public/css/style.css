@@ -1401,6 +1401,17 @@ ul.csdwon li a {
 .locdis span {
     font-weight: 200;
 }
+
+.rtng p{
+    font-size: 19px;
+    font-weight: 200;
+    margin: 5px 0;
+}
+
+.rtng span {
+    font-weight: 200;
+}
+
 .sldt {
     float: left;
     width: 100%;

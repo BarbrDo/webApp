@@ -15,10 +15,10 @@
       <div class="barber toshop">
         <div class="cont">
           <div class="user_pic"> 
-              <span ng-if="profile.picture">
-                <img ng-src="{{imgPath + barber.picture}} "  ui-sref="requester-details({id:barber._id})">
+              <span ng-if="barber.picture">
+                <a href=""><img ng-src="{{imgPath + barber.picture}} "  ui-sref="requestorgallery({id:barber._id})"></a>
               </span>
-              <span ng-if="!profile.picture">
+              <span ng-if="!barber.picture">
                 <img ng-src="images/no-image-found.jpg " class="profile " width="100 " height="100 ">
           </div>
           <h3>{{barber.first_name}} {{barber.last_name}}</h3>

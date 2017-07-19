@@ -53,8 +53,8 @@
                     <div class="contact-us  pz">
                         <div class="form-group" ng-show="content == 'weekly' || chairs.type=='weekly'" >
                             <form name="myform">
-                                <span ng-if="chairs.type=='weekly'" ng-hide="content == 'monthly'"><input type="text" class="form-control" required value=""  ng-model="chairs.amount" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"></span>
-                                <span ng-if="chairs.type!='weekly'" ng-show="content == 'weekly'"><input type="text" class="form-control" required   ng-model="myobj.priceValue" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"><div class="form-control-placeholder">Enter Price for Week</div></span>
+                                <span ng-if="chairs.type=='weekly'" ng-hide="content == 'monthly'"><input type="text" class="form-control" required value=""  ng-model="chairs.amount"  ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" name="priceVal" required="" ng-maxlength="5" maxlength="5"></span>
+                                <span ng-if="chairs.type!='weekly'" ng-show="content == 'weekly'"><input type="text" class="form-control" required   ng-model="myobj.priceValue"  ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" name="priceVal" required="" ng-maxlength="5" maxlength="5"><div class="form-control-placeholder">Enter Price for Week</div></span>
                                 <div class="validationError" ng-messages="myform.priceVal.$error" ng-show="
                                      myform.priceVal.$error.required && myform.priceVal.$touched &&
                                      myform.priceVal.$invalid 
@@ -75,8 +75,8 @@
                         </form>
                         <div class="form-group" ng-show="content == 'monthly' || chairs.type=='monthly'" >
                             <form name="secondForm">
-                                <span ng-if="chairs.type=='monthly'" ng-hide="content == 'weekly'"> <input type="text" class="form-control" required value="" ng-model="chairs.amount" ng-pattern="/^[0-9]*$/" name="priceVal" required="" ng-maxlength="6" maxlength="7"></span>
-                                <span ng-if="chairs.type!='monthly'" ng-show="content == 'monthly'">  <input type="text" class="form-control"  ng-model="myobj.priceValue" ng-pattern="/^[0-9]*$/" name="priceVal" required ng-maxlength="6" maxlength="7"><div class="form-control-placeholder">Enter Price for Month</div></span>
+                                <span ng-if="chairs.type=='monthly'" ng-hide="content == 'weekly'"> <input type="text" class="form-control" required value="" ng-model="chairs.amount"  ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" name="priceVal" required="" ng-maxlength="5" maxlength="5"></span>
+                                <span ng-if="chairs.type!='monthly'" ng-show="content == 'monthly'">  <input type="text" class="form-control"  ng-model="myobj.priceValue"  ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" name="priceVal" required ng-maxlength="5" maxlength="5"><div class="form-control-placeholder">Enter Price for Month</div></span>
                                 <div class="validationError" ng-messages="secondForm.priceVal.$error" ng-show="
                                      secondForm.priceVal.$error.required && secondForm.priceVal.$touched &&
                                      secondForm.priceVal.$invalid 

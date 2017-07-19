@@ -1,9 +1,25 @@
 <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
 <div class="crumb"> <span>Requestor Gallery</span> </div>
-<div class="wrapper" >
+<div class="wrapper" ng-init="requesterdetails()" >
+<div class="selected_barber">
+            <div class="selected_user">
+                <span ng-if="!requester.picture">
+            <img src="/images/no-image-found.jpg"></span>
+                <span ng-if="requester.picture"><img src="{{imgPath + requester.picture}}" alt="" > </span></div>
+            <div class="namertng">
+                <h3>{{requester.first_name}} {{requester.last_name}}</h3>
+                <div class="rtng">
+                     <p><span>Email: </span> {{requester.email}}</p>
+                </div>
+            </div>
+            <div class="rtng">
+                <p><span>Member Since : </span>{{requester.created_date | date: dd/mm/yyyy}}</p>
+                <p><span>Mobile : </span> {{requester.mobile_number}}</p>
+            </div>
+        </div>
     <div class="customtab">
-        <!-- Nav tabs -->
-        <uib-tabset active="activeJustified" justified="true" ng-init="requesterdetails()">
+        <!-- Nav tabs --><br><br>
+        <uib-tabset active="activeJustified" justified="true" >
             <uib-tab index="0" heading="No.of cuts">
                 <div class="block">
                      <span ng-if="ratings==''"><h3 align="center">No Ratings are there</h3></span>

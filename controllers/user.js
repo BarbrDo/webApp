@@ -341,7 +341,7 @@ exports.signupPost = function(req, res, next) {
           });
         } else {
           if (req.headers.device_type) {
-            saveData.device_type = req.headers.device_type;
+            saveData.device_type = req.headers.device_type.toLowerCase();
           }
           if (req.headers.device_id) {
             saveData.device_id = req.headers.device_id;

@@ -552,7 +552,7 @@ exports.postChairToAllBarbers = function(req, res) {
         "chairs.$": 1
     }).exec(function(err, data) {
         console.log(data);
-        if (data.chairs[0].type) {
+        if (data.chairs[0].type && data.chairs[0].type != '' && data.chairs[0].type != "self") {
             shop.update({
                 "user_id": req.headers.user_id,
                 "chairs._id": req.body.chair_id
@@ -570,7 +570,7 @@ exports.postChairToAllBarbers = function(req, res) {
             })
         } else {
             return res.status(400).send({
-                "msg": "Please Enter the type of chair."
+                "msg": "Please select the type of chair."
             })
         }
     })
@@ -1131,7 +1131,7 @@ exports.manageChair = function(req, res) {
     req.checkHeaders('user_id', 'User id is required.').notEmpty();
     req.assert('chair_id', 'Chair id is required.').notEmpty();
     req.assert('type', 'Chair type is required').notEmpty();
-     console.log("rahulgajkbkjl", req.body);
+    
     if (req.body.type == 'weekly' || req.body.type == 'monthly') {
         req.assert('amount', 'Amount is required.').notEmpty();
     } else {

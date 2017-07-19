@@ -1,6 +1,7 @@
 app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log', '$stateParams', '$state' ,'toastr','$localStorage', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state,toastr,$localStorage) {
   $scope.loginUser = {};
   $scope.user = {};
+  console.log("eryh")
   $scope.myobj = {};
   $scope.myobj.currentPage = 1;
   $scope.bigTotalItems = 175;

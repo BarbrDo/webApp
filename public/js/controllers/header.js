@@ -79,7 +79,6 @@ angular.module('BarbrDoApp')
           // $rootScope.user = response.data.user;
           console.log("authenticate",response.data.user)
           $window.localStorage.user = JSON.stringify(response.data.user);
-          $rootScope.user =  JSON.parse($window.localStorage.user);
           $scope.check();
           if (response.data.imagesPath) {
             $window.localStorage.imagePath = response.data.imagesPath;
@@ -195,6 +194,7 @@ angular.module('BarbrDoApp')
         $scope.loaderStart = false;
         toastr.success('Chair successfully added.');
         $rootScope.$emit("MyEvent", response);
+        $state.go('barbershopdashboard')
       })
     }
 

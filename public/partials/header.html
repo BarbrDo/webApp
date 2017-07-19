@@ -120,6 +120,7 @@
                                     </div>
                                     <div class="col-md-6" ng-init="check()">
                                         <div class="form-group">
+                                        <!-- {{user}} -->
                                             <input type="text" name="firstname" id="email" class="form-control" ng-model="user.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
                                             <div class="form-control-placeholder">First Name</div>
                                             <div class="validationError" ng-messages="signUpForm.firstname.$error" ng-show="

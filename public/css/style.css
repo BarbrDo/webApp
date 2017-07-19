@@ -1816,6 +1816,10 @@ td.action {
     width: 110px;}
 .perimg{margin: 0px 25px;}
 
+.perimgcontact img{height: 110px;
+    width: 510px;}
+
+
 .contactto{    padding: 40px;
     text-align: center;
     background: red;

@@ -24,6 +24,8 @@ angular.module('BarbrDoApp')
         return
       }
     }
+
+    // console.log("user",$window.localStorage.user)
     if ($window.localStorage.user) {
       $rootScope.userInfo = JSON.parse($window.localStorage.user);
       $rootScope.imgPath = $window.localStorage.imagePath;
@@ -51,6 +53,7 @@ angular.module('BarbrDoApp')
     }
 
 
+
     $scope.logout = function() {
       $auth.logout();
       delete $window.localStorage.user;
@@ -61,14 +64,18 @@ angular.module('BarbrDoApp')
     };
 
     $scope.check = function() {
-      $state.go('facebookSignup');
+      console.log("fbauthe",$rootScope.user)
+      $rootScope.user = JSON.parse($window.localStorage.user);
     }
 
     $scope.authenticate = function(provider) {
       $auth.authenticate(provider)
         .then(function(response) {
-          $rootScope.currentUser = response.data.user;
+          // $rootScope.user = response.data.user;
+          console.log("authenticate",response.data.user)
           $window.localStorage.user = JSON.stringify(response.data.user);
+          $rootScope.user =  JSON.parse($window.localStorage.user);
+          $scope.check();
           if (response.data.imagesPath) {
             $window.localStorage.imagePath = response.data.imagesPath;
           }
@@ -76,7 +83,7 @@ angular.module('BarbrDoApp')
 
             $state.go('upcomingComplete');
           } else {
-            $state.go('facebookSignup');
+            $scope.tabActive = 'signup';
           }
         })
         .catch(function(response) {

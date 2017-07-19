@@ -591,7 +591,6 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         })
 
-
         // Barbers URL's from here
 
         .state('barberDashboard', {

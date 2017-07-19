@@ -14,7 +14,6 @@
                 resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -32,7 +31,6 @@
                 resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -51,7 +49,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -70,7 +67,6 @@
            resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -90,7 +86,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -110,7 +105,6 @@
                resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -129,7 +123,6 @@
                 resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -149,7 +142,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -168,7 +160,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -188,7 +179,6 @@
            resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -207,7 +197,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -229,7 +218,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -248,7 +236,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -270,7 +257,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -289,7 +275,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -308,7 +293,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -330,7 +314,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -349,7 +332,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -369,7 +351,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -389,7 +370,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -409,7 +389,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -429,7 +408,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -449,7 +427,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -468,7 +445,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
@@ -487,7 +463,6 @@
             resolve: {
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
-                        console.log("here",$localStorage.loggedIn);
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()

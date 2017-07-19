@@ -36,7 +36,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -55,7 +55,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -74,7 +74,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -94,7 +94,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -114,7 +114,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -133,7 +133,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -153,7 +153,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -172,7 +172,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -192,7 +192,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -211,7 +211,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -233,7 +233,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -252,7 +252,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -274,7 +274,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -293,7 +293,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -312,7 +312,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -334,7 +334,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -353,7 +353,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -373,7 +373,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -393,7 +393,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -413,7 +413,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -433,7 +433,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -453,7 +453,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -472,7 +472,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }
@@ -491,7 +491,7 @@
                         if ($localStorage.loggedIn!= true) {
                              setTimeout(function() {
                                 deferred.resolve()
-                                $state.go('dashboard');
+                                $state.go('login');
                             }, 0);
                             return deferred.promise;
                         }

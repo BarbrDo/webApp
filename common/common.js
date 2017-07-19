@@ -5,15 +5,12 @@ let path = require('path');
 var serverKey = 'AIzaSyAxYVocgXGryOjwZ-7WIW4KB1fQtZ5tXFY'; 
 var fcm = new FCM(serverKey);
 let moment = require('moment');
-// let geocoder = require('geocoder');
 let constantObj = require('./../constants.js');
 let crypto = require('crypto'),
     algorithm = 'aes-256-ctr',
     password = 'd6F3Efeq';
 
 let options;
-let notification;
-
 options = {
   token: {
     key: path.resolve("./common/AuthKey_4MVSAKPE86.p8"),
@@ -22,8 +19,6 @@ options = {
   },
   production: false
 };
-
-let note = new apn.Notification();
 
 exports.pushToAndroid = function  (token) {
     var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera) 

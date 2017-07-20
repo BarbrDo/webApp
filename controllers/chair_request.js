@@ -31,18 +31,11 @@ exports.requestChair = function(req, res) {
         });
     }
     let barber_id = req.body.barber_id;
-    //let barber_name = req.body.barber_name;
     let user_type = req.body.user_type;
     let shop_id = req.body.shop_id;
     let chair_id = req.body.chair_id;
-    //let chair_name = req.body.chair_name;
-    //let chair_type = req.body.chair_type;
-    //let chair_amount = req.body.chair_amount;
-    //let shop_percentage = req.body.shop_percentage;
-    //let barber_percentage = req.body.barber_percentage;
     let book_Date = req.body.booking_date;
     let bookDate = moment(book_Date, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
-    console.log("bookDate", bookDate);
 
     checkBarberBookings(req.body.barber_id, bookDate, function(err, data) {
         if (data) {

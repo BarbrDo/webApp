@@ -49,7 +49,7 @@
             <div class="half left">
                 <img src="images/b_chair.png" class="chair">
                 <ul>
-                    <li><span><i class="fa fa-check"></i></span> Easy {{user.first_name}} Convenient Scheduling</li>
+                    <li><span><i class="fa fa-check"></i></span> Easy  Convenient Scheduling</li>
                     <li><span><i class="fa fa-check"></i></span> Real-time Communications</li>
                     <li><span><i class="fa fa-check"></i></span> On Demand Services</li>
                     <li><span><i class="fa fa-check"></i></span> Supported on Multiple Platforms</li>
@@ -118,7 +118,7 @@
                                             <span>Barber Shop</span>
                                         </label>
                                     </div>
-                                    <div class="col-md-6" ng-init="check()">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                         <!-- {{user}} -->
                                             <input type="text" name="firstname" id="email" class="form-control" ng-model="user.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
@@ -178,7 +178,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6" ng-if="!user.facebook">
                                     <div class="form-group">
                                         <input type="password" name="password" id="password" class="form-control" ng-model="user.password" ng-minlength="5" ng-maxlength="20" maxlength="21" required />
                                         <div class="form-control-placeholder">Password</div>
@@ -193,7 +193,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6" ng-if="!user.facebook">
                                     <div class="form-group">
                                         <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" ng-model="user.confirmPassword" required ng-pattern="user.password" />
                                         <div class="form-control-placeholder">Confirm Password</div>
@@ -228,6 +228,11 @@
                                     </div>
                                 </div><div>
                                     
+                                </div>
+                                <div ng-if="user.facebook">
+                                    <div class="col-sm-6 form-group" ng-hide="true">
+                        <input type="text" class="form-control" ng-model="user.facebook">
+                    </div>
                                 </div>
                                 <button type="submit" class="sb_button" ng-click="signup()" ng-disabled="signUpForm.$invalid">Sign Up</button>
                                 <p class="msg">Already have an account? <span> <a data-toggle="tab" href="#login" ng-click="activeTab('login')">Login</a> </span></p>

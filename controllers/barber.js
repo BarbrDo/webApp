@@ -393,7 +393,7 @@ exports.confirmAppointment = function(req, res) {
 }
 
 //Reschedule Appointment
-exports.rescheduleAppointment = function(req, res) {
+exports.rescheduleAppointment = function (req, res) {
     req.assert("minutes", "Time is required.").notEmpty();
     req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
     req.assert("appointment_date", "appointment_date is required").notEmpty();
@@ -414,14 +414,31 @@ exports.rescheduleAppointment = function(req, res) {
         $set: {
             "appointment_date": newDateObj
         }
-    }, function(err, result) {
+    }, function (err, result) {
         if (err) {
             return res.status(400).send({
                 msg: constantObj.messages.userStatusUpdateFailure
             });
         } else {
-            return res.status(200).send({
-                msg: constantObj.messages.userStatusUpdateSuccess
+            let auth = {
+                auth: {
+                    api_key: process.env.MAILGUN_APIKEY,
+                    domain: process.env.MAILGUN_DOMAIN
+                }
+            }
+            let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+
+            var mailOptions = {
+                from: constantObj.messages.email,
+                to: constantObj.messages.email,
+                subject: '✔ Contact Barber to Reschedule',
+                text: "Appointment has been scheduled by" + ' ' + req.body.minutes + ' ' + 'minutes'
+            };
+
+            nodemailerMailgun.sendMail(mailOptions, function (err) {
+                res.status(200).send({
+                    "msg": constantObj.messages.emuserStatusUpdateSuccessailsend
+                });
             });
         }
     })
@@ -526,7 +543,7 @@ exports.completeAppointment = function(req, res) {
 }
 
 //Mark Appointment as cancel
-exports.cancelAppointment = function(req, res) {
+exports.cancelAppointment = function (req, res) {
     req.checkParams("appointment_id", "Appointment id is required.").notEmpty();
     let errors = req.validationErrors();
     if (errors) {
@@ -535,10 +552,9 @@ exports.cancelAppointment = function(req, res) {
             err: errors
         });
     }
-
     appointment.findOne({
         _id: req.params.appointment_id
-    }, function(err, result) {
+    }, function (err, result) {
         if (err) {
             return res.status(400).send({
                 msg: "error in finding appointment.",
@@ -549,12 +565,11 @@ exports.cancelAppointment = function(req, res) {
             if (result) {
                 if (result.payment_detail.length > 0) {
                     console.log(result.payment_detail[0].id);
-                    stripe.refund.create(result.payment_detail[0].id, function(err, charge) {
+                    stripe.refunds.create({charge: result.payment_detail[0].id}, function (err, refund) {
                         if (err) {
-                            console.log(err);
                             return res.status(400).send({
                                 msg: "error in stripe charge.",
-                                err: errors
+                                err: err.message
                             });
                         } else {
                             appointment.update({
@@ -563,7 +578,7 @@ exports.cancelAppointment = function(req, res) {
                                 $set: {
                                     "appointment_status": "cancel"
                                 }
-                            }, function(err, result) {
+                            }, function (err, result) {
                                 if (err) {
                                     res.status(400).send({
                                         msg: constantObj.messages.errorRetreivingData,
@@ -577,7 +592,7 @@ exports.cancelAppointment = function(req, res) {
                                 }
                             })
                         }
-                    });
+                    })
                 } else {
                     appointment.update({
                         _id: req.params.appointment_id
@@ -585,7 +600,7 @@ exports.cancelAppointment = function(req, res) {
                         $set: {
                             "appointment_status": "cancel"
                         }
-                    }, function(err, result) {
+                    }, function (err, result) {
                         if (err) {
                             res.status(400).send({
                                 msg: constantObj.messages.errorRetreivingData,
@@ -599,26 +614,11 @@ exports.cancelAppointment = function(req, res) {
                         }
                     })
                 }
-            } else {
-                appointment.update({
-                    _id: req.params.appointment_id
-                }, {
-                    $set: {
-                        "appointment_status": "cancel"
-                    }
-                }, function(err, result) {
-                    if (err) {
-                        res.status(400).send({
-                            msg: constantObj.messages.errorRetreivingData,
-                            "err": err
-                        });
-                    } else {
-                        res.status(200).send({
-                            msg: 'Successfully updated fields.',
-                            "data": result
-                        });
-                    }
-                })
+            } 
+            else {
+                res.status(400).send({
+                    msg: "No record found"
+                });
             }
         }
     })
@@ -1439,7 +1439,7 @@ exports.getEventOnDate = function(req, res) {
     var eventStartdate = moment(event_Date, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
     var eventEnddate = moment(event_Date, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
     var barber_id = mongoose.Types.ObjectId(req.headers.user_id);
-    console.log(eventStartdate, eventEnddate, barber_id);
+    //console.log(eventStartdate, eventEnddate, barber_id);
     barber.aggregate([{
         $match: {
             "user_id": barber_id
@@ -1521,6 +1521,35 @@ exports.getEventOnDate = function(req, res) {
     })
 }
 
+exports.deleteBarberEvent = function(req, res){
+    req.checkHeaders("user_id", "User Id is required").notEmpty();
+    req.checkParams("event_id", "Event Id is required.").notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let event_id = req.params.event_id;
+    let barber_id = req.headers.user_id;
+    barber.update(
+        {user_id:barber_id},
+        {$pull:{events:{_id:event_id}}}
+    ).exec(function(err,result){
+        if(!result){
+            res.status(400).send({
+                msg: 'Error in Finding this user.',
+                "err": err
+            });
+        }
+        res.status(200).send({
+            msg: constantObj.messages.userDeleteSuccess,
+            "data": result
+        });
+        
+    })
+}
 exports.financeScreenResult = function(req, res) {
         req.checkHeaders("user_id", "user_id is required").notEmpty();
         req.checkParams("startDate", "startDate is required.").notEmpty();

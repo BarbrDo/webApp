@@ -72,7 +72,7 @@ module.exports = function(app, express) {
     app.put('/api/v1/shops/acceptrequest',chairRequestController.acceptRequest);
     app.get('/api/v1/shops/event',appointmentController.showEvents);
     app.get('/api/v1/shops/sale/:shop_id/:startDate/:endDate',shopController.financeScreenResult);
-    app.post('/api/v1/shop/removebarber', shopController.requesttoremove);
+    app.post('/api/v1/shops/removebarber', shopController.requesttoremove);
     
     
     //Customer
@@ -114,6 +114,7 @@ module.exports = function(app, express) {
     app.post('/api/v1/barber/event',barberServices.createEvents);
     app.get('/api/v1/barber/event',barberServices.getEvents);
     app.get('/api/v1/barber/event/:date',barberServices.getEventOnDate);
+    app.delete('/api/v1/barber/event/:event_id',barberServices.deleteBarberEvent)
     app.get('/api/v1/barber/sale/:startDate/:endDate',barberServices.financeScreenResult);
     
 

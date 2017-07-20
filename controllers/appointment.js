@@ -313,7 +313,7 @@ exports.showEvents = function (req, res) {
     let appointmentStartdate = moment(date, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
     var appointmentEnddate = moment(date, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
     console.log(appointmentStartdate, appointmentEnddate, barber_id);
-    appointment.aggregate([{
+    /*appointment.aggregate([{
             $match: {
                 barber_id: barber_id,
                 appointment_date: {
@@ -322,7 +322,23 @@ exports.showEvents = function (req, res) {
                 },
                 appointment_status: 'confirm'
             }
-        }]).exec(function (err, data) {
+        }]).exec(function (err, data) {*/
+    appointment.find({
+            barber_id: {
+                $exists: true,
+                $eq: barber_id
+            },
+            appointment_date:{
+                $gte: new Date(appointmentStartdate),
+                $lt: new Date(appointmentEnddate)
+            }
+
+        }).sort({
+            'created_date': -1
+        }).populate('barber_id', 'first_name last_name ratings picture')
+        .populate('customer_id', 'first_name last_name ratings picture')
+        .populate('shop_id', 'name address city state gallery latLong')
+        .exec(function(err, data) {
         barber.aggregate([{
                 $match: {
                     "user_id": barber_id,
@@ -351,7 +367,7 @@ exports.showEvents = function (req, res) {
                     msg: constantObj.messages.successRetreivingData,
                     data: {
                         events: [eventsData[0].events],
-                        appointment: data
+                        appointments: data
 
                     }
                 });
@@ -360,7 +376,7 @@ exports.showEvents = function (req, res) {
                     msg: constantObj.messages.successRetreivingData,
                     data: {
                         events: events,
-                        appointment: data
+                        appointments: data
                     }
                 });
             }

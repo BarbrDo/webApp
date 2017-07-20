@@ -4,7 +4,7 @@ angular.module('BarbrDoApp')
 		$scope.imgPath = $window.localStorage.imagePath;
 		$scope.search = {};
 		$scope.userid = objj._id
-
+		 console.log($rootScope.latLong)
 		$scope.appointments = function() {
 			$scope.loaderStart = true;
 			barber.appointments()
@@ -72,8 +72,8 @@ angular.module('BarbrDoApp')
 			$scope.message = cbState;
 		};
 		var obj = {
-			'latitude': "30.708225",
-			'longitude': "76.7029445"
+			'latitude': $rootScope.latLong.latitude,
+			'longitude': $rootScope.latLong.longitude
 		}
 		$scope.allShopsHavingChairs = function() {
 			obj.search = $scope.search.searchChair;

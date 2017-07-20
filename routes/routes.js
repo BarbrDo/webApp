@@ -114,7 +114,7 @@ module.exports = function(app, express) {
     app.post('/api/v1/barber/event',barberServices.createEvents);
     app.get('/api/v1/barber/event',barberServices.getEvents);
     app.get('/api/v1/barber/event/:date',barberServices.getEventOnDate);
-    app.delete('api/v1/barber/event/:event_id',barberServices.deleteBarberEvent)
+    app.delete('/api/v1/barber/event/:event_id',barberServices.deleteBarberEvent)
     app.get('/api/v1/barber/sale/:startDate/:endDate',barberServices.financeScreenResult);
     
 

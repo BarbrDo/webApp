@@ -65,10 +65,10 @@ exports.loginPost = function(req, res, next) {
   let device_token = "";
   let device_type = "";
   if(req.headers.device_id){
-      let device_token = req.headers.device_id;
+      device_token = req.headers.device_id;
   }
   if(req.headers.device_type){
-     let device_type = req.headers.device_type; 
+     device_type = req.headers.device_type; 
   }
   
   User.findOne({

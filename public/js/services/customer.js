@@ -138,7 +138,7 @@ angular.module('BarbrDoApp')
       getEvents:function (data) {
         return $http({
           method: 'get',
-          url: '/api/v1/barber/event',
+          url: '/api/v1/barber/event/'+data.date,
           headers: {
             'user_id': obj._id//obj._id
           },
@@ -149,9 +149,7 @@ angular.module('BarbrDoApp')
         return $http({
           method: 'get',
           url: '/api/v1/shops/event',
-          headers: {
-            'user_id': obj._id//obj._id
-          },
+          params:{barber_id:data.barber_id,date:data.date},
           data:data,
         });
       }

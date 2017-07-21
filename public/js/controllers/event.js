@@ -22,60 +22,79 @@ angular.module('BarbrDoApp')
         vm.calendarView = 'month';
         vm.viewDate = new Date();
         $scope.events = [];
-        customer.getEvents().then(function(response) {
-            console.log(JSON.stringify(response.data.data.events));
-            for (var i = 0; i < response.data.data.events.length; i++) {
-                console.log(response.data.data.events[i].startsAt,response.data.data.events[i].endsAt)
-                      console.log("value of i",i);
-                let obj = {
-                    title: response.data.data.events[i].title,
-                    start:moment.parseZone(response.data.data.events[i].startsAt).format("llll"),
-                    end:moment.parseZone(response.data.data.events[i].endsAt).format("llll"),
-                    id: response.data.data.events[i]._id
-                }
-                $scope.events.push(obj)
-                 console.log(JSON.stringify($scope.events));
-            }
-        });
 
+        $scope.getBarberEvent = function() {
+            console.log($scope.currentDate);
+            let obj = {
+                date: moment($scope.currentDate).format("YYYY-MM-DD")
+            }
+            console.log(obj)
+            customer.getEvents(obj).then(function(response) {
+                console.log(JSON.stringify(response.data.data.events));
+                for (var i = 0; i < response.data.data.events.length; i++) {
+                    console.log(response.data.data.events[i].startsAt, response.data.data.events[i].endsAt)
+                    console.log("value of i", i);
+                    let obj = {
+                        title: response.data.data.events[i].title,
+                        start: moment.parseZone(response.data.data.events[i].startsAt).format("llll"),
+                        end: moment.parseZone(response.data.data.events[i].endsAt).format("llll"),
+                        id: response.data.data.events[i]._id
+                    }
+                    $scope.events.push(obj)
+                    console.log(JSON.stringify($scope.events));
+                }
+            });
+        }
         $scope.eventsF = function(start, end, timezone, callback) {
-           var s = new Date(start).getTime() / 1000;
-          var e = new Date(end).getTime() / 1000;
-          var m = new Date(start).getMonth();
-          var events = [{title: 'Feed Me ' + m,start: s + (50000),end: s + (100000),allDay: false, className: ['customFeed']}];
-          callback(events);
+            var s = new Date(start).getTime() / 1000;
+            var e = new Date(end).getTime() / 1000;
+            var m = new Date(start).getMonth();
+            var events = [{
+                title: 'Feed Me ' + m,
+                start: s + (50000),
+                end: s + (100000),
+                allDay: false,
+                className: ['customFeed']
+            }];
+            callback(events);
         };
 
         /* remove event */
         $scope.remove = function(index) {
-          $scope.events.splice(index,1);
+            $scope.events.splice(index, 1);
         };
         /* Change View */
-        $scope.changeView = function(view,calendar) {
-          uiCalendarConfig.calendars[calendar].fullCalendar('changeView',view);
+        $scope.changeView = function(view, calendar) {
+            uiCalendarConfig.calendars[calendar].fullCalendar('changeView', view);
         };
         /* Change View */
         $scope.renderCalender = function(calendar) {
-          if(uiCalendarConfig.calendars[calendar]){
-            uiCalendarConfig.calendars[calendar].fullCalendar('render');
-          }
+            if (uiCalendarConfig.calendars[calendar]) {
+                uiCalendarConfig.calendars[calendar].fullCalendar('render');
+            }
         };
-         /* Render Tooltip */
-        $scope.eventRender = function( event, element, view ) { 
-            element.attr({'tooltip': event.title,
-                         'tooltip-append-to-body': true});
+        /* Render Tooltip */
+        $scope.eventRender = function(event, element, view) {
+            element.attr({
+                'tooltip': event.title,
+                'tooltip-append-to-body': true
+            });
             $compile(element)($scope);
         };
         /* config object */
         $scope.uiConfig = {
             calendar: {
-                ignoreTimezone: false,
                 height: 450,
                 editable: true,
+                defaultView: 'agendaDay',
                 header: {
-                     left: 'month agendaDay',
-                      center: 'title',
-                      right: 'today prev,next'
+                    left: '',
+                    center: 'title',
+                    right: 'today prev,next'
+                },
+                viewRender: function(view, element) {
+                    $scope.currentDate = view.start
+                    $scope.getBarberEvent()
                 },
                 eventClick: $scope.alertOnEventClick,
                 eventDrop: $scope.alertOnDrop,
@@ -84,7 +103,7 @@ angular.module('BarbrDoApp')
             }
         };
 
-       
+
         /* event sources array*/
         $scope.eventSources = [$scope.events];
 
@@ -103,12 +122,12 @@ angular.module('BarbrDoApp')
         var myArray = [];
         var date = new Date();
         var ddate = new Date();
-        
+
         $scope.startdate = $filter('date')(ddate, "yyyy-MM-dd");
         $scope.endDate = $filter('date')(ddate, "yyyy-MM-dd");
 
         var max = new Date(2020, 5, 22);
-       
+
         $scope.maxDate = max;
         var min = new Date();
         $scope.minDate = min;

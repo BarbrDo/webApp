@@ -1307,9 +1307,8 @@ exports.subscribe = function(req, res) {
           .then(customer =>
             stripe.charges.create({
               amount,
-              description: "Sample Charge",
+              description: "Subscription charge for"+data.first_name+"with plan id",
               currency: "usd",
-              capture: false,
               customer: customer.id
             }))
           .then(function(charge) {

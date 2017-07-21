@@ -44,6 +44,7 @@ angular.module('BarbrDoApp')
       card.mount('#card-element');
 
       function setOutcome(result) {
+
         var successElement = document.querySelector('.success');
         var errorElement = document.querySelector('.error');
         successElement.classList.remove('visible');

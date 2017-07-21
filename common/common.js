@@ -34,9 +34,9 @@ exports.notify = function(id,notificationKey){
     })
 }
 
-let pushToAndroid = function  (token,key) {
+// let pushToAndroid = function  (token,key) {
     var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera) 
-        to: token, 
+        to: "dZahnVKqyoE:APA91bHXOkQ1a8PCkkfCKoHgltA8Yb9ZuP1mwITHsU7waqhr8PdNsrsLrPR_7-89bn0boVBpQAvXsvxi5Bx1p2VuuDn_bVxsAeN2pBu_Klwb2S2mPOGyCqLsJf7UKvhsDCjk00hXT2Cr", 
         // collapse_key: 'your_collapse_key', 
         notification: {
             title: 'Title of your push notification', 
@@ -44,7 +44,7 @@ let pushToAndroid = function  (token,key) {
         },
         
         data: {  //you can send only notification or only data(or include both) 
-            my_key: 'my value',
+            my_key: 'Appointment',
             my_another_key: 'my another value'
         }
     };
@@ -56,7 +56,7 @@ let pushToAndroid = function  (token,key) {
             console.log("Successfully sent with response: ", response);
         }
     });
-}
+// }
 
 // let pushSendToIOS = function(token,key) {
     // console.log("token here", token);

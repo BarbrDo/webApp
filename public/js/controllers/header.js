@@ -179,6 +179,7 @@ angular.module('BarbrDoApp')
           });
           $auth.login($scope.user)
             .then(function(response) {
+                console.log('in then')
               $window.localStorage.user = JSON.stringify(response.data.user);
               toastr.success('Welcome' + '  ' + response.data.user.first_name + '  ' + response.data.user.last_name);
               $rootScope.currentUser = response.data.user;
@@ -194,7 +195,7 @@ angular.module('BarbrDoApp')
               }
             })
             .catch(function(response) {
-              console.log(response)
+                console.log('response.status',response.status)
               if (response.status == 402) {
                 $state.go('subScription', {
                   _id: response.data.user._id

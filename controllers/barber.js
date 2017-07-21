@@ -1367,7 +1367,7 @@ exports.viewBarberAvailability = function(req, res) {
 
 exports.createEvents = function(req, res) {
     req.checkHeaders("user_id", "user_id is required").notEmpty();
-    req.assert("title", "Title is required.").notEmpty();
+    //req.assert("title", "Title is required.").notEmpty();
     req.assert("startsAt", "Start Date is required").notEmpty();
     req.assert("endsAt", "End Date is required").notEmpty();
     var errors = req.validationErrors();
@@ -1447,22 +1447,33 @@ exports.getEventOnDate = function(req, res) {
     }, {
         $unwind: "$events"
     }, {
-        $match: {
-            "events.startsAt": {
-                $gte: new Date(eventStartdate)
+        $project:{
+            events:{ 
+                $cond:{
+                    if:{$gt:[{$size:"$events.repeat"},0]},
+                    then:{"events":"$events"},
+                    else:{ $cond:{
+                        if:{
+                            $and:[
+                                {$gte: ["$events.startsAt", new Date(eventStartdate)]},
+                                {$lt: ["$events.endsAt", new Date(eventEnddate)]}
+                        ]},
+                        then:{"events":"$events"},
+                        else:""
+                        }
+                    }
+                }
             },
-            "events.endsAt": {
-                $lt: new Date(eventEnddate)
-            }
         }
-    }, {
+    },{
         $group: {
-            "_id": "$_id",
-            "events": {
-                $push: "$events"
+            _id: "$_id",
+            events: {
+                $push: "$events.events"
             },
         }
     }]).exec(function(err, barberEvents) {
+    console.log(barberEvents)
         if (err) {
             res.status(400).send({
                 msg: 'Error in Finding this user.',

@@ -46,106 +46,106 @@ exports.ensureAuthenticated = function(req, res, next) {
  * POST /login
  * Sign in with email and password
  */
-exports.loginPost = function(req, res, next) {
-  req.assert('email', 'Email is not valid').isEmail();
-  req.assert('email', 'Email cannot be blank').notEmpty();
-  req.assert('password', 'Password cannot be blank').notEmpty();
-  req.sanitize('email').normalizeEmail({
-    remove_dots: false
-  });
-
-  let errors = req.validationErrors();
-  
-  if (errors) {
-    return res.status(400).send({
-      msg: "error in your request",
-      err: errors
+exports.loginPost = function (req, res, next) {
+    req.assert('email', 'Email is not valid').isEmail();
+    req.assert('email', 'Email cannot be blank').notEmpty();
+    req.assert('password', 'Password cannot be blank').notEmpty();
+    req.sanitize('email').normalizeEmail({
+        remove_dots: false
     });
-  }
-  let device_token = "";
-  let device_type = "";
-  if(req.headers.device_id){
-      let device_token = req.headers.device_id;
-  }
-  if(req.headers.device_type){
-     let device_type = req.headers.device_type; 
-  }
-  
-  User.findOne({
-    email: req.body.email
-  }).exec(function(err, user) {
-    console.log(user);
-    if (!user) {
-      return res.status(401).send({
-        msg: 'The email address ' + req.body.email + ' is not associated with any account. ' +
-          'Double-check your email address and try again.'
-      });
-    }
 
-    /*-- this condition is for check that this account is active or not---- */
-    if (user.is_active == false && user.is_verified == false) {
-      return res.status(401).send({
-        msg: user.remark
-      });
-    }
+    let errors = req.validationErrors();
 
-    user.comparePassword(req.body.password, function(err, isMatch) {
-      if (!isMatch) {
-        return res.status(401).send({
-          msg: 'Invalid email or password'
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
         });
-      }
+    }
+    var device_token = "";
+    var device_type = "";
+    if (req.headers.device_id) {
+        var device_token = req.headers.device_id;
+    }
+    if (req.headers.device_type) {
+        var device_type = req.headers.device_type;
+    }
 
-      let currentDate = moment().format("YYYY-MM-DD"),
-      createDate = moment(user.created_date).format("YYYY-MM-DD"),
-      futureMonth = moment(createDate).add(2, 'M');
-      futureMonth = moment(futureMonth).format("YYYY-MM-DD")
-      console.log("currentDate,createDate,futureMonth", currentDate, createDate, futureMonth);
-      console.log("condition",currentDate > futureMonth);      
-      if (currentDate > futureMonth && user.subscription==false) {
-        User.update({
-          _id: user._id
-        }, {
-          $set: {
-             "device_type":device_type,
-             "device_id":device_token,
-            "is_active": false,
-            'remark': "Subscription required."
-          }
-        }).exec(function(userErr, userUpdate) {
-          if (userErr) {
-            console.log(userErr)
-          } else {
-            console.log(userUpdate)
-            res.status(402).send({
-              msg: 'Subscription required.',
-              user:user
+    User.findOne({
+        email: req.body.email
+    }).exec(function (err, user) {
+        console.log(user);
+        if (!user) {
+            return res.status(401).send({
+                msg: 'The email address ' + req.body.email + ' is not associated with any account. ' +
+                        'Double-check your email address and try again.'
             });
-          }
-        })
-      } else {
-          User.update({
-          _id: user._id
-        }, {
-          $set: {
-             "device_type":device_type,
-             "device_id":device_token
-          }
-        }).exec(function(userErr, userUpdate) {
-          if (userErr) {
-            console.log(userErr)
-          } else {
-            console.log(userUpdate)
-          }
-        })
-        res.status(200).send({
-          token: generateToken(user),
-          user: user.toJSON(),
-          "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+        }
+
+        /*-- this condition is for check that this account is active or not---- */
+        if (user.is_active == false && user.is_verified == false) {
+            return res.status(401).send({
+                msg: user.remark
+            });
+        }
+
+        user.comparePassword(req.body.password, function (err, isMatch) {
+            if (!isMatch) {
+                return res.status(401).send({
+                    msg: 'Invalid email or password'
+                });
+            }
+
+            let currentDate = moment().format("YYYY-MM-DD"),
+                    createDate = moment(user.created_date).format("YYYY-MM-DD"),
+                    futureMonth = moment(createDate).add(2, 'M');
+            futureMonth = moment(futureMonth).format("YYYY-MM-DD")
+            console.log("currentDate,createDate,futureMonth", currentDate, createDate, futureMonth);
+            console.log("condition", currentDate > futureMonth);
+            if (currentDate > futureMonth && user.subscription == false) {
+                User.update({
+                    _id: user._id
+                }, {
+                    $set: {
+                        "device_type": device_type,
+                        "device_id": device_token,
+                        "is_active": false,
+                        'remark': "Subscription required."
+                    }
+                }).exec(function (userErr, userUpdate) {
+                    if (userErr) {
+                        console.log(userErr)
+                    } else {
+                        console.log(userUpdate)
+                        res.status(402).send({
+                            msg: 'Subscription required.',
+                            user: user
+                        });
+                    }
+                })
+            } else {
+                User.update({
+                    _id: user._id
+                }, {
+                    $set: {
+                        "device_type": device_type,
+                        "device_id": device_token
+                    }
+                }).exec(function (userErr, userUpdate) {
+                    if (userErr) {
+                        console.log(userErr)
+                    } else {
+                        console.log(userUpdate)
+                    }
+                })
+                res.status(200).send({
+                    token: generateToken(user),
+                    user: user.toJSON(),
+                    "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+                });
+            }
         });
-      }
     });
-  });
 }
 
 /**

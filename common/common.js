@@ -1,4 +1,4 @@
-// let userObj = require('./../app/models/users/users.js');
+let userObj = require('./../models/User.js');
 let FCM = require('fcm-node');
 let apn = require("apn");
 let path = require('path');
@@ -20,7 +20,21 @@ options = {
   production: false
 };
 
-exports.pushToAndroid = function  (token) {
+
+exports.notify = function(id,notificationKey){
+    userObj.findOne({_id:id},function(err,result){
+        if(result){
+            if(result.device_type=='ios'){
+                pushSendToIOS(token,notificationKey)
+            }
+            else if(result.device_type=='android'){
+                pushToAndroid(token,notificationKey)
+            }
+        }
+    })
+}
+
+let pushToAndroid = function  (token,key) {
     var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera) 
         to: token, 
         // collapse_key: 'your_collapse_key', 
@@ -44,7 +58,7 @@ exports.pushToAndroid = function  (token) {
     });
 }
 
-exports.pushSendToIOS = function(token) {
+let pushSendToIOS = function(token,key) {
     console.log("token here", token);
     let apnProvider = new apn.Provider(options);
     let deviceToken = token;
@@ -69,43 +83,6 @@ exports.pushSendToIOS = function(token) {
 }
 
 
-let pushSendToAndroid = function(androidToken) {
-    let message = new gcm.Message({
-        registration_ids: [androidToken],
-        data: {
-            key1: 'You have a new match.'
-        }
-    });
-}
-
-// gcmObject.send(message, function(err, response) {});
-
-// }
-// exports.getLatLon = function(zipcode) {
-//     let result = {};
-//     geocoder.geocode(zipcode, function(err, data) {
-//         if (err) {
-//             // return 0;
-//             console.log('geolocation error : ' + err);
-//         } else {
-
-//             if (data.status == 'OK') {
-//                 result.lat = data.results[0].geometry.location.lat;
-//                 result.lng = data.results[0].geometry.location.lng;
-//                 result.status = data.status;
-
-//                 return result;
-//                 //res.send(result);
-
-//             } else {
-
-//                 result.status = data.status;
-//                 return result;
-//                 //res.send(result);
-//             }
-//         }
-//     });
-// }
 
 exports.encrypt = function(text) {
 

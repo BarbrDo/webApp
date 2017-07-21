@@ -49,13 +49,6 @@ var barberSchema = new mongoose.Schema({
             title: String,
             startsAt: Date,
             endsAt: Date,
-            color: {
-                primary: String,
-                secondary: String
-            },
-            draggable: Boolean,
-            resizable: Boolean,
-            calendarEventId: Number,
             dayoff: {
                 type: Boolean,
                 default: false

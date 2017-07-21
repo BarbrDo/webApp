@@ -194,6 +194,7 @@ angular.module('BarbrDoApp')
               }
             })
             .catch(function(response) {
+              console.log(response)
               if (response.status == 402) {
                 $state.go('subScription', {
                   _id: response.data.user._id

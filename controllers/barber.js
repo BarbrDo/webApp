@@ -1379,12 +1379,12 @@ exports.createEvents = function(req, res) {
     }
     let obj = {};
     obj.title = req.body.title;
-    
+    obj.repeat = req.body.repeat;
+    obj.dayoff = req.body.dayoff;
     obj.startsAt = commonObj.removeOffset(req.body.startsAt);
     obj.endsAt = commonObj.removeOffset(req.body.endsAt);
 
-    console.log("obj.startsAt,obj.endsAt", obj.startsAt, obj.endsAt);
-    console.log(req.headers.user_id);
+    console.log(req.body);
     if (req.body.color) {
         obj.color = req.body.color
     }

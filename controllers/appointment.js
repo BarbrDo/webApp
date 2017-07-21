@@ -314,16 +314,6 @@ exports.showEvents = function (req, res) {
     let appointmentStartdate = moment(date, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
     var appointmentEnddate = moment(date, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
     console.log(appointmentStartdate, appointmentEnddate, barber_id);
-    /*appointment.aggregate([{
-            $match: {
-                barber_id: barber_id,
-                appointment_date: {
-                    $gte: new Date(appointmentStartdate),
-                    $lt: new Date(appointmentEnddate)
-                },
-                appointment_status: 'confirm'
-            }
-        }]).exec(function (err, data) {*/
     appointment.find({
             barber_id: {
                 $exists: true,
@@ -341,21 +331,38 @@ exports.showEvents = function (req, res) {
         .populate('shop_id', 'name address city state gallery latLong')
         .exec(function(err, data) {
         barber.aggregate([{
-                $match: {
-                    "user_id": barber_id,
-                }
-            }, {
-                $unwind: "$events"
-            }, {
-                $match: {
-                    "events.startsAt": {
-                        $gte: new Date(appointmentStartdate),
-                        $lt: new Date(appointmentEnddate)
-                    }
-                }
+        $match: {
+                "user_id": barber_id
             }
-
-        ]).exec(function (err, eventsData) {
+        }, {
+            $unwind: "$events"
+        }, {
+            $project:{
+                events:{ 
+                    $cond:{
+                        if:{$gt:[{$size:"$events.repeat"},0]},
+                        then:{"events":"$events"},
+                        else:{ $cond:{
+                            if:{
+                                $and:[
+                                    {$gte: ["$events.startsAt", new Date(appointmentStartdate)]},
+                                    {$lt: ["$events.endsAt", new Date(appointmentEnddate)]}
+                            ]},
+                            then:{"events":"$events"},
+                            else:""
+                            }
+                        }
+                    }
+                },
+            }
+        },{
+            $group: {
+                _id: "$_id",
+                events: {
+                    $push: "$events.events"
+                },
+            }
+        }]).exec(function (err, eventsData) {
             console.log(eventsData);
             if (err) {
                 return res.status(400).send({

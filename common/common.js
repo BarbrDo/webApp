@@ -58,17 +58,17 @@ let pushToAndroid = function  (token,key) {
     });
 }
 
-let pushSendToIOS = function(token,key) {
-    console.log("token here", token);
+// let pushSendToIOS = function(token,key) {
+    // console.log("token here", token);
     let apnProvider = new apn.Provider(options);
-    let deviceToken = token;
+    let deviceToken = "63933720580CE05CB091B58E3D2B9DF0C104DFA20A0A5002B6A9B8319E27045D";
     let note = new apn.Notification();
     note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
     note.badge = 3;
     note.sound = "ping.aiff";
     note.alert = "You have a new notification.";
     note.payload = {
-        'messageFrom': 'John Appleseed'
+        'messageFrom': 'Appointment'
     };
     note.topic = "com.development.BarbrDo";
     note.notifyType = "matchNotification"
@@ -80,7 +80,7 @@ let pushSendToIOS = function(token,key) {
             console.log("success in sending notification");
         }
     });
-}
+// }
 
 
 

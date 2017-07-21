@@ -46,106 +46,104 @@ exports.ensureAuthenticated = function(req, res, next) {
  * POST /login
  * Sign in with email and password
  */
-exports.loginPost = function (req, res, next) {
-    req.assert('email', 'Email is not valid').isEmail();
-    req.assert('email', 'Email cannot be blank').notEmpty();
-    req.assert('password', 'Password cannot be blank').notEmpty();
-    req.sanitize('email').normalizeEmail({
-        remove_dots: false
+exports.loginPost = function(req, res, next) {
+  req.assert('email', 'Email is not valid').isEmail();
+  req.assert('email', 'Email cannot be blank').notEmpty();
+  req.assert('password', 'Password cannot be blank').notEmpty();
+  req.sanitize('email').normalizeEmail({
+    remove_dots: false
+  });
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
     });
+  }
+  var device_token = "";
+  var device_type = "";
+  if (req.headers.device_id) {
+    var device_token = req.headers.device_id;
+  }
+  if (req.headers.device_type) {
+    var device_type = req.headers.device_type;
+  }
+  console.log(device_token, device_type)
+  User.findOne({
+    email: req.body.email
+  }).exec(function(err, user) {
+    console.log(user);
+    if (!user) {
+      return res.status(401).send({
+        msg: 'The email address ' + req.body.email + ' is not associated with any account. ' +
+          'Double-check your email address and try again.'
+      });
+    }
 
-    let errors = req.validationErrors();
+    /*-- this condition is for check that this account is active or not---- */
+    if (user.is_active == false && user.is_verified == false) {
+      return res.status(401).send({
+        msg: user.remark
+      });
+    }
 
-    if (errors) {
-        return res.status(400).send({
-            msg: "error in your request",
-            err: errors
+    user.comparePassword(req.body.password, function(err, isMatch) {
+      if (!isMatch) {
+        return res.status(401).send({
+          msg: 'Invalid email or password'
         });
-    }
-    var device_token = "";
-    var device_type = "";
-    if (req.headers.device_id) {
-        var device_token = req.headers.device_id;
-    }
-    if (req.headers.device_type) {
-        var device_type = req.headers.device_type;
-    }
+      }
 
-    User.findOne({
-        email: req.body.email
-    }).exec(function (err, user) {
-        console.log(user);
-        if (!user) {
-            return res.status(401).send({
-                msg: 'The email address ' + req.body.email + ' is not associated with any account. ' +
-                        'Double-check your email address and try again.'
+      let currentDate = moment().format("YYYY-MM-DD"),
+        createDate = moment(user.created_date).format("YYYY-MM-DD"),
+        futureMonth = moment(createDate).add(2, 'M');
+      futureMonth = moment(futureMonth).format("YYYY-MM-DD")
+      console.log("currentDate,createDate,futureMonth", currentDate, createDate, futureMonth);
+      console.log("condition", currentDate > futureMonth);
+      if (currentDate > futureMonth && user.subscription == false) {
+        User.update({
+          _id: user._id
+        }, {
+          $set: {
+            "device_type": device_type,
+            "device_id": device_token,
+            "is_active": false,
+            'remark': "Subscription required."
+          }
+        }).exec(function(userErr, userUpdate) {
+          if (userErr) {
+            console.log(userErr)
+          } else {
+            console.log(userUpdate)
+            res.status(402).send({
+              msg: 'Subscription required.',
+              user: user
             });
-        }
-
-        /*-- this condition is for check that this account is active or not---- */
-        if (user.is_active == false && user.is_verified == false) {
-            return res.status(401).send({
-                msg: user.remark
-            });
-        }
-
-        user.comparePassword(req.body.password, function (err, isMatch) {
-            if (!isMatch) {
-                return res.status(401).send({
-                    msg: 'Invalid email or password'
-                });
-            }
-
-            let currentDate = moment().format("YYYY-MM-DD"),
-                    createDate = moment(user.created_date).format("YYYY-MM-DD"),
-                    futureMonth = moment(createDate).add(2, 'M');
-            futureMonth = moment(futureMonth).format("YYYY-MM-DD")
-            console.log("currentDate,createDate,futureMonth", currentDate, createDate, futureMonth);
-            console.log("condition", currentDate > futureMonth);
-            if (currentDate > futureMonth && user.subscription == false) {
-                User.update({
-                    _id: user._id
-                }, {
-                    $set: {
-                        "device_type": device_type,
-                        "device_id": device_token,
-                        "is_active": false,
-                        'remark': "Subscription required."
-                    }
-                }).exec(function (userErr, userUpdate) {
-                    if (userErr) {
-                        console.log(userErr)
-                    } else {
-                        console.log(userUpdate)
-                        res.status(402).send({
-                            msg: 'Subscription required.',
-                            user: user
-                        });
-                    }
-                })
-            } else {
-                User.update({
-                    _id: user._id
-                }, {
-                    $set: {
-                        "device_type": device_type,
-                        "device_id": device_token
-                    }
-                }).exec(function (userErr, userUpdate) {
-                    if (userErr) {
-                        console.log(userErr)
-                    } else {
-                        console.log(userUpdate)
-                    }
-                })
-                res.status(200).send({
-                    token: generateToken(user),
-                    user: user.toJSON(),
-                    "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-                });
-            }
+          }
+        })
+      } else {
+        User.update({
+          _id: user._id
+        }, {
+          $set: {
+            "device_type": device_type,
+            "device_id": device_token
+          }
+        }).exec(function(userErr, userUpdate) {
+          if (userErr) {
+            console.log(userErr)
+          } else {
+            console.log(userUpdate)
+          }
+        })
+        res.status(200).send({
+          token: generateToken(user),
+          user: user.toJSON(),
+          "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
         });
+      }
     });
+  });
 }
 
 /**
@@ -164,163 +162,35 @@ let saveShop = function(saveDataForShop, resetUrl, user, req, res) {
 }
 
 let accountActivateMailFunction = function(req, res, user, resetUrl) {
-    console.log("accountActivateMailFunction", user);
-    let auth = {
-      auth: {
-        api_key: process.env.MAILGUN_APIKEY,
-        domain: process.env.MAILGUN_DOMAIN
-      }
-    }
-    let nodemailerMailgun = nodemailer.createTransport(mg(auth));
-    let mailOptions = {
-      to: user.email,
-      from: 'support@barbrdo.com',
-      subject: '✔ Activate Your Account',
-      text: 'Please Activate your account by clicking link \n\n' + resetUrl + '\n\n'
-    };
-    console.log(user);
-    if (!user.facebook) {
-      nodemailerMailgun.sendMail(mailOptions, function(err, info) {
-        res.send({
-          msg: 'An email has been sent to ' + user.email + ' with further instructions.'
-        });
-      });
-    } else {
-      res.status(200).send({
-        user: user,
-        token: generateToken(user),
-        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-      });
+  console.log("accountActivateMailFunction", user);
+  let auth = {
+    auth: {
+      api_key: process.env.MAILGUN_APIKEY,
+      domain: process.env.MAILGUN_DOMAIN
     }
   }
-  /*
-  ---------------------------------
-  Pre version of sign up function
-  ---------------------------------
-  */
-  // exports.signupPost = function(req, res, next) {
-  //   console.log(req.body);
-  //   req.assert('first_name', 'First name cannot be blank.').notEmpty();
-  //   req.assert('last_name', 'Last name cannot be blank.').notEmpty();
-  //   req.assert('email', 'Email is not valid').isEmail();
-  //   req.assert('email', 'Email cannot be blank').notEmpty();
-  //   req.assert('mobile_number', 'Mobile number cannot be blank').notEmpty();
-  //   if (!req.body.facebook) {
-  //     req.assert('password', 'Password must be at least 6 characters long').len(6);
-  //   }
-  //   req.assert('user_type', 'User type cannot be blank').notEmpty();
-  //   if (req.body.user_type == 'shop' || req.body.user_type == 'barber') {
-  //     req.assert('license_number', 'License number cannot be blank').notEmpty();
-  //   }
-
-//   req.sanitize('email').normalizeEmail({
-//     remove_dots: false
-//   });
-//   let errors = req.validationErrors();
-
-//   if (errors) {
-//     res.status(400).send({
-//       msg: "error in your request",
-//       err: errors
-//     });
-//   }
-//   User.findOne({
-//     email: req.body.email
-//   }, function(err, user) {
-//     if (user) {
-//       return res.status(400).send({
-//         msg: 'The email address you have entered is already associated with another account.',
-//         err: [{
-//           msg: "The email address you have entered is already associated with another account."
-//         }]
-//       });
-//     }
-//     let saveData = req.body;
-
-//     if (req.headers.device_type) {
-//       saveData.device_type = req.headers.device_type;
-//     }
-//     if (req.headers.device_id) {
-//       saveData.device_id = req.headers.device_id;
-//     }
-//     if (req.headers.device_longitude && req.headers.device_latitude) {
-//       saveData.latLong = [req.headers.device_longitude, req.headers.device_latitude];
-//     }
-//     if (req.body.facebook) {
-//       saveData.isActive = true;
-//       saveData.is_verified = true;
-//     }
-
-//     let email_encrypt = commonObj.encrypt(req.body.email);
-//     let generatedText = commonObj.makeid();
-
-//     saveData.randomString = generatedText;
-
-//     User(saveData).save(function(err, data) {
-//       if (err) {
-//         return res.status(400).send({
-//           msg: constantObj.messages.errorInSave,
-//           "err": err
-//         })
-//       } else {
-//         let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
-//         if (req.body.user_type == 'shop') {
-//           let saveDataForShop = {};
-//           saveDataForShop.user_id = data._id
-//           saveDataForShop.license_number = req.body.license_number;
-//           saveDataForShop.name = req.body.name;
-//           saveDataForShop.state = req.body.state;
-//           saveDataForShop.city = req.body.city;
-//           saveDataForShop.zip = req.body.zip;
-
-//           if (req.headers.device_longitude && req.headers.device_latitude) {
-//             saveDataForShop.latLong = [req.headers.device_longitude, req.headers.device_latitude];
-//             saveShop(saveDataForShop, resetUrl, data, req, res);
-//           } else if (req.body.zip) {
-//             geocoder.geocode(req.body.zip, function(errGeo, latlng) {
-//               if (errGeo) {
-//                 return res.status(400).send({
-//                   msg: constantObj.messages.errorInSave
-//                 })
-//               } else {
-//                 saveDataForShop.latLong = [latlng.results[0].geometry.location.lng, latlng.results[0].geometry.location.lat];
-//                 saveShop(saveDataForShop, resetUrl, data, req, res);
-//               }
-//             });
-//           } else {
-//             saveShop(saveDataForShop, resetUrl, data, req, res);
-//           }
-//         } else if (req.body.user_type == 'barber') {
-//           let saveDataForBarber = {};
-//           saveDataForBarber.user_id = data._id
-//           saveDataForBarber.license_number = req.body.license_number;
-//           Barber(saveDataForBarber).save(function(errSaveBarber, barberData) {
-//             if (errSaveBarber) {
-//               return res.status(400).send({
-//                 msg: constantObj.messages.errorInSave
-//               })
-//             } else {
-//               accountActivateMailFunction(req, res, data, resetUrl)
-//             }
-//           })
-//         } else if (req.body.facebook) {
-//           res.send({
-//             msg: "please check your email to verify your account.",
-//             link: resetUrl,
-//             token: generateToken(data),
-//             user: data.toJSON(),
-//             "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-//           });
-//         } else {
-//           accountActivateMailFunction(req, res, data, resetUrl)
-//         }
-//       }
-//     });
-//   });
-// };
-
-
-/*Sign up */
+  let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+  let mailOptions = {
+    to: user.email,
+    from: 'support@barbrdo.com',
+    subject: '✔ Activate Your Account',
+    text: 'Please Activate your account by clicking link \n\n' + resetUrl + '\n\n'
+  };
+  console.log(user);
+  if (!user.facebook) {
+    nodemailerMailgun.sendMail(mailOptions, function(err, info) {
+      res.send({
+        msg: 'An email has been sent to ' + user.email + ' with further instructions.'
+      });
+    });
+  } else {
+    res.status(200).send({
+      user: user,
+      token: generateToken(user),
+      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+    });
+  }
+}
 
 exports.signupPost = function(req, res, next) {
   req.assert('first_name', 'First name cannot be blank.').notEmpty();
@@ -1023,33 +893,33 @@ exports.removeChair = function(req, res) {
             msg: "You can't remove this chair. A Barber is already associated with this chair."
           });
         } else {
-            chairRequest.update({
+          chairRequest.update({
             _id: req.body.shop_id,
             "chairs._id": req.body.chair_id
           }, {
             $set: {
               status: 'decline'
             }
-          }).exec(function(err,requestCheck){
+          }).exec(function(err, requestCheck) {
             Shop.update({
-                _id: req.body.shop_id,
-                "chairs._id": req.body.chair_id
-              }, {
-                $set: {
-                  "chairs.$.isActive": false,
-                  "chairs.$.availability": "closed"
-                }
-              }).exec(function(errInDelete, resultInDelete) {
-                if (errInDelete) {
-                  res.status(400).send({
-                    msg: 'Error in deleting chair.'
-                  });
-                } else {
-                  res.status(200).send({
-                    msg: 'Chair successfully deleted.'
-                  });
-                }
-              })
+              _id: req.body.shop_id,
+              "chairs._id": req.body.chair_id
+            }, {
+              $set: {
+                "chairs.$.isActive": false,
+                "chairs.$.availability": "closed"
+              }
+            }).exec(function(errInDelete, resultInDelete) {
+              if (errInDelete) {
+                res.status(400).send({
+                  msg: 'Error in deleting chair.'
+                });
+              } else {
+                res.status(200).send({
+                  msg: 'Chair successfully deleted.'
+                });
+              }
+            })
           })
         }
       }
@@ -1300,42 +1170,42 @@ exports.getProfiles = function(req, res) {
   })
 }
 
-exports.activate = function (req, res) {
-    console.log("req.body", req.body);
-    if (req.body.email) {
-        let email = commonObj.decrypt(req.body.email);
-        let randomcode = req.body.randomString;
-        console.log(email, randomcode)
-        User.findOne({
-            email: email,
-            randomString: randomcode
-        }).exec(function (err, user) {
-            console.log
-            if (user) {
-                user.randomString = '';
-                user.is_active = true;
-                user.is_verified = true;
-                user.remark = "";
-                user.save(function (err) {
-                    res.status(200).send({
-                        msg: "You have successfully activated your account"
-                    })
-                });
-            }else {
-                User.findOne({
-                    email: email,
-                    is_active: true,
-                    is_verified: true
-                }).exec(function (err, user) {
-                    return res.status(200).send({
-                        msg: "Already activated"
-                    });
-                })
-            } 
-                
-            
+exports.activate = function(req, res) {
+  console.log("req.body", req.body);
+  if (req.body.email) {
+    let email = commonObj.decrypt(req.body.email);
+    let randomcode = req.body.randomString;
+    console.log(email, randomcode)
+    User.findOne({
+      email: email,
+      randomString: randomcode
+    }).exec(function(err, user) {
+      console.log
+      if (user) {
+        user.randomString = '';
+        user.is_active = true;
+        user.is_verified = true;
+        user.remark = "";
+        user.save(function(err) {
+          res.status(200).send({
+            msg: "You have successfully activated your account"
+          })
         });
-    }
+      } else {
+        User.findOne({
+          email: email,
+          is_active: true,
+          is_verified: true
+        }).exec(function(err, user) {
+          return res.status(200).send({
+            msg: "Already activated"
+          });
+        })
+      }
+
+
+    });
+  }
 }
 
 exports.usersRecords = function(req, res) {
@@ -1404,163 +1274,6 @@ exports.totalUsers = function(req, res) {
   });
 }
 
-/*exports.signupPostWeb = function(req, res, next) {
-  req.assert('first_name', 'First name cannot be blank.').notEmpty();
-  req.assert('last_name', 'Last name cannot be blank.').notEmpty();
-  req.assert('email', 'Email is not valid').isEmail();
-  req.assert('email', 'Email cannot be blank').notEmpty();
-  req.assert('mobile_number', 'Mobile number cannot be blank').notEmpty();
-  if (!req.body.facebook) {
-    req.assert('password', 'Password must be at least 6 characters long').len(6);
-  }
-  req.assert('user_type', 'User type cannot be blank').notEmpty();
-  if (req.body.user_type == 'shop' || req.body.user_type == 'barber') {
-    req.assert('license_number', 'License number cannot be blank').notEmpty();
-  }
-
-  req.sanitize('email').normalizeEmail({
-    remove_dots: false
-  });
-  console.log("req.body", req.body);
-  let errors = req.validationErrors();
-
-  if (errors) {
-    res.status(400).send({
-      msg: "error in your request",
-      err: errors
-    });
-  }
-  let saveData = req.body;
-  let email_encrypt = "";
-  let generatedText = "";
-  async.waterfall([
-    function(done) {
-      console.log("first callback .");
-      User.findOne({
-        email: req.body.email
-      }, function(err, user) {
-        if (user) {
-          return res.status(400).send({
-            msg: 'The email address you have entered is already associated with another account.',
-            err: [{
-              msg: "The email address you have entered is already associated with another account."
-            }]
-          });
-        } else {
-          if (req.headers.device_type) {
-            saveData.device_type = req.headers.device_type;
-          }
-          if (req.headers.device_id) {
-            saveData.device_id = req.headers.device_id;
-          }
-          if (req.headers.device_longitude && req.headers.device_latitude) {
-            saveData.latLong = [req.headers.device_longitude, req.headers.device_latitude];
-          }
-          if (req.body.facebook) {
-            saveData.isActive = true;
-            saveData.is_verified = true;
-            saveData.remark = '';
-          }
-          email_encrypt = commonObj.encrypt(req.body.email);
-          generatedText = commonObj.makeid();
-          saveData.randomString = generatedText;
-          done(err, saveData)
-        }
-      })
-    },
-    function(saveData, done) {
-      if (req.body.user_type == 'customer') {
-        done(null, saveData)
-      } else {
-        stripe.customers.create({
-            email: req.body.email,
-            metadata: {
-              user_type: req.body.user_type,
-              first_name: req.body.first_name,
-              last_name: req.body.last_name,
-              mobile_number: req.body.mobile_number
-            }
-          },
-          function(err, customer) {
-            if (err) {
-              return res.status(400).send({
-                msg: "Error occurred on stripe.",
-                "err": err
-              })
-            } else {
-              console.log("customer created on stripe ", customer);
-              saveData.isActive = true;
-              saveData.is_verified = true;
-              saveData.stripe_customer = customer;
-              done(err, saveData)
-            }
-          })
-      }
-    },
-    function(saveData, done) {
-      User(saveData).save(function(err, data) {
-        if (err) {
-          return res.status(400).send({
-            msg: constantObj.messages.errorInSave,
-            "err": err
-          })
-        } else {
-          let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
-          if (req.body.user_type == 'shop') {
-            let saveDataForShop = {};
-            saveDataForShop.user_id = data._id
-            saveDataForShop.license_number = req.body.license_number;
-            saveDataForShop.name = req.body.name;
-            saveDataForShop.state = req.body.state;
-            saveDataForShop.city = req.body.city;
-            saveDataForShop.zip = req.body.zip;
-            if (req.headers.device_longitude && req.headers.device_latitude) {
-              saveDataForShop.latLong = [req.headers.device_longitude, req.headers.device_latitude];
-              saveShop(saveDataForShop, resetUrl, data, req, res);
-            } else if (req.body.zip) {
-              geocoder.geocode(req.body.zip, function(errGeo, latlng) {
-                if (errGeo) {
-                  return res.status(400).send({
-                    msg: constantObj.messages.errorInSave
-                  })
-                } else {
-                  saveDataForShop.latLong = [latlng.results[0].geometry.location.lng, latlng.results[0].geometry.location.lat];
-                  saveShop(saveDataForShop, resetUrl, data, req, res);
-                }
-              });
-            } else {
-              saveShop(saveDataForShop, resetUrl, data, req, res);
-            }
-          } else if (req.body.user_type == 'barber') {
-            let saveDataForBarber = {};
-            saveDataForBarber.user_id = data._id
-            saveDataForBarber.license_number = req.body.license_number;
-            Barber(saveDataForBarber).save(function(errSaveBarber, barberData) {
-              if (errSaveBarber) {
-                return res.status(400).send({
-                  msg: constantObj.messages.errorInSave
-                })
-              } else {
-                console.log("else part of barber save");
-                res.send({
-                  token: generateToken(data),
-                  user: data.toJSON(),
-                  "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-                });
-                // accountActivateMailFunction(req, res, data, resetUrl)
-              }
-            })
-          } else {
-            accountActivateMailFunction(req, res, data, resetUrl)
-          }
-        }
-      });
-      done()
-    }
-  ]);
-}
-*/
-
 
 exports.subscribe = function(req, res) {
   req.checkHeaders("user_id", "User id is required.").notEmpty();
@@ -1596,7 +1309,7 @@ exports.subscribe = function(req, res) {
               amount,
               description: "Sample Charge",
               currency: "usd",
-              capture:false,
+              capture: false,
               customer: customer.id
             }))
           .then(function(charge) {
@@ -1605,7 +1318,7 @@ exports.subscribe = function(req, res) {
               "$set": {
                 isActive: true,
                 is_verified: true,
-                subscription:true,
+                subscription: true,
                 stripe_customer: charge.customer,
                 stripe_subscription: charge
               }
@@ -1628,93 +1341,37 @@ exports.subscribe = function(req, res) {
                 })
               }
             })
+          }).catch(function(err) {
+            return res.status(400).send({
+              msg: err.message
+            })
           });
       }
-      /*else {
-        stripe.customers.create({
-          email: data.email,
-          metadata: {
-            user_type: data.user_type,
-            first_name: data.first_name,
-            last_name: data.last_name,
-            mobile_number: data.mobile_number
-          }
-        }).then(function(customer) {
-          let updateData = {
-            "$set": {
-              isActive: true,
-              is_verified: true,
-              stripe_customer: customer
-            }
-          }
-          User.update({
-            email: data.email
-          }, updateData, function(err, updateInfo) {
-            console.log("subscription user udpate err,updateInfo", err, updateInfo);
-          })
-          return stripe.customers.createSource(customer.id, {
-            source: {
-              object: 'card',
-              exp_month: req.body.month,
-              exp_year: req.body.year,
-              number: req.body.card_number,
-              cvc: req.body.cvc
-            }
-          });
-        }).then(function(source) {
-          return stripe.subscriptions.create({
-            customer: customerId,
-            plan: req.body.plan
-          }, function(err, subscription) {
-            if (err) {
-              res.status(400).send({
-                msg: "Error occurred in subscription.",
-                "err": err
-              });
-            } else {
-              console.log("subscription", subscription);
-              User.update({
-                _id: req.headers.user_id
-              }, {
-                $set: {
-                  stripe_subscription: subscription
-                }
-              }, function(err, result) {
-                if (err) {
-                  res.status(400).send({
-                    msg: "Error occurred in subscription.",
-                    "err": err
-                  });
-                } else {
-                  User.findOne({
-                    _id: req.headers.user_id
-                  }).exec(function(err, user) {
-                    res.send({
-                      token: generateToken(user),
-                      user: user.toJSON(),
-                      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-                    });
-                  })
-                }
-              })
-            }
-          }).catch(function(err) {
-            res.status(400).send({
-              msg: "Error occurred in subscription.",
-              "err": err
-            });
-          })
-        }).then(function(charge) {
-
-        }).catch(function(err) {
-
-        });
-      }*/
     }
   })
 }
 
-
+exports.logout = function() {
+  User.update({
+    _id: req.headers.user_id
+  }, {
+    $set: {
+      device_id: "",
+      device_type: ""
+    }
+  }, function(err, response) {
+    if (err) {
+      res.status(400).send({
+        msg: "Error in logout.",
+        "err": err
+      });
+    } else {
+      res.status(200).send({
+        msg: "you are logout successfully."
+      });
+    }
+  })
+}
 
 exports.stripeWebhook = function(req, res, next) {
   console.log(req.body);

@@ -66,13 +66,15 @@ angular.module('BarbrDoApp')
             amount :$scope.cardDetails.price*100,
             user_id:userWindow._id
           }
+          $('#myModal').modal('hide');
           shop.subScribe(obj).then(function(response) {
             if($stateParams._id){
+
              toastr.success("subscription successfull. Please login.");
+             $state.go("home");
             }
-            else{
-              toastr.success("subscribe successfully.");
-            }
+            }).catch(function(e){
+              toastr.error("Payment not done.Please try again later!")
             })
         } else if (result.error) {
           errorElement.textContent = result.error.message;

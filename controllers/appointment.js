@@ -100,6 +100,9 @@ exports.takeAppointment = function (req, res) {
                                 msg: constantObj.messages.errorInSave
                             });
                         } else {
+                            commonObj.notify(saveData.barber_id,"appointment",function(err,data){
+
+                            })
                             if (req.body.token) {
                                 console.log(stripeController);
                                 stripeController.createCharges(req.body.token, totalPrice,req.headers.user_id, function (payErr, payResult) {

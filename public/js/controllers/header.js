@@ -1,5 +1,5 @@
 angular.module('BarbrDoApp')
-  .controller('HeaderCtrl', function($scope, $location, $window, $auth, $timeout, $state, $rootScope, $uibModal, toastr, shop, geolocation,$q) {
+  .controller('HeaderCtrl', function($scope, $location, $window, $auth, $timeout, $state, $rootScope, $uibModal, toastr, shop, geolocation, $q) {
     $scope.user = {};
     $scope.messages = {};
     if ($state.current.name == 'pageNotFound') {
@@ -69,18 +69,18 @@ angular.module('BarbrDoApp')
     if ($window.localStorage.lat && $window.localStorage.long) {
       $rootScope.latLong = {
 
-//        setInterval(function () {
-//        //           Below code is used to get location of the user
-//        $scope.coords = geolocation.getLocation().then(function (data) {
-//        $window.localStorage.lat = data.coords.latitude;
-//                $window.localStorage.long = data.coords.longitude;
-//                console.log($window.localStorage.lat, $window.localStorage.long)
-//                return {
-//                lat: data.coords.latitude,
-//                        long: data.coords.longitude
-//                };
-//        });
-//        }, 10000);
+        //        setInterval(function () {
+        //        //           Below code is used to get location of the user
+        //        $scope.coords = geolocation.getLocation().then(function (data) {
+        //        $window.localStorage.lat = data.coords.latitude;
+        //                $window.localStorage.long = data.coords.longitude;
+        //                console.log($window.localStorage.lat, $window.localStorage.long)
+        //                return {
+        //                lat: data.coords.latitude,
+        //                        long: data.coords.longitude
+        //                };
+        //        });
+        //        }, 10000);
 
         'latitude': $window.localStorage.lat,
         'longitude': $window.localStorage.long
@@ -101,8 +101,8 @@ angular.module('BarbrDoApp')
       $state.go('home');
     };
     $scope.check = function() {
-           $scope.user = JSON.parse($window.localStorage.user);
-        console.log("fbauthe", $scope.user)
+      $scope.user = JSON.parse($window.localStorage.user);
+      console.log("fbauthe", $scope.user)
     }
 
     $scope.authenticate = function(provider) {
@@ -120,12 +120,11 @@ angular.module('BarbrDoApp')
             console.log(response.data)
             $state.go('upcomingComplete');
           } else {
-            if(response.data.user)
-            {
-              console.log("heree") 
+            if (response.data.user) {
+              console.log("heree")
               $scope.tabActive = 'signup';
             }
-            
+
           }
         })
         .catch(function(response) {
@@ -168,7 +167,7 @@ angular.module('BarbrDoApp')
     $scope.login = function() {
       $auth.login($scope.user)
         .then(function(response) {
-          //                Below code is used to get location of the user
+          //Below code is used to get location of the user
           $scope.coords = geolocation.getLocation().then(function(data) {
             $window.localStorage.lat = data.coords.latitude;
             $window.localStorage.long = data.coords.longitude;
@@ -177,43 +176,38 @@ angular.module('BarbrDoApp')
               long: data.coords.longitude
             };
           });
-          $auth.login($scope.user)
-            .then(function(response) {
-                console.log('in then')
-              $window.localStorage.user = JSON.stringify(response.data.user);
-              toastr.success('Welcome' + '  ' + response.data.user.first_name + '  ' + response.data.user.last_name);
-              $rootScope.currentUser = response.data.user;
-              $window.localStorage.imagePath = response.data.imagesPath;
-              if (response.data.user.user_type == 'customer') {
-                $state.go('upcomingComplete');
-              }
-              if (response.data.user.user_type == 'barber') {
-                $state.go('barberDashboard');
-              }
-              if (response.data.user.user_type == 'shop') {
-                $state.go('barbershopdashboard')
-              }
-            })
-            .catch(function(response) {
-                console.log('response.status',response.status)
-              if (response.status == 402) {
-                $state.go('subScription', {
-                  _id: response.data.user._id
-                })
-              }
-
-              $scope.messages = {
-                error: Array.isArray(response.data) ? response.data : [response.data]
-              };
-            });
+          $window.localStorage.user = JSON.stringify(response.data.user);
+          toastr.success('Welcome' + '  ' + response.data.user.first_name + '  ' + response.data.user.last_name);
+          $rootScope.currentUser = response.data.user;
+          $window.localStorage.imagePath = response.data.imagesPath;
+          if (response.data.user.user_type == 'customer') {
+            $state.go('upcomingComplete');
+          }
+          if (response.data.user.user_type == 'barber') {
+            $state.go('barberDashboard');
+          }
+          if (response.data.user.user_type == 'shop') {
+            $state.go('barbershopdashboard')
+          }
         })
+        .catch(function(response) {
+          if (response.status == 402) {
+            $state.go('subScription', {
+              _id: response.data.user._id
+            })
+          }
+          $scope.messages = {
+            error: Array.isArray(response.data) ? response.data : [response.data]
+          };
+        });
+
     }
     $scope.signup = function() {
-       console.log("user",$scope.user);
+      console.log("user", $scope.user);
       $auth.signup($scope.user)
         .then(function(response) {
-            toastr.success("Please check your mail to activate your account.");
-            console.log($scope.tabActive)
+          toastr.success("Please check your mail to activate your account.");
+          console.log($scope.tabActive)
         })
         .catch(function(response) {
           console.log(response)

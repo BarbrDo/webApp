@@ -1072,6 +1072,39 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
         })
 
         // shop Started
+
+        .state('shopEvents', {
+            url: '/shopEvents',
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/eventShops.html',
+                    controller: "eventShopCtrl"
+                },
+                "header": {
+                    templateUrl: 'partials/barber_header_after_login.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/barberSideBar.html'
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['/js/controllers/shopEvents.js',
+                            '/js/controllers/eventHelper.js',
+                            '/js/services/customer.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
+            }
+        })
+
         .state('barbershopdashboard', {
             url: '/shopdashboard',
             views: {

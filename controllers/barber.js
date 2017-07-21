@@ -1379,11 +1379,12 @@ exports.createEvents = function(req, res) {
     }
     let obj = {};
     obj.title = req.body.title;
+    
     obj.startsAt = commonObj.removeOffset(req.body.startsAt);
     obj.endsAt = commonObj.removeOffset(req.body.endsAt);
 
     console.log("obj.startsAt,obj.endsAt", obj.startsAt, obj.endsAt);
-
+    console.log(req.headers.user_id);
     if (req.body.color) {
         obj.color = req.body.color
     }
@@ -1412,6 +1413,7 @@ exports.createEvents = function(req, res) {
 }
 
 exports.getEvents = function(req, res) {
+    console.log("req.headers.user_id",req.headers.user_id);
     barber.findOne({
         user_id: req.headers.user_id
     }, {

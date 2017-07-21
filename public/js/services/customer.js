@@ -137,8 +137,18 @@ angular.module('BarbrDoApp')
       },
       getEvents:function (data) {
         return $http({
-          method: 'post',
+          method: 'get',
           url: '/api/v1/barber/event',
+          headers: {
+            'user_id': obj._id//obj._id
+          },
+          data:data,
+        });
+      },
+      getShopEvents:function (data) {
+        return $http({
+          method: 'get',
+          url: '/api/v1/shops/event',
           headers: {
             'user_id': obj._id//obj._id
           },

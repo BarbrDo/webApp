@@ -308,6 +308,7 @@ exports.showEvents = function (req, res) {
             err: errors
         });
     }
+    console.log(req.query);
     let barber_id = mongoose.Types.ObjectId(req.query.barber_id);
     let date = req.query.date;
     let appointmentStartdate = moment(date, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';

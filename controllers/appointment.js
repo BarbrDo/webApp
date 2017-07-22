@@ -377,7 +377,7 @@ exports.showEvents = function (req, res) {
                 return res.status(200).send({
                     msg: constantObj.messages.successRetreivingData,
                     data: {
-                        events: [eventsData[0].events],
+                        events: eventsData[0].events,
                         appointments: data
 
                     }

@@ -1,5 +1,8 @@
 angular.module('BarbrDoApp')
 	.controller('dashboardCtrl', function($scope, $rootScope, $filter, $location, customer, $stateParams, $state, $window, ngTableParams, $timeout, $http, toastr) {
+                var obj = {};
+                obj.latitude = $rootScope.latLong.latitude;
+                obj.longitude = $rootScope.latLong.longitude;
 		$scope.dollarAmmount = 0.00;
 		$scope.annualCost = $scope.dollarAmmount;
 		$scope.search = {};
@@ -11,6 +14,7 @@ angular.module('BarbrDoApp')
 		$scope.shoplist = function() {
 			obj.search = $scope.search.searchShop;
 			$scope.loaderStart = true;
+                       
 			customer.shopList(obj)
 				.then(function(response) {
 					$scope.loaderStart = false;
@@ -449,7 +453,7 @@ angular.module('BarbrDoApp')
 
 		// Stripe Implementation
 		$scope.stripeCall = function() {
-			var stripe = Stripe('pk_test_fswpUdU8DBIKbLz1U637jNF7');
+			var stripe = Stripe(stripe_key);
 			var elements = stripe.elements();
 			var card = elements.create('card', {
 				style: {

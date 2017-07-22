@@ -58,3 +58,5 @@ const latLong =[
     {"latitude":"30.708225"},
     {"longitude":"76.7029445"}
 ]
+
+const stripe_key= "pk_test_fswpUdU8DBIKbLz1U637jNF7";

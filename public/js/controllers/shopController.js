@@ -116,7 +116,7 @@
        }
        shop.shopInfo(obj).then(function(response) {
          $scope.loaderStart = false;
-         $scope.chairs = response.data.user;
+         $scope.chairs = response.data;
          if (response.data.user.shop[0].chairs.length == 0) {}
          $window.localStorage.shop_id = response.data.user.shop[0]._id;
        })

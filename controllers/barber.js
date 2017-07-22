@@ -1412,6 +1412,73 @@ exports.createEvents = function(req, res) {
     })
 }
 
+exports.editEvents = function(req, res) {
+    req.checkHeaders("user_id", "user_id is required").notEmpty();
+    req.assert("event_id", "Event Id is required.").notEmpty();
+    req.assert("startsAt", "Start Date is required").notEmpty();
+    req.assert("endsAt", "End Date is required").notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let obj = {};
+    obj.title = req.body.title;
+    obj.repeat = req.body.repeat;
+    obj.dayoff = req.body.dayoff;
+    obj.startsAt = commonObj.removeOffset(req.body.startsAt);
+    obj.endsAt = commonObj.removeOffset(req.body.endsAt);
+
+    console.log(req.body);
+    let event_id = req.params.event_id;
+    let barber_id = req.headers.user_id;
+    
+    
+    barber.update(
+        {user_id:barber_id},
+        {$pull:{events:{_id:event_id}}}
+    ).exec(function(err,result){
+        if(!result){
+            res.status(400).send({
+                msg: 'Error in finding this evnt.',
+                "err": err
+            });
+        }
+        res.status(200).send({
+            msg: constantObj.messages.userDeleteSuccess,
+            "data": result
+        });
+        
+    })
+    if (req.body.color) {
+        obj.color = req.body.color
+    }
+    obj.resizable = true;
+    obj.draggable = true;
+    console.log("obj", obj);
+    barber.update({
+        user_id: req.headers.user_id
+    }, {
+        $push: {
+            events: obj
+        }
+    }).exec(function(err, update) {
+        if (err) {
+            res.status(400).send({
+                msg: 'Error in updating data.',
+                "err": err
+            });
+        } else {
+            res.status(200).send({
+                msg: 'Successfully updated fields.',
+                "data": update
+            });
+        }
+    })
+}
+
 exports.getEvents = function(req, res) {
     console.log("req.headers.user_id",req.headers.user_id);
     barber.findOne({

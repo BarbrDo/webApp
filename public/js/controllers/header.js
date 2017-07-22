@@ -66,7 +66,7 @@ angular.module('BarbrDoApp')
         };
       });
     }, 10000);
-    if ($window.localStorage.lat && $window.localStorage.long) {
+   if ($window.localStorage.lat && $window.localStorage.long) {
       $rootScope.latLong = {
         'latitude': $window.localStorage.lat,
         'longitude': $window.localStorage.long

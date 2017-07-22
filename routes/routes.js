@@ -111,6 +111,7 @@ module.exports = function(app, express) {
     app.get('/api/v1/barber/timeavailability/:barber_id',barberServices.viewBarberAvailability)
     app.post('/api/v1/barber/contactshop',contactController.contactShop);
     app.post('/api/v1/barber/event',barberServices.createEvents);
+    app.put('/api/v1/barber/event/:event_id',barberServices.editEvents);
     app.get('/api/v1/barber/event',barberServices.getEvents);
     app.get('/api/v1/barber/event/:date',barberServices.getEventOnDate);
     app.delete('/api/v1/barber/event/:event_id',barberServices.deleteBarberEvent)
@@ -137,8 +138,6 @@ module.exports = function(app, express) {
     app.put('/api/v1/stripe/updatePlan',stripeController.updatePlan);
     app.put('/api/v1/stripe/deletePlan',stripeController.deletePlan);
     
-    //Need to delete in sprint-8
-    //app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber/shop requesting chair to shop
     app.get('/admin', function(req, res) {
         res.sendFile(path.join(__dirname + './../public/indexAdmin.html'));
     });

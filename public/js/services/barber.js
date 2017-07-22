@@ -37,7 +37,7 @@ angular.module('BarbrDoApp')
       requestChair: function(data) {
         return $http({
           method: 'post',
-          url: '/api/v1/barber/requestchair',
+          url: '/api/v1/requestchair',
           data:data,
           headers: {
             'user_id': obj._id

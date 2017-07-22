@@ -348,7 +348,7 @@ exports.countappoint = function(req, res) {
         res.json(barber);
     });
 };
-exports.showEvents = function(req, res) {
+exports.showEvents = function (req, res) {
     req.assert('barber_id', 'Barber id is required.').notEmpty();
     req.assert('date', 'Date is required.').notEmpty(); //YYYY-MM-DD
     let errors = req.validationErrors();
@@ -369,7 +369,7 @@ exports.showEvents = function(req, res) {
                 $exists: true,
                 $eq: barber_id
             },
-            appointment_date: {
+            appointment_date:{
                 $gte: new Date(appointmentStartdate),
                 $lt: new Date(appointmentEnddate)
             }
@@ -380,77 +380,66 @@ exports.showEvents = function(req, res) {
         .populate('customer_id', 'first_name last_name ratings picture')
         .populate('shop_id', 'name address city state gallery latLong')
         .exec(function(err, data) {
-            barber.aggregate([{
-                $match: {
-                    "user_id": barber_id
-                }
-            }, {
-                $unwind: "$events"
-            }, {
-                $project: {
-                    events: {
-                        $cond: {
-                            if: {
-                                $gt: [{
-                                    $size: "$events.repeat"
-                                }, 0]
-                            },
-                            then: {
-                                "events": "$events"
-                            },
-                            else: {
-                                $cond: {
-                                    if: {
-                                        $and: [{
-                                            $gte: ["$events.startsAt", new Date(appointmentStartdate)]
-                                        }, {
-                                            $lt: ["$events.endsAt", new Date(appointmentEnddate)]
-                                        }]
-                                    },
-                                    then: {
-                                        "events": "$events"
-                                    },
-                                    else: ""
-                                }
+        barber.aggregate([{
+        $match: {
+                "user_id": barber_id
+            }
+        }, {
+            $unwind: "$events"
+        }, {
+            $project:{
+                events:{ 
+                    $cond:{
+                        if:{$gt:[{$size:"$events.repeat"},0]},
+                        then:{"events":"$events"},
+                        else:{ $cond:{
+                            if:{
+                                $and:[
+                                    {$gte: ["$events.startsAt", new Date(appointmentStartdate)]},
+                                    {$lt: ["$events.endsAt", new Date(appointmentEnddate)]}
+                            ]},
+                            then:{"events":"$events"},
+                            else:""
                             }
                         }
-                    },
-                }
-            }, {
-                $group: {
-                    _id: "$_id",
-                    events: {
-                        $push: "$events.events"
-                    },
-                }
-            }]).exec(function(err, eventsData) {
-                console.log(eventsData);
-                if (err) {
-                    return res.status(400).send({
-                        msg: constantObj.messages.errorRetreivingData
-                    });
-                }
-                var events = [];
-                if (eventsData.length > 0) {
-                    return res.status(200).send({
-                        msg: constantObj.messages.successRetreivingData,
-                        data: {
-                            events: [eventsData[0].events],
-                            appointments: data
+                    }
+                },
+            }
+        },{
+            $group: {
+                _id: "$_id",
+                events: {
+                    $push: "$events.events"
+                },
+            }
+        }]).exec(function (err, eventsData) {
+            console.log(eventsData);
+            if (err) {
+                return res.status(400).send({
+                    msg: constantObj.messages.errorRetreivingData
+                });
+            }
+            var events = [];
+            if (eventsData.length > 0) {
+                return res.status(200).send({
+                    msg: constantObj.messages.successRetreivingData,
+                    data: {
+                        events: eventsData[0].events,
+                        appointments: data
 
-                        }
-                    });
-                } else {
-                    return res.status(200).send({
-                        msg: constantObj.messages.successRetreivingData,
-                        data: {
-                            events: events,
-                            appointments: data
-                        }
-                    });
-                }
-            })
+                    }
+                });
+            } else {
+                return res.status(200).send({
+                    msg: constantObj.messages.successRetreivingData,
+                    data: {
+                        events: events,
+                        appointments: data
+                    }
+                });
+            }
         })
+    })
 }
 exports.allPayments = function(req, res) {
     var page = parseInt(req.query.page) || 1;

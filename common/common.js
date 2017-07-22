@@ -34,9 +34,9 @@ exports.notify = function(id,notificationKey){
     })
 }
 
-// let pushToAndroid = function  (token,key) {
+let pushToAndroid = function  (token,key) {
     var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera) 
-        to: "dZahnVKqyoE:APA91bHXOkQ1a8PCkkfCKoHgltA8Yb9ZuP1mwITHsU7waqhr8PdNsrsLrPR_7-89bn0boVBpQAvXsvxi5Bx1p2VuuDn_bVxsAeN2pBu_Klwb2S2mPOGyCqLsJf7UKvhsDCjk00hXT2Cr", 
+        to:  "dL-88Ju0VaA:APA91bGsdzHKJIcfsVSPNGQbno243M4NQqg0xwBkO0UkJPpixVWVzYPfFEiFuH1htU7I5MXBx2X7YMQqvsmr-ZjuW_rROlb6eA5oyLDdE5U3m5tQ-GofRas7eyPEyR6OmyuSoDSKDiJa", 
         // collapse_key: 'your_collapse_key', 
         notification: {
             title: 'Title of your push notification', 
@@ -56,10 +56,10 @@ exports.notify = function(id,notificationKey){
             console.log("Successfully sent with response: ", response);
         }
     });
-// }
+}
 
-// let pushSendToIOS = function(token,key) {
-    // console.log("token here", token);
+let pushSendToIOS = function(token,key) {
+    console.log("token here", token);
     let apnProvider = new apn.Provider(options);
     let deviceToken = "63933720580CE05CB091B58E3D2B9DF0C104DFA20A0A5002B6A9B8319E27045D";
     let note = new apn.Notification();
@@ -80,7 +80,7 @@ exports.notify = function(id,notificationKey){
             console.log("success in sending notification");
         }
     });
-// }
+}
 
 
 

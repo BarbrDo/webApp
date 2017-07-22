@@ -10,8 +10,9 @@ let stripeToken = process.env.STRIPE;
 let stripe = require('stripe')(stripeToken);
 let commonObj = require('../common/common');
 let stripeController = require('./stripe.js');
+let notification = require('../models/notification');
 
-exports.takeAppointment = function (req, res) {
+exports.takeAppointment = function(req, res) {
     console.log("appointment Body", req.body);
     req.checkHeaders("user_id", "User Id cannot be blank").notEmpty();
     req.assert("shop_id", "Shop Id cannot be blank").notEmpty();
@@ -34,25 +35,25 @@ exports.takeAppointment = function (req, res) {
     let appointmentdate = new Date(removeOffset(req.body.appointment_date));
     let services = req.body.services;
 
-    getChairData(chair_id, function (err, chairResult) {
+    getChairData(chair_id, function(err, chairResult) {
         if (!chairResult) {
             return res.status(400).send({
                 msg: constantObj.messages.errorRetreivingData
             });
         }
-        getBarberServices(services, function (err, servicesResult) {
+        getBarberServices(services, function(err, servicesResult) {
             if (!servicesResult) {
                 return res.status(400).send({
                     msg: constantObj.messages.errorRetreivingData
                 });
             }
-            findUserId(user_id, function (err, customerResult) {
+            findUserId(user_id, function(err, customerResult) {
                 if (!customerResult) {
                     return res.status(400).send({
                         msg: constantObj.messages.errorRetreivingData
                     });
                 }
-                findUserId(barber_id, function (err, barberResult) {
+                findUserId(barber_id, function(err, barberResult) {
                     if (!barberResult) {
                         return res.status(400).send({
                             msg: constantObj.messages.errorRetreivingData
@@ -94,42 +95,47 @@ exports.takeAppointment = function (req, res) {
                     saveData.chair_name = chairResult.chairs[0].name;
                     saveData.chair_type = chairResult.chairs[0].type;
 
-                    appointment(saveData).save(function (err, data) {
+                    appointment(saveData).save(function(err, data) {
                         if (err) {
                             return res.status(400).send({
                                 msg: constantObj.messages.errorInSave
                             });
                         } else {
-                            commonObj.notify(saveData.barber_id,"appointment",function(err,data){
-
-                            })
+                            callNotification("customer_create_appointment",saveData.barber_id,saveData.customer_name)
                             if (req.body.token) {
                                 console.log(stripeController);
-                                stripeController.createCharges(req.body.token, totalPrice,req.headers.user_id, function (payErr, payResult) {
+                                stripeController.createCharges(req.body.token, totalPrice, req.headers.user_id, function(payErr, payResult) {
                                     if (err) {
-                                        appointment.remove({_id:data._id},function(err,result){
-                                               return res.status(400).send({
-                                                    "msg": "Your payment is not done successfully.",
-                                                    "err":payErr
-                                                });
+                                        appointment.remove({
+                                            _id: data._id
+                                        }, function(err, result) {
+                                            return res.status(400).send({
+                                                "msg": "Your payment is not done successfully.",
+                                                "err": payErr
+                                            });
                                         })
                                     } else {
-                                         appointment.update({_id:data._id},{$set:{payment_status:"confirm",payment_detail:payResult}},function(err,result){
-                                               if(err){
-                                                   return res.status(400).send({
+                                        appointment.update({
+                                            _id: data._id
+                                        }, {
+                                            $set: {
+                                                payment_status: "confirm",
+                                                payment_detail: payResult
+                                            }
+                                        }, function(err, result) {
+                                            if (err) {
+                                                return res.status(400).send({
                                                     "msg": "Your payment is not done successfully.Something wrong in updating.",
-                                                    "err":err
+                                                    "err": err
                                                 });
-                                               }
-                                               else{
-                                                   getAppointment(req,res,data._id) 
-                                               }
+                                            } else {
+                                                getAppointment(req, res, data._id)
+                                            }
                                         })
                                     }
                                 })
-                            }
-                            else{
-                                getAppointment(req,res,data._id)
+                            } else {
+                                getAppointment(req, res, data._id)
                             }
                         }
                     })
@@ -138,33 +144,74 @@ exports.takeAppointment = function (req, res) {
         })
     });
 }
-let getAppointment = function (req, res,id) {
-    appointment.findOne({
-        _id: id
-    }).populate('barber_id', 'first_name last_name ratings picture created_date')
-            .populate('customer_id', 'first_name last_name ratings picture created_date')
-            .populate('shop_id', 'name address city state gallery created_date')
-            .exec(function (err, result) {
-                if (err) {
-                    return res.status(400).send({
-                        msg: constantObj.messages.errorRetreivingData
-                    });
-                } else {
-                    return res.status(200).send({
-                        msg: constantObj.messages.successRetreivingData,
-                        data: result
-                    });
+
+let callNotification = function(type,user_id,name) {
+    console.log("callfunction", type,user_id,name)
+    notification.findOne({
+        "type": type
+    }, function(err, result) {
+        console.log("result",result);
+        if (result) {
+            commonObj.notify(user_id,name, type, result.text, function(err, data) {
+                if(err){
+                    console.log(err);
+                }
+                else{
+                    var updateUser = {
+                        key:"customer_create_appointment",
+                        text:name+" "+result.text
+                    };
+                    console.log(updateUser);
+                    user.update({
+                        _id: user_id
+                    }, {
+                        $push: {
+                            notification: updateUser
+                        }
+                    }).exec(function(err, data) {
+                        if(err){
+                            console.log(err);
+                        }
+                        else{
+                            console.log(data);
+                        }
+                    })
                 }
             })
+        }
+    })
 }
-let getChairData = function (chair_id, cb) {
+
+let getAppointment = function(req, res, id) {
+    appointment.findOne({
+            _id: id
+        }).populate('barber_id', 'first_name last_name ratings picture created_date')
+        .populate('customer_id', 'first_name last_name ratings picture created_date')
+        .populate('shop_id', 'name address city state gallery created_date')
+        .exec(function(err, result) {
+            if (err) {
+                return res.status(400).send({
+                    msg: constantObj.messages.errorRetreivingData
+                });
+            } else {
+                return res.status(200).send({
+                    msg: constantObj.messages.successRetreivingData,
+                    data: result
+                });
+            }
+        })
+}
+let getChairData = function(chair_id, cb) {
     shop.findOne({
         chairs: {
-            $elemMatch: {"_id": chair_id}
+            $elemMatch: {
+                "_id": chair_id
+            }
         }
-    },
-            {'chairs.$': 1, "name": 1}
-    ).exec(function (err, chairResult) {
+    }, {
+        'chairs.$': 1,
+        "name": 1
+    }).exec(function(err, chairResult) {
         if (err) {
             cb(err, null);
         }
@@ -172,7 +219,7 @@ let getChairData = function (chair_id, cb) {
     })
 }
 
-let getBarberServices = function (services, cb) {
+let getBarberServices = function(services, cb) {
     let serviceIds = []
     for (let i = 0; i < services.length; i++) {
         serviceIds.push(services[i].id);
@@ -181,7 +228,7 @@ let getBarberServices = function (services, cb) {
         _id: {
             $in: serviceIds
         }
-    }).exec(function (err, servicesResult) {
+    }).exec(function(err, servicesResult) {
         if (err) {
             cb(err, null);
         }
@@ -189,11 +236,11 @@ let getBarberServices = function (services, cb) {
     })
 }
 
-let findUserId = function (id, cb) {
+let findUserId = function(id, cb) {
     console.log('idddd', id)
     user.findOne({
         _id: id
-    }).exec(function (err, userResult) {
+    }).exec(function(err, userResult) {
         if (err) {
             cb(err, null);
         }
@@ -202,7 +249,7 @@ let findUserId = function (id, cb) {
 }
 
 
-exports.customerAppointments = function (req, res) {
+exports.customerAppointments = function(req, res) {
     req.checkHeaders("user_id", "user_id cannot be blank").notEmpty();
     let errors = req.validationErrors();
     if (errors) {
@@ -214,27 +261,27 @@ exports.customerAppointments = function (req, res) {
     let currentDate = moment().format("YYYY-MM-DD");
     // below query will give us all those appointments who are pending and rescheduled
     appointment.find({
-        "customer_id": {
-            $exists: true,
-            $eq: req.headers.user_id
-        },
-        "appointment_status": {
-            $in: ['pending', 'reschedule', 'confirm']
-        },
-        "appointment_date": {
-            $gte: currentDate
-        }
-    }).populate('barber_id', 'first_name last_name ratings picture created_date')
-            .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong isActive is_verified isDeleted ratings')
-            .populate('shop_id', 'name address city state gallery latLong created_date user_id')
-            .exec(function (err, result) {
-                if (err) {
-                    return res.status(400).send({
-                        msg: constantObj.messages.errorRetreivingData
-                    });
-                } else {
-                    // This will give all appointments who are completed
-                    appointment.find({
+            "customer_id": {
+                $exists: true,
+                $eq: req.headers.user_id
+            },
+            "appointment_status": {
+                $in: ['pending', 'reschedule', 'confirm']
+            },
+            "appointment_date": {
+                $gte: currentDate
+            }
+        }).populate('barber_id', 'first_name last_name ratings picture created_date')
+        .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong isActive is_verified isDeleted ratings')
+        .populate('shop_id', 'name address city state gallery latLong created_date user_id')
+        .exec(function(err, result) {
+            if (err) {
+                return res.status(400).send({
+                    msg: constantObj.messages.errorRetreivingData
+                });
+            } else {
+                // This will give all appointments who are completed
+                appointment.find({
                         "customer_id": {
                             $exists: true,
                             $eq: req.headers.user_id
@@ -243,28 +290,28 @@ exports.customerAppointments = function (req, res) {
                             $in: ['completed']
                         }
                     }).populate('barber_id', 'first_name last_name ratings picture created_date')
-                            .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong isActive is_verified isDeleted ratings')
-                            .populate('shop_id', 'name address city state gallery latLong created_date user_id')
-                            .exec(function (err, data) {
+                    .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong isActive is_verified isDeleted ratings')
+                    .populate('shop_id', 'name address city state gallery latLong created_date user_id')
+                    .exec(function(err, data) {
 
-                                if (err) {
-                                    return res.status(400).send({
-                                        msg: constantObj.messages.errorRetreivingData
-                                    });
-                                } else {
-                                    return res.status(200).send({
-                                        msg: constantObj.messages.successRetreivingData,
-                                        data: {
-                                            upcoming: result,
-                                            complete: data
-                                        }
-                                    });
+                        if (err) {
+                            return res.status(400).send({
+                                msg: constantObj.messages.errorRetreivingData
+                            });
+                        } else {
+                            return res.status(200).send({
+                                msg: constantObj.messages.successRetreivingData,
+                                data: {
+                                    upcoming: result,
+                                    complete: data
                                 }
-                            })
-                }
-            })
+                            });
+                        }
+                    })
+            }
+        })
 }
-exports.pendingConfiramtion = function (req, res) {
+exports.pendingConfiramtion = function(req, res) {
     console.log("pending confirmation working");
     req.checkParams("_id", "_id cannot be blank").notEmpty();
     let errors = req.validationErrors();
@@ -275,33 +322,33 @@ exports.pendingConfiramtion = function (req, res) {
         });
     }
     appointment.findOne({
-        "_id": req.params._id
-    }).populate('barber_id', 'first_name last_name ratings picture created_date')
-            .populate('customer_id', 'first_name last_name ratings picture created_date')
-            .populate('shop_id', 'name address latLong city state gallery created_date')
-            .exec(function (err, result) {
-                if (err) {
-                    return res.status(400).send({
-                        msg: constantObj.messages.errorRetreivingData,
-                        err: err
-                    });
-                } else {
-                    return res.status(200).send({
-                        msg: constantObj.messages.successRetreivingData,
-                        data: result
-                    });
-                }
-            })
+            "_id": req.params._id
+        }).populate('barber_id', 'first_name last_name ratings picture created_date')
+        .populate('customer_id', 'first_name last_name ratings picture created_date')
+        .populate('shop_id', 'name address latLong city state gallery created_date')
+        .exec(function(err, result) {
+            if (err) {
+                return res.status(400).send({
+                    msg: constantObj.messages.errorRetreivingData,
+                    err: err
+                });
+            } else {
+                return res.status(200).send({
+                    msg: constantObj.messages.successRetreivingData,
+                    data: result
+                });
+            }
+        })
 }
 
 
 
-exports.countappoint = function (req, res) {
-    appointment.find(function (err, barber) {
+exports.countappoint = function(req, res) {
+    appointment.find(function(err, barber) {
         res.json(barber);
     });
 };
-exports.showEvents = function (req, res) {
+exports.showEvents = function(req, res) {
     req.assert('barber_id', 'Barber id is required.').notEmpty();
     req.assert('date', 'Date is required.').notEmpty(); //YYYY-MM-DD
     let errors = req.validationErrors();
@@ -322,7 +369,7 @@ exports.showEvents = function (req, res) {
                 $exists: true,
                 $eq: barber_id
             },
-            appointment_date:{
+            appointment_date: {
                 $gte: new Date(appointmentStartdate),
                 $lt: new Date(appointmentEnddate)
             }
@@ -333,68 +380,79 @@ exports.showEvents = function (req, res) {
         .populate('customer_id', 'first_name last_name ratings picture')
         .populate('shop_id', 'name address city state gallery latLong')
         .exec(function(err, data) {
-        barber.aggregate([{
-        $match: {
-                "user_id": barber_id
-            }
-        }, {
-            $unwind: "$events"
-        }, {
-            $project:{
-                events:{ 
-                    $cond:{
-                        if:{$gt:[{$size:"$events.repeat"},0]},
-                        then:{"events":"$events"},
-                        else:{ $cond:{
-                            if:{
-                                $and:[
-                                    {$gte: ["$events.startsAt", new Date(appointmentStartdate)]},
-                                    {$lt: ["$events.endsAt", new Date(appointmentEnddate)]}
-                            ]},
-                            then:{"events":"$events"},
-                            else:""
+            barber.aggregate([{
+                $match: {
+                    "user_id": barber_id
+                }
+            }, {
+                $unwind: "$events"
+            }, {
+                $project: {
+                    events: {
+                        $cond: {
+                            if: {
+                                $gt: [{
+                                    $size: "$events.repeat"
+                                }, 0]
+                            },
+                            then: {
+                                "events": "$events"
+                            },
+                            else: {
+                                $cond: {
+                                    if: {
+                                        $and: [{
+                                            $gte: ["$events.startsAt", new Date(appointmentStartdate)]
+                                        }, {
+                                            $lt: ["$events.endsAt", new Date(appointmentEnddate)]
+                                        }]
+                                    },
+                                    then: {
+                                        "events": "$events"
+                                    },
+                                    else: ""
+                                }
                             }
                         }
-                    }
-                },
-            }
-        },{
-            $group: {
-                _id: "$_id",
-                events: {
-                    $push: "$events.events"
-                },
-            }
-        }]).exec(function (err, eventsData) {
-            console.log(eventsData);
-            if (err) {
-                return res.status(400).send({
-                    msg: constantObj.messages.errorRetreivingData
-                });
-            }
-            var events = [];
-            if (eventsData.length > 0) {
-                return res.status(200).send({
-                    msg: constantObj.messages.successRetreivingData,
-                    data: {
-                        events: [eventsData[0].events],
-                        appointments: data
+                    },
+                }
+            }, {
+                $group: {
+                    _id: "$_id",
+                    events: {
+                        $push: "$events.events"
+                    },
+                }
+            }]).exec(function(err, eventsData) {
+                console.log(eventsData);
+                if (err) {
+                    return res.status(400).send({
+                        msg: constantObj.messages.errorRetreivingData
+                    });
+                }
+                var events = [];
+                if (eventsData.length > 0) {
+                    return res.status(200).send({
+                        msg: constantObj.messages.successRetreivingData,
+                        data: {
+                            events: [eventsData[0].events],
+                            appointments: data
 
-                    }
-                });
-            } else {
-                return res.status(200).send({
-                    msg: constantObj.messages.successRetreivingData,
-                    data: {
-                        events: events,
-                        appointments: data
-                    }
-                });
-            }
+                        }
+                    });
+                } else {
+                    return res.status(200).send({
+                        msg: constantObj.messages.successRetreivingData,
+                        data: {
+                            events: events,
+                            appointments: data
+                        }
+                    });
+                }
+            })
         })
-    })
 }
-exports.allPayments = function (req, res) {
+exports.allPayments = function(req, res) {
     var page = parseInt(req.query.page) || 1;
     var count = parseInt(req.query.count) || 30;
     var skipNo = (page - 1) * count;
@@ -408,112 +466,112 @@ exports.allPayments = function (req, res) {
     }
     if (searchStr) {
         query.$or = [{
-                first_name: {
-                    $regex: searchStr,
-                    '$options': 'i'
-                }
-            }, {
-                last_name: {
-                    $regex: searchStr,
-                    '$options': 'i'
-                }
-            }, {
-                email: {
-                    $regex: searchStr,
-                    '$options': 'i'
-                }
-            }, {
-                name: {
-                    $regex: searchStr,
-                    '$options': 'i'
-                }
-            }]
+            first_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            last_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            email: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }]
     }
 
     appointment.aggregate([{
-            $unwind: "$services"
-        }, {
-            $group: {
-                _id: "$_id",
-                "appointment_date": {
-                    "$first": "$appointment_date"
-                },
-                "barber_id": {
-                    "$first": "$barber_id"
-                },
-                "payment_method": {
-                    "$first": "$payment_method"
-                },
-                "shop_id": {
-                    "$first": "$shop_id"
-                },
-                "customer_id": {
-                    "$first": "$customer_id"
-                },
-                "payment_status": {
-                    "$first": "$payment_status"
-                },
-                "appointment_status": {
-                    "$first": "$appointment_status"
-                },
-                "totalAmount": {
-                    "$sum": "$services.price"
-                }
+        $unwind: "$services"
+    }, {
+        $group: {
+            _id: "$_id",
+            "appointment_date": {
+                "$first": "$appointment_date"
+            },
+            "barber_id": {
+                "$first": "$barber_id"
+            },
+            "payment_method": {
+                "$first": "$payment_method"
+            },
+            "shop_id": {
+                "$first": "$shop_id"
+            },
+            "customer_id": {
+                "$first": "$customer_id"
+            },
+            "payment_status": {
+                "$first": "$payment_status"
+            },
+            "appointment_status": {
+                "$first": "$appointment_status"
+            },
+            "totalAmount": {
+                "$sum": "$services.price"
             }
-        }, {
-            $lookup: {
-                from: 'shops',
-                localField: 'shop_id',
-                foreignField: '_id',
-                as: 'shopInfo'
-            }
-        }, {
-            $lookup: {
-                from: 'users',
-                localField: 'barber_id',
-                foreignField: '_id',
-                as: 'barberInfo'
-            }
-        }, {
-            $lookup: {
-                from: 'users',
-                localField: 'customer_id',
-                foreignField: '_id',
-                as: 'customerInfo'
-            }
-        }, {
-            $project: {
+        }
+    }, {
+        $lookup: {
+            from: 'shops',
+            localField: 'shop_id',
+            foreignField: '_id',
+            as: 'shopInfo'
+        }
+    }, {
+        $lookup: {
+            from: 'users',
+            localField: 'barber_id',
+            foreignField: '_id',
+            as: 'barberInfo'
+        }
+    }, {
+        $lookup: {
+            from: 'users',
+            localField: 'customer_id',
+            foreignField: '_id',
+            as: 'customerInfo'
+        }
+    }, {
+        $project: {
+            _id: 1,
+            appointment_date: 1,
+            payment_method: 1,
+            barberInfo: {
                 _id: 1,
-                appointment_date: 1,
-                payment_method: 1,
-                barberInfo: {
-                    _id: 1,
-                    first_name: 1,
-                    last_name: 1,
-                    picture: 1
-                },
-                shopInfo: {
-                    _id: 1,
-                    name: 1,
-                },
-                customerInfo: {
-                    _id: 1,
-                    first_name: 1,
-                    last_name: 1,
-                    picture: 1
-                },
-                totalAmount: 1,
-                payment_status: 1,
-                appointment_status: 1,
+                first_name: 1,
+                last_name: 1,
+                picture: 1
+            },
+            shopInfo: {
+                _id: 1,
+                name: 1,
+            },
+            customerInfo: {
+                _id: 1,
+                first_name: 1,
+                last_name: 1,
+                picture: 1
+            },
+            totalAmount: 1,
+            payment_status: 1,
+            appointment_status: 1,
 
-            }
-        }, {
-            $match: query
-        }, {
-            "$skip": skipNo
-        }, {
-            "$limit": count
-        }]).exec(function (err, result) {
+        }
+    }, {
+        $match: query
+    }, {
+        "$skip": skipNo
+    }, {
+        "$limit": count
+    }]).exec(function(err, result) {
         var length = result.length;
         if (err) {
             return res.status(400).send({
@@ -528,7 +586,7 @@ exports.allPayments = function (req, res) {
         }
     })
 }
-exports.payafterappointment = function (req, res) {
+exports.payafterappointment = function(req, res) {
     console.log(req.body);
     req.assert('appointmentId', 'appointmentId is required.').notEmpty();
     req.assert('date', 'Date is required.').notEmpty(); //YYYY-MM-DD
@@ -546,7 +604,7 @@ exports.payafterappointment = function (req, res) {
     console.log(chargeAmount);
     user.findOne({
         _id: req.headers.user_id
-    }, function (err, data) {
+    }, function(err, data) {
         if (err) {
             res.status(400).send({
                 msg: constantObj.messages.errorRetreivingData,
@@ -557,7 +615,7 @@ exports.payafterappointment = function (req, res) {
             let email = data.email
             appointment.findOne({
                 "_id": req.body.appointmentId
-            }, function (err, result) {
+            }, function(err, result) {
                 if (err) {
                     return res.status(400).send({
                         msg: constantObj.messages.errorRetreivingData
@@ -567,7 +625,7 @@ exports.payafterappointment = function (req, res) {
                         stripe.customers.create({
                             email: email,
                             source: req.body.token,
-                        }).then(function (customer) {
+                        }).then(function(customer) {
                             // YOUR CODE: Save the customer ID and other info in a database for later.
                             return stripe.charges.create({
                                 amount: chargeAmount,
@@ -575,13 +633,15 @@ exports.payafterappointment = function (req, res) {
                                 capture: false,
                                 customer: customer.id,
                             });
-                        }).then(function (charge) {
+                        }).then(function(charge) {
                             let updateDate = {
                                 payment_status: "confirm",
                                 payment_method: "card",
                                 payment_detail: charge
                             }
-                            appointment.update({"_id": req.body.appointmentId}, updateDate, function (err, data) {
+                            appointment.update({
+                                "_id": req.body.appointmentId
+                            }, updateDate, function(err, data) {
                                 if (err) {
                                     return res.status(400).send({
                                         msg: constantObj.messages.errorRetreivingData
@@ -594,7 +654,7 @@ exports.payafterappointment = function (req, res) {
                                     });
                                 }
                             })
-                        }).catch(function (err) {
+                        }).catch(function(err) {
                             return res.status(400).send({
                                 msg: err.message
                             })
@@ -605,23 +665,13 @@ exports.payafterappointment = function (req, res) {
         }
     })
 }
-exports.sentMessage = function (req, res) {
-    commonObj.sentMessage(function () {
-        console.log("working");
-    })
-}
-exports.pushNotificationForIOS = function (req, res) {
-    commonObj.pushSendToIOS('D412F80A2CB04FF69752480EE5CAE1EF7E35350E1A2F52614F0D662BA3EDC21F', function () {
-        console.log("working");
-    })
-}
-exports.pushNotificationForAndroid = function (req, res) {
-    commonObj.pushToAndroid('ezm1u0Fr6W0:APA91bGb0HMrRAEYhbG5pmnzY_Har1Ewk-8FEiakXerY0tkJpBaH_wAlqav5ZJ_cZUsS6ScOW6vrZocWbuUInn2UybAey7vkhuBRrr4KloxSzjj5ZVuLNg9Jcd9J474l7IyhPlrXNoZU', function () {
+exports.sentMessage = function(req, res) {
+    commonObj.sentMessage(function() {
         console.log("working");
     })
 }
 
-let removeOffset = function (dobFormat) {
+let removeOffset = function(dobFormat) {
     let userOffset = new Date(dobFormat).getTimezoneOffset();
     let userOffsetMilli = userOffset * 60 * 1000;
     let dateInMilli = moment(dobFormat).unix() * 1000;

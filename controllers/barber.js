@@ -14,6 +14,44 @@ let commonObj = require('../common/common');
 let stripeToken = process.env.STRIPE
 let stripe = require('stripe')(stripeToken);
 let chairBook = require('../models/chair_booking');
+let notification = require('../models/notification');
+
+let callNotification = function(type,user_id,name) {
+    console.log("callfunction", type,user_id,name)
+    notification.findOne({
+        "type": type
+    }, function(err, result) {
+        console.log("result",result);
+        if (result) {
+            commonObj.notify(user_id,name, type, result.text, function(err, data) {
+                if(err){
+                    console.log(err);
+                }
+                else{
+                    var updateUser = {
+                        key:"customer_create_appointment",
+                        text:name+" "+result.text
+                    };
+                    console.log(updateUser);
+                    user.update({
+                        _id: user_id
+                    }, {
+                        $push: {
+                            notification: updateUser
+                        }
+                    }).exec(function(err, data) {
+                        if(err){
+                            console.log(err);
+                        }
+                        else{
+                            console.log(data);
+                        }
+                    })
+                }
+            })
+        }
+    })
+}
 
 exports.editBarber = function(req, res) {
     var updateData = JSON.parse(JSON.stringify(req.body));
@@ -385,6 +423,11 @@ exports.confirmAppointment = function(req, res) {
                 msg: constantObj.messages.userStatusUpdateFailure
             });
         } else {
+            appointment.findOne({_id: req.params.appointment_id},function(err,result){
+                if(result){
+                    callNotification("barber_confirm_appointment",result.customer_id,result.barber_name);
+                }
+            })
             return res.status(200).send({
                 msg: constantObj.messages.userStatusUpdateSuccess
             });
@@ -394,6 +437,7 @@ exports.confirmAppointment = function(req, res) {
 
 //Reschedule Appointment
 exports.rescheduleAppointment = function (req, res) {
+    req.checkHeaders("user_type","User type is required.").notEmpty();
     req.assert("minutes", "Time is required.").notEmpty();
     req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
     req.assert("appointment_date", "appointment_date is required").notEmpty();
@@ -420,6 +464,16 @@ exports.rescheduleAppointment = function (req, res) {
                 msg: constantObj.messages.userStatusUpdateFailure
             });
         } else {
+            appointment.findOne({_id: req.params.appointment_id},function(err,result){
+                if(result){
+                    if(req.headers.user_type=='barber'){
+                        callNotification("barber_reschedule_appointment",result.customer_id,result.barber_name);
+                    }
+                    else if(req.headers.user_type=='customer'){
+                        callNotification("customer_reschedule_appointment",result.barber_id,result.customer_name);
+                    }
+                }
+            })
             let auth = {
                 auth: {
                     api_key: process.env.MAILGUN_APIKEY,
@@ -427,7 +481,6 @@ exports.rescheduleAppointment = function (req, res) {
                 }
             }
             let nodemailerMailgun = nodemailer.createTransport(mg(auth));
-
             var mailOptions = {
                 from: constantObj.messages.email,
                 to: constantObj.messages.email,
@@ -480,6 +533,7 @@ exports.completeAppointment = function(req, res) {
                 } else {
                     console.log("result in appointment", result);
                     if (result) {
+                        callNotification("customer_complete_appointment",result.barber_id,result.customer_name)
                         if (result.payment_detail.length > 0) {
                             console.log(result.payment_detail[0].id);
                             stripe.charges.capture(result.payment_detail[0].id, function(err, charge) {
@@ -497,6 +551,7 @@ exports.completeAppointment = function(req, res) {
                             done(err, result);
                         }
                     } else {
+
                         done(err, result);
                     }
                 }
@@ -545,6 +600,7 @@ exports.completeAppointment = function(req, res) {
 //Mark Appointment as cancel
 exports.cancelAppointment = function (req, res) {
     req.checkParams("appointment_id", "Appointment id is required.").notEmpty();
+    req.checkHeaders("user_type","User type is required.").notEmpty();
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -563,6 +619,12 @@ exports.cancelAppointment = function (req, res) {
         } else {
             console.log("result in appointment", result);
             if (result) {
+                    if(req.headers.user_type=='barber'){
+                        callNotification("barber_cancel_appointment",result.customer_id,result.barber_name);
+                    }
+                    else if(req.headers.user_type=='customer'){
+                        callNotification("customer_cancel_appointment",result.barber_id,result.customer_name);
+                    }
                 if (result.payment_detail.length > 0) {
                     console.log(result.payment_detail[0].id);
                     stripe.refunds.create({charge: result.payment_detail[0].id}, function (err, refund) {

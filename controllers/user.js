@@ -66,7 +66,7 @@ exports.loginPost = function(req, res, next) {
     var device_token = req.headers.device_id;
   }
   if (req.headers.device_type) {
-    var device_type = req.headers.device_type;
+    var device_type = req.headers.device_type.toLowerCase();
   }
   console.log(device_token, device_type)
   User.findOne({

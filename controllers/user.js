@@ -1350,7 +1350,8 @@ exports.subscribe = function(req, res) {
   })
 }
 
-exports.logout = function() {
+exports.logout = function(req,res) {
+    console.log('---------',req.headers.user_id);
   User.update({
     _id: req.headers.user_id
   }, {
@@ -1358,11 +1359,11 @@ exports.logout = function() {
       device_id: "",
       device_type: ""
     }
-  }, function(err, response) {
+  }).exec(function(err, response) {
     if (err) {
       res.status(400).send({
         msg: "Error in logout.",
-        "err": err
+        err: err
       });
     } else {
       res.status(200).send({

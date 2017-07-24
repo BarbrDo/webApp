@@ -199,7 +199,7 @@ angular.module('BarbrDoApp')
         });
       },
       requestRemoveBarber: function(data) {
-        return $http.post('/api/v1/shop/removebarber',data);
+        return $http.post('/api/v1/shops/removebarber',data);
       },
       ContactBarbrdo: function(data) {
         console.log("here")

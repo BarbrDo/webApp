@@ -219,20 +219,21 @@
        })
      }
 
+     var date = new Date();
+         var ddate = new Date();
+         ddate.setDate(date.getDate() - 6);
+         $scope.startdate = $filter('date')(ddate, "yyyy-MM-dd");
+         $scope.enddate = $filter('date')(date, "yyyy-MM-dd");
+
      $scope.finacialcenter = function() {
        $scope.loaderStart = true;
        var obj = {
          obj: JSON.parse($window.localStorage.user)
        }
        shop.shopInfo(obj).then(function(response) {
-
-         $rootScope.shopid = response.data.user.shop[0]._id
-         var myArray = [];
-         var date = new Date();
-         var ddate = new Date();
-         ddate.setDate(date.getDate() - 6);
-         $scope.startdate = $filter('date')(ddate, "yyyy-MM-dd");
-         $scope.enddate = $filter('date')(date, "yyyy-MM-dd");
+        console.log(response)
+         $rootScope.shopid = response.data.data[0]._id
+         
          var obj = {
            startdate: $scope.startdate,
            enddate: $scope.enddate,
@@ -254,6 +255,7 @@
        $scope.loaderStart = true;
        shop.chairDetail($stateParams.id)
          .then(function(response) {
+          console.log(response)
            $scope.loaderStart = false;
            $rootScope.chairs = response.data.data[0].chairs[0];
            $rootScope.chair_split = response.data.data[0].chairs[0].shop_percentage;

@@ -482,6 +482,7 @@ angular.module('BarbrDoApp')
 		}
 
 		$scope.editservices = function(service_id, price, name) {
+			console.log(price)
 			$scope.loaderStart = true;
 			var obj = {
 				service_id: service_id,

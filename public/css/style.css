@@ -1666,6 +1666,21 @@ span.lspic img {
     text-align: center;
     width: 35px;
 }
+
+.alllnk a.remove {
+        margin-left: 450px;
+    background-color: #ce2029;
+        margin-top: 50px;
+}
+
+.imgbarber {
+        border-radius: 50%;
+    overflow: hidden;
+    height: 130px;
+    margin-left: 320px;
+    position: absolute;
+}
+
 .ac_btn {
     text-align: center;
 }

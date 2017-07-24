@@ -1,0 +1,78 @@
+
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item active">Add Services</li>
+</ol>
+<div class="panel" ng-init="services()">
+    <div class="panel-heading">
+        All Services
+    </div>
+    <div class="panel-body">
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <table class="table">
+                    <thead>
+                        <tr >
+                            <th style="font-size: 13px;">Service Name</th>
+                            <th style="font-size: 13px;" align="center" >Add To List</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr>
+                            <td >
+             <input type="text" class="form-control" required  ng-model="service" placeholder="Enter Service Name" /> </td>
+   
+            <td align="center">
+             
+             <button  ng-click="addservice(service,price)">Add</button> 
+            </td>
+                            
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+   <!--  <div class="row" >
+      <div class="col-md-6" ng-repeat = "service in services">
+        <div class="serve barber">
+          <p class="servicename" data-ng-hide="editMode">{{service.name}} 
+          <form name="myform">
+           <input type="text" data-ng-show="editMode" ng-model="service.price" placeholder="price" style="color: #000000;height: 20px; width: 120px;" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/"  ng-maxlength="6" maxlength="6" name="priceVal"/>
+           <div class="validationError" ng-messages="myform.priceVal.$error" ng-show="
+                                     myform.priceVal.$error.pattern && (!myform.priceVal.$pristine || myform.$submitted)" role="alert">
+                                    <span style="color:red" ng-message="pattern">Enter valid character </span>
+                                </div>
+           </form>     </p>
+          <div class="editservice"> <switch name="enabled" ng-model="service.status"  class="green" >       </switch> 
+          <a  data-ng-hide="editMode" data-ng-click="editMode = true"> <i class="fa  fa-edit " style="font-size: 30px;"></i> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          <a  href="#" data-ng-show="editMode" data-ng-click="editMode = false;editservices(service.service_id,service.price,service.name)"  data-toggle="tooltip" title="Save"><i class="fa fa-floppy-o" aria-hidden="true" ></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <a href="#" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" data-toggle="tooltip" title="Cancel"><i class="fa fa-ban" aria-hidden="true" ></i></a>
+          </div> 
+          
+        </div>
+      </div>
+    </div> -->
+    <div class="row" >
+      <div class="col-md-6" ng-repeat = "service in services">
+        <div class="serve barber">
+          <p class="servicename"  data-ng-hide="editMode">{{service.name}}
+           <form name="myform">
+           <input type="text" data-ng-show="editMode" ng-model="service.name" placeholder="Service Name" style="color: #000000;height: 30px; width: 520px;"  ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="50" maxlength="50" name="servname"/>
+                    <!-- <span style="color:red;" ng-show="myform.servname.$error.pattern">Enter Valid Character</span><br>
+                    <span style="color:red " ng-show="myform.servname.$error.maxlength && myform.servname.$dirty">First name maximum length exceeds</span> -->
+           </form>                     
+          </p>
+          <div class="editservice"> 
+          <a  data-ng-hide="editMode" data-ng-click="editMode = true"> <i class="fa  fa-edit " style="font-size: 30px;"></i> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          <span ng-click="disableservice(service._id)"><switch name="enabled" ng-model="service.status"  class="green" data-ng-hide="editMode">       </switch> </span>
+          <a  data-ng-show="editMode" data-ng-click="editMode = false;editservices(service.name,service._id)"  data-toggle="tooltip" title="Save"><i class="fa fa-floppy-o" aria-hidden="true" style="font-size: 30px;" ></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <a  data-ng-show="editMode" data-ng-click="editMode = false; cancel()" data-toggle="tooltip" title="Cancel"><i class="fa fa-ban" aria-hidden="true" style="font-size: 30px;" ></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+        </div>
+    </div>
+</div>
+

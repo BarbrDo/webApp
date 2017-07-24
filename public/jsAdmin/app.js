@@ -477,6 +477,24 @@
             templateUrl: "/modalsAdmin/adminHTml/views/reports.html"
         })
 
+        .state('cms', {
+                resolve: {
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('login');
+                            }, 0);
+                            return deferred.promise;
+                        }
+                    }
+                },
+                url: '/cms/add',
+                controller: "AdminCtrl",
+                templateUrl: 'templatesAdmin/cmsAdd.html'
+            })
+
     });
 
     app_admin.config(function(ChartJsProvider) {

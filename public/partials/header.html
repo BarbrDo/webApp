@@ -61,7 +61,8 @@
                 <li ng-class="{active:tabActive=='login'}" ng-click><a data-toggle="tab" href="#login" >Login</a></li>
                 <li ng-class="{active:tabActive=='signup'}"><a data-toggle="tab" href="#signup" >Signup</a></li>
             </ul>
-            <div class="tab-content">
+            <div class="tab-content" >
+            <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
                 <div id="login" class="tab-pane fade in active">
                     <div class="tab-content contact-us">
                                 <div role="tabpanel" class="tab-pane active" id="login">
@@ -69,7 +70,7 @@
                                         <div ng-repeat="myerr in messages.error">{{myerr.msg}}</div>
                                     </div>
                                     <div class="text-center">
-                                        <a  ng-click="authenticate('facebook')" data-toggle="tab" href="#signup"><img src="images/fbb.png"></a>
+                                        <a  ng-click="authenticate('facebook')" href="#"><img src="images/fbb.png"></a>
                                     </div>
                                     <form name="loginForm" >
                                         <div class="form-group">

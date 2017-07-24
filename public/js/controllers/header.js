@@ -66,7 +66,7 @@ angular.module('BarbrDoApp')
         };
       });
     }, 10000);
-   if ($window.localStorage.lat && $window.localStorage.long) {
+    if ($window.localStorage.lat && $window.localStorage.long) {
       $rootScope.latLong = {
         'latitude': $window.localStorage.lat,
         'longitude': $window.localStorage.long
@@ -86,32 +86,43 @@ angular.module('BarbrDoApp')
       delete $window.localStorage.imagePath;
       $state.go('home');
     };
-    $scope.check = function() {
-      $scope.user = JSON.parse($window.localStorage.user);
-      console.log("fbauthe", $scope.user)
-    }
+    // $scope.check = function() {
+    //   $scope.user = JSON.parse($window.localStorage.user);
+    //   console.log("fbauthe", $scope.user)
+    // }
 
     $scope.authenticate = function(provider) {
+       $scope.loaderStart = true;
       $auth.authenticate(provider)
         .then(function(response) {
           // $rootScope.user = response.data.user;
-          console.log("authenticate", response.data.user)
+          console.log("authenticate", response)
           $window.localStorage.user = JSON.stringify(response.data.user);
           $scope.user = JSON.parse($window.localStorage.user);
-          $scope.check();
+          // $scope.check();
           if (response.data.imagesPath) {
             $window.localStorage.imagePath = response.data.imagesPath;
           }
+
           if (response.data.err) {
-            console.log(response.data)
-            $state.go('upcomingComplete');
-          } else {
-            if (response.data.user) {
-              console.log("heree")
-              $scope.tabActive = 'signup';
+            console.log("here now")
+            if (response.data.user.user_type == 'customer') {
+              $state.go('upcomingComplete');
             }
+            if (response.data.user.user_type == 'barber') {
+              $state.go('barberDashboard');
+            }
+            if (response.data.user.user_type == 'shop') {
+              $state.go('barbershopdashboard')
+            }
+          } else {
+             $scope.loaderStart = false;
+            $scope.tabActive = 'signup';
+            $('.tab-content a[href="#signup"]').tab('show')
+
 
           }
+
         })
         .catch(function(response) {
           if (response.error) {
@@ -192,8 +203,27 @@ angular.module('BarbrDoApp')
       console.log("user", $scope.user);
       $auth.signup($scope.user)
         .then(function(response) {
-          toastr.success("Please check your mail to activate your account.");
-          console.log($scope.tabActive)
+          if (response.data.user.facebook) {
+            //  $window.localStorage.user = JSON.stringify(response.data.user);
+            //   $rootScope.currentUser = response.data.user;
+            //   $window.localStorage.imagePath = response.data.imagesPath;
+            // console.log(response)
+            // console.log(response.data.user.user_type);
+            // console.log(response.data.user.user_type=='customer');
+            if (response.data.user.user_type == 'customer') {
+              console.log("inside customer");
+              $state.transitionTo('upcomingComplete');
+            }
+            if (response.data.user.user_type == 'barber') {
+              $state.go('barberDashboard');
+            }
+            if (response.data.user.user_type == 'shop') {
+              $state.go('barbershopdashboard')
+            }
+          } else {
+            toastr.success("Please check your mail to activate your account.");
+          }
+
         })
         .catch(function(response) {
           console.log(response)
@@ -201,18 +231,18 @@ angular.module('BarbrDoApp')
 
         });
     };
-    $scope.fbsignup = function(user) {
-      shop.fbSignup(user)
-        .then(function(response) {
-          toastr.success("Please check your mail to activate your account.")
-          $state.go('upcomingComplete')
-        })
-        .catch(function(response) {
-          $scope.messagess = {
-            error: Array.isArray(response.data) ? response.data : response.data
-          };
-        });
-    };
+    // $scope.fbsignup = function(user) {
+    //   shop.fbSignup(user)
+    //     .then(function(response) {
+    //       toastr.success("Please check your mail to activate your account.")
+    //       $state.go('upcomingComplete')
+    //     })
+    //     .catch(function(response) {
+    //       $scope.messagess = {
+    //         error: Array.isArray(response.data) ? response.data : response.data
+    //       };
+    //     });
+    // };
     $scope.addChair = function() {
       $scope.loaderStart = true;
       var obj = JSON.parse($window.localStorage.user);

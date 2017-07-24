@@ -92,9 +92,9 @@ angular.module('BarbrDoApp')
           }
         });
       },
-      // userProfile : function(data) {
-      //   return $http.get('/api/v1/userprofile/'+data);
-      // },
+      userProfile : function(data) {
+        return $http.get('/api/v1/userprofile/'+data.id);
+      },
       getImages : function(data) {
         return $http.get('/api/v1/userprofile/'+obj._id);
       },

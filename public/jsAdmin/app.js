@@ -477,8 +477,13 @@
             templateUrl: "/modalsAdmin/adminHTml/views/reports.html"
         })
 
+<<<<<<< HEAD
         .state('add_services', {
             resolve: {
+=======
+        .state('cms', {
+                resolve: {
+>>>>>>> 91bd306da8ecb286657a1e13c3068b08c302d47a
                     mess: function($localStorage,$q,$state) {
                         var deferred = $q.defer();
                         if ($localStorage.loggedIn!= true) {
@@ -490,11 +495,18 @@
                         }
                     }
                 },
+<<<<<<< HEAD
             url: '/add_services',
             controller: "AdminCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/add_services.html"
         })
 
+=======
+                url: '/cms/add',
+                controller: "AdminCtrl",
+                templateUrl: 'templatesAdmin/cmsAdd.html'
+            })
+>>>>>>> 91bd306da8ecb286657a1e13c3068b08c302d47a
 
     });
 

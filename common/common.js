@@ -19,44 +19,64 @@ options = {
     },
     production: false
 };
+let nodemailer = require('nodemailer');
+let mg = require('nodemailer-mailgun-transport');
 
+exports.sendMail = function(to, from, subject, text, cb) {
+    let auth = {
+        auth: {
+            api_key: process.env.MAILGUN_APIKEY,
+            domain: process.env.MAILGUN_DOMAIN
+        }
+    }
+    let nodemailerMailgun = nodemailer.createTransport(mg(auth));
 
+    let mailOptions = {
+        to: to,
+        from: from,
+        subject: subject,
+        text: text
+    };
+
+    nodemailerMailgun.sendMail(mailOptions, function(err, info) {
+        if (err) {
+            cb(err, null);
+        } else {
+            cb(null, info);
+        }
+    });
+}
 exports.notify = function(id, name, type, text, cb) {
-    console.log("this is working");
     userObj.findOne({
         _id: id
     }, function(err, result) {
         if (result) {
-            console.log("reuslt in common", result);
             console.log("other details", id, name, type, text)
             console.log(result.device_type);
             if (result.device_type === 'ios') {
-                try {
-                    console.log("inside ios");
-                    let apnProvider = new apn.Provider(options);
-                    let deviceToken = result.device_id;
-                    let note = new apn.Notification();
-                    note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
-                    note.badge = 3;
-                    note.sound = "ping.aiff";
-                    note.alert = name +" "+text;
-                    note.payload = {
-                        'messageFrom': type
-                    };
-                    note.topic = "com.development.BarbrDo";
-                    note.notifyType = "matchNotification"
-                    apnProvider.send(note, deviceToken).then((result) => {
-                        if (result.failed.length > 0) {
-                            console.log("error in sending notification");
-                            cb(err, null);
-                        } else {
-                            console.log("success in sending notification");
-                            cb(null, result);
-                        }
-                    });
-                } catch (e) {
-                    console.log(e);
-                }
+                console.log("inside ios");
+                let apnProvider = new apn.Provider(options);
+                let deviceToken = result.device_id;
+                let note = new apn.Notification();
+                note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+                note.badge = 3;
+                note.sound = "ping.aiff";
+                note.alert = name + " " + text;
+                note.payload = {
+                    'messageFrom': type
+                };
+                note.topic = "com.development.BarbrDo";
+                note.notifyType = "matchNotification"
+                apnProvider.send(note, deviceToken).then((result) => {
+                    if (result.failed.length > 0) {
+                        console.log("error in sending notification");
+                        cb(err, null);
+                    } else {
+                        console.log("success in sending notification");
+                        cb(null, result);
+                    }
+                });
+
             } else if (result.device_type == 'android') {
                 var message = {
                     to: result.device_id,

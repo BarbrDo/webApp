@@ -400,6 +400,13 @@ exports.allShopsHavingChairs = function(req, res) {
                 foreignField: '_id',
                 as: 'barberInfo'
             }
+        },{
+            $lookup: {
+                from: 'users',
+                localField: 'user_id',
+                foreignField: '_id',
+                as: 'shopInfo'
+            }
         },
         {
             $group:
@@ -419,6 +426,7 @@ exports.allShopsHavingChairs = function(req, res) {
                     city:"$city",
                     address:"$address",
                     ratings:"$ratings",
+                    picture:"$shopInfo.picture",
                     payment_method:"$payment_methods",
                     distance:"$dist.calculated"
                 },
@@ -780,6 +788,7 @@ exports.shopdetail = function(req, res) {
             _id:"$_id",
             name:{$first:"$name"},
             license_number: {$first: "$license_number"},
+            shop_user_id :{$first:"$user_id"},
             ratings: {$first: "$ratings"},
             latLong: {$first: "$latLong"},
             state: {$first: "$state"},
@@ -1445,7 +1454,7 @@ let getShopTotalSale = function (shop_id, cb) {
     appointment.aggregate([{
             $match: {
                 shop_id: shopId,
-                //appointment_status: "completed"
+                appointment_status: "completed"
             }
         },{
             $group: {
@@ -1470,7 +1479,7 @@ let getShopTotalSaleOnDates = function(shop_id, startDate, endDate, cb) {
     appointment.aggregate([{
         $match: {
             shop_id: shopId,
-            // appointment_status: "completed"
+            appointment_status: "completed"
         }
     }, {
         $match: {
@@ -1504,7 +1513,7 @@ let getShopAppointmentsDetail = function(shop_id, startDate, endDate, cb) {
     appointment.aggregate([{
         $match: {
             shop_id: shopId,
-            //appointment_status: "completed"
+            appointment_status: "completed"
         }
     },{
         $match: {

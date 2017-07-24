@@ -87,15 +87,26 @@ exports.loginPost = function(req, res, next) {
         msg: user.remark
       });
     }
-
-    user.comparePassword(req.body.password, function(err, isMatch) {
+    if(user.facebook){
+      passFunction(user,req,res,device_token,device_type)
+    }
+    else{
+          user.comparePassword(req.body.password, function(err, isMatch) {
       if (!isMatch) {
         return res.status(401).send({
           msg: 'Invalid email or password'
         });
       }
+      else{
+        passFunction(user,req,res,device_token,device_type)
+      }
+    });
+    }
+  });
+}
 
-      let currentDate = moment().format("YYYY-MM-DD"),
+let passFunction  = function(user,req,res,device_token,device_type){
+  let currentDate = moment().format("YYYY-MM-DD"),
         createDate = moment(user.created_date).format("YYYY-MM-DD"),
         futureMonth = moment(createDate).add(2, 'M');
       futureMonth = moment(futureMonth).format("YYYY-MM-DD")
@@ -143,10 +154,7 @@ exports.loginPost = function(req, res, next) {
           "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
         });
       }
-    });
-  });
 }
-
 /**
  * POST /signup
  */
@@ -245,7 +253,7 @@ exports.signupPost = function(req, res, next) {
             saveData.latLong = [req.headers.device_longitude, req.headers.device_latitude];
           }
           if (req.body.facebook) {
-            saveData.isActive = true;
+            saveData.is_active = true;
             saveData.is_verified = true;
             saveData.remark = '';
           }
@@ -277,8 +285,10 @@ exports.signupPost = function(req, res, next) {
               })
             } else {
               console.log("customer created on stripe ", customer);
-              saveData.isActive = false;
-              saveData.is_verified = false;
+              if (!req.body.facebook) {
+                saveData.is_active = false;
+                saveData.is_verified = false;
+              }
               saveData.stripe_customer = customer;
               done(err, saveData)
             }

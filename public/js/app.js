@@ -1904,6 +1904,8 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 var deferred = $q.defer();
                 setTimeout(function() {
                     deferred.resolve()
+                    $auth.logout();
+                    delete $window.localStorage.user;
                     $state.go('pageNotFound')
                 }, 0);
                 return deferred.promise;

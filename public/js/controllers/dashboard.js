@@ -1,12 +1,12 @@
 angular.module('BarbrDoApp')
 	.controller('dashboardCtrl', function($scope, $rootScope, $filter, $location, customer, $stateParams, $state, $window, ngTableParams, $timeout, $http, toastr) {
-                var obj = {};
-                obj.latitude = $rootScope.latLong.latitude;
-                obj.longitude = $rootScope.latLong.longitude;
+		var obj = {};
+		obj.latitude = $rootScope.latLong.latitude;
+		obj.longitude = $rootScope.latLong.longitude;
 		$scope.dollarAmmount = 0.00;
 		$scope.annualCost = $scope.dollarAmmount;
 		$scope.search = {};
-                console.log($rootScope.latLong);
+		console.log($rootScope.latLong);
 		$scope.callFunctions = function() {
 			$scope.shoplist();
 			$scope.barberList();
@@ -14,7 +14,7 @@ angular.module('BarbrDoApp')
 		$scope.shoplist = function() {
 			obj.search = $scope.search.searchShop;
 			$scope.loaderStart = true;
-                       
+
 			customer.shopList(obj)
 				.then(function(response) {
 					$scope.loaderStart = false;
@@ -133,7 +133,7 @@ angular.module('BarbrDoApp')
 
 		};
 
-		$scope.nextdates =function(){
+		$scope.nextdates = function() {
 			var myArray = [];
 			// Below code is generating current date + 6 days more
 			var date = new Date($scope.selectDate[6]);
@@ -147,7 +147,7 @@ angular.module('BarbrDoApp')
 			$scope.selectDate = myArray;
 		}
 
-		$scope.previousdates = function(){
+		$scope.previousdates = function() {
 			// Below code is generating current date + 6 days more
 			// var date = new Date($scope.selectDate[0]);
 			// date.setDate(date.getDate() - 6)
@@ -198,7 +198,7 @@ angular.module('BarbrDoApp')
 
 		$scope.payLater = function(chair_amount, chair_id, chair_type, chair_name, chair_shop_percentage, chair_barber_percentage) {
 			var myarr = [];
-			console.log("this is date",$scope.selected.length)
+			console.log("this is date", $scope.selected.length)
 			for (var i = 0; i < $scope.selected.length; i++) {
 				var cusObj = {};
 				cusObj.name = $scope.selected[i].name;
@@ -449,6 +449,19 @@ angular.module('BarbrDoApp')
 			$state.go('appointmentDetail', {
 				_id: id
 			});
+		}
+
+		if ($state.current.name == 'notifications') {
+			let currentUser = JSON.parse($window.localStorage.user);
+			let obj = {
+				id:currentUser._id
+			}
+			customer.userProfile(obj).then(function  (response) {
+				console.log(response.data.user);
+				$scope.notify = response.data.user.notification;
+			}).catch(function  (e) {
+				console.log("error in request",e);
+			})
 		}
 
 		// Stripe Implementation

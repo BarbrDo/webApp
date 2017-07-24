@@ -5,18 +5,15 @@ angular.module('BarbrDoApp')
     if ($state.current.name == 'pageNotFound') {
       //        console.log("header controller is working");
     }
-
     $scope.tabActive = 'login';
     $scope.activeTab = function(value) {
       $scope.tabActive = value;
     }
-
     $scope.turnPage = function(value) {
       $scope.obj = {
         value: value
       }
     }
-
     $scope.isActive = function(viewLocation) {
       return viewLocation === $location.path();
     };
@@ -66,7 +63,7 @@ angular.module('BarbrDoApp')
         };
       });
     }, 10000);
-   if ($window.localStorage.lat && $window.localStorage.long) {
+    if ($window.localStorage.lat && $window.localStorage.long) {
       $rootScope.latLong = {
         'latitude': $window.localStorage.lat,
         'longitude': $window.localStorage.long
@@ -74,7 +71,7 @@ angular.module('BarbrDoApp')
     } else {
       $rootScope.latLong = {
         'latitude': latLong[0].latitude,
-        'longitude': latLong[0].longitude
+        'longitude': latLong[1].longitude
       }
     }
 
@@ -86,32 +83,42 @@ angular.module('BarbrDoApp')
       delete $window.localStorage.imagePath;
       $state.go('home');
     };
-    $scope.check = function() {
-      $scope.user = JSON.parse($window.localStorage.user);
-      console.log("fbauthe", $scope.user)
-    }
+    // $scope.check = function() {
+    //   $scope.user = JSON.parse($window.localStorage.user);
+    //   console.log("fbauthe", $scope.user)
+    // }
 
     $scope.authenticate = function(provider) {
+      $scope.loaderStart = true;
       $auth.authenticate(provider)
         .then(function(response) {
           // $rootScope.user = response.data.user;
-          console.log("authenticate", response.data.user)
-          $window.localStorage.user = JSON.stringify(response.data.user);
-          $scope.user = JSON.parse($window.localStorage.user);
-          $scope.check();
+          console.log("authenticate", response)
+          $scope.user = response.data.user;
+          // $scope.check();
           if (response.data.imagesPath) {
             $window.localStorage.imagePath = response.data.imagesPath;
           }
           if (response.data.err) {
-            console.log(response.data)
-            $state.go('upcomingComplete');
-          } else {
-            if (response.data.user) {
-              console.log("heree")
-              $scope.tabActive = 'signup';
+            $window.localStorage.user = JSON.stringify(response.data.user);
+            console.log("here now")
+            if (response.data.user.user_type == 'customer') {
+              $state.go('upcomingComplete');
             }
+            if (response.data.user.user_type == 'barber') {
+              $state.go('barberDashboard');
+            }
+            if (response.data.user.user_type == 'shop') {
+              $state.go('barbershopdashboard')
+            }
+          } else {
+            $scope.loaderStart = false;
+            $scope.tabActive = 'signup';
+            $('.tab-content a[href="#signup"]').tab('show')
+
 
           }
+
         })
         .catch(function(response) {
           if (response.error) {
@@ -162,6 +169,7 @@ angular.module('BarbrDoApp')
               long: data.coords.longitude
             };
           });
+          console.log("login again",response.data.user);
           $window.localStorage.user = JSON.stringify(response.data.user);
           toastr.success('Welcome' + '  ' + response.data.user.first_name + '  ' + response.data.user.last_name);
           $rootScope.currentUser = response.data.user;
@@ -192,8 +200,15 @@ angular.module('BarbrDoApp')
       console.log("user", $scope.user);
       $auth.signup($scope.user)
         .then(function(response) {
-          toastr.success("Please check your mail to activate your account.");
-          console.log($scope.tabActive)
+          if (response.data.user.facebook) {
+            console.log(response.data.user.user_type);
+            $scope.user = {"email":response.data.user.email,"password":"112233123"};
+            console.log($scope.user);
+            $scope.login()
+          } else {
+            toastr.success("Please check your mail to activate your account.");
+          }
+
         })
         .catch(function(response) {
           console.log(response)
@@ -201,18 +216,18 @@ angular.module('BarbrDoApp')
 
         });
     };
-    $scope.fbsignup = function(user) {
-      shop.fbSignup(user)
-        .then(function(response) {
-          toastr.success("Please check your mail to activate your account.")
-          $state.go('upcomingComplete')
-        })
-        .catch(function(response) {
-          $scope.messagess = {
-            error: Array.isArray(response.data) ? response.data : response.data
-          };
-        });
-    };
+    // $scope.fbsignup = function(user) {
+    //   shop.fbSignup(user)
+    //     .then(function(response) {
+    //       toastr.success("Please check your mail to activate your account.")
+    //       $state.go('upcomingComplete')
+    //     })
+    //     .catch(function(response) {
+    //       $scope.messagess = {
+    //         error: Array.isArray(response.data) ? response.data : response.data
+    //       };
+    //     });
+    // };
     $scope.addChair = function() {
       $scope.loaderStart = true;
       var obj = JSON.parse($window.localStorage.user);

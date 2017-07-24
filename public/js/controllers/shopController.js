@@ -110,6 +110,7 @@
      }
 
      if ($state.current.name == 'barbershopdashboard') {
+      console.log("here")
        $scope.loaderStart = true;
        var obj = {
          obj: JSON.parse($window.localStorage.user)
@@ -117,8 +118,8 @@
        shop.shopInfo(obj).then(function(response) {
          $scope.loaderStart = false;
          $scope.chairs = response.data;
-         if (response.data.user.shop[0].chairs.length == 0) {}
-         $window.localStorage.shop_id = response.data.user.shop[0]._id;
+         if (response.data.data[0].chairs.length == 0) {}
+         $window.localStorage.shop_id = response.data.data[0]._id;
        })
      }
 
@@ -214,6 +215,7 @@
          $scope.chairs = response.data.user;
          $window.localStorage.shop_id = response.data.user.shop[0]._id;
          $rootScope.shopinfo = response.data.user.shop[0];
+         console.log(response)
        })
      }
 

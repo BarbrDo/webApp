@@ -783,12 +783,6 @@ exports.authGoogle = function(req, res) {
             location: profile.location,
             google: profile.sub
           });
-          // user.save(function(err) {
-          //   res.send({
-          //     token: generateToken(user),
-          //     user: user
-          //   });
-          // });
         });
       }
     });

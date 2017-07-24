@@ -1798,7 +1798,7 @@ let getBarberAppointmentsDetail = function(id, startDate, endDate, cb) {
         appointment.aggregate([{
             $match: {
                 barber_id: barber_id,
-                // appointment_status: "completed"
+                appointment_status: "completed"
             }
         }, {
             $unwind: "$services"
@@ -1881,7 +1881,7 @@ let getBarberTotalSale = function(id, cb) {
         appointment.aggregate([{
             $match: {
                 barber_id: barberId,
-                // appointment_status: "completed"
+                appointment_status: "completed"
             }
         }, {
             $unwind: "$services"
@@ -1918,7 +1918,7 @@ let getBarberTotalSaleOnDates = function(id, startDate, endDate, cb) {
         appointment.aggregate([{
             $match: {
                 barber_id: barberId,
-                // appointment_status: "completed"
+                appointment_status: "completed"
             }
         }, {
             $unwind: "$services"

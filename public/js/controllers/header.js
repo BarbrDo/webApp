@@ -74,7 +74,7 @@ angular.module('BarbrDoApp')
     } else {
       $rootScope.latLong = {
         'latitude': latLong[0].latitude,
-        'longitude': latLong[0].longitude
+        'longitude': latLong[1].longitude
       }
     }
 

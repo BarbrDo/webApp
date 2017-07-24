@@ -400,6 +400,13 @@ exports.allShopsHavingChairs = function(req, res) {
                 foreignField: '_id',
                 as: 'barberInfo'
             }
+        },{
+            $lookup: {
+                from: 'users',
+                localField: 'user_id',
+                foreignField: '_id',
+                as: 'shopInfo'
+            }
         },
         {
             $group:
@@ -419,6 +426,7 @@ exports.allShopsHavingChairs = function(req, res) {
                     city:"$city",
                     address:"$address",
                     ratings:"$ratings",
+                    picture:"$shopInfo.picture",
                     payment_method:"$payment_methods",
                     distance:"$dist.calculated"
                 },

@@ -1,4 +1,4 @@
-app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log', '$stateParams', '$state', 'toastr', '$localStorage', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage) {
+app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log', '$stateParams', '$state', 'toastr', '$localStorage', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage , $uibModal) {
   $scope.loginUser = {};
   $scope.user = {};
   $scope.myobj = {};
@@ -11,6 +11,50 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   } else {
     $rootScope.LoginUser = false;
   }
+
+
+  $scope.toggleleftclass = false;
+
+  $scope.togglebodyclass = function() {
+    $scope.toggleleftclass = !$scope.toggleleftclass;
+  }
+
+
+
+
+
+  $scope.labels = ["2010", "2011", "2012", "2013", "2014", "2017", "2016"];
+  $scope.series = ['Barbers', 'Shops', 'Customers'];
+  $scope.data = [
+    [5, 15, 20, 25, 30, 45, 50],
+    [10, 20, 30, 40, 50, 60, 70],
+    [30, 60, 90, 120, 150, 180, 210]
+  ];
+  $scope.onClick = function(points, evt) {
+    console.log(points, evt);
+  };
+  $scope.datasetOverride = [{
+    yAxisID: 'y-axis-1'
+  }, {
+    yAxisID: 'y-axis-2'
+  }];
+  $scope.options = {
+    scales: {
+      yAxes: [{
+        id: 'y-axis-1',
+        type: 'linear',
+        display: true,
+        position: 'left'
+      }, {
+        id: 'y-axis-2',
+        type: 'linear',
+        display: true,
+        position: 'right'
+      }]
+    }
+  };
+
+
   // Disable weekend selection
   function disabled(data) {
     var date = data.date,
@@ -827,9 +871,9 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     } else {
       toastr.error('Name cannot left blank')
       Admin.allservices()
-            .then(function(response) {
-              $scope.services = response.data.data
-            })
+        .then(function(response) {
+          $scope.services = response.data.data
+        })
     }
   }
 
@@ -854,7 +898,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   }
 
   $scope.enableservice = function(id) {
-    
+
     if (id) {
       $scope.loaderStart = true;
       var obj = {
@@ -874,7 +918,6 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     }
   }
 
-  
 
 
 }]);

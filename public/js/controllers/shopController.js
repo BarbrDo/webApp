@@ -31,7 +31,6 @@
        shop.barbers(passingObj)
          .then(function(response) {
            $scope.loaderStart = false;
-           // console.log(response.data.data)
            var sum = 0;
            var len = response.data.data.length;
            for (var i = 0; i < len; i++) {
@@ -58,7 +57,6 @@
            }
            
            $rootScope.barbers = finalresult ;
-           console.log("final",finalresult)
          }).catch(function(response) {
            toastr.error('Error');
          })
@@ -139,7 +137,6 @@
      }
 
      if ($state.current.name == 'barbershopdashboard') {
-       console.log("here now")
        $scope.loaderStart = true;
        var obj = {
          obj: JSON.parse($window.localStorage.user)
@@ -149,7 +146,6 @@
          $scope.chairs = response.data;
          if (response.data.data[0].chairs.length == 0) {}
          $window.localStorage.shop_id = response.data.data[0]._id;
-         console.log(response)
        })
      }
 
@@ -245,7 +241,6 @@
          $scope.chairs = response.data.user;
          $window.localStorage.shop_id = response.data.user.shop[0]._id;
          $rootScope.shopinfo = response.data.user.shop[0];
-         console.log("response", response)
        })
      }
 
@@ -261,7 +256,6 @@
          obj: JSON.parse($window.localStorage.user)
        }
        shop.shopInfo(obj).then(function(response) {
-         console.log(response)
          $rootScope.shopid = response.data.data[0]._id
 
          var obj = {
@@ -272,7 +266,6 @@
          shop.finacialCenter(obj)
            .then(function(response) {
              $scope.loaderStart = false;
-             console.log("response", response.data.data)
              $scope.sale = response.data.data;
            })
 
@@ -285,7 +278,6 @@
        $scope.loaderStart = true;
        shop.chairDetail($stateParams.id)
          .then(function(response) {
-           console.log(response)
            $scope.loaderStart = false;
            $rootScope.chairs = response.data.data[0].chairs[0];
            $rootScope.chair_split = response.data.data[0].chairs[0].shop_percentage;
@@ -360,7 +352,6 @@
 
 
      $scope.saveWeeklyFair = function(type) {
-       console.log("this is type", type)
        $scope.loaderStart = true;
        if ($scope.myobj.priceValue) {
          var obj = {
@@ -382,7 +373,6 @@
          $state.go('barbershopdashboard')
        }).catch(function(result) {
          $scope.loaderStart = false;
-         console.log(result)
          toastr.error(result.data.msg);
        })
 

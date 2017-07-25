@@ -22,15 +22,12 @@ angular.module('BarbrDoApp')
       }
     })
     $scope.getBarberEvent = function  () {
-      console.log($scope.selectValue)
       if($scope.selectValue){
-         console.log("barber_id",$scope.selectValue.barber_id);
           let obj = {
             "barber_id":$scope.selectValue.barber_id,
             "date":$scope.currentDate
           }
           customer.getShopEvents(obj).then(function(response){
-            console.log(response.data.data.events);
             for (var i = 0; i < response.data.data.events.length; i++) {
                 let obj = {
                     title: response.data.data.events[i].title,
@@ -39,12 +36,10 @@ angular.module('BarbrDoApp')
                     id: response.data.data.events[i]._id
                 }
                 $scope.events.push(obj)
-                 console.log(JSON.stringify($scope.events));
             }
           })
       }
       else{
-        console.log("in else part");
       }
     }
 

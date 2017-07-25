@@ -4,7 +4,6 @@ angular.module('BarbrDoApp')
 		$scope.imgPath = $window.localStorage.imagePath;
 		$scope.search = {};
 		$scope.userid = objj._id
-		 console.log($rootScope.latLong)
 		$scope.appointments = function() {
 			$scope.loaderStart = true;
 			barber.appointments()
@@ -98,7 +97,6 @@ angular.module('BarbrDoApp')
 		$scope.changeObject = function(chair) {
 			$scope.chairId = chair._id;
 			$rootScope.chair = chair;
-			console.log(chair._id)
 
 		}
 		$scope.shopchairdetail = function() {
@@ -297,7 +295,6 @@ angular.module('BarbrDoApp')
 					$state.go('request-chair');
 				}).catch(function(result) {
 					$scope.loaderStart = false;
-					console.log(result)
 					toastr.error(result.data.msg);
 				})
 			} else {
@@ -482,7 +479,6 @@ angular.module('BarbrDoApp')
 		}
 
 		$scope.editservices = function(service_id, price, name) {
-			console.log(price)
 			$scope.loaderStart = true;
 			var obj = {
 				service_id: service_id,
@@ -534,7 +530,6 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.sale = response.data.data;
-					console.log(response)
 				})
 
 		}

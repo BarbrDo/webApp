@@ -778,14 +778,17 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   };
 
   $scope.services = function() {
+    $scope.loaderStart = true;
     Admin.allservices()
       .then(function(response) {
+        $scope.loaderStart = false;
         $scope.services = response.data.data
       })
   }
 
   $scope.addservice = function(name) {
     if (name) {
+      $scope.loaderStart = true;
       var obj = {
         name: name
       }
@@ -793,7 +796,9 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         .then(function(response) {
           Admin.allservices()
             .then(function(response) {
+              $scope.loaderStart = false;
               $scope.services = response.data.data
+              toastr.success('Service is Added successfully')
             })
         })
     } else {
@@ -805,6 +810,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
   $scope.editservices = function(name, id) {
     if (name) {
+      $scope.loaderStart = true;
       var obj = {
         name: name,
         service_id: id
@@ -813,16 +819,23 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         .then(function(response) {
           Admin.allservices()
             .then(function(response) {
+              $scope.loaderStart = false;
               $scope.services = response.data.data
+              toastr.success('Service is Updated successfully')
             })
         })
     } else {
       toastr.error('Name cannot left blank')
+      Admin.allservices()
+            .then(function(response) {
+              $scope.services = response.data.data
+            })
     }
   }
 
   $scope.disableservice = function(id) {
     if (id) {
+      $scope.loaderStart = true;
       var obj = {
         service_id: id
       }
@@ -830,13 +843,38 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         .then(function(response) {
           Admin.allservices()
             .then(function(response) {
+              $scope.loaderStart = false;
               $scope.services = response.data.data
+              toastr.success('This service is disabled successfully')
             })
         })
     } else {
       toastr.error('Error in your request')
     }
   }
+
+  $scope.enableservice = function(id) {
+    
+    if (id) {
+      $scope.loaderStart = true;
+      var obj = {
+        service_id: id
+      }
+      Admin.enableServices(obj)
+        .then(function(response) {
+          Admin.allservices()
+            .then(function(response) {
+              $scope.loaderStart = false;
+              $scope.services = response.data.data
+              toastr.success('This service is enabled successfully')
+            })
+        })
+    } else {
+      toastr.error('Error in your request')
+    }
+  }
+
+  
 
 
 }]);

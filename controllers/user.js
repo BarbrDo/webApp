@@ -87,77 +87,75 @@ exports.loginPost = function(req, res, next) {
         msg: user.remark
       });
     }
-    if(user.facebook){
-      passFunction(user,req,res,device_token,device_type)
-    }
-    else{
-          user.comparePassword(req.body.password, function(err, isMatch) {
-      if (!isMatch) {
-        return res.status(401).send({
-          msg: 'Invalid email or password'
-        });
-      }
-      else{
-        passFunction(user,req,res,device_token,device_type)
-      }
-    });
+    if (user.facebook) {
+      passFunction(user, req, res, device_token, device_type)
+    } else {
+      user.comparePassword(req.body.password, function(err, isMatch) {
+        if (!isMatch) {
+          return res.status(401).send({
+            msg: 'Invalid email or password'
+          });
+        } else {
+          passFunction(user, req, res, device_token, device_type)
+        }
+      });
     }
   });
 }
 
-let passFunction  = function(user,req,res,device_token,device_type){
-  let currentDate = moment().format("YYYY-MM-DD"),
-        createDate = moment(user.created_date).format("YYYY-MM-DD"),
-        futureMonth = moment(createDate).add(2, 'M');
-      futureMonth = moment(futureMonth).format("YYYY-MM-DD")
-      console.log("currentDate,createDate,futureMonth", currentDate, createDate, futureMonth);
-      console.log("condition", currentDate > futureMonth);
-      if (currentDate > futureMonth && user.subscription == false) {
-        User.update({
-          _id: user._id
-        }, {
-          $set: {
-            "device_type": device_type,
-            "device_id": device_token,
-            "is_active": false,
-            'remark': "Subscription required."
-          }
-        }).exec(function(userErr, userUpdate) {
-          if (userErr) {
-            console.log(userErr)
-          } else {
-            console.log(userUpdate)
-            res.status(402).send({
-              msg: 'Subscription required.',
-              user: user
-            });
-          }
-        })
-      } else {
-        User.update({
-          _id: user._id
-        }, {
-          $set: {
-            "device_type": device_type,
-            "device_id": device_token
-          }
-        }).exec(function(userErr, userUpdate) {
-          if (userErr) {
-            console.log(userErr)
-          } else {
-            console.log(userUpdate)
-          }
-        })
-        res.status(200).send({
-          token: generateToken(user),
-          user: user.toJSON(),
-          "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-        });
-      }
-}
-/**
- * POST /signup
- */
+let passFunction = function(user, req, res, device_token, device_type) {
+    let currentDate = moment().format("YYYY-MM-DD"),
+      createDate = moment(user.created_date).format("YYYY-MM-DD"),
+      futureMonth = moment(createDate).add(2, 'M');
+    futureMonth = moment(futureMonth).format("YYYY-MM-DD")
+    console.log("currentDate,createDate,futureMonth", currentDate, createDate, futureMonth);
+    console.log("condition", currentDate > futureMonth);
+    if (currentDate > futureMonth && user.subscription == false) {
+      User.update({
+        _id: user._id
+      }, {
+        $set: {
+          "device_type": device_type,
+          "device_id": device_token,
+          "is_active": false,
+          'remark': "Subscription required."
+        }
+      }).exec(function(userErr, userUpdate) {
+        if (userErr) {
+          console.log(userErr)
+        } else {
+          console.log(userUpdate)
+          res.status(402).send({
+            msg: 'Subscription required.',
+            user: user
+          });
+        }
+      })
+    } else {
+      User.update({
+        _id: user._id
+      }, {
+        $set: {
+          "device_type": device_type,
+          "device_id": device_token
+        }
+      }).exec(function(userErr, userUpdate) {
+        if (userErr) {
+          console.log(userErr)
+        } else {
+          console.log(userUpdate)
+        }
+      })
+      res.status(200).send({
+        token: generateToken(user),
+        user: user.toJSON(),
+        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+      });
+    }
+  }
+  /**
+   * POST /signup
+   */
 let saveShop = function(saveDataForShop, resetUrl, user, req, res) {
   Shop(saveDataForShop).save(function(errSaveShop, shopData) {
     if (errSaveShop) {
@@ -1387,8 +1385,8 @@ exports.stripeWebhook = function(req, res, next) {
 
 exports.addServices = function(req, res) {
   var saveData = req.body;
-  saveData.status = true ;
-  console.log("database",saveData)
+  saveData.status = true;
+  console.log("database", saveData)
   service(saveData).save(function(err, data) {
     console.log(data)
     if (err) {
@@ -1406,62 +1404,110 @@ exports.addServices = function(req, res) {
 }
 
 exports.editServices = function(req, res) {
-req.checkParams("service_id", "Barber Service Id is required").notEmpty();
-if (req.validationErrors()) {
-        return res.status(400).send({
-            msg: "error in request",
-            err: req.validationErrors()
-        })
-    }
-    console.log("service_id",req.params.service_id)
-     console.log("name",req.body.name)
-  service.update({
-        _id: req.params.service_id
-    }, {
-        $set: {
-            "name": req.body.name,
-        }
-    }, function(err, result) {
-        if (err) {
-            res.status(400).send({
-                msg: constantObj.messages.userStatusUpdateFailure
-            })
-        } else {
-            res.status(200).send({
-                msg: constantObj.messages.userStatusUpdateSuccess
-            })
-        }
+  req.checkParams("service_id", "Barber Service Id is required").notEmpty();
+  if (req.validationErrors()) {
+    return res.status(400).send({
+      msg: "error in request",
+      err: req.validationErrors()
     })
-  
+  }
+  console.log("service_id", req.params.service_id)
+  console.log("name", req.body.name)
+  service.update({
+    _id: req.params.service_id
+  }, {
+    $set: {
+      "name": req.body.name,
+    }
+  }, function(err, result) {
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.userStatusUpdateFailure
+      })
+    } else {
+      res.status(200).send({
+        msg: constantObj.messages.userStatusUpdateSuccess
+      })
+    }
+  })
+
 }
 
 
 exports.deleteServices = function(req, res) {
-req.checkParams("service_id", "Barber Service Id is required").notEmpty();
-if (req.validationErrors()) {
-        return res.status(400).send({
-            msg: "error in request",
-            err: req.validationErrors()
-        })
-    }
-    console.log("service_id",req.params.service_id)
-     console.log("name",req.body.name)
-  service.update({
-        _id: req.params.service_id
-    }, {
-        $set: {
-            "status": false,
-        }
-    }, function(err, result) {
-        if (err) {
-            res.status(400).send({
-                msg: constantObj.messages.userStatusUpdateFailure
-            })
-        } else {
-            res.status(200).send({
-                msg: constantObj.messages.userStatusUpdateSuccess
-            })
-        }
+  req.checkParams("service_id", "Barber Service Id is required").notEmpty();
+  if (req.validationErrors()) {
+    return res.status(400).send({
+      msg: "error in request",
+      err: req.validationErrors()
     })
-  
+  }
+  console.log("service_id", req.params.service_id)
+  console.log("name", req.body.name)
+  service.update({
+    _id: req.params.service_id
+  }, {
+    $set: {
+      "status": false,
+    }
+  }, function(err, result) {
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.userStatusUpdateFailure
+      })
+    } else {
+      res.status(200).send({
+        msg: constantObj.messages.userStatusUpdateSuccess
+      })
+    }
+  })
+
 }
+
+exports.getAllServices = function(req, res) {
+
+  service.find({}, function(err, data) {
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.errorRetreivingData,
+        err: err
+      })
+    } else {
+      res.status(200).send({
+        msg: constantObj.messages.successRetreivingData,
+        "data": data
+      })
+    }
+  })
+}
+
+exports.enableServices = function(req, res) {
+  req.checkParams("service_id", "Barber Service Id is required").notEmpty();
+  if (req.validationErrors()) {
+    return res.status(400).send({
+      msg: "error in request",
+      err: req.validationErrors()
+    })
+  }
+  console.log("service_id", req.params.service_id)
+  console.log("name", req.body.name)
+  service.update({
+    _id: req.params.service_id
+  }, {
+    $set: {
+      "status": true,
+    }
+  }, function(err, result) {
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.userStatusUpdateFailure
+      })
+    } else {
+      res.status(200).send({
+        msg: constantObj.messages.userStatusUpdateSuccess
+      })
+    }
+  })
+
+}
+

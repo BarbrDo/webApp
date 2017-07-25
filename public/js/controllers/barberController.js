@@ -518,14 +518,14 @@ angular.module('BarbrDoApp')
 			$scope.viewmap = $scope.viewmap ? false : true;
 		}
 
-		$scope.finacialcenter = function() {
-			$scope.loaderStart = true;
-			var myArray = [];
 			var date = new Date();
 			var ddate = new Date();
 			ddate.setDate(date.getDate() - 6);
 			$scope.startdate = $filter('date')(ddate, "yyyy-MM-dd");
 			$scope.enddate = $filter('date')(date, "yyyy-MM-dd");
+
+		$scope.finacialcenter = function() {
+			$scope.loaderStart = true;
 			var obj = {
 				startdate: $scope.startdate,
 				enddate: $scope.enddate

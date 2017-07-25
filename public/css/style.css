@@ -1590,6 +1590,20 @@ ul.csdwon li a {
     font-size: 20px;
     vertical-align: middle !important;
 }
+
+.acceptreq{
+        width: 49%;
+    background-color: #27499e;
+    color: white;
+        font-size: 25px;
+}
+
+.acceptreq:hover{
+      
+    color: white;
+
+}
+
 span.lspic {
     float: left;
     width: 65px;

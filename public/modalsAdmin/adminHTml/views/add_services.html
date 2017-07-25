@@ -26,7 +26,7 @@
    
             <td align="center">
              
-             <button  ng-click="addservice(service,price)">Add</button> 
+             <button class="adds_Btn" ng-click="addservice(service,price)">Add</button> 
             </td>
                             
                         </tr>
@@ -65,7 +65,15 @@
           </p>
           <div class="editservice"> 
           <a  data-ng-hide="editMode" data-ng-click="editMode = true"> <i class="fa  fa-edit " style="font-size: 30px;"></i> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-          <span ng-click="disableservice(service._id)"><switch name="enabled" ng-model="service.status"  class="green" data-ng-hide="editMode">       </switch> </span>
+          <!-- <span ng-if="service.status==true" ng-click="disableservice(service._id)"><switch name="enabled" ng-model="service.status"  class="green" data-ng-hide="editMode">       </switch> </span>
+          <span ng-if="service.status==false" ng-click="enableservice(service._id)"><switch name="enabled" ng-model="service.status"  class="green" data-ng-hide="editMode">       </switch> </span> -->
+          <span ng-hide="showme || service.status==false " ng-if="service.status==true">
+              <a data-toggle="tooltip" title="Disable Service" ng-click="showme=true;disableservice(service._id)" data-ng-hide="editMode"><i class="fa fa-toggle-on" style="font-size: 50px;color: green;" aria-hidden="true"></i></a>
+          </span>
+          <span ng-show="showme || service.status==false" ng-if="service.status==false">
+              <a ng-click="showme=false;enableservice(service._id)" data-toggle="tooltip" title="Enable Service" data-ng-hide="editMode"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 50px;"></i></a>
+          </span>
+
           <a  data-ng-show="editMode" data-ng-click="editMode = false;editservices(service.name,service._id)"  data-toggle="tooltip" title="Save"><i class="fa fa-floppy-o" aria-hidden="true" style="font-size: 30px;" ></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <a  data-ng-show="editMode" data-ng-click="editMode = false; cancel()" data-toggle="tooltip" title="Cancel"><i class="fa fa-ban" aria-hidden="true" style="font-size: 30px;" ></i></a>
           </div>

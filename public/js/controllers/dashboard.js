@@ -143,22 +143,21 @@ angular.module('BarbrDoApp')
 				date.setDate(date.getDate() + i);
 				myArray.push(date)
 			}
-			console.log(myArray)
 			$scope.selectDate = myArray;
 		}
 
 		$scope.previousdates = function() {
-			// Below code is generating current date + 6 days more
-			// var date = new Date($scope.selectDate[0]);
-			// date.setDate(date.getDate() - 6)
-			// myArray.push(date)
-			// for (var i = 1; i <= 6; i++) {
-			// 	var date = new Date($scope.selectDate[0]);
-			// 	date.setDate(date.getDate() + i);
-			// 	myArray.push(date)
-			// }
-			// console.log(myArray)
-			// $scope.selectDate = myArray;	
+			var myArray = [];
+			// Below code is generating current date - 6  days less
+			var date = new Date($scope.selectDate[0]);
+			date.setDate(date.getDate()-6)
+			myArray.push(date)
+			for (var i = 1; i <= 6; i++) {
+				var dated = new Date(date);
+				dated.setDate(dated.getDate() + i);
+				myArray.push(dated)
+			}
+			$scope.selectDate = myArray;
 		}
 
 		$scope.selectedTime = 0;

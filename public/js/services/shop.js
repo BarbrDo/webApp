@@ -43,12 +43,11 @@ angular.module('BarbrDoApp')
         }
       },
       shopInfo: function(data) {
-        console.log(data)
           return $http({
           method: 'get',
-          url: '/api/v1/shops/chair/' + data.obj.shop_id,
+          url: '/api/v1/shops/chair/' + data.obj._id,
           headers: {
-            user_id: obj._id
+            user_id: data.obj._id
           }
         });   
       },

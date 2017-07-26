@@ -1,4 +1,4 @@
-app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log', '$stateParams', '$state', 'toastr', '$localStorage', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage , $uibModal) {
+app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log', '$stateParams', '$state', 'toastr', '$localStorage', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage, $uibModal) {
   $scope.loginUser = {};
   $scope.user = {};
   $scope.myobj = {};
@@ -17,9 +17,8 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
 
   $scope.togglebodyclass = function() {
     $scope.toggleleftclass = !$scope.toggleleftclass;
+
   }
-
-
 
 
 
@@ -30,9 +29,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     [10, 20, 30, 40, 50, 60, 70],
     [30, 60, 90, 120, 150, 180, 210]
   ];
-  $scope.onClick = function(points, evt) {
-    console.log(points, evt);
-  };
+
   $scope.datasetOverride = [{
     yAxisID: 'y-axis-1'
   }, {
@@ -843,6 +840,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
               $scope.loaderStart = false;
               $scope.services = response.data.data
               toastr.success('Service is Added successfully')
+              $scope.service = '';
             })
         })
     } else {
@@ -916,6 +914,13 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     } else {
       toastr.error('Error in your request')
     }
+  }
+
+  $scope.cancel = function() {
+    Admin.allservices()
+      .then(function(response) {
+        $scope.services = response.data.data
+      })
   }
 
 

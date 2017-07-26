@@ -257,7 +257,6 @@
        }
        shop.shopInfo(obj).then(function(response) {
          $rootScope.shopid = response.data.data[0]._id
-
          var obj = {
            startdate: $scope.startdate,
            enddate: $scope.enddate,
@@ -265,6 +264,7 @@
          }
          shop.finacialCenter(obj)
            .then(function(response) {
+            // console.log(response)
              $scope.loaderStart = false;
              $scope.sale = response.data.data;
            })

@@ -41,7 +41,7 @@
     <!-- end of plugin js -->
 </head>
 
-<body  ng-class="{'toggleleftbar': toggleleftclass}">
+<body  ng-controller="AdminCtrl" ng-class="{'toggleleftbar': toggleleftclass}" >
     <div class="wrapper">
         <!-- header -->
         <header ng-if="LoginUser" ng-include="'includesAdmin/header.html'" scope="" onload=""></header>
@@ -58,7 +58,6 @@
     </div>
     <!-- controller js -->
     <script src="jsAdmin/app.js"></script>
-    <script src="jsAdmin/controller.js"></script>
     <script src="modalsAdmin/adminHTml/controller.js"></script>
     <script src="modalsAdmin/adminHTml/stripeController.js"></script>
     <script src="modalsAdmin/adminHTml/stripe_payment_controller.js"></script>

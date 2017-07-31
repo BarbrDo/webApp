@@ -15,9 +15,9 @@ let objectID = require('mongodb').ObjectID
 dotenv.load();
 
 var cron = require('node-cron');
-var task = cron.schedule('* * * * *', function() {
-  console.log('will execute every minute until stopped');
-});
+// var task = cron.schedule('* * * * *', function() {
+//   console.log('will execute every minute until stopped');
+// });
 
 let app = express();
 let engines = require('consolidate');
@@ -67,7 +67,7 @@ require('./routes/admin/routes')(app, express);
 /*app.get('*', function (req, res) {
     res.redirect('/#' + req.originalUrl);
 });*/
-app.get('/*', function(req, res) {     
+app.get('/*', function(req, res) {
     res.sendFile(path.join(__dirname + '/public/index.html'));
 });
 

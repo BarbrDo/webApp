@@ -4,7 +4,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var userSchema = new mongoose.Schema({
-    salutation: String,
     first_name: {
         type: String,
         require: true,
@@ -27,19 +26,17 @@ var userSchema = new mongoose.Schema({
     },
     user_type: {
         type: String,
-        enum:["customer","barber","shop"],
+        enum:["customer","barber"],
         require: true,
     },
-    subscription:{
-        type: Boolean,
-        default: false
+    stripe_customer_id:{
+      type:String
     },
-    stripe_customer:[],
     stripe_subscription:[],
     radius_search: Number,
-    passwordResetToken: String,
-    passwordResetExpires: Date,
-    randomString: String,
+    password_reset_token: String,
+    password_reset_expires: Date,
+    random_string: String,
     gender: String,
     picture: String,
     facebook: String,
@@ -50,15 +47,37 @@ var userSchema = new mongoose.Schema({
         type: [Number], // longitude first and latitude after
         index: '2dsphere'
     },
-    // payment_methods: [
-    //     {
-    //         method: String,
-    //         card_type: String,
-    //         is_primary: Boolean,
-    //         card_id: String,
-    //         first_name: String,
-    //         last_name: String,
-    //     }],
+    favourite_barber:[{
+      barber_id:{
+        type:Schema.Types.ObjectId,
+        ref:'shops'
+      }
+    }],
+    barber_services:[{
+      service_id:{
+        type:Schema.Types.ObjectId,
+        ref:'services'
+      },
+      name:{
+        type:String
+      },
+      price:{
+        type:Number
+      },
+      created_date:{
+        type: Date,
+        default: Date.now()
+      }
+    }],
+    barber_shops:[{
+      shop_id:{
+        type:Schema.Types.ObjectId,
+        ref:'shops'
+      },
+      is_default_shop:{
+        type:Boolean
+      }
+    }],
     ratings:[{
         rated_by:{
             type: Schema.Types.ObjectId,
@@ -71,6 +90,11 @@ var userSchema = new mongoose.Schema({
             type: Date
         }
     }],
+    subscription: [
+        {
+
+        }
+    ],
      gallery: [
         {
             name: {
@@ -96,6 +120,13 @@ var userSchema = new mongoose.Schema({
             }
         }
     ],
+    license_number:{
+      type:String
+    },
+    licensed_since:{
+        type: Date,
+        default: Date.now()
+    },
     created_date: {
         type: Date,
         default: Date.now()
@@ -121,8 +152,9 @@ var userSchema = new mongoose.Schema({
         type:String,
         default:"Your account is not verified yet."
     },
-    is_email_marketing: Boolean,
-    info_source: String,
+    online_status:{
+      type:Boolean
+    }
 });
 
 userSchema.pre('save', function (next) {
@@ -160,6 +192,6 @@ userSchema.options.toJSON = {
     }
 };
 
-var User = mongoose.model('users', userSchema);
+var user = mongoose.model('users', userSchema);
 
-module.exports = User;
+module.exports = user;

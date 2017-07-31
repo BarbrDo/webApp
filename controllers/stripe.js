@@ -1,4 +1,4 @@
-let User = require('../models/User');
+let User = require('../models/user');
 let constantObj = require('./../constants.js');
 let stripeToken = process.env.STRIPE
 let stripe = require('stripe')(stripeToken);

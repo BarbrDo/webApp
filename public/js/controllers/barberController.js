@@ -4,7 +4,6 @@ angular.module('BarbrDoApp')
 		$scope.imgPath = $window.localStorage.imagePath;
 		$scope.search = {};
 		$scope.userid = objj._id
-
 		$scope.appointments = function() {
 			$scope.loaderStart = true;
 			barber.appointments()
@@ -72,8 +71,8 @@ angular.module('BarbrDoApp')
 			$scope.message = cbState;
 		};
 		var obj = {
-			'latitude': "30.708225",
-			'longitude': "76.7029445"
+			'latitude': $rootScope.latLong.latitude,
+			'longitude': $rootScope.latLong.longitude
 		}
 		$scope.allShopsHavingChairs = function() {
 			obj.search = $scope.search.searchChair;
@@ -98,7 +97,6 @@ angular.module('BarbrDoApp')
 		$scope.changeObject = function(chair) {
 			$scope.chairId = chair._id;
 			$rootScope.chair = chair;
-			console.log(chair._id)
 
 		}
 		$scope.shopchairdetail = function() {
@@ -297,7 +295,6 @@ angular.module('BarbrDoApp')
 					$state.go('request-chair');
 				}).catch(function(result) {
 					$scope.loaderStart = false;
-					console.log(result)
 					toastr.error(result.data.msg);
 				})
 			} else {
@@ -517,14 +514,14 @@ angular.module('BarbrDoApp')
 			$scope.viewmap = $scope.viewmap ? false : true;
 		}
 
-		$scope.finacialcenter = function() {
-			$scope.loaderStart = true;
-			var myArray = [];
 			var date = new Date();
 			var ddate = new Date();
 			ddate.setDate(date.getDate() - 6);
 			$scope.startdate = $filter('date')(ddate, "yyyy-MM-dd");
 			$scope.enddate = $filter('date')(date, "yyyy-MM-dd");
+
+		$scope.finacialcenter = function() {
+			$scope.loaderStart = true;
 			var obj = {
 				startdate: $scope.startdate,
 				enddate: $scope.enddate
@@ -533,7 +530,6 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.sale = response.data.data;
-					console.log(response)
 				})
 
 		}

@@ -22,21 +22,21 @@ angular.module('BarbrDoApp')
         if (data.search) {
           return $http({
           method: 'get',
-          url: '/api/v1/barbers?search=' + data.search,
+          url: '/api/v1/barbers/available?search=' + data.search,
           data: data,
          headers: {
-            'device_latitude': 30.538994,
-            'device_longitude': 75.955033
+            'device_latitude': data.latitude,
+            'device_longitude': data.longitude
           }
         });
         } else {
           return $http({
           method: 'get',
-          url: '/api/v1/barbers',
+          url: '/api/v1/barbers/available',
           data: data,
          headers: {
-            'device_latitude': 30.538994,
-            'device_longitude': 75.955033
+            'device_latitude': data.latitude,
+            'device_longitude': data.longitude
           }
         });
         }
@@ -44,7 +44,10 @@ angular.module('BarbrDoApp')
       shopInfo: function(data) {
           return $http({
           method: 'get',
-          url: '/api/v1/userprofile/' + data.obj._id
+          url: '/api/v1/shops/chair/' + data.obj._id,
+          headers: {
+            user_id: data.obj._id
+          }
         });   
       },
       deleteChair: function(data) {
@@ -184,7 +187,6 @@ angular.module('BarbrDoApp')
         return $http.get('/api/v1/barber/services/'+obj._id);
       },
       finacialCenter: function(data) {
-        console.log(data)
         return $http({
           method: 'get',
            url: '/api/v1/shops/sale/'+data.shop_id+'/'+data.startdate+'/'+data.enddate,
@@ -194,10 +196,9 @@ angular.module('BarbrDoApp')
         });
       },
       requestRemoveBarber: function(data) {
-        return $http.post('/api/v1/shop/removebarber',data);
+        return $http.post('/api/v1/shops/removebarber',data);
       },
       ContactBarbrdo: function(data) {
-        console.log("here")
         return $http.post('/api/v1/contact',data);
       }
     }

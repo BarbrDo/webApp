@@ -1,8 +1,8 @@
-// let userObj = require('./../app/models/users/users.js');
+let userObj = require('./../models/User.js');
 let FCM = require('fcm-node');
 let apn = require("apn");
 let path = require('path');
-var serverKey = 'AIzaSyAxYVocgXGryOjwZ-7WIW4KB1fQtZ5tXFY'; 
+var serverKey = 'AIzaSyAxYVocgXGryOjwZ-7WIW4KB1fQtZ5tXFY';
 var fcm = new FCM(serverKey);
 let moment = require('moment');
 let constantObj = require('./../constants.js');
@@ -12,100 +12,97 @@ let crypto = require('crypto'),
 
 let options;
 options = {
-  token: {
-    key: path.resolve("./common/AuthKey_4MVSAKPE86.p8"),
-    keyId: "4MVSAKPE86",
-    teamId: "UKZ733R4T6"
-  },
-  production: false
+    token: {
+        key: path.resolve("./common/AuthKey_4MVSAKPE86.p8"),
+        keyId: "4MVSAKPE86",
+        teamId: "UKZ733R4T6"
+    },
+    production: false
 };
+let nodemailer = require('nodemailer');
+let mg = require('nodemailer-mailgun-transport');
 
-exports.pushToAndroid = function  (token) {
-    var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera) 
-        to: token, 
-        // collapse_key: 'your_collapse_key', 
-        notification: {
-            title: 'Title of your push notification', 
-            body: 'Body of your push notification' 
-        },
-        
-        data: {  //you can send only notification or only data(or include both) 
-            my_key: 'my value',
-            my_another_key: 'my another value'
+exports.sendMail = function(to, from, subject, text, cb) {
+    let auth = {
+        auth: {
+            api_key: process.env.MAILGUN_APIKEY,
+            domain: process.env.MAILGUN_DOMAIN
         }
+    }
+    let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+
+    let mailOptions = {
+        to: to,
+        from: from,
+        subject: subject,
+        text: text
     };
 
-    fcm.send(message, function(err, response){
+    nodemailerMailgun.sendMail(mailOptions, function(err, info) {
         if (err) {
-            console.log("Something has gone wrong!");
+            cb(err, null);
         } else {
-            console.log("Successfully sent with response: ", response);
+            cb(null, info);
         }
     });
 }
+exports.notify = function(id, name, type, text, cb) {
+    userObj.findOne({
+        _id: id
+    }, function(err, result) {
+        if (result) {
+            console.log("other details", id, name, type, text)
+            console.log(result.device_type);
+            if (result.device_type === 'ios') {
+                console.log("inside ios");
+                let apnProvider = new apn.Provider(options);
+                let deviceToken = result.device_id;
+                let note = new apn.Notification();
+                note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+                note.badge = 3;
+                note.sound = "ping.aiff";
+                note.alert = name + " " + text;
+                note.payload = {
+                    'messageFrom': type
+                };
+                note.topic = "com.development.BarbrDo";
+                note.notifyType = "matchNotification"
+                apnProvider.send(note, deviceToken).then((result) => {
+                    if (result.failed.length > 0) {
+                        console.log("error in sending notification");
+                        cb(err, null);
+                    } else {
+                        console.log("success in sending notification");
+                        cb(null, result);
+                    }
+                });
 
-exports.pushSendToIOS = function(token) {
-    console.log("token here", token);
-    let apnProvider = new apn.Provider(options);
-    let deviceToken = token;
-    let note = new apn.Notification();
-    note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
-    note.badge = 3;
-    note.sound = "ping.aiff";
-    note.alert = "You have a new notification.";
-    note.payload = {
-        'messageFrom': 'John Appleseed'
-    };
-    note.topic = "com.development.BarbrDo";
-    note.notifyType = "matchNotification"
-    apnProvider.send(note, deviceToken).then((result) => {
-        console.log("result is", JSON.stringify(result));
-        if (result.failed.length > 0) {
-            console.log("error in sending notification");
-        } else {
-            console.log("success in sending notification");
+            } else if (result.device_type == 'android') {
+                var message = {
+                    to: result.device_id,
+                    // collapse_key: 'your_collapse_key', 
+                    notification: {
+                        title: text,
+                        body: text
+                    },
+                    data: { //you can send only notification or only data(or include both) 
+                        my_key: type,
+                        my_another_key: text
+                    }
+                };
+
+                fcm.send(message, function(err, response) {
+                    if (err) {
+                        cb(err, null);
+                        console.log("Something has gone wrong!");
+                    } else {
+                        cb(null, result);
+                    }
+                });
+            }
         }
-    });
+    })
 }
-
-
-let pushSendToAndroid = function(androidToken) {
-    let message = new gcm.Message({
-        registration_ids: [androidToken],
-        data: {
-            key1: 'You have a new match.'
-        }
-    });
-}
-
-// gcmObject.send(message, function(err, response) {});
-
-// }
-// exports.getLatLon = function(zipcode) {
-//     let result = {};
-//     geocoder.geocode(zipcode, function(err, data) {
-//         if (err) {
-//             // return 0;
-//             console.log('geolocation error : ' + err);
-//         } else {
-
-//             if (data.status == 'OK') {
-//                 result.lat = data.results[0].geometry.location.lat;
-//                 result.lng = data.results[0].geometry.location.lng;
-//                 result.status = data.status;
-
-//                 return result;
-//                 //res.send(result);
-
-//             } else {
-
-//                 result.status = data.status;
-//                 return result;
-//                 //res.send(result);
-//             }
-//         }
-//     });
-// }
 
 exports.encrypt = function(text) {
 
@@ -154,16 +151,16 @@ exports.addOffset = function(dobFormat) {
 }
 
 let accountSid = 'AC865177abe2f391adae3a6d528a87e4d7'; // Your Account SID from www.twilio.com/console
-let authToken = '2eadab4ae69fe6583bbc54793208eea1';   // Your Auth Token from www.twilio.com/console
+let authToken = '2eadab4ae69fe6583bbc54793208eea1'; // Your Auth Token from www.twilio.com/console
 
 let twilio = require('twilio');
 let client = new twilio(accountSid, authToken);
 
-exports.sentMessage = function () {
-client.messages.create({
-    body: 'Hello from Node',
-    to: '+91 7696516981',  // Text this number
-    from: '+14157410903' // From a valid Twilio number
-})
-.then((message) => console.log(message.sid));
+exports.sentMessage = function() {
+    client.messages.create({
+            body: 'Hello from Node',
+            to: '+91 7696516981', // Text this number
+            from: '+14157410903' // From a valid Twilio number
+        })
+        .then((message) => console.log(message.sid));
 }

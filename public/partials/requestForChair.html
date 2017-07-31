@@ -64,6 +64,10 @@
                 <span ng-if="chair.text == 'Non-barber' " ><a class="book_nw" style="background-color: #f21a2d;"> Non-Barber </a></span>
                 <span ng-if="chair.text == 'Request' "><a class="book_nw" href="#" ng-click="changeObject(chair);requestChair(particularShop._id,'barber')">{{chair.text}}</a> </span>
                 <span ng-if="chair.text == 'Pending' " class="pending">{{chair.text}}</span>
+                <span ng-if="chair.text == 'Accept Reject' ">
+                <a href="#" class="acceptreq" tooltip-placement="top" uib-tooltip="Accept" ng-click="acceptrequest(chair)"> <i class="fa fa-check " style="width: 43%;margin-left: 20px;"></i> </a> 
+                <a href="#" class="acceptreq" tooltip-placement="top" uib-tooltip="Reject" style="background-color: #fd3b3b;" ng-click="rejectrequest(chair)"> <i class="fa fa-close" style="width: 43%;margin-left: 20px;"></i> </a> 
+                </span>
                 <!-- <span ng-if="chair.availability == 'booked' && chair.type!='self' && selectedDate>=chair.booking_start &&  selectedDate<=chair.booking_end"><a class="book_nw" style="background-color: #f21a2d;"> Already Booked</a></span>
                 <span ng-if="chair.availability == 'booked' && chair.type=='self'"><a class="book_nw" style="background-color: #f21a2d;"> Booked by a Non Barber</a></span>
                 <span  ng-else>

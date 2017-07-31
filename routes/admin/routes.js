@@ -4,6 +4,7 @@ module.exports = function(app, express) {
     let shopController = require('./../../controllers/shop');
     let appointController = require('./../../controllers/appointment');
     let barberController = require('./../../controllers/barber');
+    let userController = require('./../../controllers/user');
     
     //Count all Users, appointsments  
     app.post('/api/v1/loginadmin',customerController.login);
@@ -43,5 +44,11 @@ module.exports = function(app, express) {
     app.get('/api/v1/custdetail/:cust_id', customerController.custdetail);//get Customerdetails
     app.get('/api/v1/chairdetail/:chair_id', shopController.chairdetail);//get Chairdetails
     app.get('/api/v1/customerappointments/:cust_id', customerController.customerappointments);//get customer appointments
-    
+    app.get('/api/v1/services', userController.getAllServices); //Get all services
+    app.post('/api/v1/services', userController.addServices); //Add new service by Admin
+    app.put('/api/v1/services/:service_id', userController.editServices); //Edit service by Admin
+    app.delete('/api/v1/enableservices/:service_id', userController.enableServices); //Enable service by Admin
+    app.delete('/api/v1/services/:service_id', userController.deleteServices); //Delete service by Admin
+
 }
+

@@ -14,6 +14,44 @@ let commonObj = require('../common/common');
 let stripeToken = process.env.STRIPE
 let stripe = require('stripe')(stripeToken);
 let chairBook = require('../models/chair_booking');
+let notification = require('../models/notification');
+
+let callNotification = function(type,user_id,name) {
+    console.log("callfunction", type,user_id,name)
+    notification.findOne({
+        "type": type
+    }, function(err, result) {
+        console.log("result",result);
+        if (result) {
+            commonObj.notify(user_id,name, type, result.text, function(err, data) {
+                if(err){
+                    console.log(err);
+                }
+                else{
+                    var updateUser = {
+                        key:"customer_create_appointment",
+                        text:name+" "+result.text
+                    };
+                    console.log(updateUser);
+                    user.update({
+                        _id: user_id
+                    }, {
+                        $push: {
+                            notification: updateUser
+                        }
+                    }).exec(function(err, data) {
+                        if(err){
+                            console.log(err);
+                        }
+                        else{
+                            console.log(data);
+                        }
+                    })
+                }
+            })
+        }
+    })
+}
 
 exports.editBarber = function(req, res) {
     var updateData = JSON.parse(JSON.stringify(req.body));
@@ -385,6 +423,11 @@ exports.confirmAppointment = function(req, res) {
                 msg: constantObj.messages.userStatusUpdateFailure
             });
         } else {
+            appointment.findOne({_id: req.params.appointment_id},function(err,result){
+                if(result){
+                    callNotification("barber_confirm_appointment",result.customer_id,result.barber_name);
+                }
+            })
             return res.status(200).send({
                 msg: constantObj.messages.userStatusUpdateSuccess
             });
@@ -393,7 +436,8 @@ exports.confirmAppointment = function(req, res) {
 }
 
 //Reschedule Appointment
-exports.rescheduleAppointment = function(req, res) {
+exports.rescheduleAppointment = function (req, res) {
+    req.checkHeaders("user_type","User type is required.").notEmpty();
     req.assert("minutes", "Time is required.").notEmpty();
     req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
     req.assert("appointment_date", "appointment_date is required").notEmpty();
@@ -414,14 +458,40 @@ exports.rescheduleAppointment = function(req, res) {
         $set: {
             "appointment_date": newDateObj
         }
-    }, function(err, result) {
+    }, function (err, result) {
         if (err) {
             return res.status(400).send({
                 msg: constantObj.messages.userStatusUpdateFailure
             });
         } else {
-            return res.status(200).send({
-                msg: constantObj.messages.userStatusUpdateSuccess
+            appointment.findOne({_id: req.params.appointment_id},function(err,result){
+                if(result){
+                    if(req.headers.user_type=='barber'){
+                        callNotification("barber_reschedule_appointment",result.customer_id,result.barber_name);
+                    }
+                    else if(req.headers.user_type=='customer'){
+                        callNotification("customer_reschedule_appointment",result.barber_id,result.customer_name);
+                    }
+                }
+            })
+            let auth = {
+                auth: {
+                    api_key: process.env.MAILGUN_APIKEY,
+                    domain: process.env.MAILGUN_DOMAIN
+                }
+            }
+            let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+            var mailOptions = {
+                from: constantObj.messages.email,
+                to: constantObj.messages.email,
+                subject: '✔ Contact Barber to Reschedule',
+                text: "Appointment has been scheduled by" + ' ' + req.body.minutes + ' ' + 'minutes'
+            };
+
+            nodemailerMailgun.sendMail(mailOptions, function (err) {
+                res.status(200).send({
+                    "msg": constantObj.messages.emuserStatusUpdateSuccessailsend
+                });
             });
         }
     })
@@ -463,6 +533,7 @@ exports.completeAppointment = function(req, res) {
                 } else {
                     console.log("result in appointment", result);
                     if (result) {
+                        callNotification("customer_complete_appointment",result.barber_id,result.customer_name)
                         if (result.payment_detail.length > 0) {
                             console.log(result.payment_detail[0].id);
                             stripe.charges.capture(result.payment_detail[0].id, function(err, charge) {
@@ -480,6 +551,7 @@ exports.completeAppointment = function(req, res) {
                             done(err, result);
                         }
                     } else {
+
                         done(err, result);
                     }
                 }
@@ -526,8 +598,9 @@ exports.completeAppointment = function(req, res) {
 }
 
 //Mark Appointment as cancel
-exports.cancelAppointment = function(req, res) {
+exports.cancelAppointment = function (req, res) {
     req.checkParams("appointment_id", "Appointment id is required.").notEmpty();
+    req.checkHeaders("user_type","User type is required.").notEmpty();
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -535,10 +608,9 @@ exports.cancelAppointment = function(req, res) {
             err: errors
         });
     }
-
     appointment.findOne({
         _id: req.params.appointment_id
-    }, function(err, result) {
+    }, function (err, result) {
         if (err) {
             return res.status(400).send({
                 msg: "error in finding appointment.",
@@ -547,14 +619,19 @@ exports.cancelAppointment = function(req, res) {
         } else {
             console.log("result in appointment", result);
             if (result) {
+                    if(req.headers.user_type=='barber'){
+                        callNotification("barber_cancel_appointment",result.customer_id,result.barber_name);
+                    }
+                    else if(req.headers.user_type=='customer'){
+                        callNotification("customer_cancel_appointment",result.barber_id,result.customer_name);
+                    }
                 if (result.payment_detail.length > 0) {
                     console.log(result.payment_detail[0].id);
-                    stripe.refund.create(result.payment_detail[0].id, function(err, charge) {
+                    stripe.refunds.create({charge: result.payment_detail[0].id}, function (err, refund) {
                         if (err) {
-                            console.log(err);
                             return res.status(400).send({
                                 msg: "error in stripe charge.",
-                                err: errors
+                                err: err.message
                             });
                         } else {
                             appointment.update({
@@ -563,7 +640,7 @@ exports.cancelAppointment = function(req, res) {
                                 $set: {
                                     "appointment_status": "cancel"
                                 }
-                            }, function(err, result) {
+                            }, function (err, result) {
                                 if (err) {
                                     res.status(400).send({
                                         msg: constantObj.messages.errorRetreivingData,
@@ -577,7 +654,7 @@ exports.cancelAppointment = function(req, res) {
                                 }
                             })
                         }
-                    });
+                    })
                 } else {
                     appointment.update({
                         _id: req.params.appointment_id
@@ -585,7 +662,7 @@ exports.cancelAppointment = function(req, res) {
                         $set: {
                             "appointment_status": "cancel"
                         }
-                    }, function(err, result) {
+                    }, function (err, result) {
                         if (err) {
                             res.status(400).send({
                                 msg: constantObj.messages.errorRetreivingData,
@@ -599,26 +676,11 @@ exports.cancelAppointment = function(req, res) {
                         }
                     })
                 }
-            } else {
-                appointment.update({
-                    _id: req.params.appointment_id
-                }, {
-                    $set: {
-                        "appointment_status": "cancel"
-                    }
-                }, function(err, result) {
-                    if (err) {
-                        res.status(400).send({
-                            msg: constantObj.messages.errorRetreivingData,
-                            "err": err
-                        });
-                    } else {
-                        res.status(200).send({
-                            msg: 'Successfully updated fields.',
-                            "data": result
-                        });
-                    }
-                })
+            } 
+            else {
+                res.status(400).send({
+                    msg: "No record found"
+                });
             }
         }
     })
@@ -1367,7 +1429,7 @@ exports.viewBarberAvailability = function(req, res) {
 
 exports.createEvents = function(req, res) {
     req.checkHeaders("user_id", "user_id is required").notEmpty();
-    req.assert("title", "Title is required.").notEmpty();
+    //req.assert("title", "Title is required.").notEmpty();
     req.assert("startsAt", "Start Date is required").notEmpty();
     req.assert("endsAt", "End Date is required").notEmpty();
     var errors = req.validationErrors();
@@ -1379,11 +1441,79 @@ exports.createEvents = function(req, res) {
     }
     let obj = {};
     obj.title = req.body.title;
+    obj.repeat = req.body.repeat;
+    obj.dayoff = req.body.dayoff;
     obj.startsAt = commonObj.removeOffset(req.body.startsAt);
     obj.endsAt = commonObj.removeOffset(req.body.endsAt);
 
-    console.log("obj.startsAt,obj.endsAt", obj.startsAt, obj.endsAt);
+    console.log(req.body);
+    if (req.body.color) {
+        obj.color = req.body.color
+    }
+    obj.resizable = true;
+    obj.draggable = true;
+    console.log("obj", obj);
+    barber.update({
+        user_id: req.headers.user_id
+    }, {
+        $push: {
+            events: obj
+        }
+    }).exec(function(err, update) {
+        if (err) {
+            res.status(400).send({
+                msg: 'Error in updating data.',
+                "err": err
+            });
+        } else {
+            res.status(200).send({
+                msg: 'Successfully updated fields.',
+                "data": update
+            });
+        }
+    })
+}
 
+exports.editEvents = function(req, res) {
+    req.checkHeaders("user_id", "user_id is required").notEmpty();
+    req.assert("event_id", "Event Id is required.").notEmpty();
+    req.assert("startsAt", "Start Date is required").notEmpty();
+    req.assert("endsAt", "End Date is required").notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let obj = {};
+    obj.title = req.body.title;
+    obj.repeat = req.body.repeat;
+    obj.dayoff = req.body.dayoff;
+    obj.startsAt = commonObj.removeOffset(req.body.startsAt);
+    obj.endsAt = commonObj.removeOffset(req.body.endsAt);
+
+    console.log(req.body);
+    let event_id = req.params.event_id;
+    let barber_id = req.headers.user_id;
+    
+    
+    barber.update(
+        {user_id:barber_id},
+        {$pull:{events:{_id:event_id}}}
+    ).exec(function(err,result){
+        if(!result){
+            res.status(400).send({
+                msg: 'Error in finding this evnt.',
+                "err": err
+            });
+        }
+        res.status(200).send({
+            msg: constantObj.messages.userDeleteSuccess,
+            "data": result
+        });
+        
+    })
     if (req.body.color) {
         obj.color = req.body.color
     }
@@ -1412,6 +1542,7 @@ exports.createEvents = function(req, res) {
 }
 
 exports.getEvents = function(req, res) {
+    console.log("req.headers.user_id",req.headers.user_id);
     barber.findOne({
         user_id: req.headers.user_id
     }, {
@@ -1437,7 +1568,7 @@ exports.getEventOnDate = function(req, res) {
     var eventStartdate = moment(event_Date, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
     var eventEnddate = moment(event_Date, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
     var barber_id = mongoose.Types.ObjectId(req.headers.user_id);
-    console.log(eventStartdate, eventEnddate, barber_id);
+    //console.log(eventStartdate, eventEnddate, barber_id);
     barber.aggregate([{
         $match: {
             "user_id": barber_id
@@ -1445,22 +1576,33 @@ exports.getEventOnDate = function(req, res) {
     }, {
         $unwind: "$events"
     }, {
-        $match: {
-            "events.startsAt": {
-                $gte: new Date(eventStartdate)
+        $project:{
+            events:{ 
+                $cond:{
+                    if:{$gt:[{$size:"$events.repeat"},0]},
+                    then:{"events":"$events"},
+                    else:{ $cond:{
+                        if:{
+                            $and:[
+                                {$gte: ["$events.startsAt", new Date(eventStartdate)]},
+                                {$lt: ["$events.endsAt", new Date(eventEnddate)]}
+                        ]},
+                        then:{"events":"$events"},
+                        else:""
+                        }
+                    }
+                }
             },
-            "events.endsAt": {
-                $lt: new Date(eventEnddate)
-            }
         }
-    }, {
+    },{
         $group: {
-            "_id": "$_id",
-            "events": {
-                $push: "$events"
+            _id: "$_id",
+            events: {
+                $push: "$events.events"
             },
         }
     }]).exec(function(err, barberEvents) {
+    console.log(barberEvents)
         if (err) {
             res.status(400).send({
                 msg: 'Error in Finding this user.',
@@ -1519,6 +1661,35 @@ exports.getEventOnDate = function(req, res) {
     })
 }
 
+exports.deleteBarberEvent = function(req, res){
+    req.checkHeaders("user_id", "User Id is required").notEmpty();
+    req.checkParams("event_id", "Event Id is required.").notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let event_id = req.params.event_id;
+    let barber_id = req.headers.user_id;
+    barber.update(
+        {user_id:barber_id},
+        {$pull:{events:{_id:event_id}}}
+    ).exec(function(err,result){
+        if(!result){
+            res.status(400).send({
+                msg: 'Error in Finding this user.',
+                "err": err
+            });
+        }
+        res.status(200).send({
+            msg: constantObj.messages.userDeleteSuccess,
+            "data": result
+        });
+        
+    })
+}
 exports.financeScreenResult = function(req, res) {
         req.checkHeaders("user_id", "user_id is required").notEmpty();
         req.checkParams("startDate", "startDate is required.").notEmpty();
@@ -1689,7 +1860,7 @@ let getBarberAppointmentsDetail = function(id, startDate, endDate, cb) {
         appointment.aggregate([{
             $match: {
                 barber_id: barber_id,
-                // appointment_status: "completed"
+                appointment_status: "completed"
             }
         }, {
             $unwind: "$services"
@@ -1772,7 +1943,7 @@ let getBarberTotalSale = function(id, cb) {
         appointment.aggregate([{
             $match: {
                 barber_id: barberId,
-                // appointment_status: "completed"
+                appointment_status: "completed"
             }
         }, {
             $unwind: "$services"
@@ -1809,7 +1980,7 @@ let getBarberTotalSaleOnDates = function(id, startDate, endDate, cb) {
         appointment.aggregate([{
             $match: {
                 barber_id: barberId,
-                // appointment_status: "completed"
+                appointment_status: "completed"
             }
         }, {
             $unwind: "$services"

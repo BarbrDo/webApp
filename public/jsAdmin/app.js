@@ -1,6 +1,6 @@
     "use strict";
 
-    var app_admin = angular.module('barbrdo', ['ui.router', 'ui.bootstrap', 'angularModalService', 'rzModule', "chart.js", 'alexjoffroy.angular-loaders', 'ngMask', 'toastr', 'ngStorage']);
+    var app_admin = angular.module('barbrdo', ['ui.router', 'ui.bootstrap','uiSwitch', 'angularModalService', 'rzModule', "chart.js", 'alexjoffroy.angular-loaders', 'ngMask', 'toastr', 'ngStorage']);
 
     app_admin.config(['$locationProvider', function($locationProvider) {
         $locationProvider.hashPrefix('');
@@ -476,6 +476,27 @@
             controller: "reportCtrl",
             templateUrl: "/modalsAdmin/adminHTml/views/reports.html"
         })
+
+        .state('add_services', {
+            resolve: {
+                    mess: function($localStorage,$q,$state) {
+                        var deferred = $q.defer();
+                        if ($localStorage.loggedIn!= true) {
+                             setTimeout(function() {
+                                deferred.resolve()
+                                $state.go('login');
+                            }, 0);
+                            return deferred.promise;
+                        }
+                    }
+                },
+
+            url: '/add_services',
+            controller: "AdminCtrl",
+            templateUrl: "/modalsAdmin/adminHTml/views/add_services.html"
+        })
+
+
 
     });
 

@@ -91,16 +91,16 @@ angular.module('BarbrDoApp')
           }
         });
       },
-      // userProfile : function(data) {
-      //   return $http.get('/api/v1/userprofile/'+data);
-      // },
+      userProfile : function(data) {
+        return $http.get('/api/v1/userprofile/'+data.id);
+      },
       getImages : function(data) {
         return $http.get('/api/v1/userprofile/'+obj._id);
       },
       chargeCustomer:function(data){
         return $http({
           method: 'post',
-          url: '/api/v1/stripe/createCharges',
+          url: '/api/v1/appointment',
           headers: {
             'user_id': obj._id//obj._id
           },
@@ -125,7 +125,6 @@ angular.module('BarbrDoApp')
         });
       },
       contactBarber : function(data) {
-        console.log(data)
         return $http({
           method: 'post',
           url: '/api/v1/contactbarber',
@@ -137,11 +136,19 @@ angular.module('BarbrDoApp')
       },
       getEvents:function (data) {
         return $http({
-          method: 'post',
-          url: '/api/v1/barber/event',
+          method: 'get',
+          url: '/api/v1/barber/event/'+data.date,
           headers: {
             'user_id': obj._id//obj._id
           },
+          data:data,
+        });
+      },
+      getShopEvents:function (data) {
+        return $http({
+          method: 'get',
+          url: '/api/v1/shops/event',
+          params:{barber_id:data.barber_id,date:data.date},
           data:data,
         });
       }

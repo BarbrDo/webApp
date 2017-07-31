@@ -72,7 +72,7 @@ module.exports = function(app, express) {
     app.put('/api/v1/shops/acceptrequest',chairRequestController.acceptRequest);
     app.get('/api/v1/shops/event',appointmentController.showEvents);
     app.get('/api/v1/shops/sale/:shop_id/:startDate/:endDate',shopController.financeScreenResult);
-    app.post('/api/v1/shop/removebarber', shopController.requesttoremove);
+    app.post('/api/v1/shops/removebarber', shopController.requesttoremove);
     
     
     //Customer
@@ -85,7 +85,6 @@ module.exports = function(app, express) {
     app.post('/api/v1/ratebarber',barberServices.rateBarber);
     app.post('/api/v1/contactbarber',customerController.contactBarber);
     app.post('/api/v1/customer/payafterappointment',appointmentController.payafterappointment);
-    app.post('/api/v1/customer/pushNotificationForIOS',appointmentController.pushNotificationForIOS);
     
     //Barber
     app.get('/api/v1/allbarbers', barberServices.availableBarber); //Get all barbers
@@ -112,12 +111,15 @@ module.exports = function(app, express) {
     app.get('/api/v1/barber/timeavailability/:barber_id',barberServices.viewBarberAvailability)
     app.post('/api/v1/barber/contactshop',contactController.contactShop);
     app.post('/api/v1/barber/event',barberServices.createEvents);
+    app.put('/api/v1/barber/event/:event_id',barberServices.editEvents);
     app.get('/api/v1/barber/event',barberServices.getEvents);
     app.get('/api/v1/barber/event/:date',barberServices.getEventOnDate);
+    app.delete('/api/v1/barber/event/:event_id',barberServices.deleteBarberEvent)
     app.get('/api/v1/barber/sale/:startDate/:endDate',barberServices.financeScreenResult);
     
 
     //Common
+    app.get('/api/v1/logout',userController.logout);
     app.get('/api/v1/allPayments',appointmentController.allPayments);
     app.get('/api/v1/records',userController.usersRecords);
     app.get('/api/v1/totalUsers',userController.totalUsers); /*Total number of customer,subscription based barbers,subscription based shops*/
@@ -135,10 +137,7 @@ module.exports = function(app, express) {
     app.post('/api/v1/stripe/webhooks',userController.stripeWebhook);
     app.put('/api/v1/stripe/updatePlan',stripeController.updatePlan);
     app.put('/api/v1/stripe/deletePlan',stripeController.deletePlan);
-    app.post('/api/v1/stripe/pushNotificationForIOS',appointmentController.pushNotificationForIOS);
     
-    //Need to delete in sprint-8
-    //app.post('/api/v1/barber/requestchair', chairRequestController.requestChair); //Barber/shop requesting chair to shop
     app.get('/admin', function(req, res) {
         res.sendFile(path.join(__dirname + './../public/indexAdmin.html'));
     });

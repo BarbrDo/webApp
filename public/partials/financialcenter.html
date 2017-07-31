@@ -10,15 +10,18 @@
       <div class="row ">
         <div class="col-md-4 col-sm-4">
           <label>Total Sale</label>
-          <p>${{sale.totalSale[0].price}}</p>
+          <p ng-if="sale.totalSale[0].price">${{sale.totalSale[0].price}}</p>
+          <p ng-if="!sale.totalSale[0].price">$ 0
         </div>
         <div class="col-md-4 col-sm-4">
           <label>Current Month</label>
-          <p>${{sale.monthSale[0].price}}</p>
+          <p ng-if="sale.monthSale[0].price">${{sale.monthSale[0].price}}</p>
+          <p ng-if="!sale.monthSale[0].price">$ 0
         </div>
         <div class="col-md-4 col-sm-4">
           <label>Current Week</label>
-          <p>${{sale.weekSale[0].price}}</p>
+          <p ng-if="sale.weekSale[0].price">${{sale.weekSale[0].price}}</p>
+          <p ng-if="!sale.weekSale[0].price">$ 0
         </div>
       </div>
     </div>
@@ -30,7 +33,7 @@
   
         <div class="row finance">
         <div class="col-md-6 col-sm-6">
-          <div class="contact-us  pz">
+          <div class="contact-us  pz input-icon">
            <input type="text" class="form-control"  max-date="maxDate" uib-datepicker-popup="{{format}}" ng-model="startdate" is-open="popup1.opened"  ng-required="true" close-text="Close"  ng-change="finacialcenter()"/>
           <span class="input-group-btn">
             <button type="button" class="btn btn-default" ng-click="open1()" ><i class="glyphicon glyphicon-calendar"></i></button>
@@ -40,7 +43,7 @@
           </div>
         </div>
         <div class="col-md-6 col-sm-6">
-          <div class="contact-us  pz">
+          <div class="contact-us  pz input-icon">
           <input type="text" class="form-control" min-date="minDate" uib-datepicker-popup="{{format}}" ng-model="enddate" is-open="popup2.opened"  ng-required="true" close-text="Close" ng-change="finacialcenter()"/>
           <span class="input-group-btn">
             <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -58,7 +61,8 @@
         <div class="row ">
         <div class="col-md-6 col-sm-6">
           <label>Total Sale</label>
-          <p>${{sale.totalSale[0].price}}</p>
+          <p ng-if="sale.totalSale[0].price">${{sale.totalSale[0].price}}</p>
+          <p ng-if="!sale.totalSale[0].price">$ 0</p>
         </div>
        
         <div class="col-md-6 col-sm-6">

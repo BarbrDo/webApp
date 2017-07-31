@@ -1401,6 +1401,17 @@ ul.csdwon li a {
 .locdis span {
     font-weight: 200;
 }
+
+.rtng p{
+    font-size: 19px;
+    font-weight: 200;
+    margin: 5px 0;
+}
+
+.rtng span {
+    font-weight: 200;
+}
+
 .sldt {
     float: left;
     width: 100%;
@@ -1579,6 +1590,20 @@ ul.csdwon li a {
     font-size: 20px;
     vertical-align: middle !important;
 }
+
+.acceptreq{
+        width: 49%;
+    background-color: #27499e;
+    color: white;
+        font-size: 25px;
+}
+
+.acceptreq:hover{
+      
+    color: white;
+
+}
+
 span.lspic {
     float: left;
     width: 65px;
@@ -1655,6 +1680,21 @@ span.lspic img {
     text-align: center;
     width: 35px;
 }
+
+.alllnk a.remove {
+        margin-left: 450px;
+    background-color: #ce2029;
+        margin-top: 50px;
+}
+
+.imgbarber {
+        border-radius: 50%;
+    overflow: hidden;
+    height: 130px;
+    margin-left: 320px;
+    position: absolute;
+}
+
 .ac_btn {
     text-align: center;
 }
@@ -1816,11 +1856,11 @@ td.action {
     width: 110px;}
 .perimg{margin: 0px 25px;}
 
-.perimgcontact img{height: 110px;
+/*.perimgcontact img{height: 110px;
     width: 510px;}
+*/
 
-
-.contactto{    padding: 40px;
+.contactto{    padding: 34px;
     text-align: center;
     background: red;
     padding-right: 10px;
@@ -1859,7 +1899,21 @@ td.action {
      background: #27499e
 }
 
-
+/*Tithi 19-7-2017*/
+.input-icon {
+    position: relative;
+}
+.input-icon .input-group-btn{
+    position: absolute; top: -4px; right: 28px;
+}
+.input-icon .btn {padding: 6px 10px; border: 0; border-radius: 0}
+.border-box{float: left;
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 15px; border-radius: 4px}
+.textarea-wrap {margin-top: 15px}
+.textarea-wrap .bkap{margin-left: 0;margin-top:0;border:0; margin-right: 15px;min-width: 100px;min-height: 44px; float: none;}
+/*Tithi 19-7-2017*/
 
 /* Media Queries Start over here */
 @media(max-width:1200px) {

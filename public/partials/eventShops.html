@@ -1,0 +1,17 @@
+<div>
+    <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+    <div class="crumb" ng-init="callFunctions()"> <span>Events</span> </div>
+    <div class="wrapper">
+        <div class="block">
+            <select name="selectValue"
+                  ng-model="selectValue"
+                  ng-init="selectValue = v.barber_id"
+                  ng-change="getBarberEvent()"
+                  ng-options="v.name for v in shop_chairs track by v.barber_id">
+                 <option value="">-- Select Chair --</option>
+            </select>
+
+            <div ui-calendar="uiConfig.calendar" class="span8 calendar" ng-model="eventSources2"></div> 
+        </div>
+    </div>
+</div>

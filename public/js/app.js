@@ -402,6 +402,37 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         })
 
+        .state('notifications', {
+            url: '/notification',
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/notification.html',
+                    controller: "dashboardCtrl"
+                },
+                "header": {
+                    templateUrl: 'partials/headerAfterLogin.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/afterLoginSideBar.html'
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['/js/controllers/dashboard.js',
+                            '/js/services/customer.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
+            }
+        })
+
         .state('viewProfile', {
             url: '/profile',
             views: {
@@ -1072,6 +1103,39 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
         })
 
         // shop Started
+
+        .state('shopEvents', {
+            url: '/shopEvents',
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/eventShops.html',
+                    controller: "eventShopCtrl"
+                },
+                "header": {
+                    templateUrl: 'partials/barber_header_after_login.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/barbershopSideBar.html'
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['/js/controllers/shopEvents.js',
+                            '/js/controllers/eventHelper.js',
+                            '/js/services/customer.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
+            }
+        })
+
         .state('barbershopdashboard', {
             url: '/shopdashboard',
             views: {
@@ -1634,6 +1698,39 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
             }
         })
         
+        .state('shopsubscribe', {
+            url: '/shopsubscription',
+            params: {
+                _id: null
+            },
+            views: {
+                "homeDash": {
+                    templateUrl: 'partials/subscribe.html',
+                    controller: "subScriptionCtrl"
+                },
+                "header": {
+                    templateUrl: 'partials/barber_shop_header.html',
+                    controller: "HeaderCtrl"
+                },
+                "sideBar": {
+                    templateUrl: 'partials/barbershopSideBar.html'
+                }
+            },
+            resolve: {
+                lazy: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
+                    var deferred = $q.defer();
+                    $ocLazyLoad.load({
+                        name: 'BarbrDoApp',
+                        files: ['js/controllers/subScription.js',
+                            'js/services/shop.js'
+                        ]
+                    }).then(function() {
+                        deferred.resolve();
+                    });
+                    return deferred.promise;
+                }]
+            }
+        })
          .state('login', {
                 url: '/login',
                 views: {
@@ -1807,6 +1904,8 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                 var deferred = $q.defer();
                 setTimeout(function() {
                     deferred.resolve()
+                    $auth.logout();
+                    delete $window.localStorage.user;
                     $state.go('pageNotFound')
                 }, 0);
                 return deferred.promise;

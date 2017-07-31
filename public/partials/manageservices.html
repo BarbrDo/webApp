@@ -13,7 +13,13 @@
         <div class="serve barber">
           <p class="servicename">{{service.name}} <span>-</span> 
            <span data-ng-hide="editMode"> $ {{service.price}}  </span>
-           <input type="text" data-ng-show="editMode" ng-model="service.price" placeholder="price" style="color: #000000;height: 20px; width: 120px;" />
+           <form name="myform">
+           <input type="text" data-ng-show="editMode" ng-model="service.price" placeholder="price" style="color: #000000;height: 20px; width: 120px;" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/"  ng-maxlength="6" maxlength="6" name="priceVal"/>
+           <div class="validationError" ng-messages="myform.priceVal.$error" ng-show="
+                                     myform.priceVal.$error.pattern && (!myform.priceVal.$pristine || myform.$submitted)" role="alert">
+                                    <span style="color:red" ng-message="pattern">Enter valid character </span>
+                                </div>
+           </form>                     
           </p>
           <div class="editservice"> 
           <a href="#" data-ng-hide="editMode" data-ng-click="editMode = true"> <i class="fa  fa-edit "></i> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 

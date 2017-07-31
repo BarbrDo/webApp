@@ -9,12 +9,67 @@ var mongoose = require('mongoose');
 let user = require('../models/User');
 let nodemailer = require('nodemailer');
 let mg = require('nodemailer-mailgun-transport');
+let commonObj = require('../common/common');
+let notification = require('../models/notification');
 /**
  * Request to a particular chair
  * Input: check code req.assert lines
  * Output: chair saved success reponse
  * 
  */
+let getBarber = function(id, cb) {
+    console.log(id);
+    user.findOne({
+        _id: id
+    }, function(err, result) {
+        cb(null, result);
+    })
+}
+
+let getShop = function(id, cb) {
+    console.log(id);
+    shop.findOne({
+        _id: id
+    }, function(err, result) {
+        cb(null, result);
+    })
+}
+
+let callNotification = function(type, user_id, name) {
+    console.log("callfunction", type, user_id, name)
+    notification.findOne({
+        "type": type
+    }, function(err, result) {
+        console.log("result", result);
+        if (result) {
+            commonObj.notify(user_id, name, type, result.text, function(err, data) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    var updateUser = {
+                        key: "customer_create_appointment",
+                        text: name + " " + result.text
+                    };
+                    console.log(updateUser);
+                    user.update({
+                        _id: user_id
+                    }, {
+                        $push: {
+                            notification: updateUser
+                        }
+                    }).exec(function(err, data) {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log(data);
+                        }
+                    })
+                }
+            })
+        }
+    })
+}
+
 exports.requestChair = function(req, res) {
     console.log(req.body);
     req.checkHeaders("user_id", "User id is required.").notEmpty();
@@ -31,18 +86,11 @@ exports.requestChair = function(req, res) {
         });
     }
     let barber_id = req.body.barber_id;
-    //let barber_name = req.body.barber_name;
     let user_type = req.body.user_type;
     let shop_id = req.body.shop_id;
     let chair_id = req.body.chair_id;
-    //let chair_name = req.body.chair_name;
-    //let chair_type = req.body.chair_type;
-    //let chair_amount = req.body.chair_amount;
-    //let shop_percentage = req.body.shop_percentage;
-    //let barber_percentage = req.body.barber_percentage;
     let book_Date = req.body.booking_date;
     let bookDate = moment(book_Date, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
-    console.log("bookDate", bookDate);
 
     checkBarberBookings(req.body.barber_id, bookDate, function(err, data) {
         if (data) {
@@ -108,6 +156,16 @@ exports.requestChair = function(req, res) {
                                             msg: constantObj.messages.errorInSave
                                         })
                                     } else {
+                                        if (req.headers.user_type == 'barber') {
+                                            getBarber(saveData.barber_id, function(err, result) {
+                                                callNotification("barber_request_chair", saveData.shop_id, result.first_name + result.last_name);
+                                            })
+
+                                        } else if (req.headers.user_type == 'shop') {
+                                            getShop(saveData.shop_id, function(err, result) {
+                                                callNotification("shop_request_chair", result.barber_id, result.name);
+                                            })
+                                        }
                                         mailChairRequest(data.email)
                                         res.status(200).send({
                                             msg: "Your request for shop is successfully registered.",
@@ -471,23 +529,22 @@ exports.acceptRequest = function(req, res) {
             err: errors
         });
     }
-
-    if (req.body.request_type == 'accept') {
-        let updateCollectionData = {};
-        let bookingEndDate = "";
-        let id = mongoose.Types.ObjectId(req.body.chair_request_id);
-        chairRequest.aggregate([{
-            $match: {
-                _id: id
-            }
-        }, {
-            $lookup: {
-                from: "users",
-                localField: "barber_id",
-                foreignField: "_id",
-                as: "barberInformation"
-            }
-        }]).exec(function(err, result) {
+    chairRequest.aggregate([{
+        $match: {
+            _id: id
+        }
+    }, {
+        $lookup: {
+            from: "users",
+            localField: "barber_id",
+            foreignField: "_id",
+            as: "barberInformation"
+        }
+    }]).exec(function(err, result) {
+        if (req.body.request_type == 'accept') {
+            let updateCollectionData = {};
+            let bookingEndDate = "";
+            let id = mongoose.Types.ObjectId(req.body.chair_request_id);
             console.log("this is result", result)
             if (err) {
                 return res.status(400).send({
@@ -501,17 +558,13 @@ exports.acceptRequest = function(req, res) {
                     })
                 }
                 let book_date = moment().format("YYYY-MM-DD");
-
                 if (result[0].booking_date) {
                     book_date = moment(result[0].booking_date).format("YYYY-MM-DD");
                 }
-
                 let bookingEndDate = moment(book_date).add(1, 'M').format("YYYY-MM-DD");
-
                 if (result[0].chair_type == 'weekly') {
                     bookingEndDate = moment(book_date).add(7, 'day').format("YYYY-MM-DD")
                 }
-
                 checkBarberBookingsBetweenDates(book_date, bookingEndDate, result[0].barber_id, function(err, data) {
                     if (err) {
                         console.log(err)
@@ -520,7 +573,6 @@ exports.acceptRequest = function(req, res) {
                         });
                     }
                     if (data) {
-
                         updateCollectionData = {
                             "$set": {
                                 "chairs.$.booking_start": book_date,
@@ -529,7 +581,6 @@ exports.acceptRequest = function(req, res) {
                                 "chairs.$.availability": "booked"
                             }
                         };
-
                         console.log('updateCollectionData', updateCollectionData);
                         /*
                          1. In case of if type is weekly then booking_end date is one week ahead
@@ -560,7 +611,16 @@ exports.acceptRequest = function(req, res) {
                                             msg: "Error in chair book collection."
                                         })
                                     } else {
+                                        if (req.headers.user_type == 'barber') {
+                                            getBarber(saveData.barber_id, function(err, result) {
+                                                callNotification("barer_accept_chair", saveData.shop_id, result.first_name + result.last_name);
+                                            })
 
+                                        } else if (req.headers.user_type == 'shop') {
+                                            getShop(saveData.shop_id, function(err, result) {
+                                                callNotification("shop_accept_chair", result.barber_id, result.name);
+                                            })
+                                        }
                                         done(err, "Chair successfully booked.")
                                     }
                                 })
@@ -642,31 +702,38 @@ exports.acceptRequest = function(req, res) {
                     }
                 })
             }
-        })
-    } else if (req.body.request_type == 'decline') {
-        let id = mongoose.Types.ObjectId(req.body.chair_request_id);
-        chairRequest.update({
-            _id: id
-        }, {
-            $set: {
-                status: "decline"
-            }
-        }, function(err, outt) {
-            if (err) {
-                return res.status(400).send({
-                    msg: "Error in chair request collection."
-                })
-            } else {
-                return res.status(200).send({
-                    msg: "Chair request is successfully declined."
-                })
-            }
-        })
-    } else {
-        return res.status(400).send({
-            msg: "Error in request"
-        })
-    }
+        } else if (req.body.request_type == 'decline') {
+            let id = mongoose.Types.ObjectId(req.body.chair_request_id);
+            chairRequest.update({
+                _id: id
+            }, {
+                $set: {
+                    status: "decline"
+                }
+            }, function(err, outt) {
+                if (err) {
+                    return res.status(400).send({
+                        msg: "Error in chair request collection."
+                    })
+                } else {
+                    if (req.headers.user_type == 'barber') {
+                        getBarber(saveData.barber_id, function(err, result) {
+                            callNotification("barer_decline_chair_request", saveData.shop_id, result.first_name + result.last_name);
+                        })
+
+                    } else if (req.headers.user_type == 'shop') {
+                        getShop(saveData.shop_id, function(err, result) {
+                            callNotification("shop_decline_chair_request", result.barber_id, result.name);
+                        })
+                    }
+
+                    return res.status(200).send({
+                        msg: "Chair request is successfully declined."
+                    })
+                }
+            })
+        }
+    })
 }
 
 var checkBarberBookings = function(barber_id, bookDate, cb) {

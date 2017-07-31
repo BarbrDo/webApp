@@ -6,11 +6,7 @@ var serviceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    price:{
-        type: Number,
-        required: true
-    },
-    is_active: {
+    status: {
         type: Boolean,
         default: true
     },
@@ -23,8 +19,6 @@ var serviceSchema = new mongoose.Schema({
         default: Date.now()
     }
 });
-
-//module.export = mongoose.model('service',serviceSchema);
 
 var service = mongoose.model('services', serviceSchema);
 

@@ -82,6 +82,20 @@ var userSchema = new mongoose.Schema({
             }
         }
     ],
+    notification:[
+        {
+            key:{
+                type: String
+            },
+            text:{
+                type: String
+            },
+            created_date: {
+                type: Date,
+                default: Date.now()
+            }
+        }
+    ],
     created_date: {
         type: Date,
         default: Date.now()

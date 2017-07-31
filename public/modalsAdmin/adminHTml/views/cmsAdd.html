@@ -1,0 +1,74 @@
+<script>
+CKEDITOR.replace( 'editor2' );
+CKEDITOR.editorConfig = function( config ) {
+    config.language = 'es';
+    config.uiColor = '#F7B42C';
+    config.height = 300;
+    config.toolbarCanCollapse = true;
+};
+ </script>
+
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item"><a ui-sref="shops">Add</a></li>
+</ol>
+    <!-- Main content -->
+    <div class="panel" ng-init="chairdetail()">
+    <div ng-if="messages" role="alert" class="alert alert-danger">
+            <div>
+                {{messages}}</div>
+        </div>
+    <div class="panel-heading">
+        Manage CMS
+    </div>
+    <div class="panel-body">
+        <div class="title">
+            Add CMS
+        </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="box marginBT0">
+                            <form role="form" name="myform" class="spaceTP10 clearfix">
+                            <div class="col-sm-3">Title</div>
+                            <div class="col-sm-9 spaceBT10">
+                                <input type="text" name="title" class="form-control" ng-model="information.title" ng-pattern="/^[a-z ,.'-]+$/i" required capitalize-first  ng-minlength="2" ng-maxlength="30" maxlength="31">
+
+                               <div class="help-block" ng-messages="myform.title.$error" ng-if="myform.title.$touched">
+                                <p ng-message="minlength">Your name is too short.</p>
+                                <p ng-message="maxlength">Your name is too long.</p>
+                                <p ng-message="required">Your name is required.</p>
+                                <p ng-message="pattern">Use a-z or A-Z</p>
+                            </div>
+                            </div>
+                             <div class="col-sm-3">Identifier</div>
+                            <div class="col-sm-9 spaceBT10">
+                                <input type="text" name="identifier" class="form-control" ng-model="information.identifier" ng-pattern="/^[a-z ,.'-]+$/i" required   ng-minlength="2" ng-maxlength="30" maxlength="31" ng-disabled="updateButton">
+                              
+                                 <div class="help-block" ng-messages="myform.identifier.$error" ng-if="myform.identifier.$touched">
+                                <p ng-message="minlength">Your identifier is too short.</p>
+                                <p ng-message="maxlength">Your identifier is too long.</p>
+                                <p ng-message="required">Your identifier is required.</p>
+                                <p ng-message="pattern">Use a-z or A-Z</p>
+                            </div>
+
+                            </div>
+                            <div class="col-sm-3">Description</div>
+                            <div class="col-sm-9 spaceBT10">
+                             <textarea name="editor2"></textarea>
+                             </div>
+                             <div class="col-sm-3">&nbsp;</div>
+                             <div class="col-sm-9 spaceBT10">
+								<div class="btn-right">
+									<button ng-if="submitButton" ng-click="submit()" ng-disabled="myform.$invalid" >Submit</button>
+									<button ng-if="updateButton" ng-click="update()" ng-disabled="myform.$invalid">Update</button>
+								</div>
+						      </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</aside>

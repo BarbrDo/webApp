@@ -1,13 +1,11 @@
 angular.module('BarbrDoApp')
 	.controller('dashboardCtrl', function($scope, $rootScope, $filter, $location, customer, $stateParams, $state, $window, ngTableParams, $timeout, $http, toastr) {
+		var obj = {};
+		obj.latitude = $rootScope.latLong.latitude;
+		obj.longitude = $rootScope.latLong.longitude;
 		$scope.dollarAmmount = 0.00;
 		$scope.annualCost = $scope.dollarAmmount;
 		$scope.search = {};
-		var obj = {
-			'latitude': "30.538994",
-			'longitude': "75.955033"
-		}
-                console.log(latLong);
 		$scope.callFunctions = function() {
 			$scope.shoplist();
 			$scope.barberList();
@@ -15,6 +13,7 @@ angular.module('BarbrDoApp')
 		$scope.shoplist = function() {
 			obj.search = $scope.search.searchShop;
 			$scope.loaderStart = true;
+
 			customer.shopList(obj)
 				.then(function(response) {
 					$scope.loaderStart = false;
@@ -77,8 +76,6 @@ angular.module('BarbrDoApp')
 
 			customer.barberAll(obj)
 				.then(function(response) {
-					console.log("all", response.data.data[0])
-					$scope.loaderStart = false;
 					$scope.barberdet = response.data.data[0];
 
 				});
@@ -94,7 +91,6 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.barberInformation = response.data.data;
-					console.log(response)
 					var sum = 0;
 					var len = response.data.data[0].rating.length;
 					for (var i = 0; i < len; i++) {
@@ -128,12 +124,11 @@ angular.module('BarbrDoApp')
 			customer.timeavailability(obj)
 				.then(function(response) {
 					$scope.timeSlots = response.data.data;
-					console.log(response.data.data)
 				})
 
 		};
 
-		$scope.nextdates =function(){
+		$scope.nextdates = function() {
 			var myArray = [];
 			// Below code is generating current date + 6 days more
 			var date = new Date($scope.selectDate[6]);
@@ -143,22 +138,21 @@ angular.module('BarbrDoApp')
 				date.setDate(date.getDate() + i);
 				myArray.push(date)
 			}
-			console.log(myArray)
 			$scope.selectDate = myArray;
 		}
 
-		$scope.previousdates = function(){
-			// Below code is generating current date + 6 days more
-			// var date = new Date($scope.selectDate[0]);
-			// date.setDate(date.getDate() - 6)
-			// myArray.push(date)
-			// for (var i = 1; i <= 6; i++) {
-			// 	var date = new Date($scope.selectDate[0]);
-			// 	date.setDate(date.getDate() + i);
-			// 	myArray.push(date)
-			// }
-			// console.log(myArray)
-			// $scope.selectDate = myArray;	
+		$scope.previousdates = function() {
+			var myArray = [];
+			// Below code is generating current date - 6  days less
+			var date = new Date($scope.selectDate[0]);
+			date.setDate(date.getDate()-6)
+			myArray.push(date)
+			for (var i = 1; i <= 6; i++) {
+				var dated = new Date(date);
+				dated.setDate(dated.getDate() + i);
+				myArray.push(dated)
+			}
+			$scope.selectDate = myArray;
 		}
 
 		$scope.selectedTime = 0;
@@ -171,7 +165,6 @@ angular.module('BarbrDoApp')
 			$scope.loaderStart = true;
 			customer.barberAll(obj)
 				.then(function(response) {
-					console.log("all barbers", response)
 					$scope.loaderStart = false;
 					$scope.barbers = response.data.data;
 				});
@@ -198,7 +191,6 @@ angular.module('BarbrDoApp')
 
 		$scope.payLater = function(chair_amount, chair_id, chair_type, chair_name, chair_shop_percentage, chair_barber_percentage) {
 			var myarr = [];
-			console.log("this is date",$scope.selected.length)
 			for (var i = 0; i < $scope.selected.length; i++) {
 				var cusObj = {};
 				cusObj.name = $scope.selected[i].name;
@@ -218,7 +210,6 @@ angular.module('BarbrDoApp')
 						_id: response.data.data._id
 					});
 				}).catch(function(err) {
-					console.log(err)
 					toastr.error('Something went wrong!Please try again later.');
 				});
 		}
@@ -451,9 +442,20 @@ angular.module('BarbrDoApp')
 			});
 		}
 
+		if ($state.current.name == 'notifications') {
+			let currentUser = JSON.parse($window.localStorage.user);
+			let obj = {
+				id:currentUser._id
+			}
+			customer.userProfile(obj).then(function  (response) {
+				$scope.notify = response.data.user.notification;
+			}).catch(function  (e) {
+			})
+		}
+
 		// Stripe Implementation
 		$scope.stripeCall = function() {
-			var stripe = Stripe('pk_test_fswpUdU8DBIKbLz1U637jNF7');
+			var stripe = Stripe(stripe_key);
 			var elements = stripe.elements();
 			var card = elements.create('card', {
 				style: {

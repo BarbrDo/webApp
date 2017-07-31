@@ -323,6 +323,37 @@ angular.module('barbrdo').factory('Admin', function($http) {
     },
     graphicData:function (data) {
       return $http.get('/api/v1/totalUsers',data);
+    },
+    allservices : function() {
+      return $http.get('/api/v1/services'); 
+    },
+    addServices : function(data) {
+       return $http({
+        method: 'POST',
+        url: '/api/v1/services',
+        data: data
+      });
+    },
+    editServices : function(data) {
+      return $http({
+        method: 'PUT',
+        url: '/api/v1/services/'+data.service_id,
+        data: data
+      });
+    },
+    disableServices : function(data) {
+      return $http({
+        method: 'DELETE',
+        url: '/api/v1/services/'+data.service_id,
+        data: data
+      });
+    },
+    enableServices : function(data) {
+      return $http({
+        method: 'DELETE',
+        url: '/api/v1/enableservices/'+data.service_id,
+        data: data
+      });
     }
   };
 });

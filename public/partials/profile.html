@@ -32,9 +32,9 @@
                         </div>
                     </div>
                      <div class="form-group ">
-                        <label for="lastname" class="col-sm-3 ">Last Name</label>
+                        <label for="lastname " class="col-sm-3 ">Last Name</label>
                         <div class="col-sm-7 ">
-                            <input type="text" name="lastname" id="last_name" class="form-control" ng-model="profile.last_name" ng-pattern="/^[a-z ,. '-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                            <input type="text " name="lastname " id="last_name " class="form-control " ng-model="profile.last_name " ng-pattern="/^[a-z ,. '-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
 
                             <div class="validationError" ng-messages="profileForm.lastname.$error" ng-show="
                                     profileForm.lastname.$error.required && profileForm.lastname.$touched &&
@@ -61,10 +61,10 @@
                     <div class="form-group ">
                         <label for="mobilenumber " class="col-sm-3 ">Mobile Number</label>
                         <div class="col-sm-7 ">
-                            <!-- <input type="text  class="form-control" name="mobile_number" id="mobile_number" ng-model="profile.mobile_number" mask="(999) 999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="14" ng-maxlength="14" maxlength="14" required /> -->
+                            <!-- <input type="text  class="form-control" name="mobile_number" id="mobile_number" ng-model="profile.mobile_number" mask="(999) 999-9999" mask-clean='true ' mask-restrict='reject ' ng-minlength="14" ng-maxlength="14" maxlength="14" required /> -->
 
 
-                            <input type="text" class="form-control" ng-model="profile.mobile_number" id="mobile_number" mask="(999) 999-9999" name="mobile_number" mask-clean='true' placeholder="(xxx) xxx-xxxx" ng-minlength="14" ng-maxlength="14" maxlength="14" autofocus="autofocus"  required/>
+                            <input type="text" class="form-control" ng-model="profile.mobile_number" id="mobile_number" mask="(999) 999-9999" name="mobile_number" mask-clean='true ' placeholder="(xxx) xxx-xxxx" ng-minlength="14" ng-maxlength="14" maxlength="14" autofocus="autofocus"  required/>
 
                             <p class="help-block">
                                 <span ng-show="profileForm.mobile_number.$touched && profileForm.mobile_number.$invalid && profileForm.mobile_number.$error.required">Mobile number is required.</span>
@@ -95,7 +95,7 @@
                         <div class="col-sm-4 ">
                             <!-- <input type="file " ngf-select ng-model="profile.file " name="file " ngf-pattern=" 'image/* ' " accept="image/* " ngf-max-size="10MB " class="text-center center-block well well-sm "> -->
 
-                            <input type="file" ngf-select ng-model="profile.file" name="file" ngf-pattern="'image/*'" accept="image/*" ngf-max-size="10MB" class="text-center center-block well well-sm"  >
+                            <input type="file" ngf-select ng-model="profile.file" name="file" ngf-pattern="'image/* '" accept="image/*" ngf-max-size="10MB" class="text-center center-block well well-sm" style="margin-right: 90px;" >
                         </div>
                     </div>
                     <div class="form-group">
@@ -107,26 +107,21 @@
             </div>
         </div>
 
-        <div class="panel" ng-show="profile.user_type=='shop'" ng-if="profile.user_type=='shop'" ng-init="shop()">
+        <div class="panel" ng-show="profile.user_type=='shop '" ng-if="profile.user_type=='shop '" ng-init="shop()">
             <div class="panel-body">
                 <form ng-submit="updateshopinfo(shopinfo)" class="form-horizontal" name="profileForm">
                     <legend>Shop Information</legend>
                     <div class="form-group ">
                          <label for="name" class="col-sm-3">Shop name </label>
                         <div class="col-sm-7">
-                            <input type="text" name="name" id="name" class="form-control" ng-model="shopinfo.name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="30" maxlength="30" required>
-                            <div class="validationError" ng-messages="profileForm.name.$error" ng-show="
-                                    profileForm.name.$error.required && profileForm.name.$touched &&
-                                            profileForm.name.$invalid
-                                 " role="alert">
-                                <span style="color:red" ng-message="required">Shop name is required</span>
+                            <input type="text" name="name" id="name" class="form-control" ng-model="shopinfo.name" ng-pattern="/^[a-z ,.'-]+$/i " ng-minlength="3 " ng-maxlength="30 " maxlength="30 " required>
+                            <div class="validationError " ng-messages="profileForm.name.$error " ng-show=" profileForm.name.$error.required && profileForm.name.$touched && profileForm.name.$invalid " role="alert ">
+                                <span style="color:red " ng-message="required ">Shop name is required</span>
                             </div>
-                            <div class="validationError" ng-messages="profileForm.name.$error" ng-show="
-                                    profileForm.name.$error.pattern && (!profileForm.name.$pristine || profileForm.$submitted)" role="alert">
-                                <span style="color:red" ng-message="pattern">Enter valid character </span>
+                            <div class="validationError " ng-messages="profileForm.name.$error " ng-show=" profileForm.name.$error.pattern && (!profileForm.name.$pristine || profileForm.$submitted) " role="alert ">
+                                <span style="color:red " ng-message="pattern ">Enter valid character </span>
                             </div>
-                            <div class="validationError" ng-show="profileForm.name.$error.maxlength && profileForm.name.$dirty" ">
-
+                            <div class="validationError " ng-show="profileForm.name.$error.maxlength && profileForm.name.$dirty " ">
                                 <span style="color:red ">Shop name maximum length exceeds</span>
                             </div>
                         </div>

@@ -6,7 +6,6 @@ angular.module('BarbrDoApp')
 		$scope.dollarAmmount = 0.00;
 		$scope.annualCost = $scope.dollarAmmount;
 		$scope.search = {};
-		console.log($rootScope.latLong);
 		$scope.callFunctions = function() {
 			$scope.shoplist();
 			$scope.barberList();
@@ -77,8 +76,6 @@ angular.module('BarbrDoApp')
 
 			customer.barberAll(obj)
 				.then(function(response) {
-					console.log("all", response.data.data[0])
-					$scope.loaderStart = false;
 					$scope.barberdet = response.data.data[0];
 
 				});
@@ -94,7 +91,6 @@ angular.module('BarbrDoApp')
 				.then(function(response) {
 					$scope.loaderStart = false;
 					$scope.barberInformation = response.data.data;
-					console.log(response)
 					var sum = 0;
 					var len = response.data.data[0].rating.length;
 					for (var i = 0; i < len; i++) {
@@ -128,7 +124,6 @@ angular.module('BarbrDoApp')
 			customer.timeavailability(obj)
 				.then(function(response) {
 					$scope.timeSlots = response.data.data;
-					console.log(response.data.data)
 				})
 
 		};
@@ -143,22 +138,21 @@ angular.module('BarbrDoApp')
 				date.setDate(date.getDate() + i);
 				myArray.push(date)
 			}
-			console.log(myArray)
 			$scope.selectDate = myArray;
 		}
 
 		$scope.previousdates = function() {
-			// Below code is generating current date + 6 days more
-			// var date = new Date($scope.selectDate[0]);
-			// date.setDate(date.getDate() - 6)
-			// myArray.push(date)
-			// for (var i = 1; i <= 6; i++) {
-			// 	var date = new Date($scope.selectDate[0]);
-			// 	date.setDate(date.getDate() + i);
-			// 	myArray.push(date)
-			// }
-			// console.log(myArray)
-			// $scope.selectDate = myArray;	
+			var myArray = [];
+			// Below code is generating current date - 6  days less
+			var date = new Date($scope.selectDate[0]);
+			date.setDate(date.getDate()-6)
+			myArray.push(date)
+			for (var i = 1; i <= 6; i++) {
+				var dated = new Date(date);
+				dated.setDate(dated.getDate() + i);
+				myArray.push(dated)
+			}
+			$scope.selectDate = myArray;
 		}
 
 		$scope.selectedTime = 0;
@@ -171,7 +165,6 @@ angular.module('BarbrDoApp')
 			$scope.loaderStart = true;
 			customer.barberAll(obj)
 				.then(function(response) {
-					console.log("all barbers", response)
 					$scope.loaderStart = false;
 					$scope.barbers = response.data.data;
 				});
@@ -198,7 +191,6 @@ angular.module('BarbrDoApp')
 
 		$scope.payLater = function(chair_amount, chair_id, chair_type, chair_name, chair_shop_percentage, chair_barber_percentage) {
 			var myarr = [];
-			console.log("this is date", $scope.selected.length)
 			for (var i = 0; i < $scope.selected.length; i++) {
 				var cusObj = {};
 				cusObj.name = $scope.selected[i].name;
@@ -218,7 +210,6 @@ angular.module('BarbrDoApp')
 						_id: response.data.data._id
 					});
 				}).catch(function(err) {
-					console.log(err)
 					toastr.error('Something went wrong!Please try again later.');
 				});
 		}
@@ -457,10 +448,8 @@ angular.module('BarbrDoApp')
 				id:currentUser._id
 			}
 			customer.userProfile(obj).then(function  (response) {
-				console.log(response.data.user);
 				$scope.notify = response.data.user.notification;
 			}).catch(function  (e) {
-				console.log("error in request",e);
 			})
 		}
 

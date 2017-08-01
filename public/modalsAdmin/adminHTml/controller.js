@@ -1,19 +1,57 @@
-app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log', '$stateParams', '$state' ,'toastr','$localStorage', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state,toastr,$localStorage) {
+app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin', '$filter', '$log', '$stateParams', '$state', 'toastr', '$localStorage', function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage, $uibModal) {
   $scope.loginUser = {};
   $scope.user = {};
-  console.log("eryh")
   $scope.myobj = {};
   $scope.myobj.currentPage = 1;
   $scope.bigTotalItems = 175;
   $scope.bigCurrentPage = 1;
   $scope.fieldDisabled = false;
-  console.log("val",$localStorage.loggedIn);
-  if($localStorage.loggedIn==true){
+  if ($localStorage.loggedIn == true) {
     $rootScope.LoginUser = true;
-  }
-  else{
+  } else {
     $rootScope.LoginUser = false;
   }
+
+
+  $scope.toggleleftclass = false;
+
+  $scope.togglebodyclass = function() {
+    $scope.toggleleftclass = !$scope.toggleleftclass;
+
+  }
+
+
+
+  $scope.labels = ["2010", "2011", "2012", "2013", "2014", "2017", "2016"];
+  $scope.series = ['Barbers', 'Shops', 'Customers'];
+  $scope.data = [
+    [5, 15, 20, 25, 30, 45, 50],
+    [10, 20, 30, 40, 50, 60, 70],
+    [30, 60, 90, 120, 150, 180, 210]
+  ];
+
+  $scope.datasetOverride = [{
+    yAxisID: 'y-axis-1'
+  }, {
+    yAxisID: 'y-axis-2'
+  }];
+  $scope.options = {
+    scales: {
+      yAxes: [{
+        id: 'y-axis-1',
+        type: 'linear',
+        display: true,
+        position: 'left'
+      }, {
+        id: 'y-axis-2',
+        type: 'linear',
+        display: true,
+        position: 'right'
+      }]
+    }
+  };
+
+
   // Disable weekend selection
   function disabled(data) {
     var date = data.date,
@@ -21,7 +59,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
   }
 
-  $scope.loginAdmin = function () {
+  $scope.loginAdmin = function() {
     Admin.login($scope.loginUser)
       .then(function(response) {
         toastr.success('Welcome Admin');
@@ -31,7 +69,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
         toastr.error('you are not Authorized');
       })
   }
-  $scope.logout = function () {
+  $scope.logout = function() {
     $localStorage.loggedIn = false;
     $state.go('login');
   }
@@ -136,7 +174,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
       })
   }
 
-   $scope.barberappointmentsfunc = function(appointment) {
+  $scope.barberappointmentsfunc = function(appointment) {
     $rootScope.appointment = appointment;
   }
 
@@ -144,8 +182,8 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     $scope.loaderStart = true;
     Admin.confirmAppoint($rootScope.appointment)
       .then(function(response) {
-       $scope.loaderStart = false;
-       toastr.success('Your appointment is confirmed Successfully');
+        $scope.loaderStart = false;
+        toastr.success('Your appointment is confirmed Successfully');
         history.go(0);
       }).catch(function(result) {
         $scope.loaderStart = false;
@@ -157,8 +195,8 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     $scope.loaderStart = true;
     Admin.markComplete($rootScope.appointment, $stateParams.id)
       .then(function(response) {
-      $scope.loaderStart = false;
-      toastr.success('Your appointment is completed Successfully');
+        $scope.loaderStart = false;
+        toastr.success('Your appointment is completed Successfully');
         history.go(0);
       }).catch(function(result) {
         $scope.loaderStart = false;
@@ -171,8 +209,8 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
   }
 
   $scope.confirmreschedule = function() {
-    $scope.loaderStart = true; 
-    Admin.rescheduleAppoint($rootScope.appointment,$rootScope.time)
+    $scope.loaderStart = true;
+    Admin.rescheduleAppoint($rootScope.appointment, $rootScope.time)
       .then(function(response) {
         $scope.loaderStart = false;
         toastr.success('Your appointment is Reschedule Successfully');
@@ -271,7 +309,7 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
           };
           shp.push(objj);
         }
-        
+
         $rootScope.shops = shp;
         $scope.myobj.totalItems = response.data.count / 3;
       }).catch(function(result) {
@@ -287,10 +325,10 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
       //return;
     }
     $scope.sort = val;
-     $('th i').each(function(){
-            // icon reset
-            $(this).removeClass().addClass('icon-sort');
-        });
+    $('th i').each(function() {
+      // icon reset
+      $(this).removeClass().addClass('icon-sort');
+    });
 
     if ($scope.reverse) {
       $('th .' + val + ' i').removeClass().addClass('icon-chevron-up');
@@ -676,9 +714,9 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
             $rootScope.totalbarbers = object;
           }
         }).catch(function(result) {
-        $scope.loaderStart = false;
-        $scope.messages = result.data.msg
-      })
+          $scope.loaderStart = false;
+          $scope.messages = result.data.msg
+        })
     }, 1000);
 
   };
@@ -688,8 +726,8 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
     $scope.loaderStart = true;
     Admin.addChair(chair)
       .then(function(response) {
-       $scope.shopdetail();
-       toastr.success('Chair added Succesfully')
+        $scope.shopdetail();
+        toastr.success('Chair added Succesfully')
       }).catch(function(result) {
         $scope.loaderStart = false;
         $scope.messages = result.data.msg
@@ -741,25 +779,24 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
       Admin.barberDetail($stateParams.id)
         .then(function(response) {
           console.log(response)
-           $scope.loaderStart = false;
+          $scope.loaderStart = false;
           $rootScope.barberdetail = response.data.data[0];
         }).catch(function(result) {
-        $scope.loaderStart = false;
-        $scope.messages = result.data.msg
-      })
+          $scope.loaderStart = false;
+          $scope.messages = result.data.msg
+        })
     }, 500);
-   
+
   };
 
-  $scope.cancelappoint = function()
-  {
+  $scope.cancelappoint = function() {
     $scope.loaderStart = true;
     Admin.cancelAppoint($rootScope.appointment)
-    .then(function(response) { 
-      $scope.loaderStart = false;
+      .then(function(response) {
+        $scope.loaderStart = false;
         history.go(0);
         toastr.success('Appointment is Canceled');
-    }).catch(function(result) {
+      }).catch(function(result) {
         $scope.loaderStart = false;
         $scope.messages = result.data.msg
       })
@@ -773,12 +810,119 @@ app_admin.controller("AdminCtrl", ['$scope', '$rootScope', '$location', 'Admin',
           $scope.loaderStart = false;
           $rootScope.customerdetail = response.data.data[0];
         }).catch(function(result) {
-        $scope.loaderStart = false;
-        $scope.messages = result.data.msg
-      })
+          $scope.loaderStart = false;
+          $scope.messages = result.data.msg
+        })
     }, 500);
-    
+
 
   };
+
+  $scope.services = function() {
+    $scope.loaderStart = true;
+    Admin.allservices()
+      .then(function(response) {
+        $scope.loaderStart = false;
+        $scope.services = response.data.data
+      })
+  }
+
+  $scope.addservice = function(name) {
+    if (name) {
+      $scope.loaderStart = true;
+      var obj = {
+        name: name
+      }
+      Admin.addServices(obj)
+        .then(function(response) {
+          Admin.allservices()
+            .then(function(response) {
+              $scope.loaderStart = false;
+              $scope.services = response.data.data
+              toastr.success('Service is Added successfully')
+              $scope.service = '';
+            })
+        })
+    } else {
+      toastr.error('Name cannot left blank')
+    }
+
+  }
+
+
+  $scope.editservices = function(name, id) {
+    if (name) {
+      $scope.loaderStart = true;
+      var obj = {
+        name: name,
+        service_id: id
+      }
+      Admin.editServices(obj)
+        .then(function(response) {
+          Admin.allservices()
+            .then(function(response) {
+              $scope.loaderStart = false;
+              $scope.services = response.data.data
+              toastr.success('Service is Updated successfully')
+            })
+        })
+    } else {
+      toastr.error('Name cannot left blank')
+      Admin.allservices()
+        .then(function(response) {
+          $scope.services = response.data.data
+        })
+    }
+  }
+
+  $scope.disableservice = function(id) {
+    if (id) {
+      $scope.loaderStart = true;
+      var obj = {
+        service_id: id
+      }
+      Admin.disableServices(obj)
+        .then(function(response) {
+          Admin.allservices()
+            .then(function(response) {
+              $scope.loaderStart = false;
+              $scope.services = response.data.data
+              toastr.success('This service is disabled successfully')
+            })
+        })
+    } else {
+      toastr.error('Error in your request')
+    }
+  }
+
+  $scope.enableservice = function(id) {
+
+    if (id) {
+      $scope.loaderStart = true;
+      var obj = {
+        service_id: id
+      }
+      Admin.enableServices(obj)
+        .then(function(response) {
+          Admin.allservices()
+            .then(function(response) {
+              $scope.loaderStart = false;
+              $scope.services = response.data.data
+              toastr.success('This service is enabled successfully')
+            })
+        })
+    } else {
+      toastr.error('Error in your request')
+    }
+  }
+
+  $scope.cancel = function() {
+    Admin.allservices()
+      .then(function(response) {
+        $scope.services = response.data.data
+      })
+  }
+
+
 
 }]);

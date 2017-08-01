@@ -5,7 +5,6 @@ angular.module('BarbrDoApp')
         var m = date.getMonth();
         var y = date.getFullYear();
         var vm = this;
-        console.log("running");
         var addOffset = function(dobFormat) {
             var userOffset = new Date(dobFormat).getTimezoneOffset();
             var userOffsetMilli = userOffset * 60 * 1000;
@@ -24,16 +23,11 @@ angular.module('BarbrDoApp')
         $scope.events = [];
 
         $scope.getBarberEvent = function() {
-            console.log($scope.currentDate);
             let obj = {
                 date: moment($scope.currentDate).format("YYYY-MM-DD")
             }
-            console.log(obj)
             customer.getEvents(obj).then(function(response) {
-                console.log(JSON.stringify(response.data.data.events));
                 for (var i = 0; i < response.data.data.events.length; i++) {
-                    console.log(response.data.data.events[i].startsAt, response.data.data.events[i].endsAt)
-                    console.log("value of i", i);
                     let obj = {
                         title: response.data.data.events[i].title,
                         start: moment.parseZone(response.data.data.events[i].startsAt).format("llll"),
@@ -41,7 +35,7 @@ angular.module('BarbrDoApp')
                         id: response.data.data.events[i]._id
                     }
                     $scope.events.push(obj)
-                    console.log(JSON.stringify($scope.events));
+
                 }
             });
         }
@@ -163,14 +157,9 @@ angular.module('BarbrDoApp')
         var aptment = appointment;
         var customer = JSON.parse(aptment.ddlCustomer);
         var date = new Date(aptment.apptDate);
-        console.log(aptment);
-        console.log(customer);
-        console.log(date);
 
     };
     $scope.saveEvent = function() {
-        console.log("evengt save");
-
         var startDate = $filter('date')($scope.startdate, "yyyy-MM-dd");
         var endDate = $filter('date')($scope.endDate, "yyyy-MM-dd");
 
@@ -179,22 +168,15 @@ angular.module('BarbrDoApp')
         var endHourTime = $scope.endTime.getHours();
         var endMintTime = $scope.endTime.getMinutes();
 
-        console.log(startHourTime, startMintTime);
-        console.log(endHourTime, endMintTime);
-        console.log($scope.titleOfEvent);
-
         startDate = startDate + " " + startHourTime + ":" + startMintTime + ":" + "00";
         endDate = endDate + " " + endHourTime + ":" + endMintTime + ":" + "00";
 
-        console.log(startDate, endDate);
-        console.log($scope.rep);
         var size = Object.keys($scope.rep).length;
-        console.log(size)
+
         var myarr = [];
         if (size != 0) {
             for (var key in $scope.rep) {
                 if ($scope.rep.hasOwnProperty(key)) {
-                    console.log(key + " -> " + $scope.rep[key]);
                     if (key == 'sun') {
                         myarr.push('7');
                     } else if (key == 'mon') {

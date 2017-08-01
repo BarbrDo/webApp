@@ -18,6 +18,7 @@ let path = require('path');
 let stripeToken = process.env.STRIPE
 let stripe = require('stripe')(stripeToken);
 let LoggedInUser = require('../models/logged_in_user')
+let service = require('../models/service');
 
 function generateToken(user) {
   let payload = {
@@ -91,7 +92,6 @@ exports.loginPost = function(req, res, next) {
         msg: 'The email address ' + req.body.email + ' is not associated with any account. ' + 'Double-check your email address and try again.'
       });
     }
-
     /*-- this condition is for check that this account is active or not---- */
     if (user.is_active == false && user.is_verified == false) {
       return res.status(401).send({msg: user.remark});
@@ -171,7 +171,6 @@ exports.loginPost = function(req, res, next) {
 /**
  * POST /signup
  */
-
 let accountActivateMailFunction = function(req, res, user, resetUrl) {
   console.log("accountActivateMailFunction", user);
   let auth = {
@@ -974,60 +973,9 @@ exports.totalUsers = function(req, res) {
   });
 }
 
-exports.subscribe = function(req, res) {
-  req.checkHeaders("user_id", "User id is required.").notEmpty();
-  req.assert("token", "Plan is required.").notEmpty();
-  req.assert("amount", "Plan is required.").notEmpty();
-  let errors = req.validationErrors();
-  if (errors) {
-    return res.status(400).send({msg: "error in your request", err: errors});
-  }
-  console.log("subscribe", req.body);
-  let amount = req.body.amount;
-  User.findOne({_id: req.headers.user_id}).exec(function(err, data) {
-    if (err) {
-      res.status(400).send({msg: "This user is not present.", "err": err});
-    } else {
-      console.log("user_id", data);
-      if (data) {
-        console.log("data", data.email);
-        stripe.customers.create({email: data.email, source: req.body.token}).then(customer => stripe.charges.create({
-          amount,
-          description: "Subscription charge for" + data.first_name + "with plan id",
-          currency: "usd",
-          customer: customer.id
-        })).then(function(charge) {
-          console.log("subscription", charge);
-          let updateData = {
-            "$set": {
-              isActive: true,
-              is_verified: true,
-              subscription: true,
-              stripe_customer: charge.customer,
-              stripe_subscription: charge
-            }
-          }
-          User.update({
-            _id: req.headers.user_id
-          }, updateData, function(err, updateInfo) {
-            if (err) {
-              res.status(400).send({msg: "Error occurred in subscription.", "err": err});
-            } else {
-              User.findOne({_id: req.headers.user_id}).exec(function(err, user) {
-                res.status(200).send({"msg": "You are successfully subscribed."});
-              })
-            }
-          })
-        }).catch(function(err) {
-          return res.status(400).send({msg: err.message})
-        });
-      }
-    }
-  })
-}
+
 
 exports.logout = function(req, res) {
-  console.log('---------', req.headers.user_id);
   LoggedInUser.remove({user_id:req.headers.user_id},function(err,result){
     User.update({
       _id: req.headers.user_id
@@ -1050,5 +998,3 @@ exports.logout = function(req, res) {
 
 exports.stripeWebhook = function(req, res, next) {
   console.log(req.body);
-  res.status(200).send({msg: "ok/"});
-}

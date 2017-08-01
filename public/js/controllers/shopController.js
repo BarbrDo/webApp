@@ -17,9 +17,13 @@
 
      $scope.searchbarber = function() {
        $scope.loaderStart = true;
+       var resultArray = [];
+      var result = [];
+      var finalresult = [];
+      var objj = {};
        var passingObj = {
-       'latitude': $rootScope.latLong.latitude,
-      'longitude': $rootScope.latLong.longitude
+         'latitude': $rootScope.latLong.latitude,
+         'longitude': $rootScope.latLong.longitude
        };
        if ($scope.myobj.search) {
          passingObj.search = $scope.myobj.search
@@ -27,9 +31,32 @@
        shop.barbers(passingObj)
          .then(function(response) {
            $scope.loaderStart = false;
-           $rootScope.barbers = response.data.data;
-           if (response.data.data.length != 0)
-             console.log(response.data.data)
+           var sum = 0;
+           var len = response.data.data.length;
+           for (var i = 0; i < len; i++) {
+             if (response.data.data[i].ratings.length == '0') {
+               sum = 0;
+             } else {
+               for (var j = 0; j < response.data.data[i].ratings.length; j++) {
+                 sum += response.data.data[i].ratings[j].score
+               }
+             }
+             resultArray.push(sum)
+             for(var k = 0; k < resultArray.length; k++)
+           {
+            var avg = resultArray[k] / len
+            
+           }
+           result.push(avg)
+             var objj = {
+            barbersdata: response.data.data[i],
+            ratingsavg: avg
+          };
+
+          finalresult.push(objj)
+           }
+           
+           $rootScope.barbers = finalresult ;
          }).catch(function(response) {
            toastr.error('Error');
          })
@@ -110,7 +137,6 @@
      }
 
      if ($state.current.name == 'barbershopdashboard') {
-      console.log("here")
        $scope.loaderStart = true;
        var obj = {
          obj: JSON.parse($window.localStorage.user)
@@ -215,9 +241,14 @@
          $scope.chairs = response.data.user;
          $window.localStorage.shop_id = response.data.user.shop[0]._id;
          $rootScope.shopinfo = response.data.user.shop[0];
-         console.log(response)
        })
      }
+
+     var date = new Date();
+     var ddate = new Date();
+     ddate.setDate(date.getDate() - 6);
+     $scope.startdate = $filter('date')(ddate, "yyyy-MM-dd");
+     $scope.enddate = $filter('date')(date, "yyyy-MM-dd");
 
      $scope.finacialcenter = function() {
        $scope.loaderStart = true;
@@ -225,14 +256,7 @@
          obj: JSON.parse($window.localStorage.user)
        }
        shop.shopInfo(obj).then(function(response) {
-
-         $rootScope.shopid = response.data.user.shop[0]._id
-         var myArray = [];
-         var date = new Date();
-         var ddate = new Date();
-         ddate.setDate(date.getDate() - 6);
-         $scope.startdate = $filter('date')(ddate, "yyyy-MM-dd");
-         $scope.enddate = $filter('date')(date, "yyyy-MM-dd");
+         $rootScope.shopid = response.data.data[0]._id
          var obj = {
            startdate: $scope.startdate,
            enddate: $scope.enddate,
@@ -240,8 +264,8 @@
          }
          shop.finacialCenter(obj)
            .then(function(response) {
+            // console.log(response)
              $scope.loaderStart = false;
-             console.log("response",response.data.data)
              $scope.sale = response.data.data;
            })
 
@@ -328,32 +352,27 @@
 
 
      $scope.saveWeeklyFair = function(type) {
-      console.log("this is type",type)
        $scope.loaderStart = true;
-       if($scope.myobj.priceValue)
-       {
-        var obj = {
-         type: type,
-         amount: $scope.myobj.priceValue,
-         chair_id: $stateParams.id
-          }
-       }
-       else
-       {
+       if ($scope.myobj.priceValue) {
          var obj = {
-         type: type.type,
-         amount:type.amount,
-         chair_id: $stateParams.id
-          }
+           type: type,
+           amount: $scope.myobj.priceValue,
+           chair_id: $stateParams.id
+         }
+       } else {
+         var obj = {
+           type: type.type,
+           amount: type.amount,
+           chair_id: $stateParams.id
+         }
        }
-      
+
        shop.saveWeeklyFair(obj).then(function(response) {
          $scope.loaderStart = false;
          toastr.success(obj.type + '  ' + ' fair successfully saved.');
          $state.go('barbershopdashboard')
        }).catch(function(result) {
          $scope.loaderStart = false;
-         console.log(result)
          toastr.error(result.data.msg);
        })
 

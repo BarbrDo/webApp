@@ -19,7 +19,6 @@ angular.module('BarbrDoApp')
             return $http.post('/api/v1/forgot', data);
         },
       barbers: function(data) {
-        console.log(data)
         if (data.search) {
           return $http({
           method: 'get',
@@ -43,12 +42,11 @@ angular.module('BarbrDoApp')
         }
       },
       shopInfo: function(data) {
-        console.log(data)
           return $http({
           method: 'get',
-          url: '/api/v1/shops/chair/' + data.obj.shop_id,
+          url: '/api/v1/shops/chair/' + data.obj._id,
           headers: {
-            user_id: obj._id
+            user_id: data.obj._id
           }
         });   
       },
@@ -189,7 +187,6 @@ angular.module('BarbrDoApp')
         return $http.get('/api/v1/barber/services/'+obj._id);
       },
       finacialCenter: function(data) {
-        console.log(data)
         return $http({
           method: 'get',
            url: '/api/v1/shops/sale/'+data.shop_id+'/'+data.startdate+'/'+data.enddate,
@@ -199,10 +196,9 @@ angular.module('BarbrDoApp')
         });
       },
       requestRemoveBarber: function(data) {
-        return $http.post('/api/v1/shop/removebarber',data);
+        return $http.post('/api/v1/shops/removebarber',data);
       },
       ContactBarbrdo: function(data) {
-        console.log("here")
         return $http.post('/api/v1/contact',data);
       }
     }

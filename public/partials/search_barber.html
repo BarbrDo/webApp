@@ -12,22 +12,23 @@
      <span class="glyphicon glyphicon-search" style="color:purple"></span>
       <input ng-model="myobj.search" placeholder="Search Barber" ng-change="searchbarber()" /></div><br>
     <div class="col-md-4 col-sm-4 col-xs-6 fullb" ng-repeat = "barber in barbers">
-      <div class="barber toshop">
+      <div class="barber toshop" >
         <div class="cont">
           <div class="user_pic"> 
-              <span ng-if="barber.picture">
-                <a href=""><img ng-src="{{imgPath + barber.picture}} "  ui-sref="requestorgallery({id:barber._id})"></a>
+              <span ng-if="barber.barbersdata.picture">
+                <a href=""><img ng-src="{{imgPath + barber.barbersdata.picture}} "  ui-sref="requestorgallery({id:barber.barbersdata._id})"></a>
               </span>
-              <span ng-if="!barber.picture">
+              <span ng-if="!barber.barbersdata.picture">
                 <img ng-src="images/no-image-found.jpg " class="profile " width="100 " height="100 ">
           </div>
-          <h3>{{barber.first_name}} {{barber.last_name}}</h3>
-          <p >Location : <span>{{barber.location}}</span></p>
-          <p >Member Since : <span>{{barber.created_date | date: dd/mm/yyyy}}</span></p>
+          <h3>{{barber.barbersdata.first_name}} {{barber.barbersdata.last_name}}</h3>
+          <p ng-if="barber.barbersdata.shop[0].name">Location : <span>{{barber.barbersdata.shop[0].name}}</span></p>
+          <p ng-if="!barber.barbersdata.shop[0].name">Location : <span>Not Associated With any Shop</span></p>
+          <p >Member Since : <span>{{barber.barbersdata.created_date | date: dd/mm/yyyy}}</span></p>
           
-          <p> Rating : <span> <input-stars max="5" ng-model="ratingavg" ng-attr-readonly="true"></input-stars>  </span> </p>
+          <p> Rating : <span > <input-stars max="5" ng-model="barber.ratingsavg" ng-attr-readonly="true"></input-stars>  </span> </p>
         </div>
-         <a class="book_nw" href="#" ng-click="requestbarber(barber)"> Request <i class="fa fa-paper-plane"></i> </a>
+         <a class="book_nw" href="#" ng-click="requestbarber(barber.barbersdata)"> Request <i class="fa fa-paper-plane"></i> </a>
      </div>
     </div>  
     </span>    

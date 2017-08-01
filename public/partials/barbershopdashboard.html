@@ -14,7 +14,7 @@
                                 <a href="#"><img style="cursor: pointer;" data-toggle="tooltip" title="View Barber" ui-sref="requestorgallery({id:res.barber_id})" src="{{imgPath+res.barber[0].picture}}"></a>
                             </span>
                             <span ng-if="!res.barber[0].picture">
-                                <a href="#"><img style="cursor: pointer;" data-toggle="tooltip" title="View Barber" ui-sref="requestorgallery({id:res.barber_id})" src="images/no-image-found.jpg"></a>
+                                <a href="#"><img style="cursor: pointer;" data-toggle="tooltip" title="View Barber" ui-sref="requestorgallery({id:res.barber_id})" src="images/brbr_pic.png"></a>
                             </span>
                             
                         </span> 
@@ -25,7 +25,7 @@
                     <p ng-if="res.type == 'weekly' || res.type == 'monthly'"><span>{{res.type}}</span> : ${{res.amount}}</p>
                     <p ng-if="res.type != 'weekly' && res.type != 'monthly' && res.type != 'percentage'">Empty</p>
                     <span ng-if="res.barber_id">
-                        <p ng-if="res.barber_id"><span>{{res.barber[0].first_name}} {{res.barber[0].last_name}}</span></p>
+                        <p ng-if="res.barber_id"><span> By </span> : {{res.barber[0].first_name}} {{res.barber[0].last_name}}</p>
                     </span>
                     <span ng-if="!res.barber_id">
                         <p ng-if="res.availability">{{res.availability}}</p>

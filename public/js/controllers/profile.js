@@ -5,15 +5,17 @@ angular.module('BarbrDoApp').controller('ProfileCtrl', function($scope, $rootSco
     $scope.imgPath = $window.localStorage.imagePath;
 
     $scope.shop = function() {
+        $scope.loaderStart = true;
         var obj = {
                 obj:JSON.parse($window.localStorage.user)
             }
         shop.shopInfo(obj).then(function(response) {
-            $scope.shopinfo = response.data.user.shop[0];
+            $scope.loaderStart = false;
+            $scope.shopinfo = response.data.data[0];
             var object = {};
             var k = 0;
-            for (var j = 0; j < response.data.user.shop[0].chairs.length; j++) {
-                if (response.data.user.shop[0].chairs[j].barber_id) {
+            for (var j = 0; j < response.data.data[0].chairs.length; j++) {
+                if (response.data.data[0].chairs[j].barber_id) {
                     k++;
                 }
             }

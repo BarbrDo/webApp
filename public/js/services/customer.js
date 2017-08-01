@@ -3,7 +3,6 @@ angular.module('BarbrDoApp')
     var obj = JSON.parse($window.localStorage.user);
     return {
       shopList: function(data) {
-          console.log(data);
         return $http({
           method: 'GET',
           url: '/api/v1/shops',
@@ -126,7 +125,6 @@ angular.module('BarbrDoApp')
         });
       },
       contactBarber : function(data) {
-        console.log(data)
         return $http({
           method: 'post',
           url: '/api/v1/contactbarber',

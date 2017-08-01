@@ -1116,7 +1116,7 @@ angular.module('BarbrDoApp', ['ui.router', 'satellizer', 'slick', 'oc.lazyLoad',
                     controller: "HeaderCtrl"
                 },
                 "sideBar": {
-                    templateUrl: 'partials/barberSideBar.html'
+                    templateUrl: 'partials/barbershopSideBar.html'
                 }
             },
             resolve: {

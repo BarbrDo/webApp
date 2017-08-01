@@ -1,6 +1,4 @@
 module.exports = function(app, express) {
-    let router = express.Router();
-    let User = require('../models/user');
     let jwt = require('jsonwebtoken');
     app.use(function(req, res, next) {
         req.isAuthenticated = function() {
@@ -29,8 +27,6 @@ module.exports = function(app, express) {
     let path = require('path');
     // Controllers
     let userController = require('./../controllers/user');
-    let stripeController = require('./../controllers/stripe');
-    let commonObj = require('./../common/common');
     let barber = require('./../controllers/barber');
 
     //Users
@@ -52,16 +48,20 @@ module.exports = function(app, express) {
 
 
     //Customer
-
+    app.get('/api/v2/customer/barbers',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.getNearbyBarbers);
+    app.post('/api/v2/customer/appointment/newrequest',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.customerRequestToBarber);
+    app.put('/api/v2/customer/appointment/cancel/:appointment_id',userController.ensureAuthenticated,userController.checkLoggedInUser, barber.cancelAppointment);
+    app.post('/api/v2/customer/favouritebarber',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.addFavouriteBarber);
+    app.get('/api/v2/customer/favouritebarber',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.allFavouriteBarbers);
+    app.delete('/api/v2/customer/favouritebarber/:_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.removeFavouriteBarber);
+    
 
     //Barber
-    app.post('/api/v2/barber/addBarberServices',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.addBarberServices);
-    app.get('/api/v2/barber/showNearByBarbers',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.showNearByBarbers);
-    app.post('/api/v2/barber/customerRequestToBarber',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.customerRequestToBarber);
-    app.put('/api/v2/barber/cancelappointment/:appointment_id',userController.ensureAuthenticated,userController.checkLoggedInUser, barber.cancelAppointment);
-    app.post('/api/v2/barber/addFavouriteBarber',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.addFavouriteBarber);
-    app.delete('/api/v2/barber/removeFavouriteBarber/:_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.removeFavouriteBarber);
+    app.post('/api/v2/barber/services',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.addBarberServices);
+    app.put('/api/v2/barber/appointment/cancel/:appointment_id',userController.ensureAuthenticated,userController.checkLoggedInUser, barber.cancelAppointment);
     app.get('/api/v1/barbers/:barber_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.viewBarberProfile);
+
+    
     //Common
 
 

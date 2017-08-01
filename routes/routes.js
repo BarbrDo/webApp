@@ -51,15 +51,17 @@ module.exports = function(app, express) {
     //Shops
 
 
-
     //Customer
 
 
     //Barber
-    app.post('/api/v2/barber/addBarberServices',barber.addBarberServices);
-    app.get('/api/v2/barber/showNearByBarbers',barber.showNearByBarbers);
-    app.post('/api/v2/barber/customerRequestToBarber',barber.customerRequestToBarber);
-    app.put('/api/v2/barber/cancelappointment/:appointment_id', barber.cancelAppointment);
+    app.post('/api/v2/barber/addBarberServices',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.addBarberServices);
+    app.get('/api/v2/barber/showNearByBarbers',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.showNearByBarbers);
+    app.post('/api/v2/barber/customerRequestToBarber',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.customerRequestToBarber);
+    app.put('/api/v2/barber/cancelappointment/:appointment_id',userController.ensureAuthenticated,userController.checkLoggedInUser, barber.cancelAppointment);
+    app.post('/api/v2/barber/addFavouriteBarber',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.addFavouriteBarber);
+    app.delete('/api/v2/barber/removeFavouriteBarber/:_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.removeFavouriteBarber);
+    app.get('/api/v1/barbers/:barber_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.viewBarberProfile);
     //Common
 
 

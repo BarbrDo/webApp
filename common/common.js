@@ -54,7 +54,6 @@ exports.notify = function(to_user_id, from_user_id, text, type, cb) {
       _id: from_user_id
     }, function(err, data) {
       if (result) {
-        console.log("other details", id, name, text)
         console.log(result.device_type);
         if (result.device_type === 'ios') {
           console.log("inside ios");

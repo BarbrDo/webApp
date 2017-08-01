@@ -148,8 +148,7 @@ exports.loginPost = function(req, res, next) {
               }, {
                 $set: {
                   "device_type": device_type,
-                  "device_id": device_token,
-                  "online_status":true
+                  "device_id": device_token
                 }
               }).exec(function(userErr, userUpdate) {
                 console.log(userUpdate)
@@ -255,7 +254,6 @@ exports.signupPost = function(req, res, next) {
           if (req.body.facebook) {
             saveData.is_active = true;
             saveData.is_verified = true;
-            saveData.online_status = true;
             saveData.remark = '';
           }
           email_encrypt = commonObj.encrypt(req.body.email);
@@ -1037,7 +1035,8 @@ exports.logout = function(req, res) {
       $set: {
         device_id: "",
         device_type: "",
-        online_status:false
+        is_online:false,
+        is_available:false
       }
     }).exec(function(err, response) {
       if (err) {

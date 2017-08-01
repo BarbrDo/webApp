@@ -78,6 +78,9 @@ var userSchema = new mongoose.Schema({
         type:Boolean
       }
     }],
+    bio:{
+      type:String
+    },
     ratings:[{
         rated_by:{
             type: Schema.Types.ObjectId,
@@ -152,7 +155,10 @@ var userSchema = new mongoose.Schema({
         type:String,
         default:"Your account is not verified yet."
     },
-    online_status:{
+    is_online:{
+      type:Boolean
+    },
+    is_available:{
       type:Boolean
     }
 });

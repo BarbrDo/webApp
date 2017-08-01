@@ -26,79 +26,76 @@ var userSchema = new mongoose.Schema({
     },
     user_type: {
         type: String,
-        enum:["customer","barber"],
+        enum: ["customer", "barber"],
         require: true,
     },
-    stripe_customer_id:{
-      type:String
-    },
-    stripe_subscription:[],
     radius_search: Number,
     password_reset_token: String,
     password_reset_expires: Date,
     random_string: String,
-    gender: String,
     picture: String,
     facebook: String,
-    google: String,
     device_type: String,
     device_id: String,
     latLong: {
-        type: [Number], // longitude first and latitude after
+        type: [Number],
         index: '2dsphere'
     },
-    favourite_barber:[{
-      barber_id:{
-        type:Schema.Types.ObjectId,
-        ref:'shops'
-      }
-    }],
-    barber_services:[{
-      service_id:{
-        type:Schema.Types.ObjectId,
-        ref:'services'
-      },
-      name:{
-        type:String
-      },
-      price:{
-        type:Number
-      },
-      created_date:{
-        type: Date,
-        default: Date.now()
-      }
-    }],
-    barber_shops:[{
-      shop_id:{
-        type:Schema.Types.ObjectId,
-        ref:'shops'
-      },
-      is_default_shop:{
-        type:Boolean
-      }
-    }],
-    bio:{
-      type:String
-    },
-    ratings:[{
-        rated_by:{
-            type: Schema.Types.ObjectId,
-            ref: 'users'
-        },
-        score:Number,
-        comments:String,
-        rated_by_name: String,
-        appointment_date: {
-            type: Date
-        }
-    }],
-    subscription: [
+    favourite_barber: [
         {
-
+            barber_id: {
+                type: Schema.Types.ObjectId,
+                ref: 'shops'
+            }
         }
     ],
-     gallery: [
+    barber_services: [
+        {
+            service_id: {
+                type: Schema.Types.ObjectId,
+                ref: 'services'
+            },
+            name: {
+                type: String
+            },
+            price: {
+                type: Number
+            },
+            created_date: {
+                type: Date,
+                default: Date.now()
+            }
+        }
+    ],
+    barber_shops: [
+        {
+            shop_id: {
+                type: Schema.Types.ObjectId,
+                ref: 'shops'
+            },
+            is_default_shop: {
+                type: Boolean
+            }
+        }
+    ],
+    bio: {
+        type: String
+    },
+    ratings: [
+        {
+            rated_by: {
+                type: Schema.Types.ObjectId,
+                ref: 'users'
+            },
+            score: Number,
+            comments: String,
+            rated_by_name: String,
+            appointment_date: {
+                type: Date
+            }
+        }
+    ],
+    gallery: [
         {
             name: {
                 type: String
@@ -109,24 +106,10 @@ var userSchema = new mongoose.Schema({
             }
         }
     ],
-    notification:[
-        {
-            key:{
-                type: String
-            },
-            text:{
-                type: String
-            },
-            created_date: {
-                type: Date,
-                default: Date.now()
-            }
-        }
-    ],
-    license_number:{
-      type:String
+    license_number: {
+        type: String
     },
-    licensed_since:{
+    licensed_since: {
         type: Date,
         default: Date.now()
     },
@@ -151,15 +134,15 @@ var userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    remark :{
-        type:String,
-        default:"Your account is not verified yet."
+    remark: {
+        type: String,
+        default: "Your account is not verified yet."
     },
-    is_online:{
-      type:Boolean
+    is_online: {
+        type: Boolean
     },
-    is_available:{
-      type:Boolean
+    is_available: {
+        type: Boolean
     }
 });
 

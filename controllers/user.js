@@ -250,44 +250,15 @@ exports.signupPost = function(req, res, next) {
           if (req.headers.device_longitude && req.headers.device_latitude) {
             saveData.latLong = [req.headers.device_longitude, req.headers.device_latitude];
           }
-          if (req.body.facebook) {
-            saveData.is_active = true;
-            saveData.is_verified = true;
-            saveData.remark = '';
-          }
+          saveData.is_active = true;
+          saveData.is_verified = true;
+          saveData.remark = '';
           email_encrypt = commonObj.encrypt(req.body.email);
           generatedText = commonObj.makeid();
           saveData.random_string = generatedText;
           done(err, saveData)
         }
       })
-    },
-    function(saveData, done) {
-      if (req.body.user_type == 'customer') {
-        done(null, saveData)
-      } else {
-        stripe.customers.create({
-          email: req.body.email,
-          metadata: {
-            user_type: req.body.user_type,
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            mobile_number: req.body.mobile_number
-          }
-        }, function(err, customer) {
-          if (err) {
-            return res.status(400).send({msg: "Error occurred on stripe.", "err": err})
-          } else {
-            console.log("customer created on stripe ", customer);
-            if (!req.body.facebook) {
-              saveData.is_active = false;
-              saveData.is_verified = false;
-            }
-            saveData.stripe_customer = customer;
-            done(err, saveData)
-          }
-        })
-      }
     },
     function(saveData, done) {
       User(saveData).save(function(err, data) {

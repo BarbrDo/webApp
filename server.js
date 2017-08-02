@@ -43,11 +43,11 @@ console.log(defaultUrl);
 let swaggerDefinition = {
     info: {
         title: 'BarbrDo API Documentation',
-        version: '1.0.0',
+        version: '2.0.0',
         description: 'API Documentation',
     },
     host: defaultUrl,
-    basePath: '/api/v1',
+    basePath: '/api/v2',
 };
 
 let options = {

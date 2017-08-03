@@ -13,6 +13,8 @@ let request = require('request');
 let objectID = require('mongodb').ObjectID
 // Load environment vaiables from .env file
 dotenv.load();
+// console.log("distance",)
+
 
 var cron = require('node-cron');
 // var task = cron.schedule('* * * * *', function() {

@@ -49,23 +49,29 @@ module.exports = function(app, express) {
 
 
     //Customer
-    app.get('/api/v2/customer/barbers',userController.ensureAuthenticated,userController.checkLoggedInUser,customer.getNearbyBarbers);
-    app.post('/api/v2/customer/appointment/newrequest',userController.ensureAuthenticated,userController.checkLoggedInUser,customer.customerRequestToBarber);
-    app.put('/api/v2/customer/appointment/cancel/:appointment_id',userController.ensureAuthenticated,userController.checkLoggedInUser, customer.cancelAppointment);
-    app.post('/api/v2/customer/favouritebarber',userController.ensureAuthenticated,userController.checkLoggedInUser,customer.addFavouriteBarber);
-    app.get('/api/v2/customer/favouritebarber',userController.ensureAuthenticated,userController.checkLoggedInUser,customer.allFavouriteBarbers);
-    app.delete('/api/v2/customer/favouritebarber/:_id',userController.ensureAuthenticated,userController.checkLoggedInUser,customer.removeFavouriteBarber);
+    app.get('/api/v2/customer/barbers',customer.getNearbyBarbers);
+    app.post('/api/v2/customer/appointment/newrequest',customer.customerRequestToBarber);
+    app.put('/api/v2/customer/appointment/cancel/:appointment_id', customer.cancelAppointment);
+    app.post('/api/v2/customer/favouritebarber',customer.addFavouriteBarber);
+    app.get('/api/v2/customer/favouritebarber',customer.allFavouriteBarbers);
+    app.delete('/api/v2/customer/favouritebarber/:_id',customer.removeFavouriteBarber);
+    app.post('/api/v2/customer/gallery', upload.any(), userController.uploadCustomerGallery);
 
 
     //Barber
-    app.post('/api/v2/barber/services',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.addBarberServices);
-    app.put('/api/v2/barber/appointment/cancel/:appointment_id',userController.ensureAuthenticated,userController.checkLoggedInUser, barber.cancelAppointment);
+    app.post('/api/v2/barber/services',barber.addBarberServices);
+    app.put('/api/v2/barber/appointment/cancel/:appointment_id', barber.cancelAppointment);
+    app.get('/api/v2/barber/services', barber.getAllServices);
+    app.post('/api/v2/barber/services', barber.addBarberServices); //Add new service
+    app.put('/api/v2/barber/services/:barber_service_id',barber.editBarberServices);
+    app.get('/api/v2/barber/services/:barber_id',barber.viewAllServiesOfBarber);
+    app.delete('/api/v1/barber/services/:barber_service_id',barber.deleteBarberService);
     // app.get('/api/v1/barbers/:barber_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.viewBarberProfile);
 
 
     //Common
-
-
+    app.get('/api/v2/logout',userController.logout);
+    app.get('/api/v2/userprofile/:id', userController.getProfiles);
     // Stripe Implementation API
 
 

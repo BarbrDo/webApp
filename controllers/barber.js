@@ -173,8 +173,10 @@ exports.barberToggleStatus = function(req, res) {
   if (errors) {
     return res.status(400).send({msg: "error in your request", err: errors});
   }
-  if(req.body.status=='online' || req.body.status =='offline'){
-    let status = (req.body.status=='online')?true:false
+  if (req.body.status == 'online' || req.body.status == 'offline') {
+    let status = (req.body.status == 'online')
+      ? true
+      : false
     user.update({
       _id: req.headers.user_id
     }, {
@@ -188,8 +190,7 @@ exports.barberToggleStatus = function(req, res) {
         res.status(200).send({msg: 'You are online now.', "data": result});
       }
     })
-  }
-  else{
+  } else {
     return res.status(400).send({msg: "Staus should be online and offline."});
   }
 }
@@ -244,4 +245,367 @@ let callNotification = function(type, to_user_id, from_user_id) {
     }
   })
 }
+exports.getAllServices = function(req, res) {
+  service.find({
+    "status": true
+  }, function(err, data) {
+    if (err) {
+      res.status(400).send({msg: constantObj.messages.errorRetreivingData, err: err})
+    } else {
+      res.status(200).send({msg: constantObj.messages.successRetreivingData, "data": data})
+    }
+  })
+}
 
+exports.addBarberServices = function(req, res) {
+  req.checkHeaders("user_id", "user_id is required").notEmpty();
+  req.assert("service_id", "service_id is required.").notEmpty();
+  req.assert("name", "name is required").notEmpty();
+  req.assert("price", "price is required").notEmpty();
+  var errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({msg: "error in your request", err: errors});
+  }
+  let updateData = {
+    service_id: req.body.service_id,
+    name: req.body.name,
+    price: req.body.price
+  }
+  user.update({
+    _id: req.headers.user_id
+  }, {
+    $push: {
+      barber_services: updateData
+    }
+  }).exec(function(err, result) {
+    if (err) {
+      res.status(400).send({msg: constantObj.messages.errorInSave, "err": err});
+    } else {
+      res.status(200).send({msg: constantObj.messages.saveSuccessfully, "data": result});
+    }
+  })
+}
+
+exports.editBarberServices = function(req, res) {
+  console.log(req.body);
+  req.checkHeaders("user_id", "User Id is required").notEmpty();
+  req.checkParams("barber_service_id", "Barber Service Id is required").notEmpty();
+  req.assert("price", "Service Price is required").notEmpty();
+
+  if (req.validationErrors()) {
+    return res.status(400).send({msg: "error in request", err: req.validationErrors()})
+  }
+  barber_service.update({
+    service_id: req.params.barber_service_id
+  }, {
+    $set: {
+      "price": req.body.price
+    }
+  }, function(err, result) {
+    if (err) {
+      res.status(400).send({msg: constantObj.messages.userStatusUpdateFailure})
+    } else {
+      res.status(200).send({msg: constantObj.messages.userStatusUpdateSuccess})
+    }
+  })
+}
+
+exports.deleteBarberService = function(req, res) {
+  req.checkHeaders("user_id", "User Id is required").notEmpty();
+  req.checkParams("barber_service_id", "Barber Service Id is required").notEmpty();
+
+  if (req.validationErrors()) {
+    return res.status(400).send({msg: "error in request", err: req.validationErrors()})
+  }
+
+  barber_service.update({
+    _id: req.params.barber_service_id
+  }, {
+    $set: {
+      "is_deleted": true
+    }
+  }, function(err, result) {
+    if (err) {
+      res.status(400).send({msg: constantObj.messages.userStatusUpdateFailure})
+    } else {
+      res.status(200).send({msg: constantObj.messages.userDeleteSuccess})
+    }
+  })
+}
+
+exports.viewAllServiesOfBarber = function(req, res) {
+  req.checkParams("user_id", "user_id is required").notEmpty();
+  var errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({msg: "error in your request", err: errors});
+  }
+  console.log("database", req.params.barber_id)
+  user.findOne({
+    "_id": req.headers.barber_id
+  },function(err, data) {
+    console.log()
+    if (err) {
+      res.status(400).send({msg: constantObj.messages.errorRetreivingData, err: err});
+    } else {
+      res.status(200).send({msg: constantObj.messages.successRetreivingData, "data": data});
+    }
+  })
+}
+exports.countbarber = function(req, res) {
+
+    user.find({
+        user_type: "barber"
+    }, function(err, barber) {
+        res.json(barber);
+    });
+};
+exports.deletebarber = function(req, res) {
+    console.log("barber_id", req.params.barber_id);
+    user.update({
+        _id: req.params.barber_id
+    }, {
+        $set: {
+            is_deleted: true
+        }
+    }, function(err, count) {
+        user.find({
+            user_type: "barber"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+
+exports.undeletebarber = function(req, res) {
+    console.log("barber_id", req.params.barber_id);
+    user.update({
+        _id: req.params.barber_id
+    }, {
+        $set: {
+            is_deleted: false
+        }
+    }, function(err, count) {
+        user.find({
+            user_type: "barber"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+
+};
+exports.activatebarber = function(req, res) {
+    console.log("barber_id", req.params.barber_id);
+    user.update({
+        _id: req.params.barber_id
+    }, {
+        $set: {
+            is_active: true
+        }
+    }, function(err, count) {
+        user.find({
+            user_type: "barber"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+};
+exports.deactivebarber = function(req, res) {
+    console.log("barber_id", req.params.barber_id);
+    user.update({
+        _id: req.params.barber_id
+    }, {
+        $set: {
+            is_active: false
+        }
+    }, function(err, count) {
+        user.find({
+            user_type: "barber"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+};
+exports.disapprovebarber = function(req, res) {
+    console.log("barber_id", req.params.barber_id);
+    user.update({
+        _id: req.params.barber_id
+    }, {
+        $set: {
+            is_verified: false
+        }
+    }, function(err, count) {
+        user.find({
+            user_type: "barber"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+};
+exports.verifybarber = function(req, res) {
+    console.log("barber_id", req.params.barber_id);
+    user.update({
+        _id: req.params.barber_id
+    }, {
+        $set: {
+            is_verified: true
+        }
+    }, function(err, count) {
+        user.find({
+            user_type: "barber"
+        }, function(err, shopss) {
+            res.json(shopss);
+        });
+    });
+};
+exports.barberdetail = function(req, res) {
+    req.checkParams("barber_id", "barber_id cannot be blank").notEmpty();
+    var query = {};
+    query._id = mongoose.Types.ObjectId(req.params.barber_id);
+    query.user_type = "barber";
+    user.aggregate([{
+        $lookup: {
+            from: "shops",
+            "localField": "_id",
+            "foreignField": "chairs.barber_id",
+            "as": "shopdetails"
+        }
+    }, {
+        $project: {
+            _id: "$_id",
+            first_name: "$first_name",
+            last_name: "$last_name",
+            email: "$email",
+            mobile_number: "$mobile_number",
+            created_date: "$created_date",
+            ratings: "$ratings",
+            is_deleted: "$is_deleted",
+            is_active: "$is_active",
+            is_verified: "$is_verified",
+            user_type: "$user_type",
+            latLong: "$latLong",
+            picture: "$picture",
+            name: "$shopdetails.name",
+            shop: "$shopdetails",
+            gallery: "$gallery"
+        }
+    }, {
+        $match: query
+    }]).exec(function(err, result) {
+        if (err) {
+            res.status(400).send({
+                "msg": constantObj.messages.userStatusUpdateFailure,
+                "err": err
+            });
+        } else {
+            res.status(200).send({
+                "msg": constantObj.messages.successRetreivingData,
+                "data": result
+            })
+        }
+    })
+};
+exports.availableBarber = function(req, res) {
+    var page = parseInt(req.query.page) || 1;
+    var count = parseInt(req.query.count) || 30;
+    var skipNo = (page - 1) * count;
+    var query = {};
+    query.user_type = "barber"
+    var searchStr = ""
+    if (req.query.search) {
+        searchStr = req.query.search;
+    }
+    if (searchStr) {
+        query.$or = [{
+            first_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            last_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            email: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }]
+    }
+    console.log(query);
+    user.aggregate([{
+        $project: {
+            _id: "$_id",
+            first_name: "$first_name",
+            last_name: "$last_name",
+            email: "$email",
+            mobile_number: "$mobile_number",
+            ratings: "$ratings",
+            created_date: "$created_date",
+            is_deleted: "$is_deleted",
+            is_active: "$is_active",
+            is_verified: "$is_verified",
+            user_type: "$user_type",
+            picture: "$picture"
+        }
+    }, {
+        $match: query
+    }]).exec(function(err, data) {
+        if (err) {
+            console.log(err)
+        } else {
+            var length = data.length;
+            user.aggregate([{
+                $lookup: {
+                    from: "shops",
+                    "localField": "_id",
+                    "foreignField": "chairs.barber_id",
+                    "as": "shopdetails"
+                }
+            }, {
+                $project: {
+                    _id: "$_id",
+                    first_name: "$first_name",
+                    last_name: "$last_name",
+                    email: "$email",
+                    mobile_number: "$mobile_number",
+                    created_date: "$created_date",
+                    ratings: "$ratings",
+                    is_deleted: "$is_deleted",
+                    is_active: "$is_active",
+                    is_verified: "$is_verified",
+                    user_type: "$user_type",
+                    latLong: "$latLong",
+                    picture: "$picture",
+                    name: "$shopdetails.name",
+                    shop: "$shopdetails"
+                }
+            }, {
+                $match: query
+            }, {
+                "$skip": skipNo
+            }, {
+                "$limit": count
+            }]).exec(function(err, result) {
+                if (err) {
+                    res.status(400).send({
+                        "msg": constantObj.messages.userStatusUpdateFailure,
+                        "err": err
+                    });
+                } else {
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": result,
+                        "count": length
+                    })
+                }
+            })
+        }
+    })
+};

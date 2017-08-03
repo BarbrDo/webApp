@@ -26,8 +26,11 @@ var appointmentSchema = new mongoose.Schema({
         enum: ["pending", "confirm", "completed", "reschedule","cancel"],
         default: "pending"
     },
-    cancel_by:{
-      type: Schema.Types.ObjectId,
+    cancel_by_user_id:{
+          type: Schema.Types.ObjectId,
+      },
+    cancel_by_user_type:{
+        type:String
     },
     services: [],
     appointment_date: Date,

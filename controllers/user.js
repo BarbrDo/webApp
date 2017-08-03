@@ -784,76 +784,13 @@ exports.getProfiles = function(req, res) {
   }
   let id = mongoose.Types.ObjectId(req.params.id);
   User.findOne({
-    _id: req.params.id
+    _id: id
   }, function(err, result) {
     if (result) {
-      switch (result.user_type) {
-        case 'shop':
-          User.aggregate([
-            {
-              $match: {
-                _id: id
-              }
-            }, {
-              $lookup: {
-                from: "shops",
-                localField: "_id",
-                foreignField: "user_id",
-                as: "shop"
-              }
-            }
-          ]).exec(function(err, data) {
-            if (err) {
-              res.status(400).send({msg: constantObj.messages.errorRetreivingData, "err": err});
-            } else {
-              res.status(200).send({msg: constantObj.messages.successRetreivingData, user: data[0]});
-            }
-          })
-          break;
-        case 'barber':
-          User.aggregate([
-            {
-              $match: {
-                _id: id
-              }
-            }, {
-              $lookup: {
-                from: "barbers",
-                localField: "_id",
-                foreignField: "user_id",
-                as: "barber"
-              }
-            }
-          ]).exec(function(err, data) {
-            if (err) {
-              res.status(400).send({msg: constantObj.messages.errorRetreivingData, "err": err});
-            } else {
-              res.status(200).send({msg: constantObj.messages.successRetreivingData, user: data[0]});
-            }
-          })
-          break;
-        case 'customer':
-          User.aggregate([
-            {
-              $match: {
-                _id: id
-              }
-            }, {
-              $lookup: {
-                from: "appointments",
-                localField: "_id",
-                foreignField: "customer_id",
-                as: "appointments"
-              }
-            }
-          ]).exec(function(err, data) {
-            if (err) {
-              res.status(400).send({msg: constantObj.messages.errorRetreivingData, "err": err});
-            } else {
-              res.status(200).send({msg: constantObj.messages.successRetreivingData, user: data[0]});
-            }
-          })
-           break;
+      if (err) {
+        res.status(400).send({msg: constantObj.messages.errorRetreivingData, "err": err});
+      } else {
+        res.status(200).send({msg: constantObj.messages.successRetreivingData, user: result});
       }
     } else {
       res.status(400).send({msg: "Please pass correct id"})

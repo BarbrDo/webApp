@@ -46,15 +46,19 @@ exports.sendMail = function(to, from, subject, text, cb) {
     }
   });
 }
-exports.notify = function(to_user_id, from_user_id, text, type, cb) {
+exports.notify = function(to_user_id, from_user_id, text, type,appointmentid, cb) {
   userObj.findOne({
     _id: to_user_id
   }, function(err, result) {
     userObj.findOne({
       _id: from_user_id
     }, function(err, data) {
-      if (result) {
+      if (result && data) {
         console.log(result.device_type);
+        let id = "";
+        if(appointmentid){
+          id = appointmentid
+        }
         if (result.device_type === 'ios') {
           console.log("inside ios");
           let apnProvider = new apn.Provider(options);
@@ -68,7 +72,7 @@ exports.notify = function(to_user_id, from_user_id, text, type, cb) {
             'messageFrom': type
           };
           note.topic = "com.development.BarbrDo";
-          note.notifyType = "matchNotification"
+          note.notifyType = id
           apnProvider.send(note, deviceToken).then((result) => {
             if (result.failed.length > 0) {
               console.log("error in sending notification");
@@ -89,7 +93,7 @@ exports.notify = function(to_user_id, from_user_id, text, type, cb) {
             },
             data: { //you can send only notification or only data(or include both)
               my_key: type,
-              my_another_key: text
+              my_another_key: id
             }
           };
 
@@ -98,6 +102,7 @@ exports.notify = function(to_user_id, from_user_id, text, type, cb) {
               cb(err, null);
               console.log("Something has gone wrong!");
             } else {
+              console.log("success in sending notification android");
               cb(null, result);
             }
           });

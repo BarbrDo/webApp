@@ -1,45 +1,45 @@
 angular.module('barbrdo').factory('Admin', function($http) {
   return {
     login: function(data) {
-      return $http.post('/api/v1/loginadmin', data);
+      return $http.post('/api/v2/loginadmin', data);
     },
     loggedin : function(data) {
-      return $http.get('/api/v1/loggedin', data);
+      return $http.get('/api/v2/loggedin', data);
     },
     barbers: function(data) {
       if (data.search) {
-        return $http.get('/api/v1/allbarbers?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);
+        return $http.get('/api/v2/allbarbers?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);
       } else {
-        return $http.get('/api/v1/allbarbers?page=' + data.page + '&count=' + data.count);
+        return $http.get('/api/v2/allbarbers?page=' + data.page + '&count=' + data.count);
       }
     },
     shopsAll: function(data) {
       if (data.search) {
-        return $http.get('/api/v1/allshops?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);
+        return $http.get('/api/v2/allshops?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);
       } else {
-        return $http.get('/api/v1/allshops?page=' + data.page + '&count=' + data.count, data);
+        return $http.get('/api/v2/allshops?page=' + data.page + '&count=' + data.count, data);
       }
     },
     customersAll: function(data) {
       if (data.search) {
-        return $http.get('/api/v1/allcustomers?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);
+        return $http.get('/api/v2/allcustomers?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);
       } else {
-        return $http.get('/api/v1/allcustomers?page=' + data.page + '&count=' + data.count, data);
+        return $http.get('/api/v2/allcustomers?page=' + data.page + '&count=' + data.count, data);
       }
     },
     shopDetail: function(data) {
-      return $http.get('/api/v1/shopownerwithshops/' + data, data);
+      return $http.get('/api/v2/shopownerwithshops/' + data, data);
     },
     chairDetail: function(data) {
-      return $http.get('/api/v1/chairdetail/' + data, data);
+      return $http.get('/api/v2/chairdetail/' + data, data);
     },
     custDetail: function(data) {
-      return $http.get('/api/v1/custdetail/' + data, data);
+      return $http.get('/api/v2/custdetail/' + data, data);
     },
     updateCustomer: function(data) {
       return $http({
         method: 'PUT',
-        url: '/api/v1/account',
+        url: '/api/v2/account',
         headers: {
           'user_id': data._id
         },
@@ -63,19 +63,19 @@ angular.module('barbrdo').factory('Admin', function($http) {
     appointments: function(data) {
       return $http({
         method: 'GET',
-        url: '/api/v1/appointment',
+        url: '/api/v2/appointment',
         headers: {
           'user_id': data._id
         },
       });
     },
     custAppoints: function(data) {
-      return $http.get('/api/v1/customerappointments/' + data, data);
+      return $http.get('/api/v2/customerappointments/' + data, data);
     },
     barberAppoints: function(data) {
       return $http({
         method: 'GET',
-        url: '/api/v1/barber/appointments',
+        url: '/api/v2/barber/appointments',
         headers: {
           'user_id': data
         }
@@ -83,12 +83,12 @@ angular.module('barbrdo').factory('Admin', function($http) {
     },
     confirmAppoint: function(data) {
       console.log(data)
-      return $http.put('/api/v1/barber/confirmappointment/' + data._id);
+      return $http.put('/api/v2/barber/confirmappointment/' + data._id);
     },
     markComplete: function(data, barberid) {
       return $http({
         method: 'PUT',
-        url: '/api/v1/barber/completeappointment/'+data._id,
+        url: '/api/v2/barber/completeappointment/'+data._id,
         headers: {
           'user_id': barberid
         },
@@ -104,7 +104,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
     rescheduleAppoint: function(data,time) {
        return $http({
         method: 'PUT',
-        url: '/api/v1/barber/rescheduleappointment/'+data._id,
+        url: '/api/v2/barber/rescheduleappointment/'+data._id,
         data: {
           minutes: time,
           appointment_date: data.appointment_date
@@ -113,51 +113,51 @@ angular.module('barbrdo').factory('Admin', function($http) {
     },
     cancelAppoint: function(data)
     {
-      return $http.put('/api/v1/barber/cancelappointment/'+data._id)
+      return $http.put('/api/v2/barber/cancelappointment/'+data._id)
     },
     deactiveCustomer: function(data) {
-      return $http.put('/api/v1/deactivecust/' + data._id, data);
+      return $http.put('/api/v2/deactivecust/' + data._id, data);
     },
     barberDetail: function(data) {
-      return $http.get('/api/v1/barberdetail/' + data, data);
+      return $http.get('/api/v2/barberdetail/' + data, data);
     },
     activateCustomer: function(data) {
-      return $http.put('/api/v1/activatecust/' + data._id, data);
+      return $http.put('/api/v2/activatecust/' + data._id, data);
     },
     disapproveCustomer: function(data) {
-      return $http.put('/api/v1/disapprovecust/' + data._id, data);
+      return $http.put('/api/v2/disapprovecust/' + data._id, data);
     },
     verifyCustomer: function(data) {
-      return $http.put('/api/v1/verifycust/' + data._id, data);
+      return $http.put('/api/v2/verifycust/' + data._id, data);
     },
     deactiveShop: function(data) {
-      return $http.put('/api/v1/deactiveshop/' + data._id, data);
+      return $http.put('/api/v2/deactiveshop/' + data._id, data);
     },
     activateShop: function(data) {
-      return $http.put('/api/v1/activateshop/' + data._id, data);
+      return $http.put('/api/v2/activateshop/' + data._id, data);
     },
     disapproveShop: function(data) {
-      return $http.put('/api/v1/disapproveshop/' + data._id, data);
+      return $http.put('/api/v2/disapproveshop/' + data._id, data);
     },
     verifyShop: function(data) {
-      return $http.put('/api/v1/verifyshop/' + data._id, data);
+      return $http.put('/api/v2/verifyshop/' + data._id, data);
     },
     deactiveBarber: function(data) {
-      return $http.put('/api/v1/deactivebarber/' + data._id, data);
+      return $http.put('/api/v2/deactivebarber/' + data._id, data);
     },
     disapproveBarber: function(data) {
-      return $http.put('/api/v1/disapprovebarber/' + data._id, data);
+      return $http.put('/api/v2/disapprovebarber/' + data._id, data);
     },
     activateBarber: function(data) {
-      return $http.put('/api/v1/activatebarber/' + data._id, data);
+      return $http.put('/api/v2/activatebarber/' + data._id, data);
     },
     verifyBarber: function(data) {
-      return $http.put('/api/v1/verifybarber/' + data._id, data);
+      return $http.put('/api/v2/verifybarber/' + data._id, data);
     },
     updateBarber: function(data) {
       return $http({
         method: 'PUT',
-        url: '/api/v1/account',
+        url: '/api/v2/account',
         headers: {
           'user_id': data._id
         },
@@ -182,7 +182,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
       console.log(data)
       return $http({
         method: 'PUT',
-        url: '/api/v1/account',
+        url: '/api/v2/account',
         headers: {
           'user_id': data._id
         },
@@ -205,15 +205,15 @@ angular.module('barbrdo').factory('Admin', function($http) {
       });
     },
     updateShopinfo: function(data) {
-      return $http.put('/api/v1/shops', data);
+      return $http.put('/api/v2/shops', data);
     },
     addChair: function(data) {
-      return $http.post('/api/v1/shops/chair', data);
+      return $http.post('/api/v2/shops/chair', data);
     },
     deleteChair: function(data) {
       return $http({
         method: 'DELETE',
-        url: '/api/v1/shops/chair',
+        url: '/api/v2/shops/chair',
         data: data,
         headers: {
           "Content-Type": "application/json;charset=utf-8"
@@ -223,7 +223,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
     markChairBooked: function(data, id) {
       return $http({
         method: 'PUT',
-        url: '/api/v1/shops/markchairasbooked/' + data._id,
+        url: '/api/v2/shops/markchairasbooked/' + data._id,
         headers: {
           'user_id': id,
           'chair_id': data._id
@@ -233,7 +233,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
     postChair: function(data, id) {
       return $http({
         method: 'PUT',
-        url: '/api/v1/shops/postchairtoallbarbers',
+        url: '/api/v2/shops/postchairtoallbarbers',
         headers: {
           'user_id': id
         },
@@ -246,7 +246,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
       console.lo
       return $http({
         method: 'PUT',
-        url: '/api/v1/shops/managechair',
+        url: '/api/v2/shops/managechair',
         headers: {
           'user_id': id
         },
@@ -263,95 +263,95 @@ angular.module('barbrdo').factory('Admin', function($http) {
       });
     },
     deleteBarber: function(data) {
-      return $http.put('/api/v1/deletebarber/' + data._id, data);
+      return $http.put('/api/v2/deletebarber/' + data._id, data);
     },
     undeleteBarber: function(data) {
-      return $http.put('/api/v1/undeletebarber/' + data._id, data);
+      return $http.put('/api/v2/undeletebarber/' + data._id, data);
     },
     deleteShop: function(data) {
-      return $http.put('/api/v1/deleteshop/' + data._id, data);
+      return $http.put('/api/v2/deleteshop/' + data._id, data);
     },
     undeleteShop: function(data) {
-      return $http.put('/api/v1/undeleteshop/' + data._id, data);
+      return $http.put('/api/v2/undeleteshop/' + data._id, data);
     },
     deleteCustomer: function(data) {
-      return $http.put('/api/v1/deletecustomer/' + data._id, data);
+      return $http.put('/api/v2/deletecustomer/' + data._id, data);
     },
     undeleteCustomer: function(data) {
-      return $http.put('/api/v1/undeletecustomer/' + data._id, data);
+      return $http.put('/api/v2/undeletecustomer/' + data._id, data);
     },
     barberList: function(data) {
-      return $http.get('/api/v1/shops/barbers/' + data._id, data);
+      return $http.get('/api/v2/shops/barbers/' + data._id, data);
     },
     addCustomer: function(cust) {
       console.log(cust)
-      return $http.post('/api/v1/signup', cust);
+      return $http.post('/api/v2/signup', cust);
     },
     countBarber: function(data) {
-      return $http.get('/api/v1/countbarber', data);
+      return $http.get('/api/v2/countbarber', data);
     },
     countShop: function(data) {
-      return $http.get('/api/v1/countshop', data);
+      return $http.get('/api/v2/countshop', data);
     },
     countCustomer: function(data) {
-      return $http.get('/api/v1/countcustomer', data);
+      return $http.get('/api/v2/countcustomer', data);
     },
     countAppointment: function(data) {
-      return $http.get('/api/v1/countappoint', data);
+      return $http.get('/api/v2/countappoint', data);
     },
     featuringPlans: function(data) {
-      return $http.get('/api/v1/stripe/plans', data);
+      return $http.get('/api/v2/stripe/plans', data);
     },
     createPlan:function (data) {
-      return $http.post('/api/v1/stripe/createPlan', data)
+      return $http.post('/api/v2/stripe/createPlan', data)
     },
     updatePlan:function (data) {
-      return $http.put('/api/v1/stripe/updatePlan', data)
+      return $http.put('/api/v2/stripe/updatePlan', data)
     },
     deletePlan:function (data) {
-      return $http.put('/api/v1/stripe/deletePlan', data)
+      return $http.put('/api/v2/stripe/deletePlan', data)
     },
     allPayments:function (data) {
       if (data.search) {
-        return $http.get('/api/v1/allPayments?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);
+        return $http.get('/api/v2/allPayments?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);
       } else {
-        return $http.get('/api/v1/allPayments?page=' + data.page + '&count=' + data.count);
+        return $http.get('/api/v2/allPayments?page=' + data.page + '&count=' + data.count);
       }
     },
     allRecords:function (data) {
-      return $http.get('/api/v1/records', data);
+      return $http.get('/api/v2/records', data);
     },
     graphicData:function (data) {
-      return $http.get('/api/v1/totalUsers',data);
+      return $http.get('/api/v2/totalUsers',data);
     },
     allservices : function() {
-      return $http.get('/api/v1/services'); 
+      return $http.get('/api/v2/services');
     },
     addServices : function(data) {
        return $http({
         method: 'POST',
-        url: '/api/v1/services',
+        url: '/api/v2/services',
         data: data
       });
     },
     editServices : function(data) {
       return $http({
         method: 'PUT',
-        url: '/api/v1/services/'+data.service_id,
+        url: '/api/v2/services/'+data.service_id,
         data: data
       });
     },
     disableServices : function(data) {
       return $http({
         method: 'DELETE',
-        url: '/api/v1/services/'+data.service_id,
+        url: '/api/v2/services/'+data.service_id,
         data: data
       });
     },
     enableServices : function(data) {
       return $http({
         method: 'DELETE',
-        url: '/api/v1/enableservices/'+data.service_id,
+        url: '/api/v2/enableservices/'+data.service_id,
         data: data
       });
     }

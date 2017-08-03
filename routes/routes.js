@@ -69,6 +69,7 @@ module.exports = function(app, express) {
     app.get('/api/v1/barbers/:barber_id',barber.viewBarberProfile);
 
     app.post('/api/v1/barbers/goOnline',barber.goOnline);
+    app.put('/api/v1/barbers/goOffline',barber.goOffline);
     // app.get('/api/v1/barbers/:barber_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.viewBarberProfile);
 
 

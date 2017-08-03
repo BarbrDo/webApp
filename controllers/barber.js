@@ -5,6 +5,7 @@ let async = require('async');
 let notification = require('../models/notification');
 let appointment = require('../models/appointment');
 let commonObj = require('../common/common');
+let shop = require('../models/shop');
 
 exports.addBarberServices = function(req, res) {
   req.checkHeaders('user_id', 'User id cannot be blank.').notEmpty();
@@ -680,6 +681,8 @@ exports.rateBarber = function(req, res) {
 }
 exports.goOnline = function (req,res) {
   req.checkHeaders("user_id", "User id is required.").notEmpty();
+  req.assert("services","service are required.").notEmpty();
+  req.assert("shop_id","shop_id is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
       return res.status(400).send({
@@ -687,9 +690,61 @@ exports.goOnline = function (req,res) {
           err: errors
       });
   }
-  user.update({_id:req.headers.user_id},{$set:{is_online:true}},function (err,result) {
-    return res.status(200).send({
-        msg: "You are online now."
-    });
+  shop.findOne({_id:req.body.shop_id},function (err,shopData) {
+    if(shopData){
+      let updateData = {
+        $set:{
+          is_online:true,
+          is_available:true,
+          barber_shops_latLong:[shopData.latLong[0],shopData.latLong[1]],
+          barber_services:req.body.services
+        }
+      }
+      user.update({_id:req.headers.user_id},updateData,function (err,result) {
+        if(err){
+          return res.status(400).send({
+              msg: "Error in getting online.",
+              err:err
+          });
+        }
+        else{
+          return res.status(200).send({
+              msg: "You are online now.",
+              "data":result
+          });
+        }
+      })
+    }
+    else{
+      return res.status(400).send({
+          msg: "This shop is not present."
+      });
+    }
+  })
+};
+exports.goOffline = function (req,res) {
+  req.checkHeaders("user_id", "User id is required.").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+      return res.status(400).send({
+          msg: "error in your request",
+          err: errors
+      });
+  }
+  user.findOne({_id:req.headers.user_id},function (err,barberResult) {
+    if(barberResult){
+      if(barberResult.is_online && barberResult.is_available){
+        user.update({_id:req.headers.user_id},{$set:{is_online:false,is_available:false}},function (err,result) {
+          return res.status(200).send({
+              msg: "You are online now."
+          });
+        })
+      }
+      else {
+        return res.status(400).send({
+            msg: "You can't go offline now."
+        });
+      }
+    }
   })
 };

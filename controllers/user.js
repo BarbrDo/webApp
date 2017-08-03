@@ -907,3 +907,129 @@ exports.logout = function(req, res) {
 exports.stripeWebhook = function(req, res, next) {
   console.log(req.body);
 }
+exports.getAllServices = function(req, res) {
+
+  service.find({}, function(err, data) {
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.errorRetreivingData,
+        err: err
+      })
+    } else {
+      res.status(200).send({
+        msg: constantObj.messages.successRetreivingData,
+        "data": data
+      })
+    }
+  })
+}
+
+exports.addServices = function(req, res) {
+  var saveData = req.body;
+  saveData.status = true;
+  console.log("database", saveData)
+  service(saveData).save(function(err, data) {
+    console.log(data)
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.errorInSave,
+        "err": err
+      });
+    } else {
+      res.status(200).send({
+        msg: constantObj.messages.saveSuccessfully,
+        "data": data
+      });
+    }
+  })
+}
+
+exports.editServices = function(req, res) {
+  req.checkParams("service_id", "Barber Service Id is required").notEmpty();
+  if (req.validationErrors()) {
+    return res.status(400).send({
+      msg: "error in request",
+      err: req.validationErrors()
+    })
+  }
+  console.log("service_id", req.params.service_id)
+  console.log("name", req.body.name)
+  service.update({
+    _id: req.params.service_id
+  }, {
+    $set: {
+      "name": req.body.name,
+    }
+  }, function(err, result) {
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.userStatusUpdateFailure
+      })
+    } else {
+      res.status(200).send({
+        msg: constantObj.messages.userStatusUpdateSuccess
+      })
+    }
+  })
+
+}
+
+
+exports.deleteServices = function(req, res) {
+  req.checkParams("service_id", "Barber Service Id is required").notEmpty();
+  if (req.validationErrors()) {
+    return res.status(400).send({
+      msg: "error in request",
+      err: req.validationErrors()
+    })
+  }
+  console.log("service_id", req.params.service_id)
+  console.log("name", req.body.name)
+  service.update({
+    _id: req.params.service_id
+  }, {
+    $set: {
+      "status": false,
+    }
+  }, function(err, result) {
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.userStatusUpdateFailure
+      })
+    } else {
+      res.status(200).send({
+        msg: constantObj.messages.userStatusUpdateSuccess
+      })
+    }
+  })
+}
+
+exports.enableServices = function(req, res) {
+  req.checkParams("service_id", "Barber Service Id is required").notEmpty();
+  if (req.validationErrors()) {
+    return res.status(400).send({
+      msg: "error in request",
+      err: req.validationErrors()
+    })
+  }
+  console.log("service_id", req.params.service_id)
+  console.log("name", req.body.name)
+  service.update({
+    _id: req.params.service_id
+  }, {
+    $set: {
+      "status": true,
+    }
+  }, function(err, result) {
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.userStatusUpdateFailure
+      })
+    } else {
+      res.status(200).send({
+        msg: constantObj.messages.userStatusUpdateSuccess
+      })
+    }
+  })
+
+}

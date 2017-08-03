@@ -4,9 +4,9 @@ module.exports = function(app, express) {
     let shopController = require('./../../controllers/shop');
     // let appointController = require('./../../controllers/appointment');
     let barberController = require('./../../controllers/barber');
+      let userController = require('./../../controllers/user');
 
     //Count all Users, appointsments
-    console.log("loginadmin");
     app.post('/api/v2/loginadmin',customerController.login);
     app.get('/api/v2/countbarber', barberController.countbarber);
     app.get('/api/v2/countshop', shopController.countshop);
@@ -48,5 +48,11 @@ module.exports = function(app, express) {
     app.get('/api/v2/custdetail/:cust_id', customerController.custdetail);//get Customerdetails
     app.get('/api/v2/chairdetail/:chair_id', shopController.chairdetail);//get Chairdetails
     app.get('/api/v2/customerappointments/:cust_id', customerController.customerappointments);//get customer appointments
+
+    app.get('/api/v1/services', userController.getAllServices); //Get all services
+    app.post('/api/v1/services', userController.addServices); //Add new service by Admin
+    app.put('/api/v1/services/:service_id', userController.editServices); //Edit service by Admin
+    app.delete('/api/v1/enableservices/:service_id', userController.enableServices); //Enable service by Admin
+    app.delete('/api/v1/services/:service_id', userController.deleteServices); //Delete service by Admin
 
 }

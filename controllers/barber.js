@@ -195,21 +195,23 @@ exports.barberToggleStatus = function(req, res) {
   }
 }
 
-//exports.viewBarberProfile = function(req, res) {
-//  req.checkParams("barber_id", "barber ID is required").notEmpty();
-//  var errors = req.validationErrors();
-//  if (errors) {
-//    return res.status(400).send({msg: "error in your request", err: errors});
-//  }
-//  var id = mongoose.Types.ObjectId(req.params.barber_id);
-//  user.findOne({_id: id}).exec(function(err, data) {
-//    if (err) {
-//      res.status(400).send({msg: constantObj.messages.errorRetreivingData, err: err});
-//    } else {
-//      res.status(200).send({msg: constantObj.messages.successRetreivingData, "data": data});
-//    }
-//  })
-//}
+exports.viewBarberProfile = function(req, res) {
+ req.checkParams("barber_id", "barber ID is required").notEmpty();
+ var errors = req.validationErrors();
+ if (errors) {
+   return res.status(400).send({msg: "error in your request", err: errors});
+ }
+ var id = mongoose.Types.ObjectId(req.params.barber_id);
+ user.findOne({_id: id}).exec(function(err, data) {
+   if (err) {
+     res.status(400).send({msg: constantObj.messages.errorRetreivingData, err: err});
+   } else {
+     appointment.find({barber_id:req.params.barber_id,"appointment_status":""},function (appErr,appData) {
+       res.status(200).send({msg: constantObj.messages.successRetreivingData, "data": data,"no_of_cuts":appData.length});
+     })
+   }
+ })
+}
 
 let callNotification = function(type, to_user_id, from_user_id) {
   notification.findOne({
@@ -608,4 +610,86 @@ exports.availableBarber = function(req, res) {
             })
         }
     })
+};
+exports.rateBarber = function(req, res) {
+    req.checkHeaders("user_id", "User id is required.").notEmpty();
+    req.assert("appointment_id", "Appointment _id is required.").notEmpty();
+    req.assert("barber_id", "Barber id is required.").notEmpty();
+    req.assert("score", "score is required.").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    console.log(req.body);
+    console.log(req.headers);
+    let updateData = {
+        "$push": {
+            "ratings": {
+                "rated_by": req.headers.user_id,
+                "score": parseInt(req.body.score),
+                "appointment_id": req.body.appointment_id
+            }
+        }
+    }
+    console.log(updateData);
+    async.waterfall([
+        function(done) {
+            appointment.update({
+                _id: req.body.appointment_id
+            }, {
+                $set: {
+                    is_rating_given: true,
+                    rating_score: parseInt(req.body.score),
+                }
+            }, function(err, result) {
+                if (err) {
+                    done("some error", err)
+                } else {
+                    if (result.nModified == 0) {
+                        return res.status(400).send({
+                            msg: "no record found",
+                            err: err
+                        });
+                    } else {
+                        done(err, result);
+                    }
+                }
+            })
+        },
+        function(status, done) {
+            user.update({
+                _id: req.body.barber_id
+            }, updateData, function(err, result) {
+                if (err) {
+                    return res.status(400).send({
+                        msg: constantObj.messages.userStatusUpdateFailure,
+                        err: err
+                    });
+                } else {
+                    return res.status(200).send({
+                        msg: constantObj.messages.userStatusUpdateSuccess
+                    });
+                    done(err);
+                }
+            })
+        }
+    ])
+}
+exports.goOnline = function (req,res) {
+  req.checkHeaders("user_id", "User id is required.").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+      return res.status(400).send({
+          msg: "error in your request",
+          err: errors
+      });
+  }
+  user.update({_id:req.headers.user_id},{$set:{is_online:true}},function (err,result) {
+    return res.status(200).send({
+        msg: "You are online now."
+    });
+  })
 };

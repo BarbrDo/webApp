@@ -56,7 +56,7 @@ module.exports = function(app, express) {
     app.get('/api/v2/customer/favouritebarber',customer.allFavouriteBarbers);
     app.delete('/api/v2/customer/favouritebarber/:_id',customer.removeFavouriteBarber);
     app.post('/api/v2/customer/gallery', upload.any(), userController.uploadCustomerGallery);
-
+    app.post('/api/v2/ratebarber',barber.rateBarber);
 
     //Barber
     app.post('/api/v2/barber/services',barber.addBarberServices);
@@ -66,6 +66,9 @@ module.exports = function(app, express) {
     app.put('/api/v2/barber/services/:barber_service_id',barber.editBarberServices);
     app.get('/api/v2/barber/services/:barber_id',barber.viewAllServiesOfBarber);
     app.delete('/api/v1/barber/services/:barber_service_id',barber.deleteBarberService);
+    app.get('/api/v1/barbers/:barber_id',barber.viewBarberProfile);
+
+    app.post('/api/v1/barbers/goOnline',barber.goOnline);
     // app.get('/api/v1/barbers/:barber_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.viewBarberProfile);
 
 

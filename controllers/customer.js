@@ -155,9 +155,9 @@ exports.getNearbyBarbers = function(req, res) {
               resultTantArray.push(obj)
             }
           }
-          res.status(200).send({msg: constantObj.messages.successRetreivingData, data: resultTantArray});
+          return res.status(200).send({msg: constantObj.messages.successRetreivingData, data: resultTantArray});
         } else {
-          res.status(200).send({msg: constantObj.messages.successRetreivingData, data: result});
+          return res.status(200).send({msg: constantObj.messages.successRetreivingData, data: result});
         }
 
       })

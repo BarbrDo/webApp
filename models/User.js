@@ -84,10 +84,9 @@ var userSchema = new mongoose.Schema({
                 ref: 'users'
             },
             score: Number,
-            comments: String,
-            rated_by_name: String,
-            appointment_date: {
-                type: Date
+            appointment_id: {
+              type: Schema.Types.ObjectId,
+              ref: 'appointments'
             }
         }
     ],

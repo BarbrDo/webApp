@@ -29,6 +29,7 @@ module.exports = function(app, express) {
     let userController = require('./../controllers/user');
     let barber = require('./../controllers/barber');
     let customer = require('./../controllers/customer');
+     let contactController = require('./../controllers/contact');
 
     //Users
     app.post('/api/v2/activate', userController.activate) //Account activate
@@ -65,17 +66,19 @@ module.exports = function(app, express) {
     app.post('/api/v2/barber/services', barber.addBarberServices); //Add new service
     app.put('/api/v2/barber/services/:barber_service_id',barber.editBarberServices);
     app.get('/api/v2/barber/services/:barber_id',barber.viewAllServiesOfBarber);
-    app.delete('/api/v1/barber/services/:barber_service_id',barber.deleteBarberService);
-    app.get('/api/v1/barbers/:barber_id',barber.viewBarberProfile);
+    app.delete('/api/v2/barber/services/:barber_service_id',barber.deleteBarberService);
+    app.get('/api/v2/barbers/:barber_id',barber.viewBarberProfile);
 
-    app.post('/api/v1/barbers/goOnline',barber.goOnline);
-    app.put('/api/v1/barbers/goOffline',barber.goOffline);
+    app.post('/api/v2/barbers/goOnline',barber.goOnline);
+    app.put('/api/v2/barbers/goOffline',barber.goOffline);
+    app.get('/api/v2/barbers/find/shops',barber.findShops);
     // app.get('/api/v1/barbers/:barber_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.viewBarberProfile);
 
 
     //Common
     app.get('/api/v2/logout',userController.logout);
     app.get('/api/v2/userprofile/:id', userController.getProfiles);
+    app.post('/api/v2/contact', contactController.contactBarbrDo);
     // Stripe Implementation API
 
 

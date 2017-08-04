@@ -45,6 +45,10 @@ var userSchema = new mongoose.Schema({
             barber_id: {
                 type: Schema.Types.ObjectId,
                 ref: 'shops'
+            },
+            created_date: {
+                type: Date,
+                default: Date.now()
             }
         }
     ],

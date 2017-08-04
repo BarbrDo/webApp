@@ -312,6 +312,7 @@ exports.allFavouriteBarbers = function(req, res) {
         email: "$favBarbers.email",
         mobile_number: "$favBarbers.mobile_number",
         gallery: "$favBarbers.gallery",
+        picture:"$favBarbers.picture",
         ratings: "$favBarbers.ratings",
         barber_services: "$favBarbers.barber_services",
         is_available: "$favBarbers.is_available",

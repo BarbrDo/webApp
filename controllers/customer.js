@@ -112,6 +112,7 @@ exports.getNearbyBarbers = function(req, res) {
             mobile_number: "$favBarbers.mobile_number",
             gallery: "$favBarbers.gallery",
             ratings: "$favBarbers.ratings",
+            picture:"$favBarbers.picture",
             barber_services: "$favBarbers.barber_services",
             is_available: "$favBarbers.is_available",
             is_online: "$favBarbers.is_online",

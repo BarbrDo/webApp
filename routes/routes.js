@@ -57,6 +57,7 @@ module.exports = function(app, express) {
     app.get('/api/v2/customer/favouritebarber',customer.allFavouriteBarbers);
     app.delete('/api/v2/customer/favouritebarber/:_id',customer.removeFavouriteBarber);
     app.post('/api/v2/customer/gallery', upload.any(), userController.uploadCustomerGallery);
+    app.delete('/api/v2/customer/gallery/:image_id',userController.deleteImages); //Delete image from gallery
     app.post('/api/v2/ratebarber',barber.rateBarber);
 
     //Barber

@@ -142,7 +142,7 @@ exports.getNearbyBarbers = function(req, res) {
                 break;
               } else {
                 if(resultTantArray.includes(result[j])){
-                  
+
                 }
                 else{
                 resultTantArray.push(result[j])
@@ -342,7 +342,7 @@ exports.allFavouriteBarbers = function(req, res) {
 }
 
 exports.removeFavouriteBarber = function(req, res) {
-  req.checkParams("_id", "Id required.").notEmpty();
+  req.checkParams("barber_id", "barber_id required.").notEmpty();
   req.checkHeaders("user_id", "User id is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
@@ -353,7 +353,7 @@ exports.removeFavouriteBarber = function(req, res) {
   }, {
     $pull: {
       "favourite_barber": {
-        "_id": req.params._id
+        "barber_id": req.params._id
       }
     }
   }).exec(function(err, result) {

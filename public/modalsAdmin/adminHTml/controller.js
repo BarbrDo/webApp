@@ -889,26 +889,22 @@ app_admin.controller("AdminCtrl", [
 
     if ($state.current.name == 'barbers') {
       Admin.getAllShops().then(function(response) {
-        $scope.shops = response.data.data
+        $scope.searchSelectAllData = response.data.data
       })
       $scope.searchSelectAllModel = [];
-      $scope.searchSelectAllData = [
-        {
-          id: 1,
-          label: "David"
-        }, {
-          id: 2,
-          label: "Jhon"
-        }, {
-          id: 3,
-          label: "Danny"
-        }
-      ];
       $scope.searchSelectAllSettings = {
         enableSearch: true,
-        showSelectAll: true,
-        keyboardControls: true
+        showCheckAll:false,
+        showUncheckAll:false
       };
+    }
+    $scope.addShops = function (id) {
+      $rootScope.barberId = id
+      $scope.searchSelectAllModel = [];
+    }
+    $scope.submit = function () {
+      alert(JSON.stringify($scope.searchSelectAllModel))
+      // Admin.
     }
   }
 ]);

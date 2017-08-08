@@ -354,6 +354,9 @@ angular.module('barbrdo').factory('Admin', function($http) {
         url: '/api/v2/enableservices/'+data.service_id,
         data: data
       });
+    },
+    getAllShops:function (data) {
+      return $http.get('/api/v2/shops');
     }
   };
 });

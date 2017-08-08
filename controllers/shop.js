@@ -1594,3 +1594,11 @@ let getShopChairRevenue = function (shop_id, startDate, endDate, cb) {
         }
     })
 }
+exports.allshops = function (req,res) {
+  shop.find({},function(err,data) {
+    return res.status(200).send({
+      "msg": constantObj.messages.successRetreivingData,
+      data: data
+    });
+  })
+};

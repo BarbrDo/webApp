@@ -40,7 +40,8 @@ module.exports = function(app, express) {
     app.put('/api/v2/disapproveshop/:shop_id',shopController.disapproveshop);
     app.put('/api/v2/verifyshop/:shop_id',shopController.verifyshop);
     app.get('/api/v2/allshops',shopController.listshops);
-     app.get('/api/v2/shopdetail/:shop_id', shopController.shopdetail);
+    app.get('/api/v2/shopdetail/:shop_id', shopController.shopdetail);
+    app.get('/api/v2/shops',shopController.allshops);
 
 
     app.get('/api/v2/shopownerwithshops/:user_id', shopController.shopownerhavingshops);

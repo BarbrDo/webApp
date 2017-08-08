@@ -45,7 +45,6 @@ module.exports = function(app, express) {
     app.get('/auth/facebook/callback', userController.authFacebookCallback);
     app.post('/reset/:token', userController.resetPost);
     app.post('/api/v2/checkFaceBook', userController.checkFaceBook);
-
     //Shops
 
 
@@ -59,7 +58,7 @@ module.exports = function(app, express) {
     app.post('/api/v2/customer/gallery', upload.any(), userController.uploadCustomerGallery);
     app.delete('/api/v2/customer/gallery/:image_id',userController.deleteImages); //Delete image from gallery
     app.post('/api/v2/ratebarber',barber.rateBarber);
-
+    app.get('/api/v2/customer/timeSlots',customer.timeSlots);
     //Barber
     app.post('/api/v2/barber/services',barber.addBarberServices);
     app.put('/api/v2/barber/appointment/cancel/:appointment_id', barber.cancelAppointment);

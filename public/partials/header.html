@@ -7,7 +7,7 @@
                 <div class="col-sm-12">
                     <div class="text-right">
                         <!-- <a href="">Location</a> -->
-                        <a href="" ng-click="modelOpenFunction()">Login/Sign up</a>
+                        <a href="" >Welcome BarbrDo</a>
                     </div>
                 </div>
             </div>
@@ -49,30 +49,30 @@
             <div class="half left">
                 <img src="images/b_chair.png" class="chair">
                 <ul>
-                    <li><span><i class="fa fa-check"></i></span> Easy Convenient Scheduling</li>
+                    <li><span><i class="fa fa-check"></i></span> Easy  Convenient Scheduling</li>
                     <li><span><i class="fa fa-check"></i></span> Real-time Communications</li>
                     <li><span><i class="fa fa-check"></i></span> On Demand Services</li>
                     <li><span><i class="fa fa-check"></i></span> Supported on Multiple Platforms</li>
                 </ul>
             </div>
             <div class="half right">
-                <div class="ctabs">
-                    <ul class="nav nav-tabs">
-                        <li ng-class="{active:tabActive=='login'}" ng-click><a data-toggle="tab" href="#login">Login</a></li>
-                        <li ng-class="{active:tabActive=='signup'}"><a data-toggle="tab" href="#signup">Signup</a></li>
-                    </ul>
-                    <div class="tab-content">
-                        <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
-                        <div id="login" class="tab-pane fade in active">
-                            <div class="tab-content contact-us">
+             <div class="ctabs">
+            <ul class="nav nav-tabs">
+                <li ng-class="{active:tabActive=='login'}" ng-click><a data-toggle="tab" href="#login" >Login</a></li>
+                <li ng-class="{active:tabActive=='signup'}"><a data-toggle="tab" href="#signup" >Signup</a></li>
+            </ul>
+            <div class="tab-content" >
+            <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+                <div id="login" class="tab-pane fade in active">
+                    <div class="tab-content contact-us">
                                 <div role="tabpanel" class="tab-pane active" id="login">
                                     <div ng-if="messages.error" role="alert" class="alert alert-danger">
                                         <div ng-repeat="myerr in messages.error">{{myerr.msg}}</div>
                                     </div>
                                     <div class="text-center">
-                                        <a ng-click="authenticate('facebook')" href="#"><img src="images/fbb.png"></a>
+                                        <a  ng-click="authenticate('facebook')" href="#"><img src="images/fbb.png"></a>
                                     </div>
-                                    <form name="loginForm">
+                                    <form name="loginForm" >
                                         <div class="form-group">
                                             <input type="text" name="email" id="email" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" class="form-control" required/>
                                             <div class="form-control-placeholder">Email Address</div>
@@ -97,14 +97,14 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>
-                        <div id="signup" class="tab-pane fade">
-                            <div role="tabpanel" class="tab-pane contact-us" id="signup" style="margin-top: 0px; padding:0px;">
+                </div>
+                <div id="signup" class="tab-pane fade" >
+                    <div role="tabpanel" class="tab-pane contact-us" id="signup" style="margin-top: 0px; padding:0px;">
                                 <div ng-if="messagess.error" role="alert" class="alert alert-danger">
                                     <div ng-repeat="err in messagess.error">
                                         {{err[0].msg}}</div>
                                 </div>
-                                <form name="signUpForm">
+                                <form name="signUpForm" >
                                     <div class="type_selection">
                                         <label name="type" ng-click="usertype('customer')" ng-init="user.user_type = 'customer'" ng-class="{isactive:user.user_type=='customer'}">
                                             <img src="/images/p1.png">
@@ -121,7 +121,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <!-- {{user}} -->
+                                        <!-- {{user}} -->
                                             <input type="text" name="firstname" id="email" class="form-control" ng-model="user.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
                                             <div class="form-control-placeholder">First Name</div>
                                             <div class="validationError" ng-messages="signUpForm.firstname.$error" ng-show="
@@ -225,11 +225,10 @@
                                                 signUpForm.license_number.$error.required && signUpForm.license_number.$touched &&
                                                         signUpForm.license_number.$invalid" role="alert">
                                             <span style="color:red" ng-message="required">License number is required</span>
-                                        </div> 
-                                        <br><br>
+                                        </div>
                                     </div>
                                 </div><div>
-                                    <br><br>
+
                                 </div>
                                 <div ng-if="user.facebook">
                                     <div class="col-sm-6 form-group" ng-hide="true">
@@ -237,7 +236,7 @@
                     </div>
                                 </div>
                                 <button type="submit" class="sb_button" ng-click="signup()" ng-disabled="signUpForm.$invalid">Sign Up</button>
-                                <p class="msg">Already have an account? <span> <a data-toggle="tab" href="#login" ng-click="activeTab('login ')">Login</a> </span></p>
+                                <p class="msg">Already have an account? <span> <a data-toggle="tab" href="#login" ng-click="activeTab('login')">Login</a> </span></p>
                             </form>
                             </div>
                 </div>
@@ -258,12 +257,12 @@
                 </div>
                 <div class="modal-body" ng-init="pageChanged()">
                     <p>Enter your email address below and we'll send you password reset instructions.</p>
-                                                <input type="email" name="email" id="email" placeholder="Email" class="form-control" ng-model="user.email" autofocus>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-default" ng-click="forgotPassword()">Reset Password</button>
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                            </div>
+          <input type="email" name="email" id="email" placeholder="Email" class="form-control" ng-model="user.email" autofocus>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" ng-click="forgotPassword()" >Reset Password</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>

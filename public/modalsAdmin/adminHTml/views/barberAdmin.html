@@ -24,9 +24,10 @@
                     <thead>
                         <tr>
                             <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
-                            <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">E-mail<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
-                            <th style="font-size: 13px;"><a ng-click="Sort('name[0]')" class="name" style="color: #ffffff;">Shop Associated With<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                              <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">E-mail<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                            <!-- <th style="font-size: 13px;"><a ng-click="Sort('name[0]')" class="name" style="color: #ffffff;">Shop Associated With<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th> -->
                             <th style="font-size: 13px;" width="20%"><a ng-click="Sort('created_date')" class="created_date" style="color: #ffffff;">Member Since<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                              <th style="font-size: 13px;" width="20%">Associate to shop</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,10 +37,14 @@
                             </td>
                             <td>{{barber.email}}
                             </td>
-                            <td><a data-toggle="tooltip" title="View {{barber.name[0]}}'s detailed info" ui-sref="shopdetail({id:barber.shop[0].user_id})">{{barber.name[0]}}</a>
-                            </td>
+                            <!-- <td><a data-toggle="tooltip" title="View {{barber.name[0]}}'s detailed info" ui-sref="shopdetail({id:barber.shop[0].user_id})">{{barber.name[0]}}</a>
+                            </td> -->
                             <td>
                                 {{barber.created_date | date:dd/mm/yyyy}}
+                            </td>
+                            <td>
+                              <span>{{barber.shopAssociation}}</span>
+                              <span class="glyphicon glyphicon-shopping-cart" data-toggle="modal" data-target="#myModal"></span>
                             </td>
                         </tr>
                     </tbody>
@@ -52,7 +57,28 @@
                 <br>
 
             </div>
-            <!-- Modal --> 
-        </div> 
+            <!-- Modal -->
+        </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="myModal" role="dialog">
+   <div class="modal-dialog">
+
+     <!-- Modal content-->
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <h4 class="modal-title">Modal Header</h4>
+       </div>
+       <div class="modal-body">
+         <div ng-dropdown-multiselect="" options="searchSelectAllData" selected-model="searchSelectAllModel" extra-settings="searchSelectAllSettings"></div>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+       </div>
+     </div>
+
+   </div>
+ </div>

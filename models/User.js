@@ -26,7 +26,7 @@ var userSchema = new mongoose.Schema({
     },
     user_type: {
         type: String,
-        enum: ["customer", "barber"],
+        enum: ["customer", "barber","shop"],
         require: true,
     },
     radius_search: Number,
@@ -38,7 +38,8 @@ var userSchema = new mongoose.Schema({
     device_type: String,
     device_id: String,
     latLong: {
-        type: [Number]
+        type: [Number],
+         index: false
     },
     favourite_barber: [
         {
@@ -72,7 +73,8 @@ var userSchema = new mongoose.Schema({
     ],
     barber_shops_latLong: {
         type:[Number],
-        index: '2dsphere'
+        index: '2dsphere',
+        index: true
     },
     barber_shop_id:{
         type: Schema.Types.ObjectId,

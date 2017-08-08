@@ -13,7 +13,7 @@ exports.getNearbyBarbers = function(req, res) {
   req.checkHeaders("device_latitude", 'services cannot be blank.').notEmpty();
   let errors = req.validationErrors();
   if (errors) {
-    res.status(400).send({msg: "error in your request", err: errors});
+    return res.status(400).send({msg: "error in your request", err: errors});
   }
   let long = parseFloat(req.headers.device_longitude);
   let lati = parseFloat(req.headers.device_latitude);
@@ -123,25 +123,34 @@ exports.getNearbyBarbers = function(req, res) {
           }
         }
       ]).exec(function(err, favBarbers) {
-        console.log("favBarbers",favBarbers);
-        console.log("All barers",result);
+        console.log("favBarbers",JSON.stringify(favBarbers));
+        console.log("All barers",JSON.stringify(result));
+        console.log("length of fav barber",favBarbers.length);
+        console.log("length of all barber",result.length);
         let resultTantArray = [];
         if (favBarbers.length>0) {
           for (var i = 0; i < favBarbers.length; i++) {
             let k = 0;
             for (var j = 0; j < result.length; j++) {
-              console.log(favBarbers[i]._id,result[j]._id)
+              console.log("fav and all",favBarbers[i]._id,result[j]._id)
               if (favBarbers[i]._id.equals(result[j]._id)) {
                 console.log("fav");
                 let obj = result[j]
                 obj.is_favourite = true;
                 resultTantArray.push(obj)
                 k = 1;
+                break;
               } else {
+                if(resultTantArray.includes(result[j])){
+                  
+                }
+                else{
                 resultTantArray.push(result[j])
+                }
               }
             }
             if (k == 0) {
+              console.log("value of i",i);
               let abc = geolib.getDistance({
                 latitude: lati,
                 longitude: long
@@ -756,4 +765,10 @@ exports.listcustomers = function(req, res) {
             })
         }
     })
+};
+exports.timeSlots = function (req,res) {
+  res.status(200).send({
+    "msg": constantObj.messages.successRetreivingData,
+    "data": constantObj.offTimeSlots
+  })
 };

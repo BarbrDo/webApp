@@ -165,6 +165,10 @@ exports.getNearbyBarbers = function(req, res) {
               resultTantArray.push(obj)
             }
           }
+          resultTantArray.sort(function(a,b) {return (a.distance > b.distance) ? 1 : ((b.distance > a.distance) ? -1 : 0);} );
+
+          resultTantArray.sort(function(a,b) {return (a.is_favourite < b.is_favourite) ? 1 : ((b.is_favourite < a.is_favourite) ? -1 : 0);} );
+
           return res.status(200).send({msg: constantObj.messages.successRetreivingData, data: resultTantArray});
         } else {
           return res.status(200).send({msg: constantObj.messages.successRetreivingData, data: result});

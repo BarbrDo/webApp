@@ -1,4 +1,5 @@
 let user = require('../models/user');
+let shopBarber = require('../models/shop_barber');
 let service = require('../models/service');
 let constantObj = require('./../constants.js');
 let async = require('async');
@@ -360,7 +361,6 @@ exports.viewAllServiesOfBarber = function(req, res) {
   })
 }
 exports.countbarber = function(req, res) {
-
   user.find({
     user_type: "barber"
   }, function(err, barber) {
@@ -469,7 +469,8 @@ exports.verifybarber = function(req, res) {
 exports.barberdetail = function(req, res) {
   req.checkParams("barber_id", "barber_id cannot be blank").notEmpty();
   var query = {};
-  query._id = mongoose.Types.ObjectId(req.params.barber_id);
+  let id = mongoose.Types.ObjectId(req.params.barber_id);
+  query._id = id
   query.user_type = "barber";
   user.aggregate([
     {
@@ -505,7 +506,42 @@ exports.barberdetail = function(req, res) {
     if (err) {
       res.status(400).send({"msg": constantObj.messages.userStatusUpdateFailure, "err": err});
     } else {
-      res.status(200).send({"msg": constantObj.messages.successRetreivingData, "data": result})
+      shopBarber.aggregate([
+          {
+           $lookup:{
+                        from: 'shops',
+                        localField: 'shop_id',
+                        foreignField: '_id',
+                        as: 'shopInfo'
+                  }
+           },{
+             $match: {barber_id:id}
+           }
+         ]).exec(function(err, data) {
+           if(err){
+             res.status(400).send({"msg": constantObj.messages.userStatusUpdateFailure, "err": err});
+           }
+           else{
+             console.log("shop barber data",data);
+             if(data){
+               for(var i=0;i<result.length;i++){
+                 result[i].associateShops = [];
+                 for(j=0;j<data.length;j++){
+                   console.log(result[i]._id , data[j].barber_id)
+                   if(result[i]._id.equals(data[j].barber_id)){
+                     result[i].associateShops.push({
+                       name:data[j].shopInfo[0].name
+                     })
+                   }
+                 }
+               }
+                  res.status(200).send({"msg": constantObj.messages.successRetreivingData, "data": result})
+             }
+             else{
+                res.status(200).send({"msg": constantObj.messages.successRetreivingData, "data": result})
+             }
+           }
+         })
     }
   })
 };
@@ -606,7 +642,40 @@ exports.availableBarber = function(req, res) {
         if (err) {
           res.status(400).send({"msg": constantObj.messages.userStatusUpdateFailure, "err": err});
         } else {
-          res.status(200).send({"msg": constantObj.messages.successRetreivingData, "data": result, "count": length})
+          shopBarber.aggregate([
+              {
+               $lookup:{
+                            from: 'shops',
+                            localField: 'shop_id',
+                            foreignField: '_id',
+                            as: 'shopInfo'
+                      }
+               }
+             ]).exec(function (shopBarberErr,shopBarberResult) {
+               if(err){
+                 res.status(400).send({"msg": constantObj.messages.userStatusUpdateFailure, "err": shopBarberErr});
+               }
+               else{
+                 let arr = [];
+                 if(shopBarberResult.length>0){
+                   for(var i=0;i<result.length;i++){
+                     result[i].associateShops = [];
+                     for(j=0;j<shopBarberResult.length;j++){
+                       console.log(result[i]._id , shopBarberResult[j].barber_id)
+                       if(result[i]._id.equals(shopBarberResult[j].barber_id)){
+                         result[i].associateShops.push({
+                           name:shopBarberResult[j].shopInfo[0].name
+                         })
+                       }
+                     }
+                   }
+                   res.status(200).send({"msg": constantObj.messages.successRetreivingData, "data": result, "count": length})
+                 }
+                 else{
+                   res.status(200).send({"msg": constantObj.messages.successRetreivingData, "data": result, "count": length})
+                 }
+               }
+             })
         }
       })
     }
@@ -812,3 +881,24 @@ let currentRevenue = function(req,res) {
     })
   })
 }
+exports.addShop = function (req,res) {
+  req.checkHeaders("user_id", "User id is required.").notEmpty();
+  req.assert("shops", "Shops are required.").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({msg: "error in your request", err: errors});
+  }
+  console.log(req.body);
+  for(var i=0;i<req.body.shops.length;i++){
+    let obj = {
+      shop_id:req.body.shops[i].shop_id,
+      barber_id:req.headers.user_id
+    }
+    shopBarber(obj).save(function (err,result) {
+      console.log(err,result);
+    })
+  }
+  res.status(200).send({
+    "msg": "Shops added successfully."
+  })
+};

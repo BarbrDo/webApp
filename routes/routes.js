@@ -68,6 +68,7 @@ module.exports = function(app, express) {
     app.get('/api/v2/barber/services/:barber_id',barber.viewAllServiesOfBarber);
     app.delete('/api/v2/barber/services/:barber_service_id',barber.deleteBarberService);
     app.get('/api/v2/barbers/:barber_id',barber.viewBarberProfile);
+    app.post('/api/v2/barbers/addShop',barber.addShop);
 
     app.post('/api/v2/barbers/goOnline',barber.goOnline);
     app.put('/api/v2/barbers/goOffline',barber.goOffline);

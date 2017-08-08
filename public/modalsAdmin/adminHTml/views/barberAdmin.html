@@ -43,7 +43,12 @@
                                 {{barber.created_date | date:dd/mm/yyyy}}
                             </td>
                             <td>
-                              <span>{{barber.shopAssociation}}</span>
+                              <div ng-if="barber.associateShops.length>0">
+                                <select>
+                                  <<option value="">--View All--</option>
+                                  <option ng-repeat = "data in barber.associateShops" value="">{{data.name}}</option>
+                               </select>
+                               </div>
                               <span class="glyphicon glyphicon-shopping-cart" data-toggle="modal" data-target="#myModal" ng-click="addShops(barber._id)"></span>
                             </td>
                         </tr>

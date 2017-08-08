@@ -357,6 +357,17 @@ angular.module('barbrdo').factory('Admin', function($http) {
     },
     getAllShops:function (data) {
       return $http.get('/api/v2/shops');
+    },
+    addShopsWithbarber:function (data,id) {
+      console.log(data,id);
+      return $http({
+        method: 'post',
+        url: '/api/v2/barbers/addShop',
+        headers: {
+          'user_id': id
+        },
+        data: data
+      });
     }
   };
 });

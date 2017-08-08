@@ -894,17 +894,33 @@ app_admin.controller("AdminCtrl", [
       $scope.searchSelectAllModel = [];
       $scope.searchSelectAllSettings = {
         enableSearch: true,
-        showCheckAll:false,
-        showUncheckAll:false
+        showCheckAll: false,
+        showUncheckAll: false
       };
     }
-    $scope.addShops = function (id) {
+    $scope.addShops = function(id) {
       $rootScope.barberId = id
       $scope.searchSelectAllModel = [];
     }
-    $scope.submit = function () {
-      alert(JSON.stringify($scope.searchSelectAllModel))
-      // Admin.
+    $scope.submit = function() {
+      let arr = [];
+      if($scope.searchSelectAllModel.length>0){
+        for(var i=0;i<$scope.searchSelectAllModel.length;i++){
+          let obj = {
+            shop_id:$scope.searchSelectAllModel[i].id
+          }
+          arr.push(obj);
+        }
+        let passobj = {
+          shops:arr
+        }
+        Admin.addShopsWithbarber(passobj,$rootScope.barberId).then(function(response) {
+          console.log(response);
+        })
+      }
+      else{
+        toastr.warning("Please choose atleast one shop");
+      }
     }
   }
 ]);

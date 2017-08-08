@@ -27,64 +27,14 @@
                         <div class="col-lg-6">
                             <h4 class="group inner list-group-item-heading" align="center"><b>
                         Shop Associated With</b></h4>
-                            <span ng-if="!barberdetail.name[0]"><br><br><br>Not Assiciated With Any Shop</span>
-                            <table class="table table-striped" ng-if="barberdetail.name[0]">
-                                <tr style="cursor:pointer" data-toggle="tooltip" title="Go on Shop Detail" ui-sref="shopdetail({id:barberdetail.shop[0].user_id})">
-                                    <td width="50%">
-                                        <h5>SHOPNAME </h5></td>
-                                    <td style="color: blue;"> {{barberdetail.name[0]}}</td>
-                                </tr>
-                                <!-- <tr data-toggle="tooltip" title="View Chairs in the Shop" style="cursor:pointer" ng-click="viewshop(barberdetail.shop[0])" ui-sref="chairs({id:barberdetail.shop[0].user_id})">
-                                    <td>
-                                        <h5>CHAIRS </h5></td>
-                                    <td> {{barberdetail.shop[0].chairs.length}}</td>
-                                </tr> -->
-                                <tr>
-                                    <td>
-                                        <h5>ADDRESS</h5></td>
-                                    <td> {{barberdetail.shop[0].address}} </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <h5>CITY</h5></td>
-                                    <td> {{barberdetail.shop[0].city}} </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <h5>STATE</h5></td>
-                                    <td> {{barberdetail.shop[0].state}} </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <h5>ZIP</h5></td>
-                                    <td> {{barberdetail.shop[0].zip}} </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <h5>LATTITUDE</h5></td>
-                                    <td> {{barberdetail.shop[0].latLong[0]}} </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <h5>LONGITUDE</h5></td>
-                                    <td> {{barberdetail.shop[0].latLong[1]}} </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <h5>RATINGS</h5></td>
-                                    <td> {{barberdetail.shop[0].ratings}} </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <h5>PAYMENT METHODS</h5></td>
-                                    <td> {{barberdetail.shop[0].payment_methods}} </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <h5>DATE OF CREATION</h5></td>
-                                    <td> {{barberdetail.shop[0].created_date | date: dd/mm/yyyy}} </td>
-                                </tr>
-                            </table>
+                            <span ng-if="!barberdetail.associateShops"><br><br><br>Not Assiciated With Any Shop</span>
+                            <div>
+                              <ul>
+                                <li ng-repeat = " data in barberdetail.associateShops">
+                                  {{data.name}}
+                                </li>
+                              </ul>
+                            </div>
                         </div>
                         <div class="  col-lg-6">
                             <h4 class="group inner list-group-item-heading" align="center"><b>

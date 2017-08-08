@@ -353,7 +353,7 @@ exports.removeFavouriteBarber = function(req, res) {
   }, {
     $pull: {
       "favourite_barber": {
-        "barber_id": req.params._id
+        "barber_id": req.params.barber_id
       }
     }
   }).exec(function(err, result) {

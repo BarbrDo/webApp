@@ -1050,7 +1050,12 @@ exports.barberHomeScreen = function(req, res) {
         }
       })
     },
-    function(result, data, done) {
+    function (result,data,done) {
+      service.find({status:true},function(err,serData){
+        done(null,result,data,serData)
+      })
+    },
+    function(result, data,serData, done) {
       appointment.aggregate([{
         $match: {
           barber_id: id,
@@ -1074,6 +1079,7 @@ exports.barberHomeScreen = function(req, res) {
             "msg": constantObj.messages.successRetreivingData,
             "associateShops": result,
             "revenue": data,
+            "services":serData,
             "appointment": appData[0]
           })
         } else {
@@ -1081,6 +1087,7 @@ exports.barberHomeScreen = function(req, res) {
             "msg": constantObj.messages.successRetreivingData,
             "associateShops": result,
             "revenue": data,
+            "services":serData,
             "appointment": []
           })
         }

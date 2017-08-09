@@ -6,6 +6,7 @@ let commonObj = require('../common/common');
 let moment = require('moment');
 let mongoose = require('mongoose');
 let geolib = require('geolib');
+let _ = require('lodash');
 
 exports.getNearbyBarbers = function(req, res) {
   req.checkHeaders("user_id", "User ID is required").notEmpty();
@@ -72,7 +73,7 @@ exports.getNearbyBarbers = function(req, res) {
         }
       }
     }
-  ]).exec(function(err, result) {
+  ]).exec(function(err, geoResult) {
     if (err) {
       res.status(400).send({msg: constantObj.messages.errorRetreivingData, "err": err});
     } else {
@@ -124,28 +125,29 @@ exports.getNearbyBarbers = function(req, res) {
         }
       ]).exec(function(err, favBarbers) {
         console.log("favBarbers",JSON.stringify(favBarbers));
-        console.log("All barers",JSON.stringify(result));
+        console.log("goenear result",JSON.stringify(geoResult));
         console.log("length of fav barber",favBarbers.length);
-        console.log("length of all barber",result.length);
+        console.log("length of geoResult",geoResult.length);
+        let lengthOfFavBarber = favBarbers.length
+        let lengthOfGeoResult = geoResult.length
         let resultTantArray = [];
         if (favBarbers.length>0) {
-          for (var i = 0; i < favBarbers.length; i++) {
+          for (var i = 0; i < lengthOfFavBarber; i++) {
             let k = 0;
-            for (var j = 0; j < result.length; j++) {
-              console.log("fav and all",favBarbers[i]._id,result[j]._id)
-              if (favBarbers[i]._id.equals(result[j]._id)) {
+            for (var j = 0; j < lengthOfGeoResult; j++) {
+              console.log("fav and all",favBarbers[i]._id,geoResult[j]._id)
+              if (favBarbers[i]._id.equals(geoResult[j]._id)) {
                 console.log("fav");
-                let obj = result[j]
+                let obj = geoResult[j]
                 obj.is_favourite = true;
                 resultTantArray.push(obj)
                 k = 1;
-                break;
               } else {
-                if(resultTantArray.includes(result[j])){
-
+                if(resultTantArray.includes(geoResult[j])){
+          
                 }
                 else{
-                resultTantArray.push(result[j])
+                resultTantArray.push(geoResult[j])
                 }
               }
             }
@@ -165,6 +167,7 @@ exports.getNearbyBarbers = function(req, res) {
               resultTantArray.push(obj)
             }
           }
+
           resultTantArray.sort(function(a,b) {return (a.distance > b.distance) ? 1 : ((b.distance > a.distance) ? -1 : 0);} );
 
           resultTantArray.sort(function(a,b) {return (a.is_favourite < b.is_favourite) ? 1 : ((b.is_favourite < a.is_favourite) ? -1 : 0);} );

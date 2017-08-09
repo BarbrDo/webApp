@@ -62,17 +62,19 @@ module.exports = function(app, express) {
     //Barber
     app.post('/api/v2/barber/services',barber.addBarberServices);
     app.put('/api/v2/barber/appointment/cancel/:appointment_id', barber.cancelAppointment);
+    app.put('/api/v2/barber/appointment/accept/:appointment_id', barber.confirmRequest);
     app.get('/api/v2/barber/services', barber.getAllServices);
     app.post('/api/v2/barber/services', barber.addBarberServices); //Add new service
     app.put('/api/v2/barber/services/:barber_service_id',barber.editBarberServices);
     app.get('/api/v2/barber/services/:barber_id',barber.viewAllServiesOfBarber);
     app.delete('/api/v2/barber/services/:barber_service_id',barber.deleteBarberService);
-    app.get('/api/v2/barbers/:barber_id',barber.viewBarberProfile);
-    app.post('/api/v2/barbers/addShop',barber.addShop);
-
-    app.post('/api/v2/barbers/goOnline',barber.goOnline);
-    app.put('/api/v2/barbers/goOffline',barber.goOffline);
-    app.get('/api/v2/barbers/find/shops',barber.findShops);
+    app.get('/api/v2/barber/profile/:barber_id',barber.viewBarberProfile);
+    app.post('/api/v2/barber/shop',barber.addShop);
+    app.get('/api/v2/barber/shops',barber.getShops);
+    app.get('/api/v2/barber/home',barber.barberHomeScreen);
+    app.post('/api/v2/barber/goOnline',barber.goOnline);
+    app.put('/api/v2/barber/goOffline',barber.goOffline);
+    
     // app.get('/api/v1/barbers/:barber_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.viewBarberProfile);
 
 

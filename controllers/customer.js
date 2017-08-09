@@ -6,6 +6,7 @@ let commonObj = require('../common/common');
 let moment = require('moment');
 let mongoose = require('mongoose');
 let geolib = require('geolib');
+let _ = require('lodash');
 
 exports.getNearbyBarbers = function (req, res) {
     req.checkHeaders("user_id", "User ID is required").notEmpty();

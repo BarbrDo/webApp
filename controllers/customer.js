@@ -8,177 +8,167 @@ let mongoose = require('mongoose');
 let geolib = require('geolib');
 let _ = require('lodash');
 
-exports.getNearbyBarbers = function(req, res) {
-  req.checkHeaders("user_id", "User ID is required").notEmpty();
-  req.checkHeaders('device_longitude', 'Device longitude cannot be blank.').notEmpty();
-  req.checkHeaders("device_latitude", 'services cannot be blank.').notEmpty();
-  let errors = req.validationErrors();
-  if (errors) {
-    return res.status(400).send({msg: "error in your request", err: errors});
-  }
-  let long = parseFloat(req.headers.device_longitude);
-  let lati = parseFloat(req.headers.device_latitude);
-  let maxDistanceToFind = constantObj.distance.shopDistance; // in miles in km 0.001
-  var id = mongoose.Types.ObjectId(req.headers.user_id);
-  user.aggregate([
-    {
-      $geoNear: {
-        query: {
-          user_type: "barber",
-          is_active: true,
-          is_verified: true,
-          is_deleted: false,
-          is_online: true,
-          is_available: true
-        },
-        near: {
-          type: "Point",
-          coordinates: [long, lati]
-        },
-        distanceField: "dist.calculated",
-        distanceMultiplier: constantObj.distance.distanceMultiplierInMiles, // it returns distance in kilometers
-        maxDistance: maxDistanceToFind,
-        includeLocs: "dist.location",
-        spherical: true
-      }
-    }, {
-      $lookup: {
-        from: 'shops',
-        localField: 'barber_shop_id',
-        foreignField: '_id',
-        as: 'shopInfo'
-      }
-    }, {
-      $project: {
-        _id: 1,
-        email: 1,
-        first_name: 1,
-        last_name: 1,
-        mobile_number: 1,
-        picture: 1,
-        gallery: 1,
-        ratings: 1,
-        is_online: 1,
-        is_available: 1,
-        barber_services: 1,
-        distance: "$dist.calculated",
-        units: {
-          $literal: "miles"
-        },
-        is_favourite: {
-          $literal: false
-        },
-        barber_shops: {
-          $arrayElemAt: ["$shopInfo", 0]
-        }
-      }
+exports.getNearbyBarbers = function (req, res) {
+    req.checkHeaders("user_id", "User ID is required").notEmpty();
+    req.checkHeaders('device_longitude', 'Device longitude cannot be blank.').notEmpty();
+    req.checkHeaders("device_latitude", 'services cannot be blank.').notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({msg: "error in your request", err: errors});
     }
-  ]).exec(function(err, geoResult) {
-    if (err) {
-      res.status(400).send({msg: constantObj.messages.errorRetreivingData, "err": err});
-    } else {
-      user.aggregate([
+    let long = parseFloat(req.headers.device_longitude);
+    let lati = parseFloat(req.headers.device_latitude);
+    let maxDistanceToFind = constantObj.distance.shopDistance; // in miles in km 0.001
+    var id = mongoose.Types.ObjectId(req.headers.user_id);
+    user.aggregate([
         {
-          $match: {
-            "_id": id
-          }
-        }, {
-          $unwind: "$favourite_barber"
-        }, {
-          $lookup: {
-            from: 'users',
-            localField: 'favourite_barber.barber_id',
-            foreignField: '_id',
-            as: 'favBarbers'
-          }
-        }, {
-          $project: {
-            favBarbers: {
-              $arrayElemAt: ["$favBarbers", 0]
+            $geoNear: {
+                query: {
+                    user_type: "barber",
+                    is_active: true,
+                    is_verified: true,
+                    is_deleted: false,
+                    is_online: true,
+                    is_available: true
+                },
+                near: {
+                    type: "Point",
+                    coordinates: [long, lati]
+                },
+                distanceField: "dist.calculated",
+                distanceMultiplier: constantObj.distance.distanceMultiplierInMiles, // it returns distance in kilometers
+                maxDistance: maxDistanceToFind,
+                includeLocs: "dist.location",
+                spherical: true
             }
-          }
         }, {
-          $lookup: {
-            from: 'shops',
-            localField: 'favBarbers.barber_shop_id',
-            foreignField: '_id',
-            as: 'shopInfo'
-          }
-        }, {
-          $project: {
-            _id:"$favBarbers._id",
-            first_name: "$favBarbers.first_name",
-            last_name: "$favBarbers.last_name",
-            email: "$favBarbers.email",
-            mobile_number: "$favBarbers.mobile_number",
-            gallery: "$favBarbers.gallery",
-            ratings: "$favBarbers.ratings",
-            picture:"$favBarbers.picture",
-            barber_services: "$favBarbers.barber_services",
-            is_available: "$favBarbers.is_available",
-            is_online: "$favBarbers.is_online",
-            barber_shop_latLong: "$favBarbers.barber_shops_latLong",
-            barber_shops: {
-              $arrayElemAt: ["$shopInfo", 0]
+            $lookup: {
+                from: 'shops',
+                localField: 'barber_shop_id',
+                foreignField: '_id',
+                as: 'shopInfo'
             }
-          }
+        }, {
+            $project: {
+                _id: 1,
+                email: 1,
+                first_name: 1,
+                last_name: 1,
+                mobile_number: 1,
+                picture: 1,
+                gallery: 1,
+                ratings: 1,
+                is_online: 1,
+                is_available: 1,
+                barber_services: 1,
+                distance: "$dist.calculated",
+                units: {
+                    $literal: "miles"
+                },
+                is_favourite: {
+                    $literal: false
+                },
+                barber_shops: {
+                    $arrayElemAt: ["$shopInfo", 0]
+                }
+            }
         }
-      ]).exec(function(err, favBarbers) {
-        console.log("favBarbers",JSON.stringify(favBarbers));
-        console.log("goenear result",JSON.stringify(geoResult));
-        console.log("length of fav barber",favBarbers.length);
-        console.log("length of geoResult",geoResult.length);
-        let lengthOfFavBarber = favBarbers.length
-        let lengthOfGeoResult = geoResult.length
-        let resultTantArray = [];
-        if (favBarbers.length>0) {
-          for (var i = 0; i < lengthOfFavBarber; i++) {
-            let k = 0;
-            for (var j = 0; j < lengthOfGeoResult; j++) {
-              console.log("fav and all",favBarbers[i]._id,geoResult[j]._id)
-              if (favBarbers[i]._id.equals(geoResult[j]._id)) {
-                console.log("fav");
-                let obj = geoResult[j]
-                obj.is_favourite = true;
-                resultTantArray.push(obj)
-                k = 1;
-              } else {
-                if(resultTantArray.includes(geoResult[j])){
-          
-                }
-                else{
-                resultTantArray.push(geoResult[j])
-                }
-              }
-            }
-            if (k == 0) {
-              console.log("value of i",i);
-              let abc = geolib.getDistance({
-                latitude: lati,
-                longitude: long
-              }, {
-                latitude: favBarbers[i].barber_shop_latLong[1],
-                longitude: favBarbers[i].barber_shop_latLong[0]
-              });
-              abc = geolib.convertUnit('mi', abc, 2);
-              let obj = favBarbers[i]
-              obj.is_favourite = true;
-              obj.distance = abc
-              resultTantArray.push(obj)
-            }
-          }
-
-          resultTantArray.sort(function(a,b) {return (a.distance > b.distance) ? 1 : ((b.distance > a.distance) ? -1 : 0);} );
-
-          resultTantArray.sort(function(a,b) {return (a.is_favourite < b.is_favourite) ? 1 : ((b.is_favourite < a.is_favourite) ? -1 : 0);} );
-
-          return res.status(200).send({msg: constantObj.messages.successRetreivingData, data: resultTantArray});
+    ]).exec(function (err, result) {
+        if (err) {
+            res.status(400).send({msg: constantObj.messages.errorRetreivingData, "err": err});
         } else {
-          return res.status(200).send({msg: constantObj.messages.successRetreivingData, data: result});
+            user.aggregate([
+                {
+                    $match: {
+                        "_id": id
+                    }
+                }, {
+                    $unwind: "$favourite_barber"
+                }, {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'favourite_barber.barber_id',
+                        foreignField: '_id',
+                        as: 'favBarbers'
+                    }
+                }, {
+                    $project: {
+                        favBarbers: {
+                            $arrayElemAt: ["$favBarbers", 0]
+                        }
+                    }
+                }, {
+                    $lookup: {
+                        from: 'shops',
+                        localField: 'favBarbers.barber_shop_id',
+                        foreignField: '_id',
+                        as: 'shopInfo'
+                    }
+                }, {
+                    $project: {
+                        _id: "$favBarbers._id",
+                        first_name: "$favBarbers.first_name",
+                        last_name: "$favBarbers.last_name",
+                        email: "$favBarbers.email",
+                        mobile_number: "$favBarbers.mobile_number",
+                        gallery: "$favBarbers.gallery",
+                        ratings: "$favBarbers.ratings",
+                        picture: "$favBarbers.picture",
+                        barber_services: "$favBarbers.barber_services",
+                        is_available: "$favBarbers.is_available",
+                        is_online: "$favBarbers.is_online",
+                        barber_shop_latLong: "$favBarbers.barber_shops_latLong",
+                        barber_shops: {
+                            $arrayElemAt: ["$shopInfo", 0]
+                        },
+                        units: {
+                            $literal: "miles"
+                        },
+                    }
+                }
+            ]).exec(function (err, favBarbers) {
+                console.log("favBarbers", JSON.stringify(favBarbers));
+                console.log("All barers", JSON.stringify(result));
+                console.log("length of fav barber", favBarbers.length);
+                console.log("length of all barber", result.length);
+                let resultTantArray = [];
+                if (favBarbers.length > 0) {
+                    for (var i = 0; i < favBarbers.length; i++) {
+                        let latLngGeo = geolib.getDistance({
+                            latitude: lati,
+                            longitude: long
+                        }, {
+                            latitude: favBarbers[i].barber_shop_latLong[1],
+                            longitude: favBarbers[i].barber_shop_latLong[0]
+                        });
+                        let distance = geolib.convertUnit('mi', latLngGeo, 2);
+                        let obj = favBarbers[i]
+                        obj.is_favourite = true;
+                        obj.distance = distance
+                        resultTantArray.push(obj)
+                        for (var j = 0; j < result.length; j++) {
+                            console.log("fav and all", favBarbers[i]._id, result[j]._id)
+                            if (favBarbers[i]._id.equals(result[j]._id)) {
+                                result.splice(j, 1)
+                            }
+                        }
+                    }
+                    resultTantArray = resultTantArray.concat(result);
+                    resultTantArray.sort(function (a, b) {
+                        return (a.distance > b.distance) ? 1 : ((b.distance > a.distance) ? -1 : 0);
+                    });
+
+                    resultTantArray.sort(function (a, b) {
+                        return (a.is_favourite < b.is_favourite) ? 1 : ((b.is_favourite < a.is_favourite) ? -1 : 0);
+                    });
+
+                    return res.status(200).send({msg: constantObj.messages.successRetreivingData, data: resultTantArray});
+                } else {
+                    return res.status(200).send({msg: constantObj.messages.successRetreivingData, data: result});
+                }
+            })
         }
-      })
-    }
-  })
+    })
 }
 
 exports.customerRequestToBarber = function(req, res) {

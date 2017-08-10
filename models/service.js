@@ -12,7 +12,7 @@ let serviceSchema = new mongoose.Schema({
     },
     is_optional:{
         type: Boolean,
-    }
+    },
     created_date: {
         type: Date,
         default: Date.now()

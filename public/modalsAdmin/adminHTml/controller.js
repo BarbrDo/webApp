@@ -401,9 +401,17 @@ app_admin.controller("AdminCtrl", [
     $scope.updatebarber = function(barber) {
       $scope.loaderStart = true;
       $scope.barber = barber;
+      alert(JSON.stringify(barber))
+      return false
+
       var valfromActive = $scope.activeSelected;
+      console.log(valfromActive)
+      return false
       var valfromVerify = $scope.verifySelected;
       var valfromdelete = $scope.deleteSelected;
+      var valfromOnline = $scope.onlineSelected;
+      var valfromAvailable = $scope.availableSelected;
+
       if (valfromActive == 'true') {
         $scope.activatebarber(barber);
       }
@@ -422,6 +430,21 @@ app_admin.controller("AdminCtrl", [
       if (valfromdelete == 'false') {
         $scope.undeletebarber(barber);
       }
+      if (valfromOnline == 'true') {
+        $scope.online(barber);
+      }
+      if (valfromOnline == 'false') {
+        $scope.offline(barber);
+      }
+      if (valfromAvailable == 'true') {
+        $scope.available(barber);
+      }
+      if (valfromAvailable == 'false') {
+        $scope.unAvailable(barber);
+      }
+
+      alert(JSON.stringify(barber));
+
       Admin.updateBarber(barber).then(function(response) {
         $scope.loaderStart = false;
         toastr.success('Barber is updated Succesfully');
@@ -759,7 +782,7 @@ app_admin.controller("AdminCtrl", [
         Admin.barberDetail($stateParams.id).then(function(response) {
           console.log(response)
           $scope.loaderStart = false;
-          $rootScope.barberdetail = response.data.data[0];
+          $scope.barberdetail = response.data.data[0];
         }).catch(function(result) {
           $scope.loaderStart = false;
           $scope.messages = result.data.msg

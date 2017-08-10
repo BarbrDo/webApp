@@ -103,8 +103,9 @@ exports.cancelAppointment = function(req, res) {
       err: errors
     });
   }
+  var id = mongoose.Types.ObjectId(req.params.appointment_id);
   appointment.findOne({
-    _id: req.params.appointment_id
+    _id: id
   }, function(err, result) {
     if (err) {
       return res.status(400).send({
@@ -114,15 +115,20 @@ exports.cancelAppointment = function(req, res) {
     } else {
       console.log("result in appointment", result);
       if (result) {
-          callNotification("barber_cancel_appointment", result.customer_id, result.barber_id);
+        let data  = ""
+          callNotification("barber_cancel_appointment", result.customer_id, result.barber_id,data);
         appointment.update({
-          _id: req.params.appointment_id
+          _id: id
         }, {
           $set: {
-            "appointment_status": "cancel",
-            "cancel_by": req.headers.user_id
+            "cancel_by_user_type": req.headers.user_type,
+            "cancel_by_user_id": req.headers.user_id,
+            "appointment_status":"cancel"
           }
         }, function(err, result) {
+
+          console.log("asdfsdf",err,result);
+
           if (err) {
             res.status(400).send({
               msg: constantObj.messages.errorRetreivingData,
@@ -164,7 +170,14 @@ exports.sendMessageToCustomer = function(req, res) {
       err: errors
     });
   }
-  callNotification(req.body.text, req.body.customer_id, req.body.user_id);
+
+  commonObj.notify(req.body.customer_id, req.body.user_id, req.body.text, "message", function(err, data) {
+        if (err) {
+          console.log(err);
+        } else {
+
+        }
+      })
   res.status(200).send({
     msg: "You msg is successfully send."
   });
@@ -183,7 +196,6 @@ exports.confirmRequest = function(req, res) {
   //Mark Appointment as confirmed
   req.checkHeaders("user_id", "user_id is required.").notEmpty();
   req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
-  req.assert("action", "Action is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -191,12 +203,12 @@ exports.confirmRequest = function(req, res) {
       err: errors
     });
   }
-  if (req.body.action == 'confirm') {
+  
     appointment.update({
       _id: req.params.appointment_id
     }, {
       $set: {
-        "appointment_status": req.body.action
+        "appointment_status": "confirm"
       }
     }, function(err, result) {
       if (err) {
@@ -217,7 +229,14 @@ exports.confirmRequest = function(req, res) {
           _id: req.params.appointment_id
         }, function(err, result) {
           if (result) {
-              callNotification("barber_confirm_appointment", result.customer_id, result.barber_name);
+            user.findOne({_id:req.headers.user_id},function(err,userData){
+              if(userData){
+                let passObj = {};
+                passObj.barberInfo = JSON.parse(JSON.stringify(userData))
+                passObj.appointmentInfo = result
+                callNotification("barber_confirm_appointment", result.customer_id, result.barber_id,passObj);
+              }
+            }) 
           }
         })
         return res.status(200).send({
@@ -225,11 +244,6 @@ exports.confirmRequest = function(req, res) {
         });
       }
     })
-  } else {
-    return res.status(400).send({
-      msg: "Your request is wrong."
-    });
-  }
 }
 
 /*
@@ -313,14 +327,17 @@ exports.viewBarberProfile = function(req, res) {
   })
 }
 
-let callNotification = function(type, to_user_id, from_user_id) {
+let callNotification = function(type, to_user_id, from_user_id, data) {
+  console.log("callNotification");
   notification.findOne({
     "type": type
   }, function(err, result) {
-    console.log("result", result);
+    console.log("result in notification_____________", result);
     if (result) {
+      console.log("data in notification_____________", data);
+      console.log(to_user_id, from_user_id, result.text, type, data);
       // passing arguments like to_user_id,from_user_id, and text
-      commonObj.notify(to_user_id, from_user_id, result.text, type, function(err, data) {
+      commonObj.notify(to_user_id, from_user_id, result.text, type, data, function(err, data) {
         if (err) {
           console.log(err);
         } else {
@@ -347,6 +364,7 @@ let callNotification = function(type, to_user_id, from_user_id) {
     }
   })
 }
+
 exports.getAllServices = function(req, res) {
   service.find({
     "status": true
@@ -603,14 +621,7 @@ exports.barberdetail = function(req, res) {
   let id = mongoose.Types.ObjectId(req.params.barber_id);
   query._id = id
   query.user_type = "barber";
-  user.aggregate([{
-    $lookup: {
-      from: "shops",
-      "localField": "_id",
-      "foreignField": "chairs.barber_id",
-      "as": "shopdetails"
-    }
-  }, {
+  user.aggregate([ {
     $project: {
       _id: "$_id",
       first_name: "$first_name",
@@ -621,6 +632,8 @@ exports.barberdetail = function(req, res) {
       ratings: "$ratings",
       is_deleted: "$is_deleted",
       is_active: "$is_active",
+      is_online:"$is_online",
+      is_available:"$is_available",
       is_verified: "$is_verified",
       user_type: "$user_type",
       latLong: "$latLong",
@@ -960,7 +973,7 @@ exports.goOffline = function(req, res) {
           }
         }, function(err, result) {
           return res.status(200).send({
-            msg: "You are online now."
+            msg: "You are offline now."
           });
         })
       } else {
@@ -1098,7 +1111,13 @@ exports.barberHomeScreen = function(req, res) {
         done(null,result,data,serData)
       })
     },
-    function(result, data,serData, done) {
+    function(result, data,serData, done){
+      user.findOne({_id:req.headers.user_id},function(err,userResult){
+        done(null,result,data,serData,userResult.is_online)
+      })
+    },
+    function(result, data,serData,online, done) {
+      console.log("asfasfasdfsfd",online);
       appointment.aggregate([{
         $match: {
           barber_id: id,
@@ -1123,6 +1142,7 @@ exports.barberHomeScreen = function(req, res) {
             "associateShops": result,
             "revenue": data,
             "services":serData,
+            "is_online":online,
             "appointment": appData[0]
           })
         } else {
@@ -1131,6 +1151,7 @@ exports.barberHomeScreen = function(req, res) {
             "associateShops": result,
             "revenue": data,
             "services":serData,
+            "is_online":online,
             "appointment": []
           })
         }

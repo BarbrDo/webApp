@@ -2,7 +2,7 @@ let userObj = require('./../models/user.js');
 let FCM = require('fcm-node');
 let apn = require("apn");
 let path = require('path');
-var serverKey = 'AIzaSyAxYVocgXGryOjwZ-7WIW4KB1fQtZ5tXFY';
+var serverKey = 'AAAAXv0xbO0:APA91bGdjxu511QMarkeOKiy5Mb3w9D0ZkQ8uhNqZoUfocq6FzwEz-n13vXRAHf-t8HUB4h_gerPSmIfhROmchg5MHYNWTp615VivApc07MZprNYUd87Zmi9zDBd4THOxQM9pAbF7NGo';
 var fcm = new FCM(serverKey);
 let moment = require('moment');
 let constantObj = require('./../constants.js');
@@ -46,7 +46,7 @@ exports.sendMail = function(to, from, subject, text, cb) {
     }
   });
 }
-exports.notify = function(to_user_id, from_user_id, text, type,appointmentid, cb) {
+exports.notify = function(to_user_id, from_user_id, text, type,sentData, cb) {
   userObj.findOne({
     _id: to_user_id
   }, function(err, result) {
@@ -54,10 +54,14 @@ exports.notify = function(to_user_id, from_user_id, text, type,appointmentid, cb
       _id: from_user_id
     }, function(err, data) {
       if (result && data) {
+        console.log("type..............",type);
         console.log(result.device_type);
         let id = "";
-        if(appointmentid){
-          id = appointmentid
+        if(sentData){
+          let mydata = JSON.parse(JSON.stringify(sentData))
+          mydata.shop_lat_long = result.barber_shops_latLong;
+          mydata.customer_lat_long = data.latLong
+          id = mydata
         }
         if (result.device_type === 'ios') {
           console.log("inside ios");
@@ -89,11 +93,11 @@ exports.notify = function(to_user_id, from_user_id, text, type,appointmentid, cb
             // collapse_key: 'your_collapse_key',
             notification: {
               title: text,
-              body: text
+              body: id
             },
             data: { //you can send only notification or only data(or include both)
               my_key: type,
-              my_another_key: id
+              my_another_key: ""
             }
           };
 

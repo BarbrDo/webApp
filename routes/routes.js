@@ -58,9 +58,11 @@ module.exports = function(app, express) {
     app.delete('/api/v2/customer/gallery/:image_id',userController.deleteImages); //Delete image from gallery
     app.post('/api/v2/ratebarber',barber.rateBarber);
     app.get('/api/v2/customer/timeSlots',customer.timeSlots);
+    app.post('/api/v2/customer/messageToBarber',customer.sendMessageToBarber)
+
     //Barber
     app.post('/api/v2/barber/services',barber.addBarberServices); // add barber services
-    app.put('/api/v2/barber/appointment/cancel/:appointment_id', barber.cancelAppointment); //barber cancel appointment
+    app.put('/api/v2/barber/appointment/decline/:appointment_id', barber.cancelAppointment); //barber cancel appointment
     app.put('/api/v2/barber/appointment/accept/:appointment_id', barber.confirmRequest); //bar confirm appointment
     // app.get('/api/v2/barber/services', barber.getAllServices); // barber get all services
     app.post('/api/v2/barber/services', barber.addBarberServices); //Add new barber service
@@ -73,6 +75,7 @@ module.exports = function(app, express) {
     app.get('/api/v2/barber/home',barber.barberHomeScreen); // barber home screen map api
     app.post('/api/v2/barber/goOnline',barber.goOnline); // barber go onlint
     app.put('/api/v2/barber/goOffline',barber.goOffline); // barber go offline
+    app.post('/api/v2/barber/messageToCustomer',barber.sendMessageToCustomer)
     
     // app.get('/api/v1/barbers/:barber_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.viewBarberProfile);
 

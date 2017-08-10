@@ -69,29 +69,41 @@
                 </div>
             </div>
             <div class="clearfix">
-                <div class="col-sm-3 form-group">
+                <div class="col-sm-2 form-group">
                     <label>Is Active</label>
                     <br>
-                    <input type="radio" ng-model="activeSelected" name="active" value="true" ng-checked="barberdetail.is_active==true">YES&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="active" value="false" ng-model="activeSelected" ng-checked="barberdetail.is_active == false">NO
+                    <input type="radio" ng-model="barberdetail.is_active" name="active" value="true" ng-checked="barberdetail.is_active==true">YES&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="active" value="false" ng-model="barberdetail.is_active" ng-checked="barberdetail.is_active == false">NO
                 </div>
-                <div class="col-sm-3 form-group">
+                <div class="col-sm-2 form-group">
                     <label>Is Verified</label>
                     <br>
-                    <input type="radio" ng-model="verifySelected" name="verify" value="true" ng-checked="barberdetail.is_verified==true">YES&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="verify" ng-model="verifySelected" value="false" ng-checked="barberdetail.is_verified == false">NO
+                    <input type="radio" ng-model="barberdetail.is_verified" name="verify" value="true" ng-checked="barberdetail.is_verified==true">YES&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="verify" ng-model="barberdetail.is_verified" value="false" ng-checked="barberdetail.is_verified == false">NO
                 </div>
-                <div class="col-sm-3 form-group">
+                <div class="col-sm-2 form-group">
                     <label>Is Deleted</label>
                     <br>
-                    <input type="radio" ng-model="deleteSelected" name="delete" value="true" ng-checked="barberdetail.is_deleted==true">YES&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="delete" value="false" ng-model="deleteSelected" ng-checked="barberdetail.is_deleted == false">NO
+                    <input type="radio" ng-model="barberdetail.is_deleted" name="delete" value="true" ng-checked="barberdetail.is_deleted==true">YES&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="delete" value="false" ng-model="barberdetail.is_deleted" ng-checked="barberdetail.is_deleted == false">NO
+                </div>
+                <div class="col-sm-2 form-group">
+                    <label>Is Online</label>
+                    <br>
+                    <input type="radio" ng-model="barberdetail.is_online" name="online" value="true" ng-checked="barberdetail.is_online==true">YES&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="online" value="false" ng-model="barberdetail.is_online" ng-checked="barberdetail.is_online == false">NO
+                </div>
+                <div class="col-sm-2 form-group">
+                    <label>Is Available</label>
+                    <br>
+                    <input type="radio" ng-model="barberdetail.is_available" name="available" value="true" ng-checked="barberdetail.is_available==true">YES&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="available" value="false" ng-model="barberdetail.is_available" ng-checked="barberdetail.is_available == false">NO
                 </div>
             </div>
     </div>
 </div>
 <div class="clearfix text-center">
-    <button type="submit" class="btn btn-primary" ng-click="updatebarber(barberdetail)" ui-sref="barbersdetail({id:barberdetail._id})">
+    <button type="submit" class="btn btn-primary" ng-click="updatebarber(barberdetail)" >
         <i class="fa fa-check" aria-hidden="true"></i>
         <span>Save
       </button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

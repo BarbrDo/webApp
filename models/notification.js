@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var notificationSchema = new mongoose.Schema({
+let notificationSchema = new mongoose.Schema({
     type:{
         type: String,
         required: true
@@ -12,6 +12,6 @@ var notificationSchema = new mongoose.Schema({
     }
 });
 
-var notification = mongoose.model('notifications', notificationSchema);
+let notification = mongoose.model('notifications', notificationSchema);
 
 module.exports = notification;

@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var appointmentSchema = new mongoose.Schema({
+let appointmentSchema = new mongoose.Schema({
     shop_id: {
         type: Schema.Types.ObjectId,
         ref: 'shops',
@@ -41,6 +41,6 @@ var appointmentSchema = new mongoose.Schema({
     }
 });
 
-var appointment = mongoose.model('appointments', appointmentSchema);
+let appointment = mongoose.model('appointments', appointmentSchema);
 
 module.exports = appointment;

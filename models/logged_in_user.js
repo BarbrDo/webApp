@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var loginUserSchema = new mongoose.Schema({
+let loginUserSchema = new mongoose.Schema({
     user_id: {
         type: Schema.Types.ObjectId,
         ref: 'users'
@@ -15,6 +15,6 @@ var loginUserSchema = new mongoose.Schema({
     }
 });
 
-var loginUser = mongoose.model('loginUsers', loginUserSchema);
+let loginUser = mongoose.model('loginUsers', loginUserSchema);
 
 module.exports = loginUser;

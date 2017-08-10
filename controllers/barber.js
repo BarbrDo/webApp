@@ -9,7 +9,14 @@ let commonObj = require('../common/common');
 let shop = require('../models/shop');
 let mongoose = require('mongoose');
 let moment = require('moment');
-
+/*
+_________________________________________________________
+Author:Hussain,
+Created:10 aug 2017
+Required fields:services to b added, and user_id, 
+Description:Add Barber Services
+_________________________________________________________
+ */
 exports.addBarberServices = function(req, res) {
   req.checkHeaders('user_id', 'User id cannot be blank.').notEmpty();
   req.assert("services", 'services cannot be blank.').notEmpty();
@@ -76,6 +83,15 @@ exports.addBarberServices = function(req, res) {
   ])
 }
 
+/*
+_________________________________________________________
+Author:Hussain,
+Created:10 aug 2017
+Required fields:appointment_id,user_type,user_id, 
+Description:Barber cancel appointment
+_________________________________________________________
+ */
+
 exports.cancelAppointment = function(req, res) {
   req.checkParams("appointment_id", "Appointment id is required.").notEmpty();
   req.checkHeaders("user_type", "User type is required.").notEmpty();
@@ -128,6 +144,15 @@ exports.cancelAppointment = function(req, res) {
   })
 };
 
+/*
+_________________________________________________________
+Author:Hussain,
+Created:10 aug 2017
+Required fields:customer_id,user_id,text , 
+Description:Notification based messages will be sent to customer
+_________________________________________________________
+ */
+
 exports.sendMessageToCustomer = function(req, res) {
   req.assert("customer_id", "Barber id is required.").notEmpty();
   req.checkHeaders("user_id", "User id is required.").notEmpty();
@@ -144,6 +169,15 @@ exports.sendMessageToCustomer = function(req, res) {
     msg: "You msg is successfully send."
   });
 }
+
+/*
+_________________________________________________________
+Author:Hussain,
+Created:10 aug 2017
+Required fields:user_id,appointment_id,and action . Action must be confirm, 
+Description:Barber confirm appointment
+_________________________________________________________
+ */
 
 exports.confirmRequest = function(req, res) {
   //Mark Appointment as confirmed
@@ -197,6 +231,15 @@ exports.confirmRequest = function(req, res) {
     });
   }
 }
+
+/*
+_________________________________________________________
+Author:Hussain,
+Created:10 aug 2017
+Required fields:user_id,status.Status must b online and offline, 
+Description:Barber chagne status to online and offline 
+_________________________________________________________
+ */
 
 exports.barberToggleStatus = function(req, res) {
   req.checkHeaders("user_id", "user_id is required.").notEmpty();

@@ -1,5 +1,5 @@
 module.exports = function(app, express) {
-    var router = express.Router();
+    let router = express.Router();
     let customerController = require('./../../controllers/customer');
     let shopController = require('./../../controllers/shop');
     // let appointController = require('./../../controllers/appointment');

@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var barberServicesSchema = new mongoose.Schema({
+let barberServicesSchema = new mongoose.Schema({
     barber_id: {
         type: Schema.Types.ObjectId,
         ref: 'barbers',
@@ -35,6 +35,6 @@ var barberServicesSchema = new mongoose.Schema({
 });
 
 
-var barberServices = mongoose.model('barber_services', barberServicesSchema);
+let barberServices = mongoose.model('barber_services', barberServicesSchema);
 
 module.exports = barberServices;

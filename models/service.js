@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var serviceSchema = new mongoose.Schema({
+let serviceSchema = new mongoose.Schema({
     name:{
         type: String,
         required: true
@@ -10,6 +10,9 @@ var serviceSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    is_optional:{
+        type: Boolean,
+    }
     created_date: {
         type: Date,
         default: Date.now()
@@ -20,6 +23,6 @@ var serviceSchema = new mongoose.Schema({
     }
 });
 
-var service = mongoose.model('services', serviceSchema);
+let service = mongoose.model('services', serviceSchema);
 
 module.exports = service;

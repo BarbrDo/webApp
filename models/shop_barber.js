@@ -1,9 +1,9 @@
-var crypto = require('crypto');
-var bcrypt = require('bcrypt-nodejs');
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+let crypto = require('crypto');
+let bcrypt = require('bcrypt-nodejs');
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var shopBarbarSchema = new mongoose.Schema({
+let shopBarbarSchema = new mongoose.Schema({
     shop_id: {
         type: Schema.Types.ObjectId,
         ref: 'shops'
@@ -18,6 +18,6 @@ var shopBarbarSchema = new mongoose.Schema({
 });
 
 
-var shopbarber = mongoose.model('shopbarber', shopBarbarSchema);
+let shopbarber = mongoose.model('shopbarber', shopBarbarSchema);
 
 module.exports = shopbarber;

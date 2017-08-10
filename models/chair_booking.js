@@ -1,6 +1,6 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var chairBookingSchema = new mongoose.Schema({
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
+let chairBookingSchema = new mongoose.Schema({
     shop_id: {
         type: Schema.Types.ObjectId,
         ref: 'users'
@@ -39,5 +39,5 @@ var chairBookingSchema = new mongoose.Schema({
         default: Date.now()
     }
 });
-var chairBooking = mongoose.model('chair_bookings', chairBookingSchema);
+let chairBooking = mongoose.model('chair_bookings', chairBookingSchema);
 module.exports = chairBooking;

@@ -2,7 +2,7 @@ module.exports = function(app, express) {
     let jwt = require('jsonwebtoken');
     app.use(function(req, res, next) {
         req.isAuthenticated = function() {
-            var token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
+            let token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
             try {
                 console.log("token", token);
                 return jwt.verify(token, process.env.TOKEN_SECRET);
@@ -12,8 +12,8 @@ module.exports = function(app, express) {
         };
         next();
     });
-    var multer = require('multer');
-    var storage = multer.diskStorage({
+    let multer = require('multer');
+    let storage = multer.diskStorage({
         destination: function(req, file, cb) {
             cb(null, './public/uploadedFiles/')
         },
@@ -21,7 +21,7 @@ module.exports = function(app, express) {
             cb(null, Date.now() + file.originalname.substr(file.originalname.lastIndexOf("."), file.originalname.length))
         }
     })
-    var upload = multer({
+    let upload = multer({
         storage: storage
     })
     let path = require('path');
@@ -34,7 +34,6 @@ module.exports = function(app, express) {
     //Users
     app.post('/api/v2/activate', userController.activate) //Account activate
     app.post('/api/v2/signup', userController.signupPost); //Signup
-//    app.post('/api/v1/signupWeb', userController.signupPostWeb); //Signup
     app.post('/api/v2/login', userController.loginPost); // Login
     app.post('/api/v2/forgot', userController.forgotPost); //Forgot Password
     app.post('/api/v2/reset/:token', userController.resetPost); //Forgot Password
@@ -60,20 +59,20 @@ module.exports = function(app, express) {
     app.post('/api/v2/ratebarber',barber.rateBarber);
     app.get('/api/v2/customer/timeSlots',customer.timeSlots);
     //Barber
-    app.post('/api/v2/barber/services',barber.addBarberServices);
-    app.put('/api/v2/barber/appointment/cancel/:appointment_id', barber.cancelAppointment);
-    app.put('/api/v2/barber/appointment/accept/:appointment_id', barber.confirmRequest);
-    app.get('/api/v2/barber/services', barber.getAllServices);
-    app.post('/api/v2/barber/services', barber.addBarberServices); //Add new service
-    app.put('/api/v2/barber/services/:barber_service_id',barber.editBarberServices);
-    app.get('/api/v2/barber/services/:barber_id',barber.viewAllServiesOfBarber);
-    app.delete('/api/v2/barber/services/:barber_service_id',barber.deleteBarberService);
-    app.get('/api/v2/barber/profile/:barber_id',barber.viewBarberProfile);
-    app.post('/api/v2/barber/shop',barber.addShop);
-    app.get('/api/v2/barber/shops',barber.getShops);
-    app.get('/api/v2/barber/home',barber.barberHomeScreen);
-    app.post('/api/v2/barber/goOnline',barber.goOnline);
-    app.put('/api/v2/barber/goOffline',barber.goOffline);
+    app.post('/api/v2/barber/services',barber.addBarberServices); // add barber services
+    app.put('/api/v2/barber/appointment/cancel/:appointment_id', barber.cancelAppointment); //barber cancel appointment
+    app.put('/api/v2/barber/appointment/accept/:appointment_id', barber.confirmRequest); //bar confirm appointment
+    // app.get('/api/v2/barber/services', barber.getAllServices); // barber get all services
+    app.post('/api/v2/barber/services', barber.addBarberServices); //Add new barber service
+    app.put('/api/v2/barber/services/:barber_service_id',barber.editBarberServices); //edit new barber service
+    app.get('/api/v2/barber/services/:barber_id',barber.viewAllServiesOfBarber); // view service of a barber
+    app.delete('/api/v2/barber/services/:barber_service_id',barber.deleteBarberService); // delete a berber service
+    app.get('/api/v2/barber/profile/:barber_id',barber.viewBarberProfile); // view barber profile
+    app.post('/api/v2/barber/shop',barber.addShop); // add shop against a barber
+    app.get('/api/v2/barber/shops',barber.getShops); // get all shops against a berber
+    app.get('/api/v2/barber/home',barber.barberHomeScreen); // barber home screen map api
+    app.post('/api/v2/barber/goOnline',barber.goOnline); // barber go onlint
+    app.put('/api/v2/barber/goOffline',barber.goOffline); // barber go offline
     
     // app.get('/api/v1/barbers/:barber_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.viewBarberProfile);
 

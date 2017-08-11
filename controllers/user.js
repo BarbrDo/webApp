@@ -391,6 +391,9 @@ exports.accountPut = function(req, res, next) {
       if (req.body.is_available) {
         user.is_available = req.body.is_available
       }
+      if(req.body.bio){
+        user.bio = req.body.bio
+      }
     }
 
     user.save(function(err) {

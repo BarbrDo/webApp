@@ -348,7 +348,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
       console.log(data,id);
       return $http({
         method: 'post',
-        url: '/api/v2/barbers/addShop',
+        url: '/api/v2/barber/shop',
         headers: {
           'user_id': id
         },

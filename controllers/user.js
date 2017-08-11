@@ -79,24 +79,23 @@ exports.loginPost = function(req, res, next) {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('password', 'Password cannot be blank').notEmpty();
+  req.checkHeaders("device_id","Device id is required.").notEmpty();
+  req.checkHeaders("device_type","Device type is required.").notEmpty();
+  req.checkHeaders('device_longitude', 'Device longitude cannot be blank.').notEmpty();
+  req.checkHeaders("device_latitude", 'services cannot be blank.').notEmpty();
   req.sanitize('email').normalizeEmail({
     remove_dots: false
   });
   let errors = req.validationErrors();
+  console.log("error",errors); 
   if (errors) {
     return res.status(400).send({
-      msg: "error in your request",
+      msg: "Missing required fields.",
       err: errors
     });
   }
-  var device_token = "";
-  var device_type = "";
-  if (req.headers.device_id) {
-    var device_token = req.headers.device_id;
-  }
-  if (req.headers.device_type) {
-    var device_type = req.headers.device_type.toLowerCase();
-  }
+  var device_token = req.headers.device_id;
+  var device_type = req.headers.device_type.toLowerCase();
   User.findOne({
     email: req.body.email
   }).exec(function(err, user) {
@@ -131,6 +130,7 @@ exports.loginPost = function(req, res, next) {
             $set: {
               "device_type": device_type,
               "device_id": device_token,
+              "latLong":[req.headers.device_longitude,req.headers.device_latitude],
               "is_active": false,
               'remark': "Subscription required."
             }
@@ -169,7 +169,8 @@ exports.loginPost = function(req, res, next) {
               }, {
                 $set: {
                   "device_type": device_type,
-                  "device_id": device_token
+                  "device_id": device_token,
+                  "latLong":[req.headers.device_longitude,req.headers.device_latitude],
                 }
               }).exec(function(userErr, userUpdate) {
                 console.log(userUpdate)

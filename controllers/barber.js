@@ -908,12 +908,14 @@ exports.goOnline = function(req, res) {
   req.assert("services", "service are required.").notEmpty();
   req.assert("shop_id", "shop_id is required.").notEmpty();
   let errors = req.validationErrors();
+  console.log("errors",errors);
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",
       err: errors
     });
   }
+  console.log(req.body);
   shop.findOne({
     _id: req.body.shop_id
   }, function(err, shopData) {
@@ -953,6 +955,7 @@ exports.goOnline = function(req, res) {
 exports.goOffline = function(req, res) {
   req.checkHeaders("user_id", "User id is required.").notEmpty();
   let errors = req.validationErrors();
+  console.log("errors",errors);
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",

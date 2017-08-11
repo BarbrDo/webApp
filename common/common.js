@@ -55,7 +55,7 @@ exports.notify = function(to_user_id, from_user_id, text, type,sentData, cb) {
     }, function(err, data) {
       if (result && data) {
         console.log("type..............",type);
-        console.log(result.device_type);
+        console.log("device type is",result.device_type);
         let id = "";
         if(sentData){
           let mydata = JSON.parse(JSON.stringify(sentData))
@@ -64,7 +64,8 @@ exports.notify = function(to_user_id, from_user_id, text, type,sentData, cb) {
           id = mydata
         }
         if (result.device_type === 'ios') {
-          console.log("inside ios");
+
+          console.log("inside ios",id);
           let apnProvider = new apn.Provider(options);
           let deviceToken = result.device_id;
           let note = new apn.Notification();
@@ -73,16 +74,18 @@ exports.notify = function(to_user_id, from_user_id, text, type,sentData, cb) {
           note.sound = "ping.aiff";
           note.alert = data.first_name + " "+data.last_name+" "+ text;
           note.payload = {
-            'messageFrom': type
+            'messageFrom': type,
+            'message':id
           };
           note.topic = "com.development.BarbrDo";
           note.notifyType = id
+          note.message = id
           apnProvider.send(note, deviceToken).then((result) => {
             if (result.failed.length > 0) {
               console.log("error in sending notification");
               cb(err, null);
             } else {
-              console.log("success in sending notification");
+              console.log("success in sending notification",result);
               cb(null, result);
             }
           });

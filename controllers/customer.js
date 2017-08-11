@@ -846,3 +846,31 @@ exports.timeSlots = function(req, res) {
     "data": constantObj.offTimeSlots
   })
 };
+
+exports.getCustomerLastAppointment = function(req, res) {
+  req.checkHeaders("user_id", "user_id is required.").notEmpty();
+  req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+  
+  appointment.findOne({
+    _id: req.params.appointment_id
+  }, function(err, result) {
+    if (result) {
+      user.findOne({
+        _id: req.headers.user_id
+      }, function(err, userData) {
+        if (userData) {
+          let passObj = {};
+          passObj.barberInfo = JSON.parse(JSON.stringify(userData))
+          passObj.appointmentInfo = result
+        }
+      })
+    }
+  })
+}

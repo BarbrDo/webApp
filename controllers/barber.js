@@ -1225,6 +1225,18 @@ exports.completeAppointment = function(req, res) {
         err: errors
       });
     }
+
+    user.update({
+          _id: req.headers.user_id
+        }, {
+          $set: {
+            is_online: true,
+            is_available: true
+          }
+        }).exec(function(err,result){
+
+        })
+
     appointment.findOne({
         _id: req.params.appointment_id
       }, function(err, result) {

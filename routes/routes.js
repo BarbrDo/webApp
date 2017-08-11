@@ -51,6 +51,7 @@ module.exports = function(app, express) {
     app.get('/api/v2/customer/barbers',customer.getNearbyBarbers);
     app.post('/api/v2/customer/appointment/newrequest',customer.customerRequestToBarber);
     app.put('/api/v2/customer/appointment/cancel/:appointment_id', customer.cancelAppointment);
+    app.get('/api/v2/customer/appointment', customer.customerAppointments); //View appointment
     app.post('/api/v2/customer/favouritebarber',customer.addFavouriteBarber);
     app.get('/api/v2/customer/favouritebarber',customer.allFavouriteBarbers);
     app.delete('/api/v2/customer/favouritebarber/:barber_id',customer.removeFavouriteBarber);
@@ -59,6 +60,7 @@ module.exports = function(app, express) {
     app.post('/api/v2/ratebarber',barber.rateBarber);
     app.get('/api/v2/customer/timeSlots',customer.timeSlots);
     app.post('/api/v2/customer/messageToBarber',customer.sendMessageToBarber)
+    app.post('/api/v2/ratebarber',customer.rateBarber);
 
     //Barber
     app.post('/api/v2/barber/services',barber.addBarberServices); // add barber services
@@ -76,7 +78,7 @@ module.exports = function(app, express) {
     app.post('/api/v2/barber/goOnline',barber.goOnline); // barber go onlint
     app.put('/api/v2/barber/goOffline',barber.goOffline); // barber go offline
     app.post('/api/v2/barber/messageToCustomer',barber.sendMessageToCustomer)
-    
+    app.put('/api/v2/barber/checkin/:appointment_id',barber.completeAppointment);//Barber mark appointment as completed
     // app.get('/api/v1/barbers/:barber_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.viewBarberProfile);
 
 

@@ -23,8 +23,8 @@ let appointmentSchema = new mongoose.Schema({
     },
     appointment_status: {
         type: String,
-        enum: ["pending", "confirm", "completed","cancel"],
-        default: "pending"
+        enum: ["decline", "confirm", "completed","cancel"],
+        default: "decline"
     },
     cancel_by_user_id:{
           type: Schema.Types.ObjectId,

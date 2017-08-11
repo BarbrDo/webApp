@@ -49,7 +49,7 @@ module.exports = function(app, express) {
     app.get('/api/v2/barberdetail/:barber_id', barberController.barberdetail);//get Barberdetails
     app.get('/api/v2/custdetail/:cust_id', customerController.custdetail);//get Customerdetails
     app.get('/api/v2/chairdetail/:chair_id', shopController.chairdetail);//get Chairdetails
-    app.get('/api/v2/customerappointments/:cust_id', customerController.customerappointments);//get customer appointments
+    // app.get('/api/v2/customerappointments/:cust_id', customerController.customerappointments);//get customer appointments
 
     app.get('/api/v1/services', userController.getAllServices); //Get all services
     app.post('/api/v1/services', userController.addServices); //Add new service by Admin

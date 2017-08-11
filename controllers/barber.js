@@ -115,19 +115,19 @@ exports.cancelAppointment = function(req, res) {
     } else {
       console.log("result in appointment", result);
       if (result) {
-        let data  = ""
-          callNotification("barber_cancel_appointment", result.customer_id, result.barber_id,data);
+        let data = ""
+        callNotification("barber_cancel_appointment", result.customer_id, result.barber_id, data);
         appointment.update({
           _id: id
         }, {
           $set: {
             "cancel_by_user_type": req.headers.user_type,
             "cancel_by_user_id": req.headers.user_id,
-            "appointment_status":"cancel"
+            "appointment_status": "cancel"
           }
         }, function(err, result) {
 
-          console.log("asdfsdf",err,result);
+          console.log("asdfsdf", err, result);
 
           if (err) {
             res.status(400).send({
@@ -172,12 +172,12 @@ exports.sendMessageToCustomer = function(req, res) {
   }
 
   commonObj.notify(req.body.customer_id, req.body.user_id, req.body.text, "message", function(err, data) {
-        if (err) {
-          console.log(err);
-        } else {
+    if (err) {
+      console.log(err);
+    } else {
 
-        }
-      })
+    }
+  })
   res.status(200).send({
     msg: "You msg is successfully send."
   });
@@ -203,47 +203,49 @@ exports.confirmRequest = function(req, res) {
       err: errors
     });
   }
-  
-    appointment.update({
-      _id: req.params.appointment_id
-    }, {
-      $set: {
-        "appointment_status": "confirm"
-      }
-    }, function(err, result) {
-      if (err) {
-        return res.status(400).send({
-          msg: constantObj.messages.userStatusUpdateFailure
-        });
-      } else {
-            user.update({
+
+  appointment.update({
+    _id: req.params.appointment_id
+  }, {
+    $set: {
+      "appointment_status": "confirm"
+    }
+  }, function(err, result) {
+    if (err) {
+      return res.status(400).send({
+        msg: constantObj.messages.userStatusUpdateFailure
+      });
+    } else {
+      user.update({
+        _id: req.headers.user_id
+      }, {
+        $set: {
+          'is_available': false
+        }
+      }, function(err, result) {
+        console.log("barber unavailable", result);
+      })
+      appointment.findOne({
+        _id: req.params.appointment_id
+      }, function(err, result) {
+        if (result) {
+          user.findOne({
             _id: req.headers.user_id
-          }, {
-            $set: {
-              'is_available': false
+          }, function(err, userData) {
+            if (userData) {
+              let passObj = {};
+              passObj.barberInfo = JSON.parse(JSON.stringify(userData))
+              passObj.appointmentInfo = result
+              callNotification("barber_confirm_appointment", result.customer_id, result.barber_id, passObj);
             }
-          }, function(err, result) {
-            console.log("barber unavailable", result);
           })
-        appointment.findOne({
-          _id: req.params.appointment_id
-        }, function(err, result) {
-          if (result) {
-            user.findOne({_id:req.headers.user_id},function(err,userData){
-              if(userData){
-                let passObj = {};
-                passObj.barberInfo = JSON.parse(JSON.stringify(userData))
-                passObj.appointmentInfo = result
-                callNotification("barber_confirm_appointment", result.customer_id, result.barber_id,passObj);
-              }
-            }) 
-          }
-        })
-        return res.status(200).send({
-          msg: constantObj.messages.userStatusUpdateSuccess
-        });
-      }
-    })
+        }
+      })
+      return res.status(200).send({
+        msg: constantObj.messages.userStatusUpdateSuccess
+      });
+    }
+  })
 }
 
 /*
@@ -621,7 +623,7 @@ exports.barberdetail = function(req, res) {
   let id = mongoose.Types.ObjectId(req.params.barber_id);
   query._id = id
   query.user_type = "barber";
-  user.aggregate([ {
+  user.aggregate([{
     $project: {
       _id: "$_id",
       first_name: "$first_name",
@@ -632,8 +634,8 @@ exports.barberdetail = function(req, res) {
       ratings: "$ratings",
       is_deleted: "$is_deleted",
       is_active: "$is_active",
-      is_online:"$is_online",
-      is_available:"$is_available",
+      is_online: "$is_online",
+      is_available: "$is_available",
       is_verified: "$is_verified",
       user_type: "$user_type",
       latLong: "$latLong",
@@ -908,7 +910,7 @@ exports.goOnline = function(req, res) {
   req.assert("services", "service are required.").notEmpty();
   req.assert("shop_id", "shop_id is required.").notEmpty();
   let errors = req.validationErrors();
-  console.log("errors",errors);
+  console.log("errors", errors);
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",
@@ -955,7 +957,7 @@ exports.goOnline = function(req, res) {
 exports.goOffline = function(req, res) {
   req.checkHeaders("user_id", "User id is required.").notEmpty();
   let errors = req.validationErrors();
-  console.log("errors",errors);
+  console.log("errors", errors);
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",
@@ -1109,18 +1111,22 @@ exports.barberHomeScreen = function(req, res) {
         }
       })
     },
-    function (result,data,done) {
-      service.find({status:true},function(err,serData){
-        done(null,result,data,serData)
+    function(result, data, done) {
+      service.find({
+        status: true
+      }, function(err, serData) {
+        done(null, result, data, serData)
       })
     },
-    function(result, data,serData, done){
-      user.findOne({_id:req.headers.user_id},function(err,userResult){
-        done(null,result,data,serData,userResult.is_online)
+    function(result, data, serData, done) {
+      user.findOne({
+        _id: req.headers.user_id
+      }, function(err, userResult) {
+        done(null, result, data, serData, userResult.is_online)
       })
     },
-    function(result, data,serData,online, done) {
-      console.log("asfasfasdfsfd",online);
+    function(result, data, serData, online, done) {
+      console.log("asfasfasdfsfd", online);
       appointment.aggregate([{
         $match: {
           barber_id: id,
@@ -1139,13 +1145,13 @@ exports.barberHomeScreen = function(req, res) {
         }
       }]).exec(function(appErr, appData) {
         console.log("appData", appData)
-        if (appData.length>0) {
+        if (appData.length > 0) {
           res.status(200).send({
             "msg": constantObj.messages.successRetreivingData,
             "associateShops": result,
             "revenue": data,
-            "services":serData,
-            "is_online":online,
+            "services": serData,
+            "is_online": online,
             "appointment": appData[0]
           })
         } else {
@@ -1153,8 +1159,8 @@ exports.barberHomeScreen = function(req, res) {
             "msg": constantObj.messages.successRetreivingData,
             "associateShops": result,
             "revenue": data,
-            "services":serData,
-            "is_online":online,
+            "services": serData,
+            "is_online": online,
             "appointment": {}
           })
         }
@@ -1207,4 +1213,47 @@ let currentRevenue = function(req, res, cb) {
       }
     })
   })
+}
+
+exports.completeAppointment = function(req, res) {
+    req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
+    req.checkHeaders("user_id", "barber_id is required.").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+      return res.status(400).send({
+        msg: "error in your request",
+        err: errors
+      });
+    }
+    appointment.findOne({
+        _id: req.params.appointment_id
+      }, function(err, result) {
+        if (err) {
+          return res.status(400).send({
+            msg: "error in finding appointment.",
+            err: errors
+          });
+        } else {
+          console.log("result in appointment", result);
+          if (result) {
+            appointment.update({
+                _id: req.params.appointment_id
+              }, {
+                $set: {
+                  "appointment_status": "completed"
+                }
+              }).exec(function  (updateErr,UpdateData) {
+                let mydata = "";
+                callNotification("barber_complete_appointment", result.customer_id, result.barber_id, mydata)
+                return res.status(200).send({
+                  msg: "Appointment is completed."
+                });
+            })
+          } else {
+            return res.status(400).send({
+              msg: "Appointment is not present."
+          });
+          }
+        }
+    })
 }

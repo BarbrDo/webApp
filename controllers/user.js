@@ -38,7 +38,9 @@ exports.ensureAuthenticated = function(req, res, next) {
   if (req.isAuthenticated()) {
     next();
   } else {
-    res.status(401).send({msg: 'Unauthorized'});
+    res.status(401).send({
+      msg: 'Unauthorized'
+    });
   }
 };
 
@@ -54,29 +56,38 @@ exports.checkLoggedInUser = function(req, res, next) {
       if (currentDate < created_date) {
         next();
       } else {
-        res.status(401).send({msg: 'Unauthorized'});
+        res.status(401).send({
+          msg: 'Unauthorized'
+        });
       }
     } else {
-      res.status(401).send({msg: 'Unauthorized'});
+      res.status(401).send({
+        msg: 'Unauthorized'
+      });
     }
   })
 }
 
 let saveLoggedInUser = function(obj) {
-  LoggedInUser(obj).save(obj, function(err, result) {})
-}
-/**
- * POST /login
- * Sign in with email and password
- */
+    LoggedInUser(obj).save(obj, function(err, result) {})
+  }
+  /**
+   * POST /login
+   * Sign in with email and password
+   */
 exports.loginPost = function(req, res, next) {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('password', 'Password cannot be blank').notEmpty();
-  req.sanitize('email').normalizeEmail({remove_dots: false});
+  req.sanitize('email').normalizeEmail({
+    remove_dots: false
+  });
   let errors = req.validationErrors();
   if (errors) {
-    return res.status(400).send({msg: "error in your request", err: errors});
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
   }
   var device_token = "";
   var device_type = "";
@@ -86,7 +97,9 @@ exports.loginPost = function(req, res, next) {
   if (req.headers.device_type) {
     var device_type = req.headers.device_type.toLowerCase();
   }
-  User.findOne({email: req.body.email}).exec(function(err, user) {
+  User.findOne({
+    email: req.body.email
+  }).exec(function(err, user) {
     console.log(user);
     if (!user) {
       return res.status(401).send({
@@ -95,11 +108,15 @@ exports.loginPost = function(req, res, next) {
     }
     /*-- this condition is for check that this account is active or not---- */
     if (user.is_active == false && user.is_verified == false) {
-      return res.status(401).send({msg: user.remark});
+      return res.status(401).send({
+        msg: user.remark
+      });
     }
     user.comparePassword(req.body.password, function(err, isMatch) {
       if (!isMatch) {
-        return res.status(401).send({msg: 'Invalid email or password'});
+        return res.status(401).send({
+          msg: 'Invalid email or password'
+        });
       } else {
         let currentDate = moment().format("YYYY-MM-DD"),
           createDate = moment(user.created_date).format("YYYY-MM-DD"),
@@ -118,7 +135,10 @@ exports.loginPost = function(req, res, next) {
               'remark': "Subscription required."
             }
           }).exec(function(userErr, userUpdate) {
-            return res.status(402).send({msg: 'Subscription required.', user: user});
+            return res.status(402).send({
+              msg: 'Subscription required.',
+              user: user
+            });
           })
         } else {
           let saveLoginUser = {
@@ -379,6 +399,7 @@ exports.signupPost = function(req, res, next) {
  * Update profile information OR change password.
  */
 exports.accountPut = function(req, res, next) {
+  console.log("account put", req.body);
   if ('password' in req.body) {
     req.checkHeaders('user_id', 'User ID is missing').notEmpty();
     req.assert('password', 'Password must be at least 6 characters long').len(6);
@@ -386,7 +407,10 @@ exports.accountPut = function(req, res, next) {
   }
   let errors = req.validationErrors();
   if (errors) {
-    return res.status(400).send({msg: "error in your request", err: errors});
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
   }
   User.findById(req.headers.user_id, function(err, user) {
     if ('password' in req.body) {
@@ -410,13 +434,24 @@ exports.accountPut = function(req, res, next) {
       if (req.body.radius_search != 'undefined') {
         user.radius_search = req.body.radius_search;
       }
+      if (req.body.is_online) {
+        user.is_online = req.body.is_online
+      }
+      if (req.body.is_available) {
+        user.is_available = req.body.is_available
+      }
     }
 
     user.save(function(err) {
       if ('password' in req.body) {
-        res.send({msg: 'Your password has been changed.', user: user});
+        res.send({
+          msg: 'Your password has been changed.',
+          user: user
+        });
       } else if (err && err.code === 11000) {
-        res.status(409).send({msg: 'The email address you have entered is already associated with another account.'});
+        res.status(409).send({
+          msg: 'The email address you have entered is already associated with another account.'
+        });
       } else {
         res.send({
           user: user,
@@ -435,7 +470,9 @@ exports.accountDelete = function(req, res, next) {
   User.remove({
     _id: req.user.id
   }, function(err) {
-    res.send({msg: 'Your account has been permanently deleted.'});
+    res.send({
+      msg: 'Your account has been permanently deleted.'
+    });
   });
 };
 
@@ -461,10 +498,14 @@ exports.unlink = function(req, res, next) {
         user.github = undefined;
         break;
       default:
-        return res.status(400).send({msg: 'Invalid OAuth Provider'});
+        return res.status(400).send({
+          msg: 'Invalid OAuth Provider'
+        });
     }
     user.save(function(err) {
-      res.send({msg: 'Your account has been unlinked.'});
+      res.send({
+        msg: 'Your account has been unlinked.'
+      });
     });
   });
 };
@@ -477,12 +518,17 @@ exports.forgotPost = function(req, res, next) {
   console.log("inside forgotPost");
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
-  req.sanitize('email').normalizeEmail({remove_dots: false});
+  req.sanitize('email').normalizeEmail({
+    remove_dots: false
+  });
 
   let errors = req.validationErrors();
 
   if (errors) {
-    return res.status(400).send({msg: "error in your request", err: errors});
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
   }
 
   let auth = {
@@ -543,7 +589,10 @@ exports.resetPost = function(req, res, next) {
   let errors = req.validationErrors();
 
   if (errors) {
-    return res.status(400).send({msg: "error in your request", err: errors});
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
   }
 
   let auth = {
@@ -555,10 +604,14 @@ exports.resetPost = function(req, res, next) {
 
   async.waterfall([
     function(done) {
-      User.findOne({passwordResetToken: req.params.token}).exec(function(err, user) {
+      User.findOne({
+        passwordResetToken: req.params.token
+      }).exec(function(err, user) {
         console.log(err, user)
         if (!user) {
-          return res.status(400).send({msg: 'Password reset token is invalid or has expired.'});
+          return res.status(400).send({
+            msg: 'Password reset token is invalid or has expired.'
+          });
         }
         user.password = req.body.password;
         user.password_reset_token = undefined;
@@ -578,7 +631,9 @@ exports.resetPost = function(req, res, next) {
       };
 
       nodemailerMailgun.sendMail(mailOptions, function(err, info) {
-        res.send({msg: 'Your password has been changed successfully.'});
+        res.send({
+          msg: 'Your password has been changed successfully.'
+        });
         done(err);
       });
     }
@@ -608,7 +663,9 @@ exports.authFacebook = function(req, res) {
     json: true
   }, function(err, response, accessToken) {
     if (accessToken.error) {
-      return res.status(500).send({msg: accessToken.error.message});
+      return res.status(500).send({
+        msg: accessToken.error.message
+      });
     }
     // Step 2. Retrieve user's profile information.
     request.get({
@@ -617,7 +674,9 @@ exports.authFacebook = function(req, res) {
       json: true
     }, function(err, response, profile) {
       if (profile.error) {
-        return res.status(500).send({msg: profile.error.message});
+        return res.status(500).send({
+          msg: profile.error.message
+        });
       }
       let name = profile.name;
       let splitName = name.split(" ");
@@ -628,7 +687,9 @@ exports.authFacebook = function(req, res) {
           facebook: profile.id
         }, function(err, user) {
           if (user) {
-            return res.status(409).send({msg: 'There is already an existing account linked with Facebook that belongs to you.'});
+            return res.status(409).send({
+              msg: 'There is already an existing account linked with Facebook that belongs to you.'
+            });
           }
           user = req.user;
           user.first_name = splitName[0];
@@ -637,7 +698,10 @@ exports.authFacebook = function(req, res) {
           user.picture = user.picture || 'https://graph.facebook.com/' + profile.id + '/picture?type=large';
           user.facebook = profile.id;
           user.user_type = 'customer';
-          res.send({token: generateToken(user), user: user});
+          res.send({
+            token: generateToken(user),
+            user: user
+          });
 
         });
       } else {
@@ -646,7 +710,11 @@ exports.authFacebook = function(req, res) {
           facebook: profile.id
         }, function(err, user) {
           if (user) {
-            return res.send({token: generateToken(user), user: user, err: 'Error'});
+            return res.send({
+              token: generateToken(user),
+              user: user,
+              err: 'Error'
+            });
           }
           User.findOne({
             email: profile.email
@@ -667,7 +735,9 @@ exports.authFacebook = function(req, res) {
               facebook: profile.id
             });
 
-            return res.send({user: user});
+            return res.send({
+              user: user
+            });
 
           });
         });
@@ -712,7 +782,9 @@ exports.authGoogle = function(req, res) {
       json: true
     }, function(err, response, profile) {
       if (profile.error) {
-        return res.status(500).send({message: profile.error.message});
+        return res.status(500).send({
+          message: profile.error.message
+        });
       }
       // Step 3a. Link accounts if user is authenticated.
       if (req.isAuthenticated()) {
@@ -720,7 +792,9 @@ exports.authGoogle = function(req, res) {
           google: profile.sub
         }, function(err, user) {
           if (user) {
-            return res.status(409).send({msg: 'There is already an existing account linked with Google that belongs to you.'});
+            return res.status(409).send({
+              msg: 'There is already an existing account linked with Google that belongs to you.'
+            });
           }
           user = req.user;
           user.name = user.name || profile.name;
@@ -741,7 +815,10 @@ exports.authGoogle = function(req, res) {
           google: profile.sub
         }, function(err, user) {
           if (user) {
-            return res.send({token: generateToken(user), user: user});
+            return res.send({
+              token: generateToken(user),
+              user: user
+            });
           }
           user = new User({
             name: profile.name,
@@ -765,13 +842,18 @@ exports.checkFaceBook = function(req, res) {
   req.assert('facebook_id', 'facebook_id is required').notEmpty();
   let errors = req.validationErrors();
   if (errors) {
-    return res.status(400).send({msg: "error in your request", err: errors});
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
   }
   User.find({
     "facebook": req.body.facebook_id
   }, function(err, response) {
     if (err) {
-      res.status(400).send({msg: constantObj.messages.errorRetreivingData});
+      res.status(400).send({
+        msg: constantObj.messages.errorRetreivingData
+      });
     } else {
       if (response.length > 0) {
         res.status(200).send({
@@ -781,7 +863,9 @@ exports.checkFaceBook = function(req, res) {
           "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
         });
       } else {
-        res.status(400).send({msg: "This user not found in database"});
+        res.status(400).send({
+          msg: "This user not found in database"
+        });
       }
     }
   })
@@ -791,7 +875,10 @@ exports.uploadCustomerGallery = function(req, res) {
   req.checkHeaders("user_id", "_id is required").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
-    return res.status(400).send({msg: "error in your request", err: errors});
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
   }
   let updateData = {};
   updateData.modified_date = new Date();
@@ -816,13 +903,18 @@ exports.uploadCustomerGallery = function(req, res) {
     }
   }, function(errorInSaveChair, success) {
     if (errorInSaveChair) {
-      res.status(400).send({msg: 'Error in finding shop.'});
+      res.status(400).send({
+        msg: 'Error in finding shop.'
+      });
     } else {
       User.findOne({
         _id: req.headers.user_id
       }, function(err, response) {
         if (err) {
-          res.status(400).send({msg: constantObj.messages.errorRetreivingData, "err": err});
+          res.status(400).send({
+            msg: constantObj.messages.errorRetreivingData,
+            "err": err
+          });
         } else {
           res.status(200).send({
             msg: 'Successfully updated fields.',
@@ -841,7 +933,10 @@ exports.deleteImages = function(req, res) {
   //req.assert("image_name", "Image name is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
-    return res.status(400).send({msg: "error in your request", err: errors});
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
   }
   // let filePath = "../public/uploadedFiles/" + req.body.image_name;
   // fs.unlinkSync(filePath);
@@ -855,13 +950,19 @@ exports.deleteImages = function(req, res) {
     }
   }, function(error, result) {
     if (error) {
-      res.status(400).send({msg: constantObj.messages.errorRetreivingData, "err": err});
+      res.status(400).send({
+        msg: constantObj.messages.errorRetreivingData,
+        "err": err
+      });
     } else {
       User.findOne({
         _id: req.headers.user_id
       }, function(err, response) {
         if (err) {
-          res.status(400).send({msg: constantObj.messages.errorRetreivingData, "err": err});
+          res.status(400).send({
+            msg: constantObj.messages.errorRetreivingData,
+            "err": err
+          });
         } else {
           res.status(200).send({
             msg: 'Successfully updated fields.',
@@ -878,7 +979,10 @@ exports.getProfiles = function(req, res) {
   req.checkParams("id", "customer_id can not be blank").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
-    return res.status(400).send({msg: "error in your request", err: errors});
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
   }
   let id = mongoose.Types.ObjectId(req.params.id);
   User.findOne({
@@ -886,12 +990,20 @@ exports.getProfiles = function(req, res) {
   }, function(err, result) {
     if (result) {
       if (err) {
-        res.status(400).send({msg: constantObj.messages.errorRetreivingData, "err": err});
+        res.status(400).send({
+          msg: constantObj.messages.errorRetreivingData,
+          "err": err
+        });
       } else {
-        res.status(200).send({msg: constantObj.messages.successRetreivingData, user: result});
+        res.status(200).send({
+          msg: constantObj.messages.successRetreivingData,
+          user: result
+        });
       }
     } else {
-      res.status(400).send({msg: "Please pass correct id"})
+      res.status(400).send({
+        msg: "Please pass correct id"
+      })
     }
   })
 }
@@ -902,7 +1014,10 @@ exports.activate = function(req, res) {
     let email = commonObj.decrypt(req.body.email);
     let randomcode = req.body.randomString;
     console.log(email, randomcode)
-    User.findOne({email: email, random_string: randomcode}).exec(function(err, user) {
+    User.findOne({
+      email: email,
+      random_string: randomcode
+    }).exec(function(err, user) {
       console.log
       if (user) {
         user.random_string = '';
@@ -910,11 +1025,19 @@ exports.activate = function(req, res) {
         user.is_verified = true;
         user.remark = "";
         user.save(function(err) {
-          res.status(200).send({msg: "You have successfully activated your account"})
+          res.status(200).send({
+            msg: "You have successfully activated your account"
+          })
         });
       } else {
-        User.findOne({email: email, is_active: true, is_verified: true}).exec(function(err, user) {
-          return res.status(200).send({msg: "Already activated"});
+        User.findOne({
+          email: email,
+          is_active: true,
+          is_verified: true
+        }).exec(function(err, user) {
+          return res.status(200).send({
+            msg: "Already activated"
+          });
         })
       }
 
@@ -942,7 +1065,11 @@ exports.usersRecords = function(req, res) {
     // results will have the results of all 3
     console.log("subscription", results.one);
     console.log("customer", results.two);
-    res.status(200).send({msg: constantObj.messages.successRetreivingData, subscription: results.one, customer: results.two});
+    res.status(200).send({
+      msg: constantObj.messages.successRetreivingData,
+      subscription: results.one,
+      customer: results.two
+    });
   });
 }
 
@@ -975,28 +1102,41 @@ exports.totalUsers = function(req, res) {
     // results will have the results of all 3
     console.log("subscription", results.one);
     console.log("customer", results.two);
-    res.status(200).send({msg: constantObj.messages.successRetreivingData, barber_subscription: results.one.length, shop_subscription: results.two.length, customer: results.three.length});
+    res.status(200).send({
+      msg: constantObj.messages.successRetreivingData,
+      barber_subscription: results.one.length,
+      shop_subscription: results.two.length,
+      customer: results.three.length
+    });
   });
 }
 
 
 
 exports.logout = function(req, res) {
-  LoggedInUser.remove({user_id:req.headers.user_id},function(err,result){
+
+  LoggedInUser.remove({
+    user_id: req.headers.user_id
+  }, function(err, result) {
     User.update({
       _id: req.headers.user_id
     }, {
       $set: {
         device_id: "",
         device_type: "",
-        is_online:false,
-        is_available:false
+        is_online: false,
+        is_available: false
       }
     }).exec(function(err, response) {
       if (err) {
-        res.status(400).send({msg: "Error in logout.", err: err});
+        res.status(400).send({
+          msg: "Error in logout.",
+          err: err
+        });
       } else {
-        res.status(200).send({msg: "you are logout successfully."});
+        res.status(200).send({
+          msg: "you are logout successfully."
+        });
       }
     })
   })

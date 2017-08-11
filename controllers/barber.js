@@ -1136,7 +1136,7 @@ exports.barberHomeScreen = function(req, res) {
         }
       }]).exec(function(appErr, appData) {
         console.log("appData", appData)
-        if (appData.length) {
+        if (appData.length>0) {
           res.status(200).send({
             "msg": constantObj.messages.successRetreivingData,
             "associateShops": result,
@@ -1152,7 +1152,7 @@ exports.barberHomeScreen = function(req, res) {
             "revenue": data,
             "services":serData,
             "is_online":online,
-            "appointment": []
+            "appointment": {}
           })
         }
       })

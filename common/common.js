@@ -93,11 +93,12 @@ exports.notify = function(to_user_id, from_user_id, text, type,sentData, cb) {
             // collapse_key: 'your_collapse_key',
             notification: {
               title: text,
-              body: id
+              body: ""
             },
             data: { //you can send only notification or only data(or include both)
               my_key: type,
-              my_another_key: ""
+              my_another_key: "",
+              message:id
             }
           };
 

@@ -161,21 +161,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
         headers: {
           'user_id': data._id
         },
-         data: {
-          created_date:data.created_date,
-          email:data.email,
-          first_name:data.first_name,
-          isActive:data.isActive,
-          isDeleted:data.isDeleted,
-          is_verified:data.is_verified,
-          last_name:data.last_name,
-          mobile_number:data.mobile_number,
-          password:data.pass,
-          ratings:data.ratings,
-          user_type:data.user_type,
-          _id:data._id,
-          confirm:data.confirmPassword
-        }
+         data: data
       });
     },
     updateShop: function(data) {

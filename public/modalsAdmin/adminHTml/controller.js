@@ -364,29 +364,7 @@ app_admin.controller("AdminCtrl", [
 
     $scope.updatecustomer = function(customer) {
       $scope.loaderStart = true;
-      $scope.customer = customer;
-
-      var valfromActive = $scope.activeSelected;
-      var valfromVerify = $scope.verifySelected;
-      var valfromdelete = $scope.deleteSelected;
-      if (valfromActive == 'true') {
-        $scope.activatecust(customer);
-      }
-      if (valfromActive == 'false') {
-        $scope.deactivecust(customer);
-      }
-      if (valfromVerify == 'true') {
-        $scope.verifybarber(customer);
-      }
-      if (valfromVerify == 'false') {
-        $scope.disapprovebarber(customer);
-      }
-      if (valfromdelete == 'true') {
-        $scope.deletecustomer(customer);
-      }
-      if (valfromdelete == 'false') {
-        $scope.undeletecustomer(customer);
-      }
+      
       Admin.updateCustomer(customer).then(function(response) {
         $scope.loaderStart = false;
         toastr.success('Customer is updated Succesfully');
@@ -400,51 +378,6 @@ app_admin.controller("AdminCtrl", [
 
     $scope.updatebarber = function(barber) {
       $scope.loaderStart = true;
-      $scope.barber = barber;
-      alert(JSON.stringify(barber))
-      return false
-
-      var valfromActive = $scope.activeSelected;
-      console.log(valfromActive)
-      return false
-      var valfromVerify = $scope.verifySelected;
-      var valfromdelete = $scope.deleteSelected;
-      var valfromOnline = $scope.onlineSelected;
-      var valfromAvailable = $scope.availableSelected;
-
-      if (valfromActive == 'true') {
-        $scope.activatebarber(barber);
-      }
-      if (valfromActive == 'false') {
-        $scope.deactivatebarber(barber);
-      }
-      if (valfromVerify == 'true') {
-        $scope.verifybarber(barber);
-      }
-      if (valfromVerify == 'false') {
-        $scope.disapprovebarber(barber);
-      }
-      if (valfromdelete == 'true') {
-        $scope.deletebarber(barber);
-      }
-      if (valfromdelete == 'false') {
-        $scope.undeletebarber(barber);
-      }
-      if (valfromOnline == 'true') {
-        $scope.online(barber);
-      }
-      if (valfromOnline == 'false') {
-        $scope.offline(barber);
-      }
-      if (valfromAvailable == 'true') {
-        $scope.available(barber);
-      }
-      if (valfromAvailable == 'false') {
-        $scope.unAvailable(barber);
-      }
-
-      alert(JSON.stringify(barber));
-
       Admin.updateBarber(barber).then(function(response) {
         $scope.loaderStart = false;
         toastr.success('Barber is updated Succesfully');
@@ -453,7 +386,6 @@ app_admin.controller("AdminCtrl", [
         $scope.loaderStart = false;
         $scope.messages = result.data.msg
       });
-
     };
 
     $scope.updateshopowner = function(shop) {

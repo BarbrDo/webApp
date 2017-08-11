@@ -22,14 +22,16 @@
                     <label>First Name</label>
                     <input type="text" class="form-control" name="first_name" data-ng-model="barberdetail.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
                     <span style="color:red;" ng-show="editForm.first_name.$error.required">First Name cannot left blank</span>
-                    <span style="color:red;" ng-show="editForm.first_name.$error.pattern">Enter Valid Character</span><br>
+                    <span style="color:red;" ng-show="editForm.first_name.$error.pattern">Enter Valid Character</span>
+                    <br>
                     <span style="color:red " ng-show="editForm.first_name.$error.maxlength && editForm.first_name.$dirty">First name maximum length exceeds</span>
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Last Name</label>
                     <input type="text" class="form-control" name="last_name" data-ng-model="barberdetail.last_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
                     <span style="color:red;" ng-show="editForm.last_name.$error.required">Last Name cannot left blank</span>
-                    <span style="color:red;" ng-show="editForm.last_name.$error.pattern">Enter Valid Character</span><br>
+                    <span style="color:red;" ng-show="editForm.last_name.$error.pattern">Enter Valid Character</span>
+                    <br>
                     <span style="color:red " ng-show="editForm.last_name.$error.maxlength && editForm.last_name.$dirty">First name maximum length exceeds</span>
                 </div>
                 <div class="col-sm-4 form-group">
@@ -47,25 +49,6 @@
                 <div class="col-sm-4 form-group">
                     <label>Date Of Creation</label>s
                     <input size="30" height="30px" type="text" data-ng-model="barberdetail.created_date" readonly class="form-control">
-                </div>
-            </div>
-            <div class="clearfix">
-                <div class="col-sm-4 form-group">
-                    <label>Password</label>
-                    <input type="password" class="form-control" name="password" data-ng-model="barberdetail.pass" ng-minlength="5" ng-maxlength="20" maxlength="21" />
-                    <div class="validationError" ng-if="!updateButton" ng-show="editForm.password.$error.minlength">
-                        <span style="color:red ">password too Short (atleast 5 characters)</span>
-                    </div>
-                    <div class="validationError" ng-if="!updateButton" ng-show="editForm.password.$error.maxlength && editForm.password.$dirty">
-                        <span style="color:red ">password maximum length exceeds</span>
-                    </div>
-                </div>
-                <div class="col-sm-4 form-group">
-                    <label>Confirm Password</label>
-                    <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" ng-model="barberdetail.confirmPassword" required ng-pattern="password" />
-                    <div class="validationError" ng-messages="editForm.confirmPassword.$error" ng-show=" editForm.confirmPassword.$error.pattern && (!editForm.confirmPassword.$pristine || editForm.$submitted)" role="alert ">
-                        <span style="color:red " ng-if="!updateButton" ng-message="pattern">password do not match</span>
-                    </div>
                 </div>
             </div>
             <div class="clearfix">
@@ -103,7 +86,7 @@
     </div>
 </div>
 <div class="clearfix text-center">
-    <button type="submit" class="btn btn-primary" ng-click="updatebarber(barberdetail)" >
+    <button type="submit" class="btn btn-primary" ng-click="updatebarber(barberdetail)">
         <i class="fa fa-check" aria-hidden="true"></i>
         <span>Save
       </button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -114,6 +97,45 @@
 </div>
 </form>
 </div>
+
+<div class- "panel-body">
+    <div ng-if="messages" role="alert" class="alert alert-danger">
+        <div>
+            {{messages}}</div>
+    </div>
+    <div class="title">
+        Update Password
+    </div>
+    <form name="updateForm">
+         <div class="clearfix">
+                <div class="col-sm-4 form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" name="password" data-ng-model="barberdetail.password" ng-minlength="5" ng-maxlength="20" maxlength="21" required />
+                    <div class="validationError" ng-if="!updateButton" ng-show="updateForm.password.$error.minlength">
+                        <span style="color:red ">password too Short (atleast 5 characters)</span>
+                    </div>
+                    <div class="validationError" ng-if="!updateButton" ng-show="updateForm.password.$error.maxlength && updateForm.password.$dirty">
+                        <span style="color:red ">password maximum length exceeds</span>
+                    </div>
+                </div>
+                <div class="col-sm-4 form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" ng-model="barberdetail.confirm" required ng-pattern="barberdetail.password"/>
+                    <div class="validationError" ng-messages="updateForm.confirmPassword.$error" ng-show=" updateForm.confirmPassword.$error.pattern && (!updateForm.confirmPassword.$pristine || updateForm.$submitted)" role="alert ">
+                        <span style="color:red " ng-if="!updateButton" ng-message="pattern">password do not match</span>
+                    </div>
+                </div>
+                <div class="col-sm-4 form-group">
+                    <button type="submit" class="btn btn-primary" ng-disabled="updateForm.$invalid" ng-click="updatebarber(barberdetail)" style="margin-top:25px">
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                    <span>Update
+                  </button>
+                </div>
+            </div>
+    </form>
+</div>
+
+
 </div>
 <script type="text/javascript">
 window.addEventListener('keydown', function(e) {

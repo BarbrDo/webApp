@@ -299,37 +299,6 @@ exports.signupPost = function(req, res, next) {
       })
     },
     function(saveData, done) {
-      if (req.body.user_type == 'customer') {
-        done(null, saveData)
-      } else {
-        stripe.customers.create({
-            email: req.body.email,
-            metadata: {
-              user_type: req.body.user_type,
-              first_name: req.body.first_name,
-              last_name: req.body.last_name,
-              mobile_number: req.body.mobile_number
-            }
-          },
-          function(err, customer) {
-            if (err) {
-              return res.status(400).send({
-                msg: "Error occurred on stripe.",
-                "err": err
-              })
-            } else {
-              console.log("customer created on stripe ", customer);
-              if (!req.body.facebook) {
-                saveData.is_active = false;
-                saveData.is_verified = false;
-              }
-              saveData.stripe_customer = customer;
-              done(err, saveData)
-            }
-          })
-      }
-    },
-    function(saveData, done) {
       User(saveData).save(function(err, data) {
         if (err) {
           return res.status(400).send({
@@ -363,25 +332,6 @@ exports.signupPost = function(req, res, next) {
             } else {
               saveShop(saveDataForShop, resetUrl, data, req, res);
             }
-          } else if (req.body.user_type == 'barber') {
-            let saveDataForBarber = {};
-            saveDataForBarber.user_id = data._id
-            saveDataForBarber.license_number = req.body.license_number;
-            Barber(saveDataForBarber).save(function(errSaveBarber, barberData) {
-              if (errSaveBarber) {
-                return res.status(400).send({
-                  msg: constantObj.messages.errorInSave
-                })
-              } else {
-                console.log("else part of barber save");
-                // res.send({
-                //   token: generateToken(data),
-                //   user: data.toJSON(),
-                //   "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-                // });
-                accountActivateMailFunction(req, res, data, resetUrl)
-              }
-            })
           } else {
             accountActivateMailFunction(req, res, data, resetUrl)
           }

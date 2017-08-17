@@ -160,7 +160,7 @@ _________________________________________________________
  */
 
 exports.sendMessageToCustomer = function(req, res) {
-  req.assert("customer_id", "Barber id is required.").notEmpty();
+  req.assert("customer_id", "customer id is required.").notEmpty();
   req.checkHeaders("user_id", "User id is required.").notEmpty();
   req.assert("text", "Text is required.").notEmpty();
   let errors = req.validationErrors();
@@ -171,7 +171,7 @@ exports.sendMessageToCustomer = function(req, res) {
     });
   }
 
-  commonObj.notify(req.body.customer_id, req.body.user_id, req.body.text, "message", function(err, data) {
+  commonObj.notify(req.body.customer_id, req.body.user_id, "sent you a message","message",req.body.text, function(err, data) {
     if (err) {
       console.log(err);
     } else {
@@ -257,43 +257,6 @@ Description:Barber chagne status to online and offline
 _________________________________________________________
  */
 
-exports.barberToggleStatus = function(req, res) {
-  req.checkHeaders("user_id", "user_id is required.").notEmpty();
-  req.assert("status", "Action is required.").notEmpty();
-  let errors = req.validationErrors();
-  if (errors) {
-    return res.status(400).send({
-      msg: "error in your request",
-      err: errors
-    });
-  }
-  if (req.body.status == 'online' || req.body.status == 'offline') {
-    let status = (req.body.status == 'online') ? true : false
-    user.update({
-      _id: req.headers.user_id
-    }, {
-      $set: {
-        'is_online': status
-      }
-    }, function(err, result) {
-      if (err) {
-        res.status(400).send({
-          msg: constantObj.messages.errorRetreivingData,
-          "err": err
-        });
-      } else {
-        res.status(200).send({
-          msg: 'You are online now.',
-          "data": result
-        });
-      }
-    })
-  } else {
-    return res.status(400).send({
-      msg: "Staus should be online and offline."
-    });
-  }
-}
 
 exports.viewBarberProfile = function(req, res) {
   console.log("view barber profile");
@@ -671,16 +634,15 @@ exports.barberdetail = function(req, res) {
             "err": err
           });
         } else {
-          console.log("shop barber data", data);
+          console.log("shop barber data", JSON.stringify(data));
           if (data) {
             for (var i = 0; i < result.length; i++) {
               result[i].associateShops = [];
               for (j = 0; j < data.length; j++) {
                 console.log(result[i]._id, data[j].barber_id)
                 if (result[i]._id.equals(data[j].barber_id)) {
-                  result[i].associateShops.push({
-                    name: data[j].shopInfo[0].name
-                  })
+                  data[j].shopInfo[0].is_default = data[j].is_default;
+                  result[i].associateShops.push(data[j].shopInfo[0])
                 }
               }
             }
@@ -1053,22 +1015,76 @@ exports.addShop = function(req, res) {
       shop_id: req.body.shops[i].shop_id,
       barber_id: req.headers.user_id
     }
-    shopBarber(obj).save(function(err, result) {
-      console.log(err, result);
+    shopBarber.find(obj,function(shoperr,shopresult){
+      if(shopresult.length>0){
+
+      }
+      else{
+        shopBarber(obj).save(function(err, result) {
+          console.log(err, result);
+        })
+      }
     })
   }
   res.status(200).send({
     "msg": "Shops added successfully."
   })
 };
-/*
--------------------------------------------------
-This function will return data from shop_barber collection i.e number of shops associated with this barber
-current revenue of this day
-any appointment 
--------------------------------------------------
 
- */
+
+exports.makeDefaultshop = function(req, res) {
+    req.checkHeaders("user_id", "User id is required.").notEmpty();
+    req.assert("shop_id", "Shop_id is required are required.").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+      return res.status(400).send({
+        msg: "error in your request",
+        err: errors
+      });
+    }
+    let shopId = req.body.shop_id;
+    let barberId = req.headers.user_id;
+    shopBarber.update({
+      barber_id: barberId
+    }, {
+      $set: {
+        is_default: false
+      }
+    }, {
+        multi: true
+    }).exec(function(err, multiUpdate) {
+      // body...
+      shopBarber.update({
+        shop_id: shopId,
+        barber_id: barberId
+      }, {
+        $set: {
+          is_default: true
+        }
+      }, function(err, result) {
+        if (err) {
+          return res.status(400).send({
+            msg: "error in making default shop.",
+            err: err
+          });
+        } else {
+          console.log(result);
+          return res.status(200).send({
+            msg: "Shop successfully added.",
+            data: result
+          });
+        }
+      })
+    })
+  }
+  /*
+  -------------------------------------------------
+  This function will return data from shop_barber collection i.e number of shops associated with this barber
+  current revenue of this day
+  any appointment 
+  -------------------------------------------------
+
+   */
 exports.barberHomeScreen = function(req, res) {
   console.log("revenue");
   req.checkHeaders("user_id", "User id is required.").notEmpty();
@@ -1216,56 +1232,56 @@ let currentRevenue = function(req, res, cb) {
 }
 
 exports.completeAppointment = function(req, res) {
-    req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
-    req.checkHeaders("user_id", "barber_id is required.").notEmpty();
-    let errors = req.validationErrors();
-    if (errors) {
+  req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
+  req.checkHeaders("user_id", "barber_id is required.").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+
+  user.update({
+    _id: req.headers.user_id
+  }, {
+    $set: {
+      is_online: true,
+      is_available: true
+    }
+  }).exec(function(err, result) {
+
+  })
+
+  appointment.findOne({
+    _id: req.params.appointment_id
+  }, function(err, result) {
+    if (err) {
       return res.status(400).send({
-        msg: "error in your request",
+        msg: "error in finding appointment.",
         err: errors
       });
-    }
-
-    user.update({
-          _id: req.headers.user_id
+    } else {
+      console.log("result in appointment", result);
+      if (result) {
+        appointment.update({
+          _id: req.params.appointment_id
         }, {
           $set: {
-            is_online: true,
-            is_available: true
+            "appointment_status": "completed"
           }
-        }).exec(function(err,result){
-
+        }).exec(function(updateErr, UpdateData) {
+          let mydata = "";
+          callNotification("barber_complete_appointment", result.customer_id, result.barber_id, mydata)
+          return res.status(200).send({
+            msg: "Appointment is completed."
+          });
         })
-
-    appointment.findOne({
-        _id: req.params.appointment_id
-      }, function(err, result) {
-        if (err) {
-          return res.status(400).send({
-            msg: "error in finding appointment.",
-            err: errors
-          });
-        } else {
-          console.log("result in appointment", result);
-          if (result) {
-            appointment.update({
-                _id: req.params.appointment_id
-              }, {
-                $set: {
-                  "appointment_status": "completed"
-                }
-              }).exec(function  (updateErr,UpdateData) {
-                let mydata = "";
-                callNotification("barber_complete_appointment", result.customer_id, result.barber_id, mydata)
-                return res.status(200).send({
-                  msg: "Appointment is completed."
-                });
-            })
-          } else {
-            return res.status(400).send({
-              msg: "Appointment is not present."
-          });
-          }
-        }
-    })
+      } else {
+        return res.status(400).send({
+          msg: "Appointment is not present."
+        });
+      }
+    }
+  })
 }

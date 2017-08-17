@@ -38,8 +38,7 @@ let userSchema = new mongoose.Schema({
     device_type: String,
     device_id: String,
     latLong: {
-        type: [Number],
-         index: false
+        type: [Number]
     },
     favourite_barber: [
         {
@@ -74,7 +73,6 @@ let userSchema = new mongoose.Schema({
     barber_shops_latLong: {
         type:[Number],
         index: '2dsphere',
-        index: true
     },
     barber_shop_id:{
         type: Schema.Types.ObjectId,

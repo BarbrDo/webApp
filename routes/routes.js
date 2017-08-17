@@ -61,6 +61,7 @@ module.exports = function(app, express) {
     app.get('/api/v2/customer/timeSlots',customer.timeSlots);
     app.post('/api/v2/customer/messageToBarber',customer.sendMessageToBarber)
     app.post('/api/v2/ratebarber',customer.rateBarber);
+    // app.post('/api/v2/referapp',customer.referapp);
 
     //Barber
     app.post('/api/v2/barber/services',barber.addBarberServices); // add barber services
@@ -73,6 +74,7 @@ module.exports = function(app, express) {
     app.delete('/api/v2/barber/services/:barber_service_id',barber.deleteBarberService); // delete a berber service
     app.get('/api/v2/barber/profile/:barber_id',barber.viewBarberProfile); // view barber profile
     app.post('/api/v2/barber/shop',barber.addShop); // add shop against a barber
+    app.post('/api/v2/barber/makeDefaultshop',barber.makeDefaultshop);
     app.get('/api/v2/barber/shops',barber.getShops); // get all shops against a berber
     app.get('/api/v2/barber/home',barber.barberHomeScreen); // barber home screen map api
     app.post('/api/v2/barber/goOnline',barber.goOnline); // barber go onlint

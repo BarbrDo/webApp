@@ -262,7 +262,18 @@ exports.cancelAppointment = function(req, res) {
     } else {
       console.log("result in appointment", result);
       if (result) {
-        callNotification("customer_cancel_appointment", result.barber_id, result.customer_id);
+        user.update({
+          _id: req.headers.user_id
+        }, {
+          $set: {
+            is_online: true,
+            is_available: true
+          }
+        }, function(err, result) {
+
+        })
+        let data = ""
+        callNotification("customer_cancel_appointment", result.barber_id, result.customer_id,data);
         appointment.update({
           _id: req.params.appointment_id
         }, {
@@ -438,7 +449,7 @@ exports.sendMessageToBarber = function(req, res) {
     });
   }
 
-  commonObj.notify(req.body.customer_id, req.body.user_id, req.body.text, "message", function(err, data) {
+  commonObj.notify(req.body.customer_id, req.body.user_id, "sent you a message", "message", req.body.text, function(err, data) {
     if (err) {
       console.log(err);
     } else {
@@ -695,7 +706,7 @@ exports.customerAppointments = function(req, res) {
             "appointment_status": {
               $in: ['completed']
             },
-            "is_rating_given":false
+            "is_rating_given": false
           }).populate('barber_id', 'first_name last_name ratings picture created_date')
           .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong is_active is_verified is_deleted ratings')
           .populate('shop_id', 'name address city state gallery latLong created_date user_id')
@@ -873,67 +884,89 @@ exports.getCustomerLastAppointment = function(req, res) {
 }
 
 exports.rateBarber = function(req, res) {
-    req.checkHeaders("user_id", "User id is required.").notEmpty();
-    req.assert("appointment_id", "Appointment _id is required.").notEmpty();
-    req.assert("barber_id", "Barber id is required.").notEmpty();
-    req.assert("score", "score is required.").notEmpty();
-    let errors = req.validationErrors();
-    if (errors) {
-        return res.status(400).send({
-            msg: "error in your request",
-            err: errors
-        });
+  req.checkHeaders("user_id", "User id is required.").notEmpty();
+  req.assert("appointment_id", "Appointment _id is required.").notEmpty();
+  req.assert("barber_id", "Barber id is required.").notEmpty();
+  req.assert("score", "score is required.").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+  let updateData = {
+    "$push": {
+      "ratings": {
+        "rated_by": req.headers.user_id,
+        "score": parseInt(req.body.score),
+        "appointment_date": req.body.appointment_date
+      }
     }
-    let updateData = {
-        "$push": {
-            "ratings": {
-                "rated_by": req.headers.user_id,
-                "score": parseInt(req.body.score),
-                "appointment_date": req.body.appointment_date
-            }
+  }
+  console.log(updateData);
+  async.waterfall([
+    function(done) {
+      appointment.update({
+        _id: req.body.appointment_id
+      }, {
+        $set: {
+          is_rating_given: true,
+          rating_score: parseInt(req.body.score),
         }
+      }, function(err, result) {
+        if (err) {
+          done("some error", err)
+        } else {
+          if (result.nModified == 0) {
+            return res.status(400).send({
+              msg: "no record found",
+              err: err
+            });
+          } else {
+            done(err, result);
+          }
+        }
+      })
+    },
+    function(status, done) {
+      user.update({
+        _id: req.body.barber_id
+      }, updateData, function(err, result) {
+        if (err) {
+          return res.status(400).send({
+            msg: constantObj.messages.userStatusUpdateFailure,
+            err: err
+          });
+        } else {
+          return res.status(200).send({
+            msg: constantObj.messages.userStatusUpdateSuccess
+          });
+          done(err);
+        }
+      })
     }
-    console.log(updateData);
-    async.waterfall([
-        function(done) {
-            appointment.update({
-                _id: req.body.appointment_id
-            }, {
-                $set: {
-                    is_rating_given: true,
-                    rating_score: parseInt(req.body.score),
-                }
-            }, function(err, result) {
-                if (err) {
-                    done("some error", err)
-                } else {
-                    if (result.nModified == 0) {
-                        return res.status(400).send({
-                            msg: "no record found",
-                            err: err
-                        });
-                    } else {
-                        done(err, result);
-                    }
-                }
-            })
-        },
-        function(status, done) {
-            user.update({
-                _id: req.body.barber_id
-            }, updateData, function(err, result) {
-                if (err) {
-                    return res.status(400).send({
-                        msg: constantObj.messages.userStatusUpdateFailure,
-                        err: err
-                    });
-                } else {
-                    return res.status(200).send({
-                        msg: constantObj.messages.userStatusUpdateSuccess
-                    });
-                    done(err);
-                }
-            })
-        }
-    ])
+  ])
+}
+
+exports.referapp = function(req,res){
+  req.checkHeaders("user_id", "User id is required.").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+  if(req.body.email){
+
+  }
+  else if(req.body.phone_number){
+
+  }
+  else{
+    return res.status(200).send({
+            msg: constantObj.messages.userStatusUpdateSuccess
+          });
+  }
 }

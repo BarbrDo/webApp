@@ -11,6 +11,7 @@ let qs = require('querystring');
 let objectID = require('mongodb').ObjectID;
 let constantObj = require('./../constants.js');
 let chairRequest = require('../models/chair_request');
+let referal = require('../models/referral');
 let commonObj = require('../common/common');
 let mg = require('nodemailer-mailgun-transport');
 let fs = require('fs');
@@ -295,11 +296,58 @@ exports.signupPost = function(req, res, next) {
           email_encrypt = commonObj.encrypt(req.body.email);
           generatedText = commonObj.makeid();
           saveData.randomString = generatedText;
+          saveData.unique_code = Math.round((Math.pow(36, 6 + 1) - Math.random() * Math.pow(36, 6))).toString(36).slice(1);
           done(err, saveData)
         }
       })
     },
-    function(saveData, done) {
+    function(saveData,done){
+      // if(req.body.referral_code){
+        // User.findOne({unique_code:req.body.refer_code},function(err,result){
+        //   if(result){
+        //   if (result.user_type == 'customer' && req.body.user_type == 'barber') {
+        //     // customer can sent referral code only to barber
+        //     let referralData = {
+        //       referral: result._id,
+        //       unique_code: req.body.unique_code
+        //     }
+        //     saveData.is_code_used = true;
+        //     done(err, saveData, referralData)
+
+        //   } else if (result.user_type == 'barber' && req.body.user_type == 'customer') {
+        //     let referralData = {
+        //       referral: result._id,
+        //       unique_code: req.body.unique_code
+        //     }
+        //     saveData.is_code_used = true;
+        //     done(err, saveData, referralData)
+        //   } else if (result.user_type == 'barber' && req.body.user_type == 'barber') {
+        //     let referralData = {
+        //       referral: result._id,
+        //       unique_code: req.body.unique_code
+        //     }
+        //     saveData.is_code_used = true;
+        //     done(err, saveData, referralData)
+        //   }
+        //   else{
+        //     return res.status(400).send({
+        //       msg: "This referral_code is not correct.Please recheck!"
+        //     })
+        //   }
+        //   }
+        //   else{
+        //     return res.status(400).send({
+        //       msg: "This referral_code is not correct.Please recheck!"
+        //     })
+        //   }
+        // })
+      // }
+      // else{
+        let referralData = {};
+        done(null,saveData,referralData)
+      // }
+    },
+    function(saveData,referralData, done) {
       User(saveData).save(function(err, data) {
         if (err) {
           return res.status(400).send({
@@ -307,6 +355,19 @@ exports.signupPost = function(req, res, next) {
             "err": err
           })
         } else {
+         
+          let len = Object.keys(referralData).length;
+           console.log("referralData",len);
+          if(len){
+            console.log("inside refer data");
+            referralData.referee = data._id;
+            referralData.user_type = data.user_type;
+
+           referal(referralData).save(function(referalErr,referalData){
+            console.log("refer save data ",referalErr,referalData);
+           })
+          }
+         
           let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
           if (req.body.user_type == 'shop') {
             let saveDataForShop = {};
@@ -393,6 +454,12 @@ exports.accountPut = function(req, res, next) {
       }
       if(req.body.bio){
         user.bio = req.body.bio
+      }
+      if(req.body.is_active){
+        user.is_active = req.body.is_active
+      }
+      if(req.body.is_verified){
+        user.is_verified = req.body.is_verified
       }
     }
 

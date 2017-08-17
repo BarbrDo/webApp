@@ -871,6 +871,7 @@ app_admin.controller("AdminCtrl", [
         }
         Admin.addShopsWithbarber(passobj,$rootScope.barberId).then(function(response) {
           console.log(response);
+          $scope.pageChanged();
         })
       }
       else{

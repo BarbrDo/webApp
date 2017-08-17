@@ -891,6 +891,7 @@ exports.goOnline = function(req, res) {
           barber_shops_latLong: [
             shopData.latLong[0], shopData.latLong[1]
           ],
+          barber_shop_id : req.body.shop_id,
           barber_services: req.body.services
         }
       }

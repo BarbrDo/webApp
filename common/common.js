@@ -169,7 +169,7 @@ let authToken = '2eadab4ae69fe6583bbc54793208eea1'; // Your Auth Token from www.
 let twilio = require('twilio');
 let client = new twilio(accountSid, authToken);
 
-exports.sentMessage = function() {
+exports.sentMessage = function(text,to) {
   client.messages.create({
     body: 'Hello from Node', to: '+91 7696516981', // Text this number
     from: '+14157410903' // From a valid Twilio number

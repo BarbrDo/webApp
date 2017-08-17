@@ -960,12 +960,17 @@ exports.referapp = function(req,res){
   }
   if(req.body.email){
 
+    commonObj.sendMail(req.body.email, from, subject, text,function(err,result){
+
+    })
   }
   else if(req.body.phone_number){
-
+    commonObj.sentMessage(to, from, subject, text,function(err,result){
+      
+    })
   }
   else{
-    return res.status(200).send({
+    return res.status(400).send({
             msg: constantObj.messages.userStatusUpdateSuccess
           });
   }

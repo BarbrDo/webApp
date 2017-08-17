@@ -1008,7 +1008,7 @@ exports.getProfiles = function(req, res) {
   let id = mongoose.Types.ObjectId(req.params.id);
   User.findOne({
     _id: id
-  }, function(err, result) {
+  }).populate('barber_shop_id').populate("ratings.rated_by").exec(function(err, result) {
     if (result) {
       if (err) {
         res.status(400).send({
@@ -1016,9 +1016,29 @@ exports.getProfiles = function(req, res) {
           "err": err
         });
       } else {
+        let newData = JSON.parse(JSON.stringify(result))
+        let rateing = [];
+        if(newData.ratings.length>0){
+          for (var i = 0; i<newData.ratings.length; i++) {
+            let obj = {
+              rated_by:newData.ratings[i].rated_by._id,
+              score:newData.ratings[i].score,
+              rated_by_name:newData.ratings[i].rated_by.first_name+" "+newData.ratings[i].rated_by.last_name,
+              picture:newData.ratings[i].rated_by.picture,
+              appointmentDate:newData.ratings[i].appointment_date
+            }
+            console.log(obj);
+            rateing.push(obj)
+          };
+          newData.ratings = rateing
+        }
+        else{
+          newData.ratings = rateing
+        }
+        
         res.status(200).send({
           msg: constantObj.messages.successRetreivingData,
-          user: result
+          user: newData
         });
       }
     } else {

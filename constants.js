@@ -39,11 +39,18 @@ const androidUrl = {
     url : "Hello install this app \n"+"https://play.google.com/store/apps/dev?id=5700313618786177705"
 }
 
+const barbermailId = {
+    mail : "barbrdoapp@gmail.com"
+}
+
 var obj = {
     messages: messages,
     distance: distance,
     offTimeSlots:offTimeSlots,
-    currency: currency
+    currency: currency,
+    appleUrl:appleUrl,
+    androidUrl:androidUrl,
+    barbermailId:barbermailId
 };
 
 

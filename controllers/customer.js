@@ -7,6 +7,8 @@ let moment = require('moment');
 let mongoose = require('mongoose');
 let geolib = require('geolib');
 let _ = require('lodash');
+let referal = require('../models/referral');
+let async = require('async');
 
 exports.getNearbyBarbers = function(req, res) {
   req.checkHeaders("user_id", "User ID is required").notEmpty();
@@ -263,7 +265,7 @@ exports.cancelAppointment = function(req, res) {
       console.log("result in appointment", result);
       if (result) {
         user.update({
-          _id: req.headers.user_id
+          _id: result.barber_id
         }, {
           $set: {
             is_online: true,
@@ -273,7 +275,7 @@ exports.cancelAppointment = function(req, res) {
 
         })
         let data = ""
-        callNotification("customer_cancel_appointment", result.barber_id, result.customer_id,data);
+        callNotification("customer_cancel_appointment", result.barber_id, result.customer_id, data);
         appointment.update({
           _id: req.params.appointment_id
         }, {
@@ -448,18 +450,25 @@ exports.sendMessageToBarber = function(req, res) {
       err: errors
     });
   }
+  user.findOne({
+    _id: req.headers.user_id
+  }, function(err, data) {
+    if (data) {
+      let obj = {
+        text: req.body.text,
+        customerInfo : data
+      }
+      commonObj.notify(req.body.barber_id, req.headers.user_id, "sent you a message", "message_to_barber", obj, function(err, data) {
+        if (err) {
+          console.log(err);
+        } else {
 
-  commonObj.notify(req.body.customer_id, req.body.user_id, "sent you a message", "message", req.body.text, function(err, data) {
-    if (err) {
-      console.log(err);
-    } else {
-
+        }
+      })
     }
   })
-
-  callNotification(req.body.text, req.body.barber_id, req.body.user_id);
   res.status(200).send({
-    msg: "You msg is successfully send."
+    msg: "Your message has been successfully sent."
   });
 }
 
@@ -884,10 +893,14 @@ exports.getCustomerLastAppointment = function(req, res) {
 }
 
 exports.rateBarber = function(req, res) {
+  console.log("req.body",req.body);
   req.checkHeaders("user_id", "User id is required.").notEmpty();
   req.assert("appointment_id", "Appointment _id is required.").notEmpty();
+  req.assert("appointment_date","Appointment Date is required").notEmpty();
+  req.assert("next_in_chair", "Next_in_chair is required.").notEmpty();
   req.assert("barber_id", "Barber id is required.").notEmpty();
   req.assert("score", "score is required.").notEmpty();
+  req.assert("is_favourite","Is favorite is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -900,9 +913,36 @@ exports.rateBarber = function(req, res) {
       "ratings": {
         "rated_by": req.headers.user_id,
         "score": parseInt(req.body.score),
-        "appointment_date": req.body.appointment_date
+        "appointment_id": req.body.appointment_id,
+        "appointment_date":req.body.appointment_date
       }
     }
+  }
+
+  
+  if(req.body.is_favourite){
+    console.log("inside is_favourite");
+    user.findOne({
+      _id: req.headers.user_id,
+      "favourite_barber.barber_id": req.body.barber_id
+    }).exec(function(err,result){
+      if(result){
+        console.log("this is already a fav barber");
+      }
+      else{
+        user.update({
+        _id: req.headers.user_id
+      }, {
+        $push:{
+          favourite_barber:{
+            barber_id:req.body.barber_id
+          }
+        }
+      }, function(err, result) {
+        console.log("is_favourite",err,result);
+      })
+      }
+    })
   }
   console.log(updateData);
   async.waterfall([
@@ -911,6 +951,7 @@ exports.rateBarber = function(req, res) {
         _id: req.body.appointment_id
       }, {
         $set: {
+          next_in_chair:req.body.next_in_chair,
           is_rating_given: true,
           rating_score: parseInt(req.body.score),
         }
@@ -949,8 +990,10 @@ exports.rateBarber = function(req, res) {
   ])
 }
 
-exports.referapp = function(req,res){
+exports.referapp = function(req, res) {
   req.checkHeaders("user_id", "User id is required.").notEmpty();
+  req.assert("invite_as", "Invite as in required.").notEmpty();
+  req.checkHeaders("device_type","Device Type is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -958,20 +1001,65 @@ exports.referapp = function(req,res){
       err: errors
     });
   }
-  if(req.body.email){
-
-    commonObj.sendMail(req.body.email, from, subject, text,function(err,result){
-
+  if (req.body.referee_email) {
+    req.assert('referee_email', 'Email is not valid').isEmail();
+    req.assert('referee_email', 'Email cannot be blank').notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+      return res.status(400).send({
+        msg: "error in your request",
+        err: errors
+      });
+    }
+    let from = constantObj.barbermailId.mail;
+    let subject = "Use our app";
+    let text = "";
+    if (req.headers.device_type == 'ios') {
+      text = constantObj.appleUrl.url;
+    }
+    if (req.headers.device_type == 'android') {
+      text = constantObj.androidUrl.url;
+    }
+    commonObj.sendMail(req.body.referee_email, from, subject, text, function(err, result) {
+      console.log("mail in referapp",err,result)
+      if(result){
+        saveRefferApp(req,res);
+      }
     })
-  }
-  else if(req.body.phone_number){
-    commonObj.sentMessage(to, from, subject, text,function(err,result){
-      
+  } else if (req.body.referee_phone_number) {
+    let text = "";
+    if (req.headers.device_type == 'ios') {
+      text = constantObj.appleUrl.url;
+    }
+    if (req.headers.device_type == 'android') {
+      text = constantObj.androidUrl.url;
+    }
+    commonObj.sentMessage(text, req.body.referee_phone_number, function(err, result) {
+      console.log("twilio in referapp",err,result)
+      if(result){
+         saveRefferApp(req,res);
+      }
     })
-  }
-  else{
+  } else {
     return res.status(400).send({
-            msg: constantObj.messages.userStatusUpdateSuccess
-          });
+      msg: "Please specify how you want to sent referral code."
+    });
   }
+}
+
+let saveRefferApp = function(req,res) {
+  let saveObj = req.body;
+  saveObj.referral = req.headers.user_id;
+  referal(saveObj).save(function(err, result) {
+    if (err) {
+      return res.status(200).send({
+        msg: constantObj.messages.errorInSave,
+        err: err
+      });
+    } else {
+      return res.status(200).send({
+        msg: "You successfully refer the app.."
+      });
+    }
+  })
 }

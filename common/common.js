@@ -23,7 +23,10 @@ let nodemailer = require('nodemailer');
 let mg = require('nodemailer-mailgun-transport');
 
 exports.sendMail = function(to, from, subject, text, cb) {
-  let auth = {
+  console.log(to, from, subject, text, cb);
+  console.log("text",text);
+  try{
+    let auth = {
     auth: {
       api_key: process.env.MAILGUN_APIKEY,
       domain: process.env.MAILGUN_DOMAIN
@@ -40,13 +43,20 @@ exports.sendMail = function(to, from, subject, text, cb) {
 
   nodemailerMailgun.sendMail(mailOptions, function(err, info) {
     if (err) {
+       console.log("mail error",err);
       cb(err, null);
     } else {
+      console.log("mail sent",info);
       cb(null, info);
     }
   });
+  }
+  catch(e){
+    console.log("catch",e);
+  }
 }
 exports.notify = function(to_user_id, from_user_id, text, type,sentData, cb) {
+  console.log("notify",to_user_id, from_user_id, text, type,sentData);
   userObj.findOne({
     _id: to_user_id
   }, function(err, result) {
@@ -85,7 +95,7 @@ exports.notify = function(to_user_id, from_user_id, text, type,sentData, cb) {
               console.log("error in sending notification");
               cb(err, null);
             } else {
-              console.log("success in sending notification",result);
+              console.log("success in sending notification ios",result);
               cb(null, result);
             }
           });
@@ -163,15 +173,24 @@ exports.addOffset = function(dobFormat) {
   return dateInUtc;
 }
 
-let accountSid = 'AC865177abe2f391adae3a6d528a87e4d7'; // Your Account SID from www.twilio.com/console
-let authToken = '2eadab4ae69fe6583bbc54793208eea1'; // Your Auth Token from www.twilio.com/console
+let accountSid = process.env.TWILIO_TEST_ACCOUNTSID; // Your Account SID from www.twilio.com/console
+let authToken = process.env.TWILIO_TEST_AUTHTOKEN; // Your Auth Token from www.twilio.com/console
 
 let twilio = require('twilio');
 let client = new twilio(accountSid, authToken);
 
-exports.sentMessage = function(text,to) {
+exports.sentMessage = function(text,to,cb) {
+  console.log("inside sentMessage",text,to);
   client.messages.create({
-    body: 'Hello from Node', to: '+91 7696516981', // Text this number
-    from: '+14157410903' // From a valid Twilio number
-  }).then((message) => console.log(message.sid));
+    body: text, to: to, // Text this number
+    from: '+15005550006' // From a valid Twilio number
+  },function (err,result) {
+    console.log("twilio",err,result)
+    if(err){
+      cb(err,null);
+    }
+    else{
+      cb(null, result);
+    }
+  })
 }

@@ -170,16 +170,23 @@ exports.sendMessageToCustomer = function(req, res) {
       err: errors
     });
   }
+  user.findOne({_id:req.headers.user_id},function(err,data){
+    if(data){
+      let obj = {
+        text:req.body.text,
+        customerInfo : data
+      }
+      commonObj.notify(req.body.customer_id, req.headers.user_id, "sent you a message", "message_to_customer", obj, function(err, data) {
+        if (err) {
+          console.log(err);
+        } else {
 
-  commonObj.notify(req.body.customer_id, req.body.user_id, "sent you a message","message",req.body.text, function(err, data) {
-    if (err) {
-      console.log(err);
-    } else {
-
+        }
+      })
     }
   })
   res.status(200).send({
-    msg: "You msg is successfully send."
+    msg: "Your message has been successfully sent."
   });
 }
 

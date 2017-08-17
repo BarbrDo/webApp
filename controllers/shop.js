@@ -1609,3 +1609,75 @@ exports.allshops = function (req,res) {
     });
   })
 };
+
+
+
+exports.allShopsSearch = function(req, res) {
+    console.log("allShopsSearch");
+    var page = parseInt(req.query.page) || 1;
+    var count = parseInt(req.query.count) || 100;
+    var skipNo = (page - 1) * count;
+    var query = {};
+    var searchStr = ""
+    if (req.query.search) {
+        searchStr = req.query.search;
+    }
+    if (searchStr) {
+        query.$or = [{
+            name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            address: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            state: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            city: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            zip: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }]
+    }
+
+    shop.aggregate([{
+        $match: query
+    }]).exec(function(err, data) {
+        if (err) {
+            console.log(err)
+        } else {
+            shop.aggregate([{
+                $match: query
+            }, {
+                "$skip": skipNo
+            }, {
+                "$limit": count
+            }]).exec(function(err, result) {
+                var length = result.length;
+                if (err) {
+                    res.status(400).send({
+                        "msg": constantObj.messages.userStatusUpdateFailure,
+                        "err": err
+                    });
+                } else {
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": result,
+                        "count": length
+                    })
+                }
+            })
+        }
+    })
+};

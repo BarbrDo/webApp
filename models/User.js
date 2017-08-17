@@ -91,6 +91,9 @@ let userSchema = new mongoose.Schema({
             appointment_id: {
               type: Schema.Types.ObjectId,
               ref: 'appointments'
+            },
+            appointment_date:{
+                type:Date
             }
         }
     ],

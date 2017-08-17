@@ -30,6 +30,7 @@ module.exports = function(app, express) {
     let barber = require('./../controllers/barber');
     let customer = require('./../controllers/customer');
      let contactController = require('./../controllers/contact');
+     let shopController = require('./../controllers/shop');
 
     //Users
     app.post('/api/v2/activate', userController.activate) //Account activate
@@ -57,11 +58,10 @@ module.exports = function(app, express) {
     app.delete('/api/v2/customer/favouritebarber/:barber_id',customer.removeFavouriteBarber);
     app.post('/api/v2/customer/gallery', upload.any(), userController.uploadCustomerGallery);
     app.delete('/api/v2/customer/gallery/:image_id',userController.deleteImages); //Delete image from gallery
-    app.post('/api/v2/ratebarber',barber.rateBarber);
+    // app.post('/api/v2/ratebarber',barber.rateBarber);
     app.get('/api/v2/customer/timeSlots',customer.timeSlots);
     app.post('/api/v2/customer/messageToBarber',customer.sendMessageToBarber)
     app.post('/api/v2/ratebarber',customer.rateBarber);
-    // app.post('/api/v2/referapp',customer.referapp);
 
     //Barber
     app.post('/api/v2/barber/services',barber.addBarberServices); // add barber services
@@ -81,6 +81,8 @@ module.exports = function(app, express) {
     app.put('/api/v2/barber/goOffline',barber.goOffline); // barber go offline
     app.post('/api/v2/barber/messageToCustomer',barber.sendMessageToCustomer)
     app.put('/api/v2/barber/checkin/:appointment_id',barber.completeAppointment);//Barber mark appointment as completed
+    app.get('/api/v2/shopsearch',shopController.allShopsSearch)
+
     // app.get('/api/v1/barbers/:barber_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.viewBarberProfile);
 
 
@@ -88,6 +90,7 @@ module.exports = function(app, express) {
     app.get('/api/v2/logout',userController.logout);
     app.get('/api/v2/userprofile/:id', userController.getProfiles);
     app.post('/api/v2/contact', contactController.contactBarbrDo);
+    app.post('/api/v2/referapp',customer.referapp);
     // Stripe Implementation API
 
 

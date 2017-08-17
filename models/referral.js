@@ -2,7 +2,7 @@ let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let referalSchema = new mongoose.Schema({
-    user_type: {
+    invite_as: {
         type: String,
          enum: ["customer", "barber"],
         required: true

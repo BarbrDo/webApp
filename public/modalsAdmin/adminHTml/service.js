@@ -344,13 +344,49 @@ angular.module('barbrdo').factory('Admin', function($http) {
     getAllShops:function (data) {
       return $http.get('/api/v2/shops');
     },
-    addShopsWithbarber:function (data,id) {
-      console.log(data,id);
+    addShopsWithbarber:function (data) {
       return $http({
         method: 'post',
         url: '/api/v2/barber/shop',
         headers: {
-          'user_id': id
+          'user_id': data.user_id
+        },
+        data: data
+      });
+    },
+    removeAssociateShop: function(data) {
+      return $http({
+        method: 'DELETE',
+        url: '/api/v2/barber/associatedshops',
+        data: data,
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+          'user_id': data.user_id
+        }
+      });
+    },
+    makeDefaultShop:function (data) {
+      return $http({
+        method: 'post',
+        url: '/api/v2/barber/makeDefaultshop',
+        headers: {
+          'user_id': data.user_id
+        },
+        data: data
+      });
+    },
+    barberServices:function(data){
+      return $http({
+        method: 'get',
+        url: '/api/v2/barber/cutingservices'
+      });
+    },
+    goOnline:function  (data) {
+      return $http({
+        method: 'post',
+        url: '/api/v2/barber/goOnline',
+        headers: {
+          'user_id': data.user_id
         },
         data: data
       });

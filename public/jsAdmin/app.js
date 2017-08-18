@@ -11,7 +11,8 @@ var app_admin = angular.module('barbrdo', [
   'ngMask',
   'toastr',
   'ngStorage',
-  'angularjs-dropdown-multiselect'
+  'angularjs-dropdown-multiselect',
+  'ngLodash'
 ]);
 
 app_admin.config([
@@ -155,7 +156,7 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
       }
     },
     url: '/barbers',
-    controller: "AdminCtrl",
+    controller: "BarberAdminCtrl",
     templateUrl: "/modalsAdmin/adminHTml/views/barberAdmin.html"
   }).state('view_cust_appointment', {
     resolve: {

@@ -64,7 +64,7 @@ module.exports = function(app, express) {
     app.post('/api/v2/ratebarber',customer.rateBarber);
 
     //Barber
-    app.post('/api/v2/barber/services',barber.addBarberServices); // add barber services
+    // app.post('/api/v2/barber/services',barber.addBarberServices); // add barber services
     app.put('/api/v2/barber/appointment/decline/:appointment_id', barber.cancelAppointment); //barber cancel appointment
     app.put('/api/v2/barber/appointment/accept/:appointment_id', barber.confirmRequest); //bar confirm appointment
     // app.get('/api/v2/barber/services', barber.getAllServices); // barber get all services
@@ -74,6 +74,7 @@ module.exports = function(app, express) {
     app.delete('/api/v2/barber/services/:barber_service_id',barber.deleteBarberService); // delete a berber service
     app.get('/api/v2/barber/profile/:barber_id',barber.viewBarberProfile); // view barber profile
     app.post('/api/v2/barber/shop',barber.addShop); // add shop against a barber
+    app.delete('/api/v2/barber/associatedshops',barber.removeAssociatedShops);
     app.post('/api/v2/barber/makeDefaultshop',barber.makeDefaultshop);
     app.get('/api/v2/barber/shops',barber.getShops); // get all shops against a berber
     app.get('/api/v2/barber/home',barber.barberHomeScreen); // barber home screen map api
@@ -82,6 +83,8 @@ module.exports = function(app, express) {
     app.post('/api/v2/barber/messageToCustomer',barber.sendMessageToCustomer)
     app.put('/api/v2/barber/checkin/:appointment_id',barber.completeAppointment);//Barber mark appointment as completed
     app.get('/api/v2/shopsearch',shopController.allShopsSearch)
+    app.get('/api/v2/states',barber.getUsStates);
+    app.get('/api/v2/barber/cutingservices',barber.showServices);
 
     // app.get('/api/v1/barbers/:barber_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.viewBarberProfile);
 

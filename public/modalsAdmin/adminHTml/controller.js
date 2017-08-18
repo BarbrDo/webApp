@@ -70,28 +70,24 @@ app_admin.controller("AdminCtrl", [
       ]
     ];
 
-    $scope.datasetOverride = [
-      {
-        yAxisID: 'y-axis-1'
-      }, {
-        yAxisID: 'y-axis-2'
-      }
-    ];
+    $scope.datasetOverride = [{
+      yAxisID: 'y-axis-1'
+    }, {
+      yAxisID: 'y-axis-2'
+    }];
     $scope.options = {
       scales: {
-        yAxes: [
-          {
-            id: 'y-axis-1',
-            type: 'linear',
-            display: true,
-            position: 'left'
-          }, {
-            id: 'y-axis-2',
-            type: 'linear',
-            display: true,
-            position: 'right'
-          }
-        ]
+        yAxes: [{
+          id: 'y-axis-1',
+          type: 'linear',
+          display: true,
+          position: 'left'
+        }, {
+          id: 'y-axis-2',
+          type: 'linear',
+          display: true,
+          position: 'right'
+        }]
       }
     };
 
@@ -260,7 +256,7 @@ app_admin.controller("AdminCtrl", [
         $scope.loaderStart = false;
         $state.go(params);
         toastr.success(params + '' +
-            'is Added Successfully');
+          'is Added Successfully');
       }).catch(function(result) {
         $scope.loaderStart = false;
         $scope.messages = result.data.msg
@@ -364,7 +360,7 @@ app_admin.controller("AdminCtrl", [
 
     $scope.updatecustomer = function(customer) {
       $scope.loaderStart = true;
-      
+
       Admin.updateCustomer(customer).then(function(response) {
         $scope.loaderStart = false;
         toastr.success('Customer is updated Succesfully');
@@ -708,21 +704,6 @@ app_admin.controller("AdminCtrl", [
       });
     };
 
-    $scope.barberdetails = function() {
-      $scope.loaderStart = true;
-      setTimeout(function() {
-        Admin.barberDetail($stateParams.id).then(function(response) {
-          console.log(response)
-          $scope.loaderStart = false;
-          $scope.barberdetail = response.data.data[0];
-        }).catch(function(result) {
-          $scope.loaderStart = false;
-          $scope.messages = result.data.msg
-        })
-      }, 500);
-
-    };
-
     $scope.cancelappoint = function() {
       $scope.loaderStart = true;
       Admin.cancelAppoint($rootScope.appointment).then(function(response) {
@@ -842,41 +823,112 @@ app_admin.controller("AdminCtrl", [
       })
     }
 
-    if ($state.current.name == 'barbers') {
-      Admin.getAllShops().then(function(response) {
-        $scope.searchSelectAllData = response.data.data
-      })
+    /*
+    ________________________
+    18th of aug
+    Hussain Mohammed 
+    ________________________
+    */
+
+
+    // if ($state.current.name == 'barbersdetail') {
+      $scope.barberDetails = function(){
       $scope.searchSelectAllModel = [];
       $scope.searchSelectAllSettings = {
         enableSearch: true,
         showCheckAll: false,
         showUncheckAll: false
       };
-    }
-    $scope.addShops = function(id) {
-      $rootScope.barberId = id
-      $scope.searchSelectAllModel = [];
-    }
-    $scope.submit = function() {
-      let arr = [];
-      if($scope.searchSelectAllModel.length>0){
-        for(var i=0;i<$scope.searchSelectAllModel.length;i++){
-          let obj = {
-            shop_id:$scope.searchSelectAllModel[i].id
+      $scope.loaderStart = true;
+      Admin.barberDetail($stateParams.id).then(function(response) {
+        $scope.loaderStart = false;
+        $scope.barberdetail = response.data.data[0];
+        $scope.showShops = [];
+        Admin.getAllShops().then(function(response) {
+          console.log("all shops", response.data.data);
+          for (var i = 0; i < $scope.barberdetail.associateShops.length; i++) {
+            for (var j = 0; j < response.data.data.length; j++) {
+              // console.log(response.data.data[j].id, $scope.barberdetail.associateShops[i]._id)
+              // console.log(response.data.data[j].id == $scope.barberdetail.associateShops[i]._id)
+              if (response.data.data[j].id == $scope.barberdetail.associateShops[i]._id) {
+                response.data.data.splice(j, 1)
+              } 
+            }
           }
-          arr.push(obj);
-        }
-        let passobj = {
-          shops:arr
-        }
-        Admin.addShopsWithbarber(passobj,$rootScope.barberId).then(function(response) {
-          console.log(response);
-          $scope.pageChanged();
+          $scope.showShops = response.data.data;
         })
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
+    }
+
+
+    $scope.barbrInfo = function  (barber_id) {
+      Admin.barberServices().then(function(response){
+        $scope.allservices = response.data.data;
+      })
+      $rootScope.barber_id = barber_id;
+      Admin.barberDetail(barber_id).then(function(response) {
+        // $scope.loaderStart = false;
+        $scope.barberInfo = response.data.data[0];
+      })
+    }
+
+    $scope.addAssociateShop = function(shop_id) {
+      $scope.loaderStart = true;
+      let arr = [];
+      let obj = {
+        shop_id: shop_id
       }
-      else{
-        toastr.warning("Please choose atleast one shop");
+      arr.push(obj);
+      let passobj = {
+        shops: arr,
+        user_id: $stateParams.id
       }
+      Admin.addShopsWithbarber(passobj).then(function(response) {
+        // console.log(response);
+        $scope.barberDetails()
+      })
+    }
+    $scope.removeShop = function(shop_id) {
+      $scope.loaderStart = true;
+      let obj = {
+        shop_id: shop_id,
+        user_id: $stateParams.id
+      }
+      Admin.removeAssociateShop(obj).then(function(response) {
+        // console.log(response);
+        $scope.barberDetails()
+      })
+    }
+    $scope.addDefaultShop = function(shop_id) {
+      $scope.loaderStart = true;
+      let obj = {
+        shop_id: shop_id,
+        user_id: $stateParams.id
+      }
+      Admin.makeDefaultShop(obj).then(function(response) {
+        // console.log(response);
+        $scope.barberDetails()
+      })
+    }
+    $scope.goOnline = function(shop_id){
+      console.log(shop_id)
+      $scope.loaderStart = true;
+      let obj = {
+        shop_id: shop_id,
+        user_id: $rootScope.barber_id
+      }
+      Admin.goOnline(obj).then(function(response) {
+        // console.log(response);
+        $scope.barberDetails()
+      })
+    }
+    $scope.myservice = {};
+    $scope.submit = function(myservice){
+      console.log("myservice",myservice);
+      
     }
   }
 ]);

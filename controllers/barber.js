@@ -9,6 +9,7 @@ let commonObj = require('../common/common');
 let shop = require('../models/shop');
 let mongoose = require('mongoose');
 let moment = require('moment');
+let usStates = require('../models/us_states');
 /*
 _________________________________________________________
 Author:Hussain,
@@ -743,6 +744,8 @@ exports.availableBarber = function(req, res) {
           is_deleted: "$is_deleted",
           is_active: "$is_active",
           is_verified: "$is_verified",
+          is_online:"$is_online",
+          is_available:"$is_available",
           user_type: "$user_type",
           latLong: "$latLong",
           picture: "$picture",
@@ -1039,6 +1042,33 @@ exports.addShop = function(req, res) {
   })
 };
 
+exports.removeAssociatedShops = function(req, res) {
+  console.log(req.body);
+  req.checkHeaders("user_id", "User id required.").notEmpty();
+  req.assert("shop_id", "shop_id  required.").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+  shopBarber.remove({
+    "barber_id": req.headers.user_id,
+    shop_id: req.body.shop_id
+  }).exec(function(err, result) {
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.errorRetreivingData,
+        "err": err
+      });
+    } else {
+      res.status(200).send({
+        msg: 'Successfully removed Shop.'
+      });
+    }
+  })
+}
 
 exports.makeDefaultshop = function(req, res) {
     req.checkHeaders("user_id", "User id is required.").notEmpty();
@@ -1292,4 +1322,23 @@ exports.completeAppointment = function(req, res) {
       }
     }
   })
+}
+exports.getUsStates = function(req,res){
+  usStates.find({},function  (err,data) {
+    return res.status(200).send({
+          msg: constantObj.messages.successRetreivingData,
+          data:data
+        });
+  })
+}
+exports.showServices = function(req,res) {
+  console.log("show service");
+  service.find({
+        status: true
+      }, function(err, serData) {
+        return res.status(200).send({
+          msg: constantObj.messages.successRetreivingData,
+          data:serData
+        });
+      })
 }

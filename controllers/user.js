@@ -440,9 +440,6 @@ exports.accountPut = function(req, res, next) {
       if ((req.files) && (req.files.length > 0)) {
         user.picture = req.files[0].filename;
       }
-      if (req.body.gender != 'undefined') {
-        user.gender = req.body.gender;
-      }
       if (req.body.radius_search != 'undefined') {
         user.radius_search = req.body.radius_search;
       }

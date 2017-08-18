@@ -3,11 +3,11 @@
     <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
     <li class="breadcrumb-item active">Barbers</li>
 </ol>
-<div class="panel" ng-init="pageChanged()">
+<div class="panel" ng-controller="paymentCtrl as vm">
     <div class="panel-heading">
         All Barbers
     </div>
-    <div class="panel-body">
+    <div class="panel-body" ng-init="vm.allPayments()">
         <!-- RAHUL  CODE -->
         <!-- Page Content -->
         <div id="page-content-wrapper">
@@ -24,10 +24,12 @@
                     <thead>
                         <tr>
                             <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
-                              <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">E-mail<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                            <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">E-mail<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
                             <!-- <th style="font-size: 13px;"><a ng-click="Sort('name[0]')" class="name" style="color: #ffffff;">Shop Associated With<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th> -->
                             <th style="font-size: 13px;" width="20%"><a ng-click="Sort('created_date')" class="created_date" style="color: #ffffff;">Member Since<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
-                              <th style="font-size: 13px;" width="20%">Associate to shop</th>
+                            <!-- <th style="font-size: 13px;" width="20%">Associate to shop</th> -->
+                            <th style="font-size: 13px;" width="20%">Is Online</th>
+                            <th style="font-size: 13px;" width="20%">Is Available</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,13 +45,14 @@
                                 {{barber.created_date | date:dd/mm/yyyy}}
                             </td>
                             <td>
-                              <div ng-if="barber.associateShops.length>0">
-                                <select>
-                                  <<option value="">--View All--</option>
-                                  <option ng-repeat = "data in barber.associateShops" value="">{{data.name}}</option>
-                               </select>
-                               </div>
-                              <span class="glyphicon glyphicon-shopping-cart" data-toggle="modal" data-target="#myModal" ng-click="addShops(barber._id)"></span>
+                                {{barber.is_online}}
+                                <span ng-hide="barber.is_online!=true">
+              <a data-toggle="tooltip" title="DEACTIVATE RECORD" ng-click="showme=true"><i class="fa fa-toggle-on" style="font-size: 30px;" aria-hidden="true"></i></a></span>
+                                <span ng-show="barber.is_online==false">
+              <a ng-click="barbrInfo(barber._id)" data-toggle="modal" data-target="#myModal"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;"></i></a> </span>
+                            </td>
+                            <td>
+                                {{barber.is_available}}
                             </td>
                         </tr>
                     </tbody>
@@ -60,30 +63,38 @@
                     <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" ng-change="pageChanged()"></ul>
                 </div>
                 <br>
-
             </div>
             <!-- Modal -->
         </div>
     </div>
 </div>
 
-
 <div class="modal fade" id="myModal" role="dialog">
-   <div class="modal-dialog">
-     <!-- Modal content-->
-     <div class="modal-content">
-       <div class="modal-header">
-         <button type="button" class="close" data-dismiss="modal">&times;</button>
-         <h4 class="modal-title">Modal Header</h4>
-       </div>
-       <div class="modal-body">
-         <div ng-dropdown-multiselect="" options="searchSelectAllData" selected-model="searchSelectAllModel" extra-settings="searchSelectAllSettings"></div>
-       </div>
-       <div class="modal-footer">
-         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="submit()">Submit</button>
-         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-       </div>
-     </div>
-
-   </div>
- </div>
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Barber Go Online With Shop</h4>--{{barberInfo}}
+            </div>
+            <div class="modal-body">
+                <span ng-if="barberInfo.associateShops.length==0"><br><br><br>Not Assiciated With Any Shop</span>
+                <div ng-if="barberInfo.associateShops.length!=0" style="width: 100%;float: left;">
+                    <select name="singleSelect" id="singleSelect" ng-model="shopid" class="form-control">
+                        <option value="">---Please select---</option>
+                        <!-- not selected / blank option -->
+                        <option ng-repeat="data in barberInfo.associateShops" value="{{data._id}}">{{data.name}}</option>
+                        <!-- interpolation -->
+                    </select>
+                    <div ng-repeat="myservice in allservices">
+                        <label>{{myservice.name}}</label>
+                        <input type="text" ng-model="myservice.price">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="submit(myservice)">Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>

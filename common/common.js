@@ -76,6 +76,7 @@ exports.notify = function(to_user_id, from_user_id, text, type,sentData, cb) {
         if (result.device_type === 'ios') {
 
           console.log("inside ios",id);
+          console.log("device token",result.device_id)
           let apnProvider = new apn.Provider(options);
           let deviceToken = result.device_id;
           let note = new apn.Notification();
@@ -92,7 +93,7 @@ exports.notify = function(to_user_id, from_user_id, text, type,sentData, cb) {
           note.message = id
           apnProvider.send(note, deviceToken).then((result) => {
             if (result.failed.length > 0) {
-              console.log("error in sending notification");
+              console.log("error in sending notification",JSON.stringify(result));
               cb(err, null);
             } else {
               console.log("success in sending notification ios",result);

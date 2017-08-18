@@ -13,7 +13,8 @@ let shopBarbarSchema = new mongoose.Schema({
         ref: 'users'
     },
     is_default: {
-        type: Boolean
+        type: Boolean,
+        default:false
     }
 });
 

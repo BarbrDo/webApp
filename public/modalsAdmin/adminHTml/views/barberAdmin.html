@@ -3,11 +3,11 @@
     <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
     <li class="breadcrumb-item active">Barbers</li>
 </ol>
-<div class="panel" ng-controller="paymentCtrl as vm">
+<div class="panel" ng-init="pageChanged()">
     <div class="panel-heading">
         All Barbers
     </div>
-    <div class="panel-body" ng-init="vm.allPayments()">
+    <div class="panel-body">
         <!-- RAHUL  CODE -->
         <!-- Page Content -->
         <div id="page-content-wrapper">
@@ -75,7 +75,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Barber Go Online With Shop</h4>--{{barberInfo}}
+                <h4 class="modal-title">Barber Go Online With Shop</h4>
             </div>
             <div class="modal-body">
                 <span ng-if="barberInfo.associateShops.length==0"><br><br><br>Not Assiciated With Any Shop</span>

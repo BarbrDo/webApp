@@ -156,7 +156,7 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
       }
     },
     url: '/barbers',
-    controller: "BarberAdminCtrl",
+    controller: "AdminCtrl",
     templateUrl: "/modalsAdmin/adminHTml/views/barberAdmin.html"
   }).state('view_cust_appointment', {
     resolve: {

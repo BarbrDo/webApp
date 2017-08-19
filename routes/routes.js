@@ -47,6 +47,7 @@ module.exports = function(app, express) {
     app.post('/api/v2/checkFaceBook', userController.checkFaceBook);
     //Shops
 
+    app.post('/api/v2/shop/request',shopController.shopRequest)
 
     //Customer
     app.get('/api/v2/customer/barbers',customer.getNearbyBarbers);
@@ -85,7 +86,7 @@ module.exports = function(app, express) {
     app.get('/api/v2/shopsearch',shopController.allShopsSearch)
     app.get('/api/v2/states',barber.getUsStates);
     app.get('/api/v2/barber/cutingservices',barber.showServices);
-
+    app.post('/api/v1/barber/gallery',upload.any(), barber.uploadBarberGallery);
     // app.get('/api/v1/barbers/:barber_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.viewBarberProfile);
 
 

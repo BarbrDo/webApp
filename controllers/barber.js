@@ -97,6 +97,7 @@ exports.cancelAppointment = function(req, res) {
   req.checkParams("appointment_id", "Appointment id is required.").notEmpty();
   req.checkHeaders("user_type", "User type is required.").notEmpty();
   req.checkHeaders("user_id", "User Id cannot be blank").notEmpty();
+  req.assert("cancel_reason","Cancel appointment reason is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -124,12 +125,11 @@ exports.cancelAppointment = function(req, res) {
           $set: {
             "cancel_by_user_type": req.headers.user_type,
             "cancel_by_user_id": req.headers.user_id,
-            "appointment_status": "cancel"
+            "appointment_status": "cancel",
+            "cancel_reason":req.body.cancel_reason
           }
         }, function(err, result) {
-
-          console.log("asdfsdf", err, result);
-
+          console.log("cancel by barber appointment", err, result);
           if (err) {
             res.status(400).send({
               msg: constantObj.messages.errorRetreivingData,
@@ -878,6 +878,8 @@ exports.rateBarber = function(req, res) {
   ])
 }
 exports.goOnline = function(req, res) {
+  console.log("goonline",req.headers);
+  console.log("body",req.body);
   req.checkHeaders("user_id", "User id is required.").notEmpty();
   req.assert("services", "service are required.").notEmpty();
   req.assert("shop_id", "shop_id is required.").notEmpty();
@@ -1341,4 +1343,60 @@ exports.showServices = function(req,res) {
           data:serData
         });
       })
+}
+exports.uploadBarberGallery = function(req, res) {
+    req.checkHeaders("user_id", "_id is required").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let updateData = {};
+    updateData.modified_date = new Date()
+    delete updateData._id;
+    if ((req.files) && (req.files.length > 0)) {
+        let userimg = [];
+        for (let i = 0; i < req.files.length; i++) {
+            let obj = {};
+            obj.name = req.files[i].filename;
+            userimg.push(obj);
+
+        }
+        updateData.gallery = userimg;
+    }
+    console.log("updateData.gallery", updateData.gallery);
+    user.update({
+        _id: req.headers.user_id
+    }, {
+        $push: {
+            gallery: {
+                $each: updateData.gallery
+            }
+        }
+    }, function(errorInSaveChair, success) {
+        if (errorInSaveChair) {
+            res.status(400).send({
+                msg: 'Error in finding shop.'
+            });
+        } else {
+            user.findOne({
+                _id: req.headers.user_id
+            }, function(err, response) {
+                if (err) {
+                    res.status(400).send({
+                        msg: constantObj.messages.errorRetreivingData,
+                        "err": err
+                    });
+                } else {
+                    res.status(200).send({
+                        msg: 'Successfully updated fields.',
+                        "user": response,
+                        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+                    });
+                }
+            })
+        }
+    })
 }

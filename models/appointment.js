@@ -28,8 +28,11 @@ let appointmentSchema = new mongoose.Schema({
     },
     cancel_by_user_id:{
           type: Schema.Types.ObjectId,
-      },
+    },
     cancel_by_user_type:{
+        type:String
+    },
+    cancel_reason:{
         type:String
     },
     services: [],

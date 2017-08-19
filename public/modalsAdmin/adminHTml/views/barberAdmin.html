@@ -45,11 +45,11 @@
                                 {{barber.created_date | date:dd/mm/yyyy}}
                             </td>
                             <td>
-                                {{barber.is_online}}
+                               
                                 <span ng-hide="barber.is_online!=true">
-              <a data-toggle="tooltip" title="DEACTIVATE RECORD" ng-click="showme=true"><i class="fa fa-toggle-on" style="font-size: 30px;" aria-hidden="true"></i></a></span>
+              <a title="DEACTIVATE RECORD" ng-click="getBarberId(barber._id)" data-toggle="modal" data-target="#secondModel"><i class="fa fa-toggle-on" style="font-size: 30px;color:green;" aria-hidden="true"></i></a></span>
                                 <span ng-show="barber.is_online==false">
-              <a ng-click="barbrInfo(barber._id)" data-toggle="modal" data-target="#myModal"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;"></i></a> </span>
+              <a ng-click="barbrInfo(barber._id)" data-toggle="modal" data-target="#myModal"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;color:red;"></i></a> </span>
                             </td>
                             <td>
                                 {{barber.is_available}}
@@ -68,7 +68,6 @@
         </div>
     </div>
 </div>
-
 <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
@@ -79,22 +78,53 @@
             </div>
             <div class="modal-body">
                 <span ng-if="barberInfo.associateShops.length==0"><br><br><br>Not Assiciated With Any Shop</span>
-                <div ng-if="barberInfo.associateShops.length!=0" style="width: 100%;float: left;">
-                    <select name="singleSelect" id="singleSelect" ng-model="shopid" class="form-control">
-                        <option value="">---Please select---</option>
-                        <!-- not selected / blank option -->
-                        <option ng-repeat="data in barberInfo.associateShops" value="{{data._id}}">{{data.name}}</option>
-                        <!-- interpolation -->
-                    </select>
-                    <div ng-repeat="myservice in allservices">
-                        <label>{{myservice.name}}</label>
-                        <input type="text" ng-model="myservice.price">
-                    </div>
+                <div ng-if="barberInfo.associateShops.length!=0">
+                    <form class="form-horizontal">
+                        <div ng-repeat="myservice in allservices">
+                            <div class="form-group">
+                                <label for="inputEmail3" class="col-sm-3 control-label">{{myservice.name | uppercase}} $</label>
+                                <div class="col-sm-9">
+                                    <div class="inline">
+                                        <div>
+                                            <input type="text" class="form-control" style="width:98%" ng-model="price[$index]">
+                                        </div>
+                                    </div>
+                                   </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-3 control-label"> SHOP</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" ng-model="shopid._id" ng-options="x._id as x.name for x in barberInfo.associateShops" class="form-control" ng-change="getUserId(shopid._id)">
+                                    <option value="" selected>--select shop--</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="submit(myservice)">Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="submit(shopid._id)">Go Online Now </button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
+<div class="modal fade" id="secondModel" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Barber Go Offline With Shop</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure You want to make this barber offline
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="goOffline()">Submit </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

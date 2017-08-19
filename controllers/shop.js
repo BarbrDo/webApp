@@ -9,6 +9,7 @@ let nodemailer = require('nodemailer');
 let mg = require('nodemailer-mailgun-transport');
 let async = require('async');
 let chairBook = require('../models/chair_booking');
+let shopRequest = require('../models/shop_request');
 
 exports.updateShop = function(req, res) {
     console.log("req.body....", req.body);
@@ -1681,3 +1682,53 @@ exports.allShopsSearch = function(req, res) {
         }
     })
 };
+exports.shopRequest = function(req,res){
+    req.checkHeaders("user_id", "user_id is required").notEmpty();
+    req.assert("name", "Name is required.").notEmpty();
+    req.assert("city", "City is required").notEmpty();
+    req.assert("state", "Name is required.").notEmpty();
+    req.assert("zip", "City is required").notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let zip = parseInt(req.body.zip);
+    let saveData = req.body;
+    saveData.request_by = req.headers.user_id;
+    geocoder.geocode(zip, function(errGeo, latlng) {
+        if (errGeo) {
+            return res.status(400).send({
+                msg: constantObj.messages.errorInSave
+            })
+        } else {
+            console.log("shop_lat_long",JSON.stringify(latlng));
+            if(latlng.results.length>0){
+                saveData.latLong = [latlng.results[0].geometry.location.lng, latlng.results[0].geometry.location.lat];
+                saveData.address = latlng.results[0].formatted_address;
+                console.log("saveData",saveData);
+                shopRequest(saveData).save(function (err,results) {
+                    if(err){
+                        return res.status(400).send({
+                            msg: constantObj.messages.errorInSave,
+                            err:err
+                        })
+                    }
+                    else{
+                        return res.status(200).send({
+                            msg: constantObj.messages.saveSuccessfully,
+                            data:results
+                        })
+                    }
+                })
+            }
+            else{
+                res.status(400).send({
+                    msg:"Zip code is not valid"
+                })
+            }
+        }
+    });
+}

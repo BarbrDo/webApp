@@ -21,6 +21,7 @@ module.exports = function(app, express) {
     app.put('/api/v2/disapprovecust/:cust_id',customerController.disapprovecustomer);
     app.put('/api/v2/verifycust/:cust_id',customerController.verifycustomer);
     app.get('/api/v2/allcustomers',customerController.listcustomers);
+    app.get('/api/v2/allappointment',customerController.allappointment)
 
 
     //Updation Of Barber

@@ -456,7 +456,7 @@ exports.sendMessageToBarber = function(req, res) {
     if (data) {
       let obj = {
         text: req.body.text,
-        customerInfo : data
+        customerInfo: data
       }
       commonObj.notify(req.body.barber_id, req.headers.user_id, "sent you a message", "message_to_barber", obj, function(err, data) {
         if (err) {
@@ -893,14 +893,14 @@ exports.getCustomerLastAppointment = function(req, res) {
 }
 
 exports.rateBarber = function(req, res) {
-  console.log("req.body",req.body);
+  console.log("req.body", req.body);
   req.checkHeaders("user_id", "User id is required.").notEmpty();
   req.assert("appointment_id", "Appointment _id is required.").notEmpty();
-  req.assert("appointment_date","Appointment Date is required").notEmpty();
+  req.assert("appointment_date", "Appointment Date is required").notEmpty();
   req.assert("next_in_chair", "Next_in_chair is required.").notEmpty();
   req.assert("barber_id", "Barber id is required.").notEmpty();
   req.assert("score", "score is required.").notEmpty();
-  req.assert("is_favourite","Is favorite is required.").notEmpty();
+  req.assert("is_favourite", "Is favorite is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -914,33 +914,32 @@ exports.rateBarber = function(req, res) {
         "rated_by": req.headers.user_id,
         "score": parseInt(req.body.score),
         "appointment_id": req.body.appointment_id,
-        "appointment_date":req.body.appointment_date
+        "appointment_date": req.body.appointment_date
       }
     }
   }
 
-  
-  if(req.body.is_favourite){
+
+  if (req.body.is_favourite) {
     console.log("inside is_favourite");
     user.findOne({
       _id: req.headers.user_id,
       "favourite_barber.barber_id": req.body.barber_id
-    }).exec(function(err,result){
-      if(result){
+    }).exec(function(err, result) {
+      if (result) {
         console.log("this is already a fav barber");
-      }
-      else{
+      } else {
         user.update({
-        _id: req.headers.user_id
-      }, {
-        $push:{
-          favourite_barber:{
-            barber_id:req.body.barber_id
+          _id: req.headers.user_id
+        }, {
+          $push: {
+            favourite_barber: {
+              barber_id: req.body.barber_id
+            }
           }
-        }
-      }, function(err, result) {
-        console.log("is_favourite",err,result);
-      })
+        }, function(err, result) {
+          console.log("is_favourite", err, result);
+        })
       }
     })
   }
@@ -951,7 +950,7 @@ exports.rateBarber = function(req, res) {
         _id: req.body.appointment_id
       }, {
         $set: {
-          next_in_chair:req.body.next_in_chair,
+          next_in_chair: req.body.next_in_chair,
           is_rating_given: true,
           rating_score: parseInt(req.body.score),
         }
@@ -993,7 +992,7 @@ exports.rateBarber = function(req, res) {
 exports.referapp = function(req, res) {
   req.checkHeaders("user_id", "User id is required.").notEmpty();
   req.assert("invite_as", "Invite as in required.").notEmpty();
-  req.checkHeaders("device_type","Device Type is required.").notEmpty();
+  req.checkHeaders("device_type", "Device Type is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -1021,9 +1020,9 @@ exports.referapp = function(req, res) {
       text = constantObj.androidUrl.url;
     }
     commonObj.sendMail(req.body.referee_email, from, subject, text, function(err, result) {
-      console.log("mail in referapp",err,result)
-      if(result){
-        saveRefferApp(req,res);
+      console.log("mail in referapp", err, result)
+      if (result) {
+        saveRefferApp(req, res);
       }
     })
   } else if (req.body.referee_phone_number) {
@@ -1035,9 +1034,9 @@ exports.referapp = function(req, res) {
       text = constantObj.androidUrl.url;
     }
     commonObj.sentMessage(text, req.body.referee_phone_number, function(err, result) {
-      console.log("twilio in referapp",err,result)
-      if(result){
-         saveRefferApp(req,res);
+      console.log("twilio in referapp", err, result)
+      if (result) {
+        saveRefferApp(req, res);
       }
     })
   } else {
@@ -1047,7 +1046,7 @@ exports.referapp = function(req, res) {
   }
 }
 
-let saveRefferApp = function(req,res) {
+let saveRefferApp = function(req, res) {
   let saveObj = req.body;
   saveObj.referral = req.headers.user_id;
   referal(saveObj).save(function(err, result) {
@@ -1060,6 +1059,204 @@ let saveRefferApp = function(req,res) {
       return res.status(200).send({
         msg: "You successfully refer the app.."
       });
+    }
+  })
+}
+exports.allappointment = function(req, res) {
+  var page = parseInt(req.query.page) || 1;
+  var count = parseInt(req.query.count) || 100;
+  var skipNo = (page - 1) * count;
+  var query = {};
+  var searchStr = ""
+  console.log("skipNo",skipNo);
+  console.log("count",count);
+  if (req.query.search) {
+    searchStr = req.query.search;
+  }
+  if (searchStr) {
+    query.$or = [{
+      shop_name: {
+        $regex: searchStr,
+        '$options': 'i'
+      }
+    }, {
+      barber_first_name: {
+        $regex: searchStr,
+        '$options': 'i'
+      }
+    }, {
+      barber_last_name: {
+        $regex: searchStr,
+        '$options': 'i'
+      }
+    }, {
+      customer_first_name: {
+        $regex: searchStr,
+        '$options': 'i'
+      }
+    }, {
+      customer_last_name: {
+        $regex: searchStr,
+        '$options': 'i'
+      }
+    }, {
+      cancel_by_user_first_name: {
+        $regex: searchStr,
+        '$options': 'i'
+      }
+    }, {
+      cancel_by_user_last_name: {
+        $regex: searchStr,
+        '$options': 'i'
+      }
+    }]
+  }
+
+  appointment.aggregate([{
+    $lookup: {
+      from: "shops",
+      localField: "shop_id",
+      foreignField: "_id",
+      as: "shop_info"
+    }
+  }, {
+    $lookup: {
+      from: "users",
+      localField: "barber_id",
+      foreignField: "_id",
+      as: "barber_info"
+    }
+  }, {
+    $lookup: {
+      from: "users",
+      localField: "customer_id",
+      foreignField: "_id",
+      as: "customer_info"
+    }
+  }, {
+    $lookup: {
+      from: "users",
+      localField: "cancel_by_user_id",
+      foreignField: "_id",
+      as: "cancel_by_user_info"
+    }
+  }, {
+    $project: {
+      _id: "$_id",
+      appointment_date: "$appointment_date",
+      totalPrice: "$totalPrice",
+      created_date: "$created_date",
+      services: "$services",
+      appointment_status: "$appointment_status",
+      is_rating_given: "$is_rating_given",
+      cancel_by_user_type: "$cancel_by_user_type",
+      shop_name: {
+        $arrayElemAt: ["$shop_info.name", 0]
+      },
+      barber_first_name: {
+        $arrayElemAt: ["$barber_info.first_name", 0]
+      },
+      barber_last_name: {
+        $arrayElemAt: ["$barber_info.last_name", 0]
+      },
+      customer_first_name: {
+        $arrayElemAt: ["$customer_info.first_name", 0]
+      },
+      customer_last_name: {
+        $arrayElemAt: ["$customer_info.last_name", 0]
+      },
+      cancel_by_user_first_name: {
+        $arrayElemAt: ["$cancel_by_user_info.first_name", 0]
+      },
+      cancel_by_user_last_name: {
+        $arrayElemAt: ["$cancel_by_user_info.last_name", 0]
+      },
+    }
+  }]).exec(function(err, data) {
+    if (err) {
+      console.log(err)
+    } else {
+      var length = data.length;
+      appointment.aggregate([{
+        $lookup: {
+          from: "shops",
+          localField: "shop_id",
+          foreignField: "_id",
+          as: "shop_info"
+        }
+      }, {
+        $lookup: {
+          from: "users",
+          localField: "barber_id",
+          foreignField: "_id",
+          as: "barber_info"
+        }
+      }, {
+        $lookup: {
+          from: "users",
+          localField: "customer_id",
+          foreignField: "_id",
+          as: "customer_info"
+        }
+      }, {
+        $lookup: {
+          from: "users",
+          localField: "cancel_by_user_id",
+          foreignField: "_id",
+          as: "cancel_by_user_info"
+        }
+      }, {
+        $project: {
+          _id: "$_id",
+          appointment_date: "$appointment_date",
+          totalPrice: "$totalPrice",
+          created_date: "$created_date",
+          services: "$services",
+          appointment_status: "$appointment_status",
+          is_rating_given: "$is_rating_given",
+          cancel_by_user_type: "$cancel_by_user_type",
+          shop_name: {
+            $arrayElemAt: ["$shop_info.name", 0]
+          },
+          barber_first_name: {
+            $arrayElemAt: ["$barber_info.first_name", 0]
+          },
+          barber_last_name: {
+            $arrayElemAt: ["$barber_info.last_name", 0]
+          },
+          customer_first_name: {
+            $arrayElemAt: ["$customer_info.first_name", 0]
+          },
+          customer_last_name: {
+            $arrayElemAt: ["$customer_info.last_name", 0]
+          },
+          cancel_by_user_first_name: {
+            $arrayElemAt: ["$cancel_by_user_info.first_name", 0]
+          },
+          cancel_by_user_last_name: {
+            $arrayElemAt: ["$cancel_by_user_info.last_name", 0]
+          },
+        }
+      },{
+        $match: query
+      }, {
+        "$skip": skipNo
+      }, {
+        "$limit": count
+      }]).exec(function(err, result) {
+        if (err) {
+          res.status(400).send({
+            "msg": constantObj.messages.errorRetreivingData,
+            "err": err
+          });
+        } else {
+          res.status(200).send({
+            "msg": constantObj.messages.successRetreivingData,
+            "data": result,
+            "count": length
+          })
+        }
+      })
     }
   })
 }

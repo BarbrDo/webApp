@@ -89,7 +89,9 @@ exports.loginPost = function(req, res, next) {
   });
   let errors = req.validationErrors();
   console.log("error",errors); 
+  console.log("headers",req.headers);
   if (errors) {
+
     return res.status(400).send({
       msg: "Missing required fields.",
       err: errors
@@ -858,6 +860,10 @@ exports.authGoogleCallback = function(req, res) {
 
 exports.checkFaceBook = function(req, res) {
   req.assert('facebook_id', 'facebook_id is required').notEmpty();
+  req.checkHeaders("device_id","Device id is required.").notEmpty();
+  req.checkHeaders("device_type","Device type is required.").notEmpty();
+  req.checkHeaders('device_longitude', 'Device longitude cannot be blank.').notEmpty();
+  req.checkHeaders("device_latitude", 'services cannot be blank.').notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -865,6 +871,8 @@ exports.checkFaceBook = function(req, res) {
       err: errors
     });
   }
+   var device_token = req.headers.device_id;
+  var device_type = req.headers.device_type.toLowerCase();
   User.find({
     "facebook": req.body.facebook_id
   }, function(err, response) {
@@ -874,6 +882,19 @@ exports.checkFaceBook = function(req, res) {
       });
     } else {
       if (response.length > 0) {
+
+        User.update({
+            _id: user._id
+          }, {
+            $set: {
+              "device_type": device_type,
+              "device_id": device_token,
+              "latLong":[req.headers.device_longitude,req.headers.device_latitude],
+              "is_active": false,
+              'remark': "Subscription required."
+            }
+          })
+
         res.status(200).send({
           msg: constantObj.messages.successRetreivingData,
           token: generateToken(response),

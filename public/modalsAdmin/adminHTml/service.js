@@ -63,9 +63,9 @@ angular.module('barbrdo').factory('Admin', function($http) {
     appointments: function(data) {
       return $http({
         method: 'GET',
-        url: '/api/v2/appointment',
+        url: '/api/v2/allappointment',
         headers: {
-          'user_id': data._id
+          
         },
       });
     },
@@ -381,14 +381,26 @@ angular.module('barbrdo').factory('Admin', function($http) {
         url: '/api/v2/barber/cutingservices'
       });
     },
-    goOnline:function  (data) {
+    goOnline:function  (obj,services) {
       return $http({
         method: 'post',
         url: '/api/v2/barber/goOnline',
         headers: {
-          'user_id': data.user_id
+          'user_id': obj.barber_id
         },
-        data: data
+        data: {
+          services:services,
+          shop_id:obj.shop_id
+        }
+      });
+    },
+    goOffline:function(data){
+      return $http({
+        method: 'put',
+        url: '/api/v2/barber/goOffline',
+        headers: {
+          'user_id': data.barber_id
+        }
       });
     }
   };

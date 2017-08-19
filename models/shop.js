@@ -27,71 +27,7 @@ let shopSchema = new mongoose.Schema({
     modified_date: {
         type: Date,
         default: Date.now()
-    },
-    payment_methods: [
-        {
-            method: String,
-            card_type: String,
-            is_primary: Boolean,
-            card_id: String,
-            first_name: String,
-            last_name: String,
-            card_no: Number,
-            status: Boolean,
-            created_date: {
-                type: Date,
-                default: Date.now()
-            },
-            modified_date: {
-                type: Date,
-                default: Date.now()
-            }
-        }
-    ],
-    ratings: [
-        {
-            rated_by: {
-                type: Schema.Types.ObjectId,
-                ref: 'users'
-            },
-            score: Number,
-            comments: String
-        }
-    ],
-    chairs: [
-        {
-            name: String,
-            availability: {
-                type: String,
-                enum: ["booked", "available","closed"]
-            },
-            type: {
-                type: String,
-                enum: ["weekly", "monthly", "percentage","self"]
-            },
-            amount: Number,
-            shop_percentage: Number,
-            barber_percentage: Number,
-            booking_start: Date,
-            booking_end: Date,
-            barber_id: {
-                type: Schema.Types.ObjectId,
-                ref: 'users'
-            },
-            isActive: {
-                type: Boolean,
-                default: true
-            },
-            created_date: {
-                type: Date,
-                default: Date.now()
-            },
-            modified_date: {
-                type: Date,
-                default: Date.now()
-            }
-        }
-    ]
+    }
 });
 
 

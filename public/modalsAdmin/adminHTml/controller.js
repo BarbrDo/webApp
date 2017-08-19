@@ -29,7 +29,6 @@ app_admin.controller("AdminCtrl", [
       $scope.toggleleftclass = !$scope.toggleleftclass;
 
     }
-
     $scope.labels = [
       "2010",
       "2011",
@@ -143,39 +142,18 @@ app_admin.controller("AdminCtrl", [
           }
         }
       }
-
       return '';
     }
 
-    $scope.pageChanged = function() {
-      $scope.loaderStart = true;
-      var passingObj = {
-        page: $scope.myobj.currentPage,
-        count: 30
-      }
-      if ($scope.myobj.search) {
-        passingObj.search = $scope.myobj.search
-      }
-      Admin.barbers(passingObj).then(function(response) {
-        $scope.loaderStart = false;
-        $scope.myobj.totalItems = response.data.count / 3;
-        $rootScope.barbers = response.data.data;
-      }).catch(function(result) {
-        $scope.loaderStart = false;
-        $scope.messages = result.data.msg
-      })
+
+    $scope.custAppoint = function(customer) {
+      $scope.customer = customer;
+      Admin.appointments(customer)
+        .then(function(response) {
+          $scope.allAppointments = response.data.data;
+        });
 
     };
-
-    // $scope.custAppoint = function(customer) {
-    //   $scope.customer = customer;
-    //   Admin.appointments(customer)
-    //     .then(function(response) {
-    //       $rootScope.upcoming = response.data.data.upcoming;
-    //       $rootScope.complete = response.data.data.complete;
-    //     });
-
-    // };
 
     $scope.viewappointment = function() {
       $scope.loaderStart = true;
@@ -832,7 +810,7 @@ app_admin.controller("AdminCtrl", [
 
 
     // if ($state.current.name == 'barbersdetail') {
-      $scope.barberDetails = function(){
+    $scope.barberDetails = function() {
       $scope.searchSelectAllModel = [];
       $scope.searchSelectAllSettings = {
         enableSearch: true,
@@ -852,7 +830,7 @@ app_admin.controller("AdminCtrl", [
               // console.log(response.data.data[j].id == $scope.barberdetail.associateShops[i]._id)
               if (response.data.data[j].id == $scope.barberdetail.associateShops[i]._id) {
                 response.data.data.splice(j, 1)
-              } 
+              }
             }
           }
           $scope.showShops = response.data.data;
@@ -863,15 +841,39 @@ app_admin.controller("AdminCtrl", [
       })
     }
 
+    $scope.pageChanged = function(argument) {
+      console.log("page changed");
+      $scope.loaderStart = true;
+      var passingObj = {
+        page: $scope.myobj.currentPage,
+        count: 30
+      }
+      if ($scope.myobj.search) {
+        passingObj.search = $scope.myobj.search
+      }
+      Admin.barbers(passingObj).then(function(response) {
+        $scope.loaderStart = false;
+        $scope.myobj.totalItems = response.data.count / 3;
+        $rootScope.barbers = response.data.data;
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
+    }
 
-    $scope.barbrInfo = function  (barber_id) {
-      Admin.barberServices().then(function(response){
+    $scope.barbrInfo = function(barber_id) {
+      console.log("barber info");
+       $scope.price = [];
+      $scope.shopIds = {}
+      Admin.barberServices().then(function(response) {
         $scope.allservices = response.data.data;
+        console.log("barber all services", $scope.allservices)
       })
       $rootScope.barber_id = barber_id;
       Admin.barberDetail(barber_id).then(function(response) {
         // $scope.loaderStart = false;
         $scope.barberInfo = response.data.data[0];
+        console.log("barberInfo", $scope.barberInfo)
       })
     }
 
@@ -913,22 +915,58 @@ app_admin.controller("AdminCtrl", [
         $scope.barberDetails()
       })
     }
-    $scope.goOnline = function(shop_id){
-      console.log(shop_id)
-      $scope.loaderStart = true;
-      let obj = {
-        shop_id: shop_id,
-        user_id: $rootScope.barber_id
+    // $scope.goOnline = function(shop_id) {
+    //   console.log(shop_id)
+    //   $scope.loaderStart = true;
+    //   let obj = {
+    //     shop_id: shop_id,
+    //     user_id: $rootScope.barber_id
+    //   }
+    //   Admin.goOnline(obj).then(function(response) {
+    //     // console.log(response);
+    //     $scope.barberDetails()
+    //   })
+    // }
+    $scope.price = [];
+
+    $scope.submit = function() {
+      console.log("shopid", $scope.shopIds);
+      console.log("myservice", $scope.price);
+      let services = []
+      for(var i=0;i<$scope.price.length;i++){
+        if($scope.price[i]!=undefined){
+          let obj = {
+            service_id:$scope.allservices[i]._id,
+            name:$scope.allservices[i].name,
+            price:$scope.price[i]
+          }
+          services.push(obj)
+        }
       }
-      Admin.goOnline(obj).then(function(response) {
-        // console.log(response);
-        $scope.barberDetails()
+      var obj = {
+        shop_id:$scope.shopIds,
+        barber_id:$rootScope.barber_id
+      }
+      Admin.goOnline(obj,services).then(function(response) {
+        $scope.pageChanged();
       })
     }
-    $scope.myservice = {};
-    $scope.submit = function(myservice){
-      console.log("myservice",myservice);
-      
+    $scope.shopIds = {}
+    $scope.getUserId = function(userId) {
+      $scope.shopIds = userId
+    }
+    $scope.getBarberId = function(barber_id){
+     $rootScope.barber_obj_id = barber_id
+    }
+    $scope.goOffline = function () {
+       var obj = {
+        barber_id:$rootScope.barber_obj_id
+      }
+      Admin.goOffline(obj).then(function(response) {
+        $scope.pageChanged();
+      }).catch(function(response){
+        alert(response);
+      })
     }
   }
 ]);

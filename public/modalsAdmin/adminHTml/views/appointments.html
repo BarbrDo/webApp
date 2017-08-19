@@ -17,7 +17,7 @@
                     </div>
                     <div>
                         <span class="glyphicon glyphicon-search" style="color:purple"></span>
-                        <input ng-model="query[queryBy]" placeholder="Search for..." ng-change="shoppageChanged()" />
+                        <input ng-model="appointmentObj.search" placeholder="Search for..." ng-change="custAppoint()" />
                     </div>
                 </div>
                 <table class="table">
@@ -54,6 +54,13 @@
                         </tr>
                     </tbody>
                 </table>
+
+                 <div>
+                <div class="col-sm-6">
+                    <ul uib-pagination total-items="appointmentObj.totalItems" ng-model="appointmentObj.currentPage" ng-change="custAppoint()"></ul>
+                </div>
+                <br>
+            </div>
                 <!-- </span> -->
             </div>
             <div>

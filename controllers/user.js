@@ -87,11 +87,15 @@ exports.loginPost = function(req, res, next) {
   req.sanitize('email').normalizeEmail({
     remove_dots: false
   });
+  if(!(req.headers.device_latitude && req.headers.device_longitude)){
+    return res.status(400).send({
+      msg: "Location services are not enabled. Please turn on your GPS."
+    });
+  }
   let errors = req.validationErrors();
   console.log("error",errors); 
   console.log("headers",req.headers);
   if (errors) {
-
     return res.status(400).send({
       msg: "Missing required fields.",
       err: errors
@@ -1053,7 +1057,15 @@ exports.getProfiles = function(req, res) {
         else{
           newData.ratings = rateing
         }
-        
+        if(newData.barber_shop_id){
+          delete newData.barber_shop_id;
+        }
+        if(result.barber_shop_id){
+           newData.shop_info = result.barber_shop_id
+        }
+        else{
+           newData.shop_info = {}
+        }
         res.status(200).send({
           msg: constantObj.messages.successRetreivingData,
           user: newData

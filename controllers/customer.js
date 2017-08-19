@@ -1063,13 +1063,14 @@ let saveRefferApp = function(req, res) {
   })
 }
 exports.allappointment = function(req, res) {
+  console.log("req.query", req.query);
   var page = parseInt(req.query.page) || 1;
   var count = parseInt(req.query.count) || 100;
   var skipNo = (page - 1) * count;
   var query = {};
   var searchStr = ""
-  console.log("skipNo",skipNo);
-  console.log("count",count);
+  console.log("skipNo", skipNo);
+  console.log("count", count);
   if (req.query.search) {
     searchStr = req.query.search;
   }
@@ -1111,6 +1112,8 @@ exports.allappointment = function(req, res) {
       }
     }]
   }
+
+  console.log("query", JSON.stringify(query));
 
   appointment.aggregate([{
     $lookup: {
@@ -1172,6 +1175,8 @@ exports.allappointment = function(req, res) {
         $arrayElemAt: ["$cancel_by_user_info.last_name", 0]
       },
     }
+  }, {
+    $match: query
   }]).exec(function(err, data) {
     if (err) {
       console.log(err)
@@ -1237,7 +1242,7 @@ exports.allappointment = function(req, res) {
             $arrayElemAt: ["$cancel_by_user_info.last_name", 0]
           },
         }
-      },{
+      }, {
         $match: query
       }, {
         "$skip": skipNo

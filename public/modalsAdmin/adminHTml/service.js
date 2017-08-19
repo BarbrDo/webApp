@@ -61,13 +61,12 @@ angular.module('barbrdo').factory('Admin', function($http) {
       });
     },
     appointments: function(data) {
-      return $http({
-        method: 'GET',
-        url: '/api/v2/allappointment',
-        headers: {
-          
-        },
-      });
+      console.log("in service",data);
+      if (data.search) {
+        return $http.get('/api/v2/allappointment?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);
+      } else {
+        return $http.get('/api/v2/allappointment?page=' + data.page + '&count=' + data.count, data);
+      }
     },
     custAppoints: function(data) {
       return $http.get('/api/v2/customerappointments/' + data, data);

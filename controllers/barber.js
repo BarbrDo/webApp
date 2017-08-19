@@ -97,7 +97,7 @@ exports.cancelAppointment = function(req, res) {
   req.checkParams("appointment_id", "Appointment id is required.").notEmpty();
   req.checkHeaders("user_type", "User type is required.").notEmpty();
   req.checkHeaders("user_id", "User Id cannot be blank").notEmpty();
-  req.assert("cancel_reason","Cancel appointment reason is required.").notEmpty();
+  // req.assert("cancel_reason","Cancel appointment reason is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -106,6 +106,16 @@ exports.cancelAppointment = function(req, res) {
     });
   }
   var id = mongoose.Types.ObjectId(req.params.appointment_id);
+  let updateData = {
+    $set: {
+      "cancel_by_user_type": req.headers.user_type,
+      "cancel_by_user_id": req.headers.user_id,
+      "appointment_status": "cancel"
+    }
+  }
+  if(req.body.cancel_reason){
+    updateData.cancel_reason = req.body.cancel_reason
+  }
   appointment.findOne({
     _id: id
   }, function(err, result) {
@@ -121,14 +131,7 @@ exports.cancelAppointment = function(req, res) {
         callNotification("barber_cancel_appointment", result.customer_id, result.barber_id, data);
         appointment.update({
           _id: id
-        }, {
-          $set: {
-            "cancel_by_user_type": req.headers.user_type,
-            "cancel_by_user_id": req.headers.user_id,
-            "appointment_status": "cancel",
-            "cancel_reason":req.body.cancel_reason
-          }
-        }, function(err, result) {
+        }, updateData, function(err, result) {
           console.log("cancel by barber appointment", err, result);
           if (err) {
             res.status(400).send({

@@ -145,12 +145,24 @@ app_admin.controller("AdminCtrl", [
       return '';
     }
 
-
-    $scope.custAppoint = function(customer) {
-      $scope.customer = customer;
-      Admin.appointments(customer)
+    $scope.appointmentObj = {};
+    $scope.appointmentObj.currentPage = 1;
+    $scope.custAppoint = function() {
+      $scope.loaderStart = true;
+      var passingObj = {
+        page: $scope.appointmentObj.currentPage,
+        count: 10
+      }
+      if ($scope.appointmentObj.search) {
+        passingObj.search = $scope.appointmentObj.search
+      }
+      console.log(passingObj)
+      Admin.appointments(passingObj)
         .then(function(response) {
           $scope.allAppointments = response.data.data;
+          $scope.appointmentObj.totalItems = response.data.count;
+          console.log("response.data.count",response.data.count);
+          $scope.loaderStart = false;
         });
 
     };

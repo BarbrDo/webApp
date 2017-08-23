@@ -428,6 +428,22 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     url: '/payments',
     controller: "paymentCtrl",
     templateUrl: "/modalsAdmin/adminHTml/views/stripe_payment.html"
+  }).state('refer', {
+    resolve: {
+      mess: function($localStorage, $q, $state) {
+        var deferred = $q.defer();
+        if ($localStorage.loggedIn != true) {
+          setTimeout(function() {
+            deferred.resolve()
+            $state.go('login');
+          }, 0);
+          return deferred.promise;
+        }
+      }
+    },
+    url: '/refer',
+    controller: "referCtrl",
+    templateUrl: "/modalsAdmin/adminHTml/views/refer.html"
   }).state('reports', {
     resolve: {
       mess: function($localStorage, $q, $state) {

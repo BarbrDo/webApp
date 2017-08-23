@@ -15,7 +15,6 @@ let objectID = require('mongodb').ObjectID
 dotenv.load();
 // console.log("distance",)
 
-
 var cron = require('node-cron');
 // var task = cron.schedule('* * * * *', function() {
 //   console.log('will execute every minute until stopped');

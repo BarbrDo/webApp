@@ -401,6 +401,13 @@ angular.module('barbrdo').factory('Admin', function($http) {
           'user_id': data.barber_id
         }
       });
+    },
+    getReferUsers: function(data) {
+      if (data.search) {
+        return $http.get('/api/v2/getReferUsers?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);
+      } else {
+        return $http.get('/api/v2/getReferUsers?page=' + data.page + '&count=' + data.count);
+      }
     }
   };
 });

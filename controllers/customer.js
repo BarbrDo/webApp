@@ -292,8 +292,8 @@ exports.cancelAppointment = function(req, res) {
             });
           } else {
             res.status(200).send({
-              msg: 'Successfully retrieve fields.',
-              "data": result
+              msg: 'You cancelled the appointment.',
+              data: result
             });
           }
         })
@@ -919,6 +919,9 @@ exports.rateBarber = function(req, res) {
     }
   }
 
+ checkReference({
+    _id: req.body.appointment_id
+  });
 
   if (req.body.is_favourite) {
     console.log("inside is_favourite");
@@ -989,6 +992,190 @@ exports.rateBarber = function(req, res) {
   ])
 }
 
+// checkReference({_id:req.body.appointment_id});
+
+let check_for_customer = function() {
+  // 1.check_customer_appointment
+  // 2.check_this_customer_reference
+  // 3.Search for the barber who request for this if count is 10 then mail sent
+
+}
+let check_for_barber = function() {
+  // 1.check_barber_appointment
+  // 2.check_this_barber_reference
+  // 3.if(some_barber_refer_this  ||  some_customer_refer_this){
+  //   and an count of particular user will b increased and is_refer_code_used key will b true
+  //   then mail send of appreciation
+  // 4.
+}
+
+let checkReference = function(objFind) {
+  console.log("checkReference pass obj\n\n\n", objFind);
+  appointment.findOne(objFind, function(err, appResult) {
+    console.log("find result\n\n", appResult)
+    async.waterfall([
+      function(done) {
+        // this will used to get customer profile
+        user.findOne({
+          _id: appResult.customer_id
+        }, function(err, result) {
+          // console.log("cust_profile",result);
+          done(null, result);
+        })
+      },
+      function(result, done) {
+        // this will used to get barber profile
+        user.findOne({
+          _id: appResult.barber_id
+        }, function(err, barberData) {
+          // console.log("bar_profi",barberData);
+          done(null, result, barberData);
+        })
+      },
+      function(cus_profile, barber_profile, done) {
+        /*
+        ___________________________________________________________
+        This callback will check all scenarios of customer referral 
+        ___________________________________________________________
+        */
+        console.log("Customer Profile", JSON.stringify(cus_profile));
+        referal.find({
+          "is_refer_code_used": false,
+          "$or": [{
+            referee_phone_number: cus_profile.mobile_number
+          }, {
+            referee_email: cus_profile.email
+          }]
+        }).sort({
+          created_date: 1
+        }).exec(function(refErr, refResult) {
+          console.log("if customer reference ", refResult);
+          if (refResult.length > 0) {
+            appointment.find({
+              customer_id: cus_profile._id,
+              appointment_status: "completed"
+            }, function(apointErr, apointEesult) {
+              console.log("Total appointment of customer", apointEesult.length)
+              if (apointEesult.length == 1) {
+                console.log("first appointment of the customer");
+                async.waterfall([
+                  function(done) {
+                    referal.update({
+                      _id: refResult[0]._id
+                    }, {
+                      $set: {
+                        is_refer_code_used: true
+                      }
+                    }).exec(function(err, data) {
+                      console.log("update status of referal", data)
+                    })
+                  },
+                  function(done) {
+                    referal.find({
+                      referral: refResult[0].referral
+                    }, function(err, refCountResult) {
+                      if (refCountResult.length % 10 == 0) {
+                        // mail sent to the admin for the amazon gift card
+                        done(null, barber_profile);
+                      } else {
+                        done(null, barber_profile);
+                      }
+                    })
+                  }
+                ])
+              } else {
+                done(null, barber_profile);
+              }
+            })
+          } else {
+            done(null, barber_profile);
+          }
+        })
+      },
+      function(barber_profile, done) {
+        console.log("result in fourth callback", barber_profile);
+        /*
+        __________________________
+        This callback will check all scenarios of Barber referral 
+        __________________________
+        */
+        referal.find({
+          "is_refer_code_used": false,
+          "$or": [{
+            referee_phone_number: barber_profile.mobile_number
+          }, {
+            referee_email: barber_profile.email
+          }]
+        }).sort({
+          created_date: 1
+        }).exec(function(refErr, refResult) {
+          console.log("if barber reference ", refResult);
+          if (refResult.length > 0) {
+            appointment.find({
+              customer_id: barber_profile._id,
+              appointment_status: "completed"
+            }, function(apointErr, apointEesult) {
+              console.log("Total appointment of barber", apointEesult.length)
+              if (apointEesult.length == 1) {
+                console.log("first appointment of the customer");
+                async.waterfall([
+                  function(done) {
+                    referal.update({
+                      _id: refResult[0]._id
+                    }, {
+                      $set: {
+                        is_refer_code_used: true
+                      }
+                    }).exec(function(err, data) {
+                      console.log("update status of referal", data)
+                    })
+                  },
+                  function(done) {
+                    referal.find({
+                      referral: refResult[0].referral
+                    }, function(err, refCountResult) {
+                      if (refCountResult.length % 10 == 0) {
+                        // mail sent to the admin for the amazon gift card
+                        done(null);
+                      } else {
+                        done(null);
+                      }
+                    })
+                  }
+                ])
+              } else {
+                done(null);
+              }
+            })
+          } else {
+            done(null);
+          }
+        })
+      }
+    ])
+  })
+}
+
+let updateRefferalDb = function(updateData) {
+  referal.update(updateData, {
+    $set: {
+      is_refer_code_used: true
+    }
+  }, function(upErr, upErresult) {
+    if (upErr) {
+
+    } else {
+      commonObj.sendMail("to", "from", "subject", "text", function(err, result) {
+        if (err) {
+          console.log("errr in male");
+        } else {
+          console.log("mail sent")
+        }
+      })
+    }
+  })
+}
+
 exports.referapp = function(req, res) {
   req.checkHeaders("user_id", "User id is required.").notEmpty();
   req.assert("invite_as", "Invite as in required.").notEmpty();
@@ -1000,6 +1187,7 @@ exports.referapp = function(req, res) {
       err: errors
     });
   }
+  console.log("device_type",req.headers.device_type)
   if (req.body.referee_email) {
     req.assert('referee_email', 'Email is not valid').isEmail();
     req.assert('referee_email', 'Email cannot be blank').notEmpty();
@@ -1016,12 +1204,17 @@ exports.referapp = function(req, res) {
     if (req.headers.device_type == 'ios') {
       text = constantObj.appleUrl.url;
     }
-    if (req.headers.device_type == 'android') {
+    if (req.headers.device_type == 'Android') {
       text = constantObj.androidUrl.url;
     }
     commonObj.sendMail(req.body.referee_email, from, subject, text, function(err, result) {
       console.log("mail in referapp", err, result)
-      if (result) {
+      if(err){
+           return res.status(400).send({
+           msg: "Error in sending mail"
+        });
+      }
+      else{
         saveRefferApp(req, res);
       }
     })
@@ -1049,16 +1242,25 @@ exports.referapp = function(req, res) {
 let saveRefferApp = function(req, res) {
   let saveObj = req.body;
   saveObj.referral = req.headers.user_id;
-  referal(saveObj).save(function(err, result) {
-    if (err) {
-      return res.status(200).send({
-        msg: constantObj.messages.errorInSave,
-        err: err
+  referal.find(saveObj, function(findErr, findResult) {
+    console.log("findResult length",findResult);
+    if (findResult.length > 0) {
+      return res.status(400).send({
+        msg: "You already refer this person. Please try again with another email."
       });
     } else {
-      return res.status(200).send({
-        msg: "You successfully refer the app.."
-      });
+      referal(saveObj).save(function(err, result) {
+        if (err) {
+          return res.status(400).send({
+            msg: constantObj.messages.errorInSave,
+            err: err
+          });
+        } else {
+          return res.status(200).send({
+            msg: "You successfully refer the app."
+          });
+        }
+      })
     }
   })
 }

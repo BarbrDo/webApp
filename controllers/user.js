@@ -269,6 +269,8 @@ exports.signupPost = function(req, res, next) {
     });
   }
   let saveData = req.body;
+  saveData.is_active = true;
+  saveData.is_verified = true;
   let email_encrypt = "";
   let generatedText = "";
   async.waterfall([
@@ -308,72 +310,13 @@ exports.signupPost = function(req, res, next) {
       })
     },
     function(saveData,done){
-      // if(req.body.referral_code){
-        // User.findOne({unique_code:req.body.refer_code},function(err,result){
-        //   if(result){
-        //   if (result.user_type == 'customer' && req.body.user_type == 'barber') {
-        //     // customer can sent referral code only to barber
-        //     let referralData = {
-        //       referral: result._id,
-        //       unique_code: req.body.unique_code
-        //     }
-        //     saveData.is_code_used = true;
-        //     done(err, saveData, referralData)
-
-        //   } else if (result.user_type == 'barber' && req.body.user_type == 'customer') {
-        //     let referralData = {
-        //       referral: result._id,
-        //       unique_code: req.body.unique_code
-        //     }
-        //     saveData.is_code_used = true;
-        //     done(err, saveData, referralData)
-        //   } else if (result.user_type == 'barber' && req.body.user_type == 'barber') {
-        //     let referralData = {
-        //       referral: result._id,
-        //       unique_code: req.body.unique_code
-        //     }
-        //     saveData.is_code_used = true;
-        //     done(err, saveData, referralData)
-        //   }
-        //   else{
-        //     return res.status(400).send({
-        //       msg: "This referral_code is not correct.Please recheck!"
-        //     })
-        //   }
-        //   }
-        //   else{
-        //     return res.status(400).send({
-        //       msg: "This referral_code is not correct.Please recheck!"
-        //     })
-        //   }
-        // })
-      // }
-      // else{
-        let referralData = {};
-        done(null,saveData,referralData)
-      // }
-    },
-    function(saveData,referralData, done) {
       User(saveData).save(function(err, data) {
         if (err) {
           return res.status(400).send({
             msg: constantObj.messages.errorInSave,
             "err": err
           })
-        } else {
-         
-          let len = Object.keys(referralData).length;
-           console.log("referralData",len);
-          if(len){
-            console.log("inside refer data");
-            referralData.referee = data._id;
-            referralData.user_type = data.user_type;
-
-           referal(referralData).save(function(referalErr,referalData){
-            console.log("refer save data ",referalErr,referalData);
-           })
-          }
-         
+        } else {         
           let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
           if (req.body.user_type == 'shop') {
             let saveDataForShop = {};

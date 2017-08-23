@@ -19,6 +19,10 @@ let referalSchema = new mongoose.Schema({
     referee_phone_number:{
         type:Number
     },
+    is_refer_code_used:{
+        type:Boolean,
+        default:false
+    },
     created_date: {
         type: Date,
         default: Date.now()

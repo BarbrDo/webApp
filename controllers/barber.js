@@ -10,6 +10,7 @@ let shop = require('../models/shop');
 let mongoose = require('mongoose');
 let moment = require('moment');
 let usStates = require('../models/us_states');
+let referal = require('../models/referral');
 /*
 _________________________________________________________
 Author:Hussain,
@@ -113,9 +114,12 @@ exports.cancelAppointment = function(req, res) {
       "appointment_status": "cancel"
     }
   }
-  if(req.body.cancel_reason){
+  if (req.body.cancel_reason) {
     updateData.cancel_reason = req.body.cancel_reason
   }
+    user.update({_id:req.headers.user_id},{$set:{is_available:true}},function(err,data){
+      console.log("user udpate cancel appointment",data);
+    })
   appointment.findOne({
     _id: id
   }, function(err, result) {
@@ -140,8 +144,8 @@ exports.cancelAppointment = function(req, res) {
             });
           } else {
             res.status(200).send({
-              msg: 'Successfully updated fields.',
-              "data": result
+              msg: 'Declined successfully.',
+              data: result
             });
           }
         })
@@ -174,11 +178,13 @@ exports.sendMessageToCustomer = function(req, res) {
       err: errors
     });
   }
-  user.findOne({_id:req.headers.user_id},function(err,data){
-    if(data){
+  user.findOne({
+    _id: req.headers.user_id
+  }, function(err, data) {
+    if (data) {
       let obj = {
-        text:req.body.text,
-        customerInfo : data
+        text: req.body.text,
+        customerInfo: data
       }
       commonObj.notify(req.body.customer_id, req.headers.user_id, "sent you a message", "message_to_customer", obj, function(err, data) {
         if (err) {
@@ -253,7 +259,7 @@ exports.confirmRequest = function(req, res) {
         }
       })
       return res.status(200).send({
-        msg: constantObj.messages.userStatusUpdateSuccess
+        msg: "Accepted successfully."
       });
     }
   })
@@ -747,8 +753,8 @@ exports.availableBarber = function(req, res) {
           is_deleted: "$is_deleted",
           is_active: "$is_active",
           is_verified: "$is_verified",
-          is_online:"$is_online",
-          is_available:"$is_available",
+          is_online: "$is_online",
+          is_available: "$is_available",
           user_type: "$user_type",
           latLong: "$latLong",
           picture: "$picture",
@@ -881,8 +887,8 @@ exports.rateBarber = function(req, res) {
   ])
 }
 exports.goOnline = function(req, res) {
-  console.log("goonline",req.headers);
-  console.log("body",req.body);
+  console.log("goonline", req.headers);
+  console.log("body", req.body);
   req.checkHeaders("user_id", "User id is required.").notEmpty();
   req.assert("services", "service are required.").notEmpty();
   req.assert("shop_id", "shop_id is required.").notEmpty();
@@ -906,7 +912,7 @@ exports.goOnline = function(req, res) {
           barber_shops_latLong: [
             shopData.latLong[0], shopData.latLong[1]
           ],
-          barber_shop_id : req.body.shop_id,
+          barber_shop_id: req.body.shop_id,
           barber_services: req.body.services
         }
       }
@@ -1031,11 +1037,10 @@ exports.addShop = function(req, res) {
       shop_id: req.body.shops[i].shop_id,
       barber_id: req.headers.user_id
     }
-    shopBarber.find(obj,function(shoperr,shopresult){
-      if(shopresult.length>0){
+    shopBarber.find(obj, function(shoperr, shopresult) {
+      if (shopresult.length > 0) {
 
-      }
-      else{
+      } else {
         shopBarber(obj).save(function(err, result) {
           console.log(err, result);
         })
@@ -1094,7 +1099,7 @@ exports.makeDefaultshop = function(req, res) {
         is_default: false
       }
     }, {
-        multi: true
+      multi: true
     }).exec(function(err, multiUpdate) {
       // body...
       shopBarber.update({
@@ -1180,12 +1185,11 @@ exports.barberHomeScreen = function(req, res) {
     function(result, data, serData, done) {
       user.findOne({
         _id: req.headers.user_id
-      }, function(err, userResult) {
-        done(null, result, data, serData, userResult.is_online)
+      }).populate('barber_shop_id','_id name').exec(function(err, userResult) {
+        done(null, result, data, serData, userResult.is_online,userResult.barber_shop_id)
       })
     },
-    function(result, data, serData, online, done) {
-      console.log("asfasfasdfsfd", online);
+    function(result, data, serData, online,online_with_shop, done) {
       appointment.aggregate([{
         $match: {
           barber_id: id,
@@ -1211,6 +1215,7 @@ exports.barberHomeScreen = function(req, res) {
             "revenue": data,
             "services": serData,
             "is_online": online,
+            "online_with_shop":online_with_shop,
             "appointment": appData[0]
           })
         } else {
@@ -1219,6 +1224,7 @@ exports.barberHomeScreen = function(req, res) {
             "associateShops": result,
             "revenue": data,
             "services": serData,
+            "online_with_shop":online_with_shop,
             "is_online": online,
             "appointment": {}
           })
@@ -1229,20 +1235,28 @@ exports.barberHomeScreen = function(req, res) {
 };
 let currentRevenue = function(req, res, cb) {
   var currentDate = moment().format("YYYY-MM-DD");
-  let endDate = moment(currentDate, "YYYY-MM-DD").add(1, 'days').format("YYYY-MM-DD[T]HH:mm:ss.SSS");
+
+  var startDate = moment(currentDate, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
+  var endDate = moment(currentDate, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
+
+  let barber_id = mongoose.Types.ObjectId(req.headers.user_id);
+  
+  console.log("currentDate",startDate);
+  console.log("endDate",endDate);
   appointment.find({
-    barber_id: req.headers.user_id,
+    barber_id: barber_id,
     created_date: {
-      $gte: new Date(currentDate).toISOString(),
-      $lte: endDate + 'Z'
+      $gte: new Date(startDate),
+      $lte: new Date(endDate)
     },
     appointment_status: "completed"
   }).exec(function(err, result) {
     appointment.aggregate([{
       $match: {
+         barber_id: barber_id,
         created_date: {
-          $gte: new Date(currentDate).toISOString(),
-          $lte: endDate + 'Z'
+          $gte: new Date(startDate),
+          $lte: new Date(endDate)
         },
         appointment_status: "completed"
       }
@@ -1258,13 +1272,13 @@ let currentRevenue = function(req, res, cb) {
         cb(sumErr, null)
       } else {
         // console.log("sumResult", sumResult);
-        // console.log("total cuts", result.length);
-        // console.log("revenue", sumResult.totalPrice);
+        console.log("total cuts", result.length);
+        console.log("revenue", sumResult);
         let obj = {
           totalCuts: result.length
         }
         if (sumResult.length > 0) {
-          obj.revenue = sumResult.totalPrice
+          obj.revenue = sumResult[0].totalPrice
         } else {
           obj.revenue = 0
         }
@@ -1328,80 +1342,80 @@ exports.completeAppointment = function(req, res) {
     }
   })
 }
-exports.getUsStates = function(req,res){
-  usStates.find({},function  (err,data) {
+exports.getUsStates = function(req, res) {
+  usStates.find({}, function(err, data) {
     return res.status(200).send({
-          msg: constantObj.messages.successRetreivingData,
-          data:data
-        });
+      msg: constantObj.messages.successRetreivingData,
+      data: data
+    });
   })
 }
-exports.showServices = function(req,res) {
+exports.showServices = function(req, res) {
   console.log("show service");
   service.find({
-        status: true
-      }, function(err, serData) {
-        return res.status(200).send({
-          msg: constantObj.messages.successRetreivingData,
-          data:serData
-        });
-      })
+    status: true
+  }, function(err, serData) {
+    return res.status(200).send({
+      msg: constantObj.messages.successRetreivingData,
+      data: serData
+    });
+  })
 }
 exports.uploadBarberGallery = function(req, res) {
-    req.checkHeaders("user_id", "_id is required").notEmpty();
-    let errors = req.validationErrors();
-    if (errors) {
-        return res.status(400).send({
-            msg: "error in your request",
-            err: errors
-        });
-    }
-    let updateData = {};
-    updateData.modified_date = new Date()
-    delete updateData._id;
-    if ((req.files) && (req.files.length > 0)) {
-        let userimg = [];
-        for (let i = 0; i < req.files.length; i++) {
-            let obj = {};
-            obj.name = req.files[i].filename;
-            userimg.push(obj);
+  req.checkHeaders("user_id", "_id is required").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+  let updateData = {};
+  updateData.modified_date = new Date()
+  delete updateData._id;
+  if ((req.files) && (req.files.length > 0)) {
+    let userimg = [];
+    for (let i = 0; i < req.files.length; i++) {
+      let obj = {};
+      obj.name = req.files[i].filename;
+      userimg.push(obj);
 
-        }
-        updateData.gallery = userimg;
     }
-    console.log("updateData.gallery", updateData.gallery);
-    user.update({
+    updateData.gallery = userimg;
+  }
+  console.log("updateData.gallery", updateData.gallery);
+  user.update({
+    _id: req.headers.user_id
+  }, {
+    $push: {
+      gallery: {
+        $each: updateData.gallery
+      }
+    }
+  }, function(errorInSaveChair, success) {
+    if (errorInSaveChair) {
+      res.status(400).send({
+        msg: 'Error in finding shop.'
+      });
+    } else {
+      user.findOne({
         _id: req.headers.user_id
-    }, {
-        $push: {
-            gallery: {
-                $each: updateData.gallery
-            }
-        }
-    }, function(errorInSaveChair, success) {
-        if (errorInSaveChair) {
-            res.status(400).send({
-                msg: 'Error in finding shop.'
-            });
+      }, function(err, response) {
+        if (err) {
+          res.status(400).send({
+            msg: constantObj.messages.errorRetreivingData,
+            "err": err
+          });
         } else {
-            user.findOne({
-                _id: req.headers.user_id
-            }, function(err, response) {
-                if (err) {
-                    res.status(400).send({
-                        msg: constantObj.messages.errorRetreivingData,
-                        "err": err
-                    });
-                } else {
-                    res.status(200).send({
-                        msg: 'Successfully updated fields.',
-                        "user": response,
-                        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-                    });
-                }
-            })
+          res.status(200).send({
+            msg: 'Successfully updated fields.',
+            "user": response,
+            "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+          });
         }
-    })
+      })
+    }
+  })
 }
 
 exports.financeScreenResult = function(req, res) {
@@ -1561,79 +1575,170 @@ let getBarberTotalSaleOnDates = function(id, startDate, endDate, cb) {
   })
 }
 let getBarberAppointmentsDetail = function(id, startDate, endDate, cb) {
-        let barber_id = mongoose.Types.ObjectId(id);
-        let appointmentStartdate = new Date(moment(startDate, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
-        let appointmentEnddate = new Date(moment(endDate, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+  let barber_id = mongoose.Types.ObjectId(id);
+  let appointmentStartdate = new Date(moment(startDate, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
+  let appointmentEnddate = new Date(moment(endDate, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
 
-        appointment.aggregate([{
-            $match: {
-                barber_id: barber_id,
-                appointment_status: "completed"
-            }
-        }, {
-            $unwind: "$services"
-        }, {
-            $match: {
-                appointment_date: {
-                    $gte: appointmentStartdate,
-                    $lt: appointmentEnddate
-                }
-            }
-        }, {
-            $project: {
-                _id: "$_id",
-                services: 1,
-                appointment_Date: {
-                    $dateToString: {
-                        format: "%Y-%m-%d",
-                        date: "$appointment_date"
-                    }
-                },
-                appointment_id: "$_id",
-            }
-        }, {
-            $group: {
-                _id: "$_id",
-                data: {
-                    $push: "$data"
-                },
-                appointment_Date: {
-                    $first: "$appointment_Date"
-                },
-                sale: {
-                    $sum: "$services.price"
-                },
-
-            }
-
-        }, {
-            $group: {
-                _id: "$_id",
-                sale: {
-                    $first: "$sale"
-                },
-                appointment_Date: {
-                    $first: "$appointment_Date"
-                },
-            }
-        }, {
-            $group: {
-                _id: "$appointment_Date",
-                appointments: {
-                    $sum: 1
-                },
-                sale: {
-                    $sum: "$sale"
-                },
-                appointment_Date: {
-                    $first: "$appointment_Date"
-                },
-            }
-        }]).exec(function(err, result) {
-            if (err) {
-                cb(err, null);
-            } else {
-                cb(null, result)
-            }
-        })
+  appointment.aggregate([{
+    $match: {
+      barber_id: barber_id,
+      appointment_status: "completed"
     }
+  }, {
+    $unwind: "$services"
+  }, {
+    $match: {
+      appointment_date: {
+        $gte: appointmentStartdate,
+        $lt: appointmentEnddate
+      }
+    }
+  }, {
+    $project: {
+      _id: "$_id",
+      services: 1,
+      appointment_Date: {
+        $dateToString: {
+          format: "%Y-%m-%d",
+          date: "$appointment_date"
+        }
+      },
+      appointment_id: "$_id",
+    }
+  }, {
+    $group: {
+      _id: "$_id",
+      data: {
+        $push: "$data"
+      },
+      appointment_Date: {
+        $first: "$appointment_Date"
+      },
+      sale: {
+        $sum: "$services.price"
+      },
+
+    }
+
+  }, {
+    $group: {
+      _id: "$_id",
+      sale: {
+        $first: "$sale"
+      },
+      appointment_Date: {
+        $first: "$appointment_Date"
+      },
+    }
+  }, {
+    $group: {
+      _id: "$appointment_Date",
+      appointments: {
+        $sum: 1
+      },
+      sale: {
+        $sum: "$sale"
+      },
+      appointment_Date: {
+        $first: "$appointment_Date"
+      },
+    }
+  }]).exec(function(err, result) {
+    if (err) {
+      cb(err, null);
+    } else {
+      cb(null, result)
+    }
+  })
+}
+
+exports.getReferUsers = function(req, res) {
+  var page = parseInt(req.query.page) || 1;
+  var count = parseInt(req.query.count) || 30;
+  var skipNo = (page - 1) * count;
+  var query = {};
+  var searchStr = ""
+  if (req.query.search) {
+    searchStr = req.query.search;
+  }
+  if (searchStr) {
+    query.$or = [{
+      first_name: {
+        $regex: searchStr,
+        '$options': 'i'
+      }
+    }, {
+      last_name: {
+        $regex: searchStr,
+        '$options': 'i'
+      }
+    }]
+  }
+  console.log(query);
+  referal.aggregate([{
+    $group: {
+      _id: "$referral",
+      count: {
+        $sum: 1
+      }
+    }
+  }, {
+    $lookup: {
+      from: 'users',
+      localField: '_id',
+      foreignField: '_id',
+      as: 'users'
+    }
+  }, {
+    $project: {
+      _id: "$_id",
+      first_name: {
+        $arrayElemAt: ["$users.first_name", 0]
+      },
+      last_name: {
+        $arrayElemAt: ["$users.last_name", 0]
+      },
+      count: "$count"
+    }
+  }, {
+    $match: query
+  }]).exec(function(err, result) {
+    referal.aggregate([{
+      $group: {
+        _id: "$referral",
+        count: {
+          $sum: 1
+        }
+      }
+    }, {
+      $lookup: {
+        from: 'users',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'users'
+      }
+    }, {
+      $project: {
+        _id: "$_id",
+        first_name: {
+          $arrayElemAt: ["$users.first_name", 0]
+        },
+        last_name: {
+          $arrayElemAt: ["$users.last_name", 0]
+        },
+        count: "$count"
+      }
+    }, {
+      $match: query
+    }, {
+      "$skip": skipNo
+    }, {
+      "$limit": count
+    }]).exec(function(err, finalResult) {
+      res.status(200).send({
+        msg: constantObj.messages.successRetreivingData,
+        "data": result
+      });
+    })
+  })
+}

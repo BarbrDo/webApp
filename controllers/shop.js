@@ -1652,6 +1652,8 @@ exports.allShopsSearch = function(req, res) {
         }]
     }
 
+    console.log("searchStr",searchStr);
+
     shop.aggregate([{
         $match: query
     }]).exec(function(err, data) {

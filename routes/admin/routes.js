@@ -47,6 +47,8 @@ module.exports = function(app, express) {
 
     // refer app module admin
     app.get('/api/v2/getReferUsers',barberController.getReferUsers)
+    app.get('/api/v2/referDetail/:id',barberController.referDetail)
+
 
 
     app.get('/api/v2/shopownerwithshops/:user_id', shopController.shopownerhavingshops);

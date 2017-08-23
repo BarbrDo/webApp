@@ -1048,7 +1048,7 @@ exports.addShop = function(req, res) {
     })
   }
   res.status(200).send({
-    "msg": "Shops added successfully."
+    "msg": "Success! Your request has been sent to BarbrDo."
   })
 };
 
@@ -1735,10 +1735,22 @@ exports.getReferUsers = function(req, res) {
     }, {
       "$limit": count
     }]).exec(function(err, finalResult) {
+      console.log("this working");
       res.status(200).send({
         msg: constantObj.messages.successRetreivingData,
-        "data": result
+        "data": finalResult,
+        "count":result.length
       });
+    })
+  })
+}
+exports.referDetail = function(req,res){
+  console.log("req.params",req.params);
+  referal.find({referral:req.params.id}).populate('referral').exec(function(err,data){
+    console.log("err",err,data);
+    res.status(200).send({
+       msg: constantObj.messages.successRetreivingData,
+        "data": data
     })
   })
 }

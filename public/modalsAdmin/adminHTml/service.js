@@ -408,6 +408,9 @@ angular.module('barbrdo').factory('Admin', function($http) {
       } else {
         return $http.get('/api/v2/getReferUsers?page=' + data.page + '&count=' + data.count);
       }
-    }
+    },
+    getUserData: function(data) {
+      return $http.get('/api/v2/referDetail/' + data._id, data);
+    },
   };
 });

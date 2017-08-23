@@ -1,0 +1,44 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item"><a ui-sref="refer">Barbers</a></li>
+    <li class="breadcrumb-item active">Detail</li>
+</ol>
+<div class="panel" ng-init="particularUserData()">
+    <div class="panel-heading">
+        {{referInfo[0].referral.first_name}} {{referInfo[0].referral.last_name}}
+    </div>
+    <div class="panel-body">
+        <!-- RAHUL  CODE -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-6" style="margin-left: 300px;">
+                    </div>
+                    
+                </div>
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="font-size: 13px;">Invite As</th>
+                            <th style="font-size: 13px;">Email</th>
+                            <th style="font-size: 13px;">Contact No.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="barber in referInfo| orderBy:sort:reverse " data-ng-class="{danger:!barber.active}">
+                            <td>
+                                {{barber.invite_as}}
+                            </td>
+                            <td>{{barber.referee_email}} </td>
+                            <td>{{barber.referee_phone_number}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Modal -->
+        </div>
+    </div>
+</div>

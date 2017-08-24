@@ -73,7 +73,37 @@ app_admin.controller("referCtrl", [
       }
       Admin.getInviteShopProfile(passData).then(function(response){
         console.log(response);
+        $scope.user = response.data.data[0];
       })
+    }
+    $scope.addcustomer = function(params) {
+      $scope.loaderStart = true;
+      console.log($scope.user)
+      Admin.addCustomer($scope.user).then(function(response) {
+          let passData = {
+          _id:$stateParams._id
+        }
+        Admin.updateInviteShopProfile(passData).then(function(response){
+          console.log(response);
+           $scope.loaderStart = false;
+          $state.go('shop_invites');
+          $scope.shop_invites();
+        })
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
+    };
+    $scope.reject = function(id){
+      let passData = {
+          _id:id
+        }
+        Admin.deleteInviteShopProfile(passData).then(function(response){
+          console.log(response);
+           $scope.loaderStart = false;
+          $state.go('shop_invites');
+          $scope.shop_invites();
+        })
     }
 }
 ]);

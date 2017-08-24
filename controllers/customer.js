@@ -452,6 +452,12 @@ exports.sendMessageToBarber = function(req, res) {
   }
   user.findOne({
     _id: req.headers.user_id
+  }, {
+    _id: 1,
+    first_name: 1,
+    last_name: 1,
+    email: 1,
+    picture: 1
   }, function(err, data) {
     if (data) {
       let obj = {
@@ -462,7 +468,7 @@ exports.sendMessageToBarber = function(req, res) {
         if (err) {
           console.log(err);
         } else {
-
+          
         }
       })
     }

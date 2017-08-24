@@ -422,5 +422,11 @@ angular.module('barbrdo').factory('Admin', function($http) {
     getInviteShopProfile: function(data) {
       return $http.get('/api/v2/currentshopinvite/' + data._id, data);
     },
+     updateInviteShopProfile: function(data) {
+      return $http.get('/api/v2/currentshopupdate/' + data._id, data);
+    },
+    deleteInviteShopProfile: function(data) {
+      return $http.get('/api/v2/currentshopdelete/' + data._id, data);
+    }
   };
 });

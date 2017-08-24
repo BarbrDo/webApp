@@ -18,6 +18,10 @@ let shop_request_schema = new mongoose.Schema({
         type:Boolean,
         default:false
     },
+    is_deleted:{
+        type:Boolean,
+        default:false
+    },
     created_date: {
         type: Date,
         default: Date.now()

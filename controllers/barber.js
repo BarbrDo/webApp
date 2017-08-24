@@ -180,6 +180,12 @@ exports.sendMessageToCustomer = function(req, res) {
   }
   user.findOne({
     _id: req.headers.user_id
+  },{
+    _id: 1,
+    first_name: 1,
+    last_name: 1,
+    email: 1,
+    picture: 1
   }, function(err, data) {
     if (data) {
       let obj = {
@@ -248,12 +254,40 @@ exports.confirmRequest = function(req, res) {
         if (result) {
           user.findOne({
             _id: req.headers.user_id
+          }, {
+            _id: 1,
+            first_name: 1,
+            last_name: 1,
+            email: 1,
+            user_type: 1,
+            barber_services: 1,
+            picture: 1
           }, function(err, userData) {
             if (userData) {
-              let passObj = {};
-              passObj.barberInfo = JSON.parse(JSON.stringify(userData))
-              passObj.appointmentInfo = result
-              callNotification("barber_confirm_appointment", result.customer_id, result.barber_id, passObj);
+              user.aggregate([
+                {$match:{"_id" : mongoose.Types.ObjectId(req.headers.user_id)}},
+                { $unwind: "$ratings" },
+                { $group: {
+                    _id: '$_id', 
+                    sum: { $sum: '$ratings.score' } ,
+                    count: { $sum: 1 }
+                }} 
+            ]).exec(function(err,data){
+              if(err){
+                res.status(200).send({
+                  msg:"In error"
+                })
+              }
+              else{
+                let passObj = {};
+                console.log("data of rating",data);
+                passObj.barberInfo = JSON.parse(JSON.stringify(userData))
+                passObj.barberInfo.rating_score = data[0].sum/data[0].count;
+                passObj.appointmentInfo = result
+                console.log("passObj",JSON.stringify(passObj));
+                callNotification("barber_confirm_appointment", result.customer_id, result.barber_id, passObj);
+              }
+            })
             }
           })
         }

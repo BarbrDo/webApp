@@ -29,6 +29,7 @@
                             <th style="font-size: 13px;"><a ng-click="Sort('shopsdata.created_date')" class="created_date" style="color: #ffffff;">Address  <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
                             <th style="font-size: 13px;"><a ng-click="Sort('totalBarbers')" class="mobile_number" style="color: #ffffff;">Request By <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
                             <th style="font-size: 13px;"><a ng-click="Sort('totalBarbers')" class="mobile_number" style="color: #ffffff;">Requested Date <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                            <th style="font-size: 13px;">Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -40,6 +41,7 @@
                             <td> {{shop.address}} </td>
                             <td> {{shop.first_name}} {{shop.last_name}}</td>
                             <td>{{shop.created_date | date}} </td>
+                            <td><button ng-click="reject(shop._id)">Reject</button></td>
                         </tr>
                     </tbody>
                 </table>

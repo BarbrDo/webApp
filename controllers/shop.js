@@ -1763,7 +1763,10 @@ exports.shopinvites = function(req, res) {
     var page = parseInt(req.query.page) || 1;
     var count = parseInt(req.query.count) || 10;
     var skipNo = (page - 1) * count;
-    var query = {};
+    var query = {
+         "is_accepted" : false,
+         "is_deleted":false
+    };
     var searchStr = ""
     if (req.query.search) {
         searchStr = req.query.search;
@@ -1821,6 +1824,8 @@ exports.shopinvites = function(req, res) {
             state: "$state",
             address:"$address",
             zip: "$zip",
+            is_accepted:"$is_accepted",
+            is_deleted:"$is_deleted",
             first_name: {
                 $arrayElemAt: ["$user_info.first_name", 0]
             },
@@ -1846,6 +1851,8 @@ exports.shopinvites = function(req, res) {
                 state: "$state",
                 zip: "$zip",
                 address:"$address",
+                is_accepted:"$is_accepted",
+                is_deleted:"$is_deleted",
                 created_date:"$created_date",
                 first_name: {
                     $arrayElemAt: ["$user_info.first_name", 0]
@@ -1877,6 +1884,37 @@ exports.shopinvites = function(req, res) {
         })
     })
 }
-exports.currentshopinvite = function(req,res){
+exports.currentshopinvite = function(req, res) {
     console.log(req.params)
+    shopRequest.find({
+        _id: req.params._id
+    }, function(err, data) {
+        res.status(200).send({
+            "msg": constantObj.messages.successRetreivingData,
+            "data": data
+        })
+    })
+}
+exports.currentshopupdate = function(req,res){
+    console.log(req.params)
+    shopRequest.update({
+        _id: req.params._id
+    },{$set:{"is_accepted":true}}, function(err, data) {
+        console.log(data)
+        res.status(200).send({
+            "msg": constantObj.messages.successRetreivingData,
+            "data": data
+        })
+    })
+}
+exports.currentshopdelete = function(req,res){
+    shopRequest.update({
+        _id: req.params._id
+    },{$set:{"is_deleted":true}}, function(err, data) {
+        console.log(data)
+        res.status(200).send({
+            "msg": constantObj.messages.successRetreivingData,
+            "data": data
+        })
+    })
 }

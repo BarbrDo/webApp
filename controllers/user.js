@@ -990,7 +990,7 @@ exports.getProfiles = function(req, res) {
               score:newData.ratings[i].score,
               rated_by_name:newData.ratings[i].rated_by.first_name+" "+newData.ratings[i].rated_by.last_name,
               picture:newData.ratings[i].rated_by.picture,
-              appointmentDate:newData.ratings[i].appointment_date
+              appointment_date:newData.ratings[i].appointment_date
             }
             console.log(obj);
             rateing.push(obj)
@@ -1128,7 +1128,6 @@ exports.totalUsers = function(req, res) {
 
 
 exports.logout = function(req, res) {
-
   LoggedInUser.remove({
     user_id: req.headers.user_id
   }, function(err, result) {

@@ -169,60 +169,62 @@ exports.allShops = function(req, res) {
                 foreignField: "_id",
                 as: "shopOwner"
             }
-        },
-       {
-         $project: {
-            _id:1,
-            user_id: 1,
-            name: 1,
-            address: 1,
-            city: 1,
-            state: 1,
-            zip: 1,
-            latLong: 1,
-            phone: 1,
-            license_number:1,
-            created_date: 1,
-            modified_date: 1,
-            payment_methods: 1,
-            ratings:1,
-            shopOwner:1,
-            chairs:1,
-            distance:"$dist.calculated",
-            units:{ $literal:  "miles"  },
-            barbers: { $size: [ "$chairs.barber_id" ] }
-         }
-      }
-      ]).exec(function(err, data) {
+        }, {
+            $project: {
+                _id: 1,
+                user_id: 1,
+                name: 1,
+                address: 1,
+                city: 1,
+                state: 1,
+                zip: 1,
+                latLong: 1,
+                phone: 1,
+                license_number: 1,
+                created_date: 1,
+                modified_date: 1,
+                payment_methods: 1,
+                ratings: 1,
+                shopOwner: 1,
+                chairs: 1,
+                distance: "$dist.calculated",
+                units: {
+                    $literal: "miles"
+                },
+                barbers: {
+                    $size: ["$chairs.barber_id"]
+                }
+            }
+        }]).exec(function(err, data) {
             if (err) {
                 console.log(err);
             } else {
-               console.log("here",data)
-                /*let resultTantArray = [];
-                for (let i = 0; i < data.length; i++) {
-                    let obj = {};
-                    let totalbarbers = 0;
-                    for (let j = 0; j < data.length; j++) {
-                        if (data[i]._id == data[j]._id && data[j].barberInformation.length > 0) {
-                            ++totalbarbers
+                console.log("here", data)
+                    /*let resultTantArray = [];
+                    for (let i = 0; i < data.length; i++) {
+                        let obj = {};
+                        let totalbarbers = 0;
+                        for (let j = 0; j < data.length; j++) {
+                            if (data[i]._id == data[j]._id && data[j].barberInformation.length > 0) {
+                                ++totalbarbers
+                            }
                         }
-                    }
-                    if (totalbarbers > 0) {
-                        obj._id = data[i]._id;
-                        obj.name = data[i].name;
-                        obj.state = data[i].state;
-                        obj.city = data[i].city;
-                        obj.address = data[i].address;
-                        obj.gallery = data[i].gallery;
-                        obj.latLong = data[i].latLong;
-                        let distt = parseFloat(data[i].dist.calculated)
-                        distt = Math.round(distt * 100) / 100
-                        obj.distance = distt;
-                        obj.units = "miles";
-                        obj.barbers = totalbarbers
-                        resultTantArray.push(obj);
-                    }
-                }*/
+                        if (totalbarbers > 0) {
+                            obj._id = data[i]._id;
+                            obj.name = data[i].name;
+                            obj.state = data[i].state;
+                            obj.city = data[i].city;
+                            obj.address = data[i].address;
+                            obj.gallery = data[i].gallery;
+                            obj.latLong = data[i].latLong;
+                            let distt = parseFloat(data[i].dist.calculated)
+                            distt = Math.round(distt * 100) / 100
+                            obj.distance = distt;
+                            obj.units = "miles";
+                            obj.barbers = totalbarbers
+                            resultTantArray.push(obj);
+                        }
+                    }*/
                 res.status(200).send({
                     "msg": constantObj.messages.successRetreivingData,
                     "data": data
@@ -243,71 +245,72 @@ exports.associatedBarbers = function(req, res) {
         let lati = parseFloat(req.headers.device_latitude);
         let maxDistanceToFind = constantObj.distance.shopDistance; // in miles in km 0.001
         let search = "";
-        let searchDate = new Date(moment(new Date(), "YYYY-MM-DD").add(1, 'days').format("YYYY-MM-DD[T]HH:mm:ss.SSS")+'Z');
+        let searchDate = new Date(moment(new Date(), "YYYY-MM-DD").add(1, 'days').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
         if (req.query.search) {
             search = req.query.search;
         }
         shop.aggregate([{
-                $geoNear: {
-                    near: {
-                        type: "Point",
-                        coordinates: [long, lati]
-                    },
-                    distanceField: "dist.calculated",
-                    distanceMultiplier: constantObj.distance.distanceMultiplierInMiles, // it returns distance in kilometers
-                    maxDistance: maxDistanceToFind,
-                    includeLocs: "dist.location",
-                    spherical: true
-                }
-            }, {
-                $unwind: "$chairs"
-            },
-            {
-                $match: {
-                    "chairs.barber_id": {$exists: true, "$ne": ""},
-                    //"chairs.booking_start": {$lte: searchDate},
-                    //"chairs.booking_end": {$gte: searchDate}
-                }
-            },
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "chairs.barber_id",
-                    foreignField: "_id",
-                    as: "barberInformation"
-                }
-            },
-            {
-                $project: {
-                    shop_id: "$_id",
-                    location: "$name",
-                    created_date: "$created_date",
-                    distance: "$dist.calculated",
-                    units: {$literal: "miles"},
-                    barberInformation: "$barberInformation",
-                    chair_id: "$chairs._id",
-                    chair_name: "$chairs.name",
-                    chair_type: "$chairs.type",
-                    chair_amount: "$chairs.amount",
-                    chair_shop_percentage: "$chairs.shop_percentage",
-                    chair_barber_percentage: "$chairs.barber_percentage"
-                }
-            },
-            {
-                $match: {
-                    $or: [{
-                            "barberInformation.first_name": {
-                                $regex: search,
-                                $options: 'i'
-                            }
-                        }, {
-                            "barberInformation.last_name": {
-                                $regex: search,
-                                $options: 'i'
-                            }
-                        }]
-                }
-            }]).exec(function(err, data) {
+            $geoNear: {
+                near: {
+                    type: "Point",
+                    coordinates: [long, lati]
+                },
+                distanceField: "dist.calculated",
+                distanceMultiplier: constantObj.distance.distanceMultiplierInMiles, // it returns distance in kilometers
+                maxDistance: maxDistanceToFind,
+                includeLocs: "dist.location",
+                spherical: true
+            }
+        }, {
+            $unwind: "$chairs"
+        }, {
+            $match: {
+                "chairs.barber_id": {
+                    $exists: true,
+                    "$ne": ""
+                },
+                //"chairs.booking_start": {$lte: searchDate},
+                //"chairs.booking_end": {$gte: searchDate}
+            }
+        }, {
+            $lookup: {
+                from: "users",
+                localField: "chairs.barber_id",
+                foreignField: "_id",
+                as: "barberInformation"
+            }
+        }, {
+            $project: {
+                shop_id: "$_id",
+                location: "$name",
+                created_date: "$created_date",
+                distance: "$dist.calculated",
+                units: {
+                    $literal: "miles"
+                },
+                barberInformation: "$barberInformation",
+                chair_id: "$chairs._id",
+                chair_name: "$chairs.name",
+                chair_type: "$chairs.type",
+                chair_amount: "$chairs.amount",
+                chair_shop_percentage: "$chairs.shop_percentage",
+                chair_barber_percentage: "$chairs.barber_percentage"
+            }
+        }, {
+            $match: {
+                $or: [{
+                    "barberInformation.first_name": {
+                        $regex: search,
+                        $options: 'i'
+                    }
+                }, {
+                    "barberInformation.last_name": {
+                        $regex: search,
+                        $options: 'i'
+                    }
+                }]
+            }
+        }]).exec(function(err, data) {
             if (err) {
                 console.log(err);
             } else {
@@ -338,7 +341,7 @@ exports.associatedBarbers = function(req, res) {
                         resultTantArray.push(obj);
                     }
                 }
-                console.log("resultTantArray",resultTantArray)
+                console.log("resultTantArray", resultTantArray)
                 res.status(200).send({
                     "msg": constantObj.messages.successRetreivingData,
                     "data": resultTantArray
@@ -386,66 +389,63 @@ exports.allShopsHavingChairs = function(req, res) {
                     $options: 'i'
                 }
             }
-        },{
+        }, {
             $unwind: "$chairs"
-        },{
-            $match:{
-                "chairs.isActive":true,
-                "chairs.availability" :{$ne:"closed"}
+        }, {
+            $match: {
+                "chairs.isActive": true,
+                "chairs.availability": {
+                    $ne: "closed"
+                }
             }
-        },
-        {
+        }, {
             $lookup: {
                 from: 'users',
                 localField: 'chairs.barber_id',
                 foreignField: '_id',
                 as: 'barberInfo'
             }
-        },{
+        }, {
             $lookup: {
                 from: 'users',
                 localField: 'user_id',
                 foreignField: '_id',
                 as: 'shopInfo'
             }
-        },
-        {
-            $group:
-            {
-                '_id':{
-                    _id : "$_id",
-                    name:"$name",
-                    user_id : "$user_id",
-                    license_number : "$license_number",
-                    latLong:"$latLong",
-                    rating:"$rating",
-                    payment_methods:"$payment_methods",
-                    modified_date:"$modified_date",
-                    created_date : "$created_date",
-                    zip:"$zip",
-                    state:"$state",
-                    city:"$city",
-                    address:"$address",
-                    ratings:"$ratings",
-                    picture:"$shopInfo.picture",
-                    payment_method:"$payment_methods",
-                    distance:"$dist.calculated"
+        }, {
+            $group: {
+                '_id': {
+                    _id: "$_id",
+                    name: "$name",
+                    user_id: "$user_id",
+                    license_number: "$license_number",
+                    latLong: "$latLong",
+                    rating: "$rating",
+                    payment_methods: "$payment_methods",
+                    modified_date: "$modified_date",
+                    created_date: "$created_date",
+                    zip: "$zip",
+                    state: "$state",
+                    city: "$city",
+                    address: "$address",
+                    ratings: "$ratings",
+                    picture: "$shopInfo.picture",
+                    payment_method: "$payment_methods",
+                    distance: "$dist.calculated"
                 },
                 'chair_barber': {
                     $push: {
-                        chair:"$chairs",
-                        barber:"$barberInfo",
+                        chair: "$chairs",
+                        barber: "$barberInfo",
                     }
                 }
             }
-         },
-        {
-            $project:{
-                '_id':1,
-                'chair_barber':1
+        }, {
+            $project: {
+                '_id': 1,
+                'chair_barber': 1
             }
-        }
-        ]).exec(function(err, result) {
+        }]).exec(function(err, result) {
             if (err) {
                 console.log(err);
             } else {
@@ -573,24 +573,24 @@ exports.postChairToAllBarbers = function(req, res) {
                 } else {
                     let auth = {
                         auth: {
-                          api_key: process.env.MAILGUN_APIKEY,
-                          domain: process.env.MAILGUN_DOMAIN
+                            api_key: process.env.MAILGUN_APIKEY,
+                            domain: process.env.MAILGUN_DOMAIN
                         }
-                      }
-                      let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+                    }
+                    let nodemailerMailgun = nodemailer.createTransport(mg(auth));
 
-                      var mailOptions = {
+                    var mailOptions = {
                         from: req.body.name + ' ' + '<' + req.body.email + '>',
                         to: constantObj.messages.email,
                         subject: '✔ Chair Available',
                         text: "Chair posted to all barbers"
-                      };
+                    };
 
-                      nodemailerMailgun.sendMail(mailOptions, function(err) {
+                    nodemailerMailgun.sendMail(mailOptions, function(err) {
                         res.status(200).send({
-                          "msg": constantObj.messages.chairPostedSuccess
+                            "msg": constantObj.messages.chairPostedSuccess
                         });
-                      });
+                    });
                 }
             })
         } else {
@@ -710,28 +710,26 @@ exports.shopdetail = function(req, res) {
     }
     let shop_id = mongoose.Types.ObjectId(req.params.shop_id);
 
-    shop.aggregate([
-    {
+    shop.aggregate([{
         $match: {
-            _id:shop_id
+            _id: shop_id
         }
-    },
-    {
-        $unwind:"$chairs"
-    },
-    {
-        $match:{
-            "chairs.availability":{$ne:"closed"}
+    }, {
+        $unwind: "$chairs"
+    }, {
+        $match: {
+            "chairs.availability": {
+                $ne: "closed"
+            }
         }
-    },
-    {
-        $lookup:{
+    }, {
+        $lookup: {
             from: "chair_requests",
             localField: "chairs._id",
             foreignField: "chair_id",
             as: "barberRequests"
         }
-    },{
+    }, {
         $project: {
             _id: "$_id",
             name: "$name",
@@ -743,21 +741,19 @@ exports.shopdetail = function(req, res) {
             city: "$city",
             zip: "$zip",
             address: "$address",
-            chairs:1,
-            barberRequests:"$barberRequests",
+            chairs: 1,
+            barberRequests: "$barberRequests",
         }
-    },
-    {
-        $lookup:{
+    }, {
+        $lookup: {
             from: "users",
             localField: "chairs.barber_id",
             foreignField: "_id",
             as: "barberinfo"
         }
-    },
-    {
-        $project:{
-            _id:"$_id",
+    }, {
+        $project: {
+            _id: "$_id",
             name: "$name",
             user_id: "$user_id",
             license_number: "$license_number",
@@ -767,8 +763,8 @@ exports.shopdetail = function(req, res) {
             city: "$city",
             zip: "$zip",
             address: "$address",
-            chairs:{
-                 _id: "$chairs._id",
+            chairs: {
+                _id: "$chairs._id",
                 isActive: "$chairs.isActive",
                 availability: "$chairs.availability",
                 name: "$chairs.name",
@@ -779,24 +775,43 @@ exports.shopdetail = function(req, res) {
                 booking_end: "$chairs.booking_end",
                 amount: "$chairs.amount",
                 barber_id: "$chairs.barber_id",
-                barberRequest:"$barberRequests",
-                barberInfo:"$barberinfo",
+                barberRequest: "$barberRequests",
+                barberInfo: "$barberinfo",
             }
         }
-    },
-    {
-        $group:{
-            _id:"$_id",
-            name:{$first:"$name"},
-            license_number: {$first: "$license_number"},
-            shop_user_id :{$first:"$user_id"},
-            ratings: {$first: "$ratings"},
-            latLong: {$first: "$latLong"},
-            state: {$first: "$state"},
-            city: {$first: "$city"},
-            zip: {$first: "$zip"},
-            address: {$first: "$address"},
-            chairs:{$push:"$chairs"},
+    }, {
+        $group: {
+            _id: "$_id",
+            name: {
+                $first: "$name"
+            },
+            license_number: {
+                $first: "$license_number"
+            },
+            shop_user_id: {
+                $first: "$user_id"
+            },
+            ratings: {
+                $first: "$ratings"
+            },
+            latLong: {
+                $first: "$latLong"
+            },
+            state: {
+                $first: "$state"
+            },
+            city: {
+                $first: "$city"
+            },
+            zip: {
+                $first: "$zip"
+            },
+            address: {
+                $first: "$address"
+            },
+            chairs: {
+                $push: "$chairs"
+            },
         }
     }]).exec(function(err, result) {
         if (err) {
@@ -852,7 +867,7 @@ exports.shopownerhavingshops = function(req, res) {
             latLong: "$latLong",
             picture: "$picture",
             shopinfo: "$shopinfo",
-            gallery:"$gallery"
+            gallery: "$gallery"
         }
     }]).exec(function(err, result) {
         if (err) {
@@ -1000,72 +1015,85 @@ exports.shopContainsChairs = function(req, res) {
     }
     shop.findOne({
         user_id: shop_user_id
-    }, function (err, shopData) {
+    }, function(err, shopData) {
         var shop_id = '';
-        if(shopData){
+        if (shopData) {
             var shop_id = shopData._id
         }
-        shop.aggregate([
-            {
-                $match: {
-                    user_id: shop_user_id
-                }
-            },
-            {
-                $unwind: "$chairs"
-            },
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "chairs.barber_id",
-                    foreignField: "_id",
-                    as: "barberInformation"
-                }
-            },
-            {
-                $project: {
+        shop.aggregate([{
+            $match: {
+                user_id: shop_user_id
+            }
+        }, {
+            $unwind: "$chairs"
+        }, {
+            $lookup: {
+                from: "users",
+                localField: "chairs.barber_id",
+                foreignField: "_id",
+                as: "barberInformation"
+            }
+        }, {
+            $project: {
+                _id: 1,
+                user_id: 1,
+                license_number: 1,
+                ratings: 1,
+                latLong: 1,
+                state: 1,
+                city: 1,
+                zip: 1,
+                address: 1,
+                name: 1,
+                chairs: 1,
+                chairs: {
+                    isActive: 1,
                     _id: 1,
-                    user_id: 1,
-                    license_number: 1,
-                    ratings: 1,
-                    latLong: 1,
-                    state: 1,
-                    city: 1,
-                    zip: 1,
-                    address: 1,
+                    availability: 1,
                     name: 1,
-                    chairs: 1,
-                    chairs: {
-                        isActive: 1,
-                        _id: 1,
-                        availability: 1,
-                        name: 1,
-                        shop_percentage: 1,
-                        type: 1,
-                        barber_percentage: 1,
-                        booking_start: 1,
-                        booking_end: 1,
-                        amount: 1,
-                        barber_id: 1,
-                        barber: "$barberInformation"
-                    }
+                    shop_percentage: 1,
+                    type: 1,
+                    barber_percentage: 1,
+                    booking_start: 1,
+                    booking_end: 1,
+                    amount: 1,
+                    barber_id: 1,
+                    barber: "$barberInformation"
                 }
-            },
-            {
-                $group: {
-                    _id: "$_id",
-                    chairs: {$push: "$chairs"},
-                    name: {$first: "$name"},
-                    license_number: {$first: "$license_number"},
-                    ratings: {$first: "$ratings"},
-                    latLong: {$first: "$latLong"},
-                    state: {$first: "$state"},
-                    city: {$first: "$city"},
-                    zip: {$first: "$zip"},
-                    address: {$first: "$address"}
+            }
+        }, {
+            $group: {
+                _id: "$_id",
+                chairs: {
+                    $push: "$chairs"
+                },
+                name: {
+                    $first: "$name"
+                },
+                license_number: {
+                    $first: "$license_number"
+                },
+                ratings: {
+                    $first: "$ratings"
+                },
+                latLong: {
+                    $first: "$latLong"
+                },
+                state: {
+                    $first: "$state"
+                },
+                city: {
+                    $first: "$city"
+                },
+                zip: {
+                    $first: "$zip"
+                },
+                address: {
+                    $first: "$address"
+                }
 
-                }
-            }]).exec(function (err, result) {
+            }
+        }]).exec(function(err, result) {
             console.log(result);
             if (err) {
                 return res.status(400).send({
@@ -1077,7 +1105,7 @@ exports.shopContainsChairs = function(req, res) {
                 res.status(200).send({
                     msg: constantObj.messages.successRetreivingData,
                     data: result,
-                    shop_id:shop_id
+                    shop_id: shop_id
                 })
             }
         })
@@ -1173,7 +1201,7 @@ exports.manageChair = function(req, res) {
         });
     }
 
-        console.log("rahull", req.body);
+    console.log("rahull", req.body);
     if (req.body.type == 'percentage') {
         var updateCollectionData = {
             $unset: {
@@ -1329,44 +1357,44 @@ exports.undeleteshop = function(req, res) {
 };
 
 exports.requesttoremove = function(req, res) {
-  req.assert('chair_name', 'Chair name cannot be blank').notEmpty();
-  req.assert('name', 'Owner name cannot be blank').notEmpty();
-  req.assert('email', 'Email cannot be blank').notEmpty();
+    req.assert('chair_name', 'Chair name cannot be blank').notEmpty();
+    req.assert('name', 'Owner name cannot be blank').notEmpty();
+    req.assert('email', 'Email cannot be blank').notEmpty();
 
-  req.sanitize('email').normalizeEmail({
-    remove_dots: false
-  });
-  var errors = req.validationErrors();
-  if (errors) {
-    return res.status(400).send({
-      msg: "error in your request",
-      err: errors
+    req.sanitize('email').normalizeEmail({
+        remove_dots: false
     });
-  }
-console.log("")
- let auth = {
-    auth: {
-      api_key: process.env.MAILGUN_APIKEY,
-      domain: process.env.MAILGUN_DOMAIN
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
     }
-  }
-  let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+    console.log("")
+    let auth = {
+        auth: {
+            api_key: process.env.MAILGUN_APIKEY,
+            domain: process.env.MAILGUN_DOMAIN
+        }
+    }
+    let nodemailerMailgun = nodemailer.createTransport(mg(auth));
 
-  var mailOptions = {
-    from: req.body.name + ' ' + '<' + req.body.email + '>',
-    to: constantObj.messages.email,
-    subject: '✔ Request to Remove Barber',
-    text: "Please remove the barber from" + ' ' +  req.body.chair_name
-  };
+    var mailOptions = {
+        from: req.body.name + ' ' + '<' + req.body.email + '>',
+        to: constantObj.messages.email,
+        subject: '✔ Request to Remove Barber',
+        text: "Please remove the barber from" + ' ' + req.body.chair_name
+    };
 
-  nodemailerMailgun.sendMail(mailOptions, function(err) {
-    res.status(200).send({
-      "msg": constantObj.messages.emailsend
+    nodemailerMailgun.sendMail(mailOptions, function(err) {
+        res.status(200).send({
+            "msg": constantObj.messages.emailsend
+        });
     });
-  });
 };
 
-exports.financeScreenResult = function (req, res) {
+exports.financeScreenResult = function(req, res) {
     req.checkHeaders("user_id", "user_id is required").notEmpty();
     req.checkParams("startDate", "startDate is required.").notEmpty();
     req.checkParams("endDate", "endDate is required").notEmpty();
@@ -1381,11 +1409,13 @@ exports.financeScreenResult = function (req, res) {
     let startDate = req.params.startDate;
     let endDate = req.params.endDate;
     console.log(req.params.endDate);
+
     function firstDayOfMonth() {
         var d = new Date(Date.apply(null, arguments));
         d.setDate(1);
         return d.toISOString();
     }
+
     function lastDayOfMonth() {
         var d = new Date(Date.apply(null, arguments));
         d.setMonth(d.getMonth() + 1);
@@ -1402,35 +1432,35 @@ exports.financeScreenResult = function (req, res) {
     //Below line for getting the current week last day
     let lastDayOfweek = moment().day(6); // saturday
     async.parallel({
-        one: function (parallelCb) {
+        one: function(parallelCb) {
             // This callback will get the total sale of barber
-            getShopTotalSale(shop_id, function (err, result) {
+            getShopTotalSale(shop_id, function(err, result) {
                 parallelCb(null, result)
             });
         },
-        two: function (parallelCb) {
+        two: function(parallelCb) {
             // get barber total sales of current month
-            getShopTotalSaleOnDates(shop_id, startDayOfMonth, endDayOfMonth, function (err, result) {
+            getShopTotalSaleOnDates(shop_id, startDayOfMonth, endDayOfMonth, function(err, result) {
                 parallelCb(null, result)
             });
         },
-        three: function (parallelCb) {
+        three: function(parallelCb) {
             // get barber sale of current week
-            getShopTotalSaleOnDates(shop_id, currentDayOfweek, lastDayOfweek, function (err, result) {
+            getShopTotalSaleOnDates(shop_id, currentDayOfweek, lastDayOfweek, function(err, result) {
                 parallelCb(null, result)
             });
         },
-        four: function (parallelCb) {
-            getShopAppointmentsDetail(shop_id, startDate, endDate, function (err, result) {
+        four: function(parallelCb) {
+            getShopAppointmentsDetail(shop_id, startDate, endDate, function(err, result) {
                 parallelCb(null, result)
             });
         },
-        five: function (parallelCb) {
-            getShopChairRevenue(shop_id, startDate, endDate, function (err, result) {
+        five: function(parallelCb) {
+            getShopChairRevenue(shop_id, startDate, endDate, function(err, result) {
                 parallelCb(null, result)
             });
         }
-    }, function (err, results) {
+    }, function(err, results) {
         // results will have the results of all 3
         console.log("shop total sale", results.one);
         console.log("barber month sale", results.two);
@@ -1450,21 +1480,21 @@ exports.financeScreenResult = function (req, res) {
 }
 
 // Total sale by barber
-let getShopTotalSale = function (shop_id, cb) {
+let getShopTotalSale = function(shop_id, cb) {
     let shopId = mongoose.Types.ObjectId(shop_id);
     appointment.aggregate([{
-            $match: {
-                shop_id: shopId,
-                appointment_status: "completed"
+        $match: {
+            shop_id: shopId,
+            appointment_status: "completed"
+        }
+    }, {
+        $group: {
+            _id: null,
+            price: {
+                $sum: "$shop_share"
             }
-        },{
-            $group: {
-                _id: null,
-                price: {
-                    $sum: "$shop_share"
-                }
-            }
-        }]).exec(function (err, result) {
+        }
+    }]).exec(function(err, result) {
         if (err) {
             cb(err, null);
         } else {
@@ -1489,7 +1519,7 @@ let getShopTotalSaleOnDates = function(shop_id, startDate, endDate, cb) {
                 $lt: appointmentEnddate
             }
         }
-    },{
+    }, {
         $group: {
             _id: null,
             price: {
@@ -1497,7 +1527,7 @@ let getShopTotalSaleOnDates = function(shop_id, startDate, endDate, cb) {
             }
         }
     }]).exec(function(err, result) {
-    console.log(result);
+        console.log(result);
         if (err) {
             cb(err, null);
         } else {
@@ -1516,7 +1546,7 @@ let getShopAppointmentsDetail = function(shop_id, startDate, endDate, cb) {
             shop_id: shopId,
             appointment_status: "completed"
         }
-    },{
+    }, {
         $match: {
             appointment_date: {
                 $gte: appointmentStartdate,
@@ -1527,8 +1557,8 @@ let getShopAppointmentsDetail = function(shop_id, startDate, endDate, cb) {
         $project: {
             _id: "$_id",
             services: 1,
-            totalPrice:1,
-            shop_share:1,
+            totalPrice: 1,
+            shop_share: 1,
             appointment_Date: {
                 $dateToString: {
                     format: "%Y-%m-%d",
@@ -1537,7 +1567,7 @@ let getShopAppointmentsDetail = function(shop_id, startDate, endDate, cb) {
             },
             appointment_id: "$_id",
         }
-    },{
+    }, {
         $group: {
             _id: "$appointment_Date",
             appointment_Date: {
@@ -1546,7 +1576,7 @@ let getShopAppointmentsDetail = function(shop_id, startDate, endDate, cb) {
             shop_sale: {
                 $sum: "$shop_share"
             },
-            total_sale:{
+            total_sale: {
                 $sum: "$totalPrice"
             },
             appointments: {
@@ -1563,31 +1593,28 @@ let getShopAppointmentsDetail = function(shop_id, startDate, endDate, cb) {
     })
 }
 
-let getShopChairRevenue = function (shop_id, startDate, endDate, cb) {
+let getShopChairRevenue = function(shop_id, startDate, endDate, cb) {
     let shopId = mongoose.Types.ObjectId(shop_id);
     //let appointmentStartdate = new Date(moment(startDate, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
     //let appointmentEnddate = new Date(moment(endDate, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z');
 
 
-    chairBook.aggregate([
-        {
-            $match: {
-                shop_id: shopId,
-                //booking_date: {$gte: appointmentStartdate},
-                //release_date: {$lte: appointmentEnddate}
-
-            }
-        },
-        {
-            $group: {
-                _id: "$chair_id",
-                chair_revenue: {
-                    $sum: "$amount"
-                }
-            }
+    chairBook.aggregate([{
+        $match: {
+            shop_id: shopId,
+            //booking_date: {$gte: appointmentStartdate},
+            //release_date: {$lte: appointmentEnddate}
 
         }
-    ]).exec(function(err, result) {
+    }, {
+        $group: {
+            _id: "$chair_id",
+            chair_revenue: {
+                $sum: "$amount"
+            }
+        }
+
+    }]).exec(function(err, result) {
         if (err) {
             cb(err, null);
         } else {
@@ -1595,20 +1622,20 @@ let getShopChairRevenue = function (shop_id, startDate, endDate, cb) {
         }
     })
 }
-exports.allshops = function (req,res) {
-  shop.find({},function(err,data) {
-    let arr = [];
-    for(var i=0;i<data.length;i++){
-      let obj = {};
-       obj.id = data[i]._id;
-       obj.label = data[i].name
-       arr.push(obj)
-    }
-    return res.status(200).send({
-      "msg": constantObj.messages.successRetreivingData,
-      data: arr
-    });
-  })
+exports.allshops = function(req, res) {
+    shop.find({}, function(err, data) {
+        let arr = [];
+        for (var i = 0; i < data.length; i++) {
+            let obj = {};
+            obj.id = data[i]._id;
+            obj.label = data[i].name
+            arr.push(obj)
+        }
+        return res.status(200).send({
+            "msg": constantObj.messages.successRetreivingData,
+            data: arr
+        });
+    })
 };
 
 
@@ -1652,7 +1679,7 @@ exports.allShopsSearch = function(req, res) {
         }]
     }
 
-    console.log("searchStr",searchStr);
+    console.log("searchStr", searchStr);
 
     shop.aggregate([{
         $match: query
@@ -1684,7 +1711,7 @@ exports.allShopsSearch = function(req, res) {
         }
     })
 };
-exports.shopRequest = function(req,res){
+exports.shopRequest = function(req, res) {
     req.checkHeaders("user_id", "user_id is required").notEmpty();
     req.assert("name", "Name is required.").notEmpty();
     req.assert("city", "City is required").notEmpty();
@@ -1706,31 +1733,150 @@ exports.shopRequest = function(req,res){
                 msg: constantObj.messages.errorInSave
             })
         } else {
-            console.log("shop_lat_long",JSON.stringify(latlng));
-            if(latlng.results.length>0){
+            console.log("shop_lat_long", JSON.stringify(latlng));
+            if (latlng.results.length > 0) {
                 saveData.latLong = [latlng.results[0].geometry.location.lng, latlng.results[0].geometry.location.lat];
                 saveData.address = latlng.results[0].formatted_address;
-                console.log("saveData",saveData);
-                shopRequest(saveData).save(function (err,results) {
-                    if(err){
+                console.log("saveData", saveData);
+                shopRequest(saveData).save(function(err, results) {
+                    if (err) {
                         return res.status(400).send({
                             msg: constantObj.messages.errorInSave,
-                            err:err
+                            err: err
                         })
-                    }
-                    else{
+                    } else {
                         return res.status(200).send({
                             msg: constantObj.messages.saveSuccessfully,
-                            data:results
+                            data: results
                         })
                     }
                 })
-            }
-            else{
+            } else {
                 res.status(400).send({
-                    msg:"Zip code is not valid"
+                    msg: "Zip code is not valid"
                 })
             }
         }
     });
+}
+exports.shopinvites = function(req, res) {
+    var page = parseInt(req.query.page) || 1;
+    var count = parseInt(req.query.count) || 10;
+    var skipNo = (page - 1) * count;
+    var query = {};
+    var searchStr = ""
+    if (req.query.search) {
+        searchStr = req.query.search;
+    }
+    if (searchStr) {
+        query.$or = [{
+            name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            city: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            state: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            zip: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            first_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            last_name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        },{
+            address: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }]
+    }
+    shopRequest.aggregate([{
+        $lookup: {
+            from: "users",
+            localField: "request_by",
+            foreignField: "_id",
+            as: "user_info"
+        }
+    }, {
+        $project: {
+            _id: "$_id",
+            name: "$name",
+            city: "$city",
+            state: "$state",
+            address:"$address",
+            zip: "$zip",
+            first_name: {
+                $arrayElemAt: ["$user_info.first_name", 0]
+            },
+            last_name: {
+                $arrayElemAt: ["$user_info.last_name", 0]
+            }
+        },
+    }, {
+        $match: query
+    }]).exec(function(err, result) {
+        shopRequest.aggregate([{
+            $lookup: {
+                from: "users",
+                localField: "request_by",
+                foreignField: "_id",
+                as: "user_info"
+            }
+        }, {
+            $project: {
+                _id: "$_id",
+                name: "$name",
+                city: "$city",
+                state: "$state",
+                zip: "$zip",
+                address:"$address",
+                created_date:"$created_date",
+                first_name: {
+                    $arrayElemAt: ["$user_info.first_name", 0]
+                },
+                last_name: {
+                    $arrayElemAt: ["$user_info.last_name", 0]
+                }
+            },
+        }, {
+            $match: query
+        }, {
+            "$skip": skipNo
+        }, {
+            "$limit": count
+        }]).exec(function(err, data) {
+            var length = result.length;
+            if (err) {
+                res.status(400).send({
+                    "msg": constantObj.messages.userStatusUpdateFailure,
+                    "err": err
+                });
+            } else {
+                res.status(200).send({
+                    "msg": constantObj.messages.successRetreivingData,
+                    "data": data,
+                    "count": length
+                })
+            }
+        })
+    })
+}
+exports.currentshopinvite = function(req,res){
+    console.log(req.params)
 }

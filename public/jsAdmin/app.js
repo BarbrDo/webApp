@@ -244,6 +244,25 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     // resolve: {
     //      checklogin: login
     //  }
+  }).state('shop_invites', {
+    resolve: {
+      mess: function($localStorage, $q, $state) {
+        var deferred = $q.defer();
+        if ($localStorage.loggedIn != true) {
+          setTimeout(function() {
+            deferred.resolve()
+            $state.go('login');
+          }, 0);
+          return deferred.promise;
+        }
+      }
+    },
+    url: '/invites',
+    controller: "referCtrl",
+    templateUrl: "/modalsAdmin/adminHTml/views/shop_invites.html"
+    // resolve: {
+    //      checklogin: login
+    //  }
   }).state('chairs', {
     resolve: {
       mess: function($localStorage, $q, $state) {
@@ -361,7 +380,22 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     url: '/add_shops',
     controller: "AdminCtrl",
     templateUrl: "/modalsAdmin/adminHTml/views/shop-add.html"
-
+  }).state('add_invited_shop', {
+    resolve: {
+      mess: function($localStorage, $q, $state) {
+        var deferred = $q.defer();
+        if ($localStorage.loggedIn != true) {
+          setTimeout(function() {
+            deferred.resolve()
+            $state.go('login');
+          }, 0);
+          return deferred.promise;
+        }
+      }
+    },
+    url: '/add/:_id',
+    controller: "referCtrl",
+    templateUrl: "/modalsAdmin/adminHTml/views/shop-add.html"
   }).state('add_customers', {
     resolve: {
       mess: function($localStorage, $q, $state) {

@@ -1,0 +1,56 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item active">Shops</li>
+</ol>
+<div class="panel" ng-init="shop_invites()">
+    <div class="panel-heading">
+        All Shops
+    </div>
+    <div class="panel-body">
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-6" style="margin-left: 300px;">
+                    </div>
+                    <div>
+                        <span class="glyphicon glyphicon-search" style="color:purple"></span>
+                        <input ng-model="referObj.search" placeholder="Search for..." ng-change="shop_invites()" />
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="font-size: 13px;color: #ffffff;"><a ng-click="Sort('shopsdata.shopinfo[0].name')" class="name" style="color: #ffffff;">Shopname<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                            <th style="font-size: 13px;color: #ffffff;"><a ng-click="Sort('shopsdata.first_name')" class="first_name" style="color: #ffffff;">City<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                            <th style="font-size: 13px;"><a ng-click="Sort('shopsdata.shopinfo[0].state')" class="location" style="color: #ffffff;">State<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                            <th style="font-size: 13px;" width="20%"><a ng-click="Sort('shopsdata.email')" class="email" style="color: #ffffff;">Zip  <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                            <th style="font-size: 13px;"><a ng-click="Sort('shopsdata.created_date')" class="created_date" style="color: #ffffff;">Address  <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                            <th style="font-size: 13px;"><a ng-click="Sort('totalBarbers')" class="mobile_number" style="color: #ffffff;">Request By <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                            <th style="font-size: 13px;"><a ng-click="Sort('totalBarbers')" class="mobile_number" style="color: #ffffff;">Requested Date <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="shop in shops | orderBy:sort:reverse ">
+                            <td> <a data-toggle="tooltip" title="Add Shop" ui-sref="add_invited_shop({_id:shop._id})">{{shop.name}}</a></td>
+                            <td>{{shop.city}}</td>
+                            <td>{{shop.state}} </td>
+                            <td>{{shop.zip}}</td>
+                            <td> {{shop.address}} </td>
+                            <td> {{shop.first_name}} {{shop.last_name}}</td>
+                            <td>{{shop.created_date | date}} </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <div class="col-sm-6">
+                    <ul uib-pagination total-items="referObj.totalItems" items-per-page="10" ng-model="referObj.currentPage" ng-change="shop_invites()"></ul>
+                </div>
+                <br>
+          
+            </div>
+        </div>
+    </div>
+</div>

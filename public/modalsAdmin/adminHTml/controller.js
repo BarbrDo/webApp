@@ -264,7 +264,7 @@ app_admin.controller("AdminCtrl", [
       $scope.loaderStart = true;
       var passingObj = {
         page: $scope.myobj.currentPage,
-        count: 30
+        count: 10
       }
       if ($scope.myobj.search) {
         passingObj.search = $scope.myobj.search
@@ -292,7 +292,7 @@ app_admin.controller("AdminCtrl", [
       $scope.loaderStart = true;
       var passingObj = {
         page: $scope.myobj.currentPage,
-        count: 30
+        count: 10
       }
 
       if ($scope.myobj.search) {
@@ -678,6 +678,7 @@ app_admin.controller("AdminCtrl", [
 
     $scope.countall = function() {
       Admin.countAppointment().then(function(response) {
+        console.log("countAppointment",response)
         $rootScope.totalappointment = response.data;
       });
 
@@ -858,7 +859,7 @@ app_admin.controller("AdminCtrl", [
       $scope.loaderStart = true;
       var passingObj = {
         page: $scope.myobj.currentPage,
-        count: 30
+        count: 10
       }
       if ($scope.myobj.search) {
         passingObj.search = $scope.myobj.search

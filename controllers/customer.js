@@ -983,7 +983,7 @@ exports.rateBarber = function(req, res) {
           });
         } else {
           return res.status(200).send({
-            msg: constantObj.messages.userStatusUpdateSuccess
+            msg: "Rated successfully."
           });
           done(err);
         }
@@ -1201,7 +1201,7 @@ exports.referapp = function(req, res) {
     let from = constantObj.barbermailId.mail;
     let subject = "Use our app";
     let text = "";
-    if (req.headers.device_type == 'ios') {
+    if (req.headers.device_type == 'iOS') {
       text = constantObj.appleUrl.url;
     }
     if (req.headers.device_type == 'Android') {

@@ -412,5 +412,15 @@ angular.module('barbrdo').factory('Admin', function($http) {
     getUserData: function(data) {
       return $http.get('/api/v2/referDetail/' + data._id, data);
     },
+    getShopInvites:function(data){
+      if (data.search) {
+        return $http.get('/api/v2/shopinvites?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);
+      } else {
+        return $http.get('/api/v2/shopinvites?page=' + data.page + '&count=' + data.count);
+      }
+    },
+    getInviteShopProfile: function(data) {
+      return $http.get('/api/v2/currentshopinvite/' + data._id, data);
+    },
   };
 });

@@ -11,7 +11,9 @@ app_admin.controller("referCtrl", [
   '$localStorage',
   function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage, $uibModal) {
     $scope.myobj.currentPage = 1;
-
+    $scope.referObj = {
+      currentPage :1
+      } ;
     $scope.pageChanged = function() {
       $scope.loaderStart = true;
       var passingObj = {
@@ -40,6 +42,37 @@ app_admin.controller("referCtrl", [
       Admin.getUserData(obj).then(function(response){
         console.log(response);
         $scope.referInfo = response.data.data;
+      })
+    }
+    $scope.shop_invites = function(){
+      $scope.loaderStart = true;
+      var passingObj = {
+        page: $scope.referObj.currentPage,
+        count: 10
+      }
+      if ($scope.referObj.search) {
+        passingObj.search = $scope.referObj.search
+      }
+
+      Admin.getShopInvites(passingObj).then(function(response) {
+        $scope.loaderStart = false;
+        console.log(response.data.data);
+        console.log(response.data.count);
+        $scope.referObj.totalItems = response.data.count ;
+        $scope.shops = response.data.data;
+      }).catch(function(result) {
+        console.log("result",result);
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      })
+    }
+    if($state.current.name=='add_invited_shop'){
+      console.log("add_invited_shop");
+      let passData = {
+        _id:$stateParams._id
+      }
+      Admin.getInviteShopProfile(passData).then(function(response){
+        console.log(response);
       })
     }
 }

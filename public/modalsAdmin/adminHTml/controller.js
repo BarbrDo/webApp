@@ -301,31 +301,11 @@ app_admin.controller("AdminCtrl", [
 
       Admin.shopsAll(passingObj).then(function(response) {
         $scope.loaderStart = false;
-        var shp = [];
-        var objj = {};
-        console.log("response",response);
-        var len = response.data.data.length;
-        for (var i = 0; i < len; i++) {
-          var k = 0;
-          for (var j = 0; j < response.data.data[i].shopinfo[0].chairs.length; j++) {
-            if (response.data.data[i].shopinfo[0].chairs[j].barber_id) {
-              k++;
-
-            }
-          }
-          var objj = {
-            shopsdata: response.data.data[i],
-            shop_id: response.data.data[i].shopinfo[0]._id,
-            totalBarbers: k
-          };
-          shp.push(objj);
-        }
-        $rootScope.shops = shp;
-        $scope.myobj.totalItems = response.data.count / 3;
+        $scope.shops = response.data.data;
+        $scope.myobj.totalItems = response.data.count;
       }).catch(function(result) {
         $scope.loaderStart = false;
         console.log(result);
-        // $scope.messages = result.data.msg
       })
 
     };
@@ -693,7 +673,6 @@ app_admin.controller("AdminCtrl", [
           }
         }).catch(function(result) {
           $scope.loaderStart = false;
-          $scope.messages = result.data.msg
         })
       }, 1000);
 
@@ -912,7 +891,7 @@ app_admin.controller("AdminCtrl", [
       }
       Admin.barbers(passingObj).then(function(response) {
         $scope.loaderStart = false;
-        $scope.myobj.totalItems = response.data.count / 3;
+        $scope.myobj.totalItems = response.data.count;
         $rootScope.barbers = response.data.data;
       }).catch(function(result) {
         $scope.loaderStart = false;

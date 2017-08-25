@@ -35,27 +35,19 @@
                     </div>
                     <div class="dashboard-strip clearfix">
                     	<label class="col-xs-7">Total Appointments</label>
-                        <div class="col-xs-5 text-right">{{totalappointment.length}}</div>
+                        <div class="col-xs-5 text-right">{{totalappointment.totalAppoint}}</div>
                     </div>
                     <div class="dashboard-strip clearfix" >
                     	<label class="col-xs-7">Completed</label>
-                        <div class="col-xs-5 text-right">17</div>
+                        <div class="col-xs-5 text-right">{{totalappointment.completedAppoint}}</div>
                     </div>
                     <div class="dashboard-strip clearfix">
                     	<label class="col-xs-7">Confirmed</label>
-                        <div class="col-xs-5 text-right">8</div>
+                        <div class="col-xs-5 text-right">{{totalappointment.confirmAppoint}}</div>
                     </div>
                     <div class="dashboard-strip clearfix">
-                    	<label class="col-xs-7">Payment Completed</label>
-                        <div class="col-xs-5 text-right">0</div>
-                    </div>
-                    <div class="dashboard-strip clearfix">
-                    	<label class="col-xs-7">Payment Pending s</label>
-                        <div class="col-xs-5 text-right">50</div>
-                    </div>
-                    <div class="dashboard-strip clearfix">
-                    	<label class="col-xs-7">Uncompleted requests</label>
-                        <div class="col-xs-5 text-right">20</div>
+                        <label class="col-xs-7">Cancel</label>
+                        <div class="col-xs-5 text-right">{{totalappointment.cancelAppoint}}</div>
                     </div>
                 </div>
             </div>

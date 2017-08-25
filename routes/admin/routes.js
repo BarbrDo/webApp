@@ -11,7 +11,7 @@ module.exports = function(app, express) {
     app.get('/api/v2/countbarber', barberController.countbarber);
     app.get('/api/v2/countshop', shopController.countshop);
     app.get('/api/v2/countcustomer', customerController.countcustomer);
-    // app.get('/api/v2/countappoint', appointController.countappoint);
+    app.get('/api/v2/countappoint', customerController.countappoint);
 
     //Updation Of Customer
     app.put('/api/v2/deletecustomer/:cust_id',customerController.deletecustomer);

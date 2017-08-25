@@ -1473,3 +1473,40 @@ exports.allappointment = function(req, res) {
     }
   })
 }
+exports.countappoint = function(req,res){
+  async.parallel({
+    one: function(parallelCb) {
+      // This callback will get the total sale of barber
+      appointment.find({},function(err,result){
+        parallelCb(null, result)
+      });
+    },
+    two: function(parallelCb) {
+      // get barber total sales of current month
+      appointment.find({appointment_status:"confirm"},function(err,result){
+        parallelCb(null, result)
+      });
+    },
+    three: function(parallelCb) {
+      // get barber sale of current week
+      appointment.find({appointment_status:"completed"},function(err,result){
+        parallelCb(null, result)
+      });
+    },
+    four: function(parallelCb) {
+      appointment.find({appointment_status:"cancel"},function(err,result){
+        parallelCb(null, result)
+      });
+    }
+  }, function(err, results) {
+    res.status(200).send({
+      msg: constantObj.messages.successRetreivingData,
+      data: {
+        "totalAppoint": results.one.length,
+        "confirmAppoint": results.two.length,
+        "completedAppoint": results.three.length,
+        "cancelAppoint": results.four.length
+      }
+    })
+  });
+}

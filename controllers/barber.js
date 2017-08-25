@@ -1033,7 +1033,7 @@ exports.getShops = function(req, res) {
     }
   }
   if (req.query.city) {
-    obj.zip = {
+    obj.city = {
       $regex: req.query.city,
       '$options': 'i'
     }

@@ -303,6 +303,7 @@ app_admin.controller("AdminCtrl", [
         $scope.loaderStart = false;
         var shp = [];
         var objj = {};
+        console.log("response",response);
         var len = response.data.data.length;
         for (var i = 0; i < len; i++) {
           var k = 0;
@@ -312,7 +313,6 @@ app_admin.controller("AdminCtrl", [
 
             }
           }
-
           var objj = {
             shopsdata: response.data.data[i],
             shop_id: response.data.data[i].shopinfo[0]._id,
@@ -320,12 +320,12 @@ app_admin.controller("AdminCtrl", [
           };
           shp.push(objj);
         }
-
         $rootScope.shops = shp;
         $scope.myobj.totalItems = response.data.count / 3;
       }).catch(function(result) {
         $scope.loaderStart = false;
-        $scope.messages = result.data.msg
+        console.log(result);
+        // $scope.messages = result.data.msg
       })
 
     };
@@ -350,7 +350,24 @@ app_admin.controller("AdminCtrl", [
 
     $scope.updatecustomer = function(customer) {
       $scope.loaderStart = true;
-
+      if(customer.is_active==true){
+        customer.is_active = true;
+      }
+      else{
+        customer.is_active = false;
+      }
+      if(customer.is_deleted=="true"){
+        customer.is_deleted=true
+      }
+      else{
+        customer.is_deleted=false
+      }
+      if(customer.is_verified=="true"){
+        customer.is_verified=true
+      }
+      else{
+        customer.is_verified=false
+      }
       Admin.updateCustomer(customer).then(function(response) {
         $scope.loaderStart = false;
         toastr.success('Customer is updated Succesfully');
@@ -364,6 +381,36 @@ app_admin.controller("AdminCtrl", [
 
     $scope.updatebarber = function(barber) {
       $scope.loaderStart = true;
+      if(barber.is_active==true){
+        barber.is_active = true;
+      }
+      else{
+        barber.is_active = false;
+      }
+      if(barber.is_deleted=="true"){
+        barber.is_deleted=true
+      }
+      else{
+        barber.is_deleted=false
+      }
+      if(barber.is_verified=="true"){
+        barber.is_verified=true
+      }
+      else{
+        barber.is_verified=false
+      }
+      if(barber.is_online=="true"){
+        barber.is_online=true
+      }
+      else{
+        barber.is_online=false
+      }
+      if(barber.is_available=="true"){
+        barber.is_available=true
+      }
+      else{
+        barber.is_available=false
+      }
       Admin.updateBarber(barber).then(function(response) {
         $scope.loaderStart = false;
         toastr.success('Barber is updated Succesfully');
@@ -678,8 +725,7 @@ app_admin.controller("AdminCtrl", [
 
     $scope.countall = function() {
       Admin.countAppointment().then(function(response) {
-        console.log("countAppointment",response)
-        $rootScope.totalappointment = response.data;
+        $rootScope.totalappointment = response.data.data;
       });
 
       Admin.countShop().then(function(response) {

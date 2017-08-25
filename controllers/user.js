@@ -401,10 +401,13 @@ exports.accountPut = function(req, res, next) {
       if(req.body.bio){
         user.bio = req.body.bio
       }
-      if(req.body.is_active){
+      if(req.body.is_active==false || req.body.is_active==true){
         user.is_active = req.body.is_active
       }
-      if(req.body.is_verified){
+      if(req.body.is_verified== false || req.body.is_verified== true){
+        user.is_verified = req.body.is_verified
+      }
+      if(req.body.is_deleted== false || req.body.is_deleted== true){
         user.is_verified = req.body.is_verified
       }
     }

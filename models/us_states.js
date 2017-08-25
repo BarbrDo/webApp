@@ -7,8 +7,7 @@ let usStates = new mongoose.Schema({
         required: true
     },
     abbreviation: {
-        type: Boolean,
-        default: true
+        type: String
     },
     is_deleted:{
         type: Boolean,

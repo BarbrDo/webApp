@@ -53,20 +53,20 @@
                 <div class="col-sm-3 form-group">
                     <label>Is Active</label>
                     <br>
-                    <input type="radio" ng-model="activeSelected" name="active" value="true" ng-checked="customerdetail.is_active==true">YES&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="active" value="false" ng-model="activeSelected" ng-checked="customerdetail.is_active == false">NO
+                    <input type="radio" ng-model="customerdetail.is_active" name="active" value="true" ng-checked="customerdetail.is_active==true">YES&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="active" value="false" ng-model="customerdetail.is_active" ng-checked="customerdetail.is_active == false">NO
                 </div>
                 <div class="col-sm-3 form-group">
                     <label>Is Verified</label>
                     <br>
-                    <input type="radio" ng-model="verifySelected" name="verify" value="true" ng-checked="customerdetail.is_verified==true">YES&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="verify" ng-model="verifySelected" value="false" ng-checked="customerdetail.is_verified == false">NO
+                    <input type="radio" ng-model="customerdetail.is_verified" name="verify" value="true" ng-checked="customerdetail.is_verified==true">YES&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="verify" ng-model="customerdetail.is_verified" value="false" ng-checked="customerdetail.is_verified == false">NO
                 </div>
                 <div class="col-sm-3 form-group">
                     <label>Is Deleted</label>
                     <br>
-                    <input type="radio" ng-model="deleteSelected" name="delete" value="true" ng-checked="customerdetail.is_deleted==true">YES&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="delete" value="false" ng-model="deleteSelected" ng-checked="customerdetail.is_deleted == false">NO
+                    <input type="radio" ng-model="customerdetail.is_deleted" name="delete" value="true" ng-checked="customerdetail.is_deleted==true">YES&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="delete" value="false" ng-model="customerdetail.is_deleted" ng-checked="customerdetail.is_deleted == false">NO
                 </div>
             </div>
             <div class="clearfix text-center">

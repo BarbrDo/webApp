@@ -176,24 +176,24 @@ exports.addOffset = function(dobFormat) {
   return dateInUtc;
 }
 
-// let accountSid = process.env.TWILIO_TEST_ACCOUNTSID; // Your Account SID from www.twilio.com/console
-// let authToken = process.env.TWILIO_TEST_AUTHTOKEN; // Your Auth Token from www.twilio.com/console
+let accountSid = process.env.TWILIO_TEST_ACCOUNTSID; // Your Account SID from www.twilio.com/console
+let authToken = process.env.TWILIO_TEST_AUTHTOKEN; // Your Auth Token from www.twilio.com/console
 
-// let twilio = require('twilio');
-// let client = new twilio(accountSid, authToken);
+let twilio = require('twilio');
+let client = new twilio(accountSid, authToken);
 
 exports.sentMessage = function(text,to,cb) {
   console.log("inside sentMessage",text,to);
-  // client.messages.create({
-  //   body: text, to: to, // Text this number
-  //   from: '+15005550006' // From a valid Twilio number
-  // },function (err,result) {
-  //   console.log("twilio",err,result)
-  //   if(err){
-  //     cb(err,null);
-  //   }
-  //   else{
-  //     cb(null, result);
-  //   }
-  // })
+  client.messages.create({
+    body: text, to: to, // Text this number
+    from: '+15005550006' // From a valid Twilio number
+  },function (err,result) {
+    console.log("twilio",err,result)
+    if(err){
+      cb(err,null);
+    }
+    else{
+      cb(null, result);
+    }
+  })
 }

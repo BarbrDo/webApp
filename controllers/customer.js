@@ -1183,6 +1183,7 @@ exports.referapp = function(req, res) {
     });
   }
   console.log("device_type",req.headers.device_type)
+  var device_type = req.headers.device_type.toLowerCase();
   if (req.body.referee_email) {
     req.assert('referee_email', 'Email is not valid').isEmail();
     req.assert('referee_email', 'Email cannot be blank').notEmpty();
@@ -1196,10 +1197,10 @@ exports.referapp = function(req, res) {
     let from = constantObj.barbermailId.mail;
     let subject = "Use our app";
     let text = "";
-    if (req.headers.device_type == 'iOS') {
+    if (device_type == 'ios') {
       text = constantObj.appleUrl.url;
     }
-    if (req.headers.device_type == 'Android') {
+    if (device_type == 'android') {
       text = constantObj.androidUrl.url;
     }
     commonObj.sendMail(req.body.referee_email, from, subject, text, function(err, result) {

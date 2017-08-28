@@ -176,8 +176,8 @@ exports.addOffset = function(dobFormat) {
   return dateInUtc;
 }
 
-let accountSid = process.env.TWILIO_TEST_ACCOUNTSID; // Your Account SID from www.twilio.com/console
-let authToken = process.env.TWILIO_TEST_AUTHTOKEN; // Your Auth Token from www.twilio.com/console
+let accountSid = process.env.TWILIO_ACCOUNTSID; // Your Account SID from www.twilio.com/console
+let authToken = process.env.TWILIO_AUTHTOKEN; // Your Auth Token from www.twilio.com/console
 
 let twilio = require('twilio');
 let client = new twilio(accountSid, authToken);

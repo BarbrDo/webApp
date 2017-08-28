@@ -16,7 +16,6 @@ const messages = {
     "chairPostedSuccess": "Chair posted successfully",
     "email": "ankushs.sdei@gmail.com",
     "emailsend" : "Thank you! Your feedback has been submitted"
-
 }
 
 const distance = {

@@ -158,6 +158,22 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     url: '/barbers',
     controller: "AdminCtrl",
     templateUrl: "/modalsAdmin/adminHTml/views/barberAdmin.html"
+  }).state('plans', {
+    resolve: {
+      mess: function($localStorage, $q, $state) {
+        var deferred = $q.defer();
+        if ($localStorage.loggedIn != true) {
+          setTimeout(function() {
+            deferred.resolve()
+            $state.go('login');
+          }, 0);
+          return deferred.promise;
+        }
+      }
+    },
+    url: '/plans',
+    controller: "referCtrl",
+    templateUrl: "/modalsAdmin/adminHTml/views/plans.html"
   }).state('view_cust_appointment', {
     resolve: {
       mess: function($localStorage, $q, $state) {
@@ -430,22 +446,6 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     controller: "AdminCtrl",
     templateUrl: "/modalsAdmin/adminHTml/views/shop-details.html"
 
-  }).state('plans', {
-    resolve: {
-      mess: function($localStorage, $q, $state) {
-        var deferred = $q.defer();
-        if ($localStorage.loggedIn != true) {
-          setTimeout(function() {
-            deferred.resolve()
-            $state.go('login');
-          }, 0);
-          return deferred.promise;
-        }
-      }
-    },
-    url: '/plans',
-    controller: "planCtrl",
-    templateUrl: "/modalsAdmin/adminHTml/views/stripe_plans.html"
   }).state('payments', {
     resolve: {
       mess: function($localStorage, $q, $state) {

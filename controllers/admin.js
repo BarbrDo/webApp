@@ -1,5 +1,6 @@
 let crypto = require('crypto');
 let Admin = require('../models/admin');
+let Plan = require('../models/plans');
 let jwt = require('jsonwebtoken');
 let constantObj = require('./../constants.js');
 let moment = require('moment');
@@ -91,9 +92,48 @@ exports.signupPost = function(req, res, next) {
 						"err": err
 					})
 				} else {
-
+					res.status(200).send({
+						user: user,
+						token: generateToken(user),
+						"imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+					});
 				}
 			})
+		}
+	})
+}
+
+exports.createPlan = function(req, res) {
+	console.log("this owrki");
+	req.assert('name', 'First name cannot be blank.').notEmpty();
+	req.assert('duration', 'Last name cannot be blank.').notEmpty();
+	req.assert('price', 'price is not valid').notEmpty();
+	if (req.body.apple_id || req.body.google_id) {
+
+	} else {
+		return res.status(400).send({
+			"msg": "Apple_id or Google_id is required."
+		})
+	}
+	let errors = req.validationErrors();
+	if (errors) {
+		return res.status(400).send({
+			msg: "error in your request",
+			err: errors
+		});
+	}
+	let saveData = req.body;
+	Plan(saveData).save(function(err, result) {
+		if (err) {
+			return res.status(400).send({
+				msg: constantObj.messages.errorInSave,
+				"err": err
+			})
+		} else {
+			res.status(200).send({
+				msg: constantObj.messages.saveSuccessfully,
+				data: result
+			});
 		}
 	})
 }

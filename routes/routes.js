@@ -101,8 +101,10 @@ module.exports = function(app, express) {
         app.get('/api/v2/userprofile/:id', userController.getProfiles);
         app.post('/api/v2/contact', contactController.contactBarbrDo);
         app.post('/api/v2/referapp', customer.referapp);
-        // Stripe Implementation API
 
+        // Subscription Implementation API
+        // app.post('/api/v2/subscribe',userController.subscribe);
+        app.post('/api/v2/plan',adminController.createPlan);
 
         app.get('/admin', function(req, res) {
             res.sendFile(path.join(__dirname + './../public/indexAdmin.html'));

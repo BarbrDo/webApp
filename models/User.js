@@ -97,6 +97,29 @@ let userSchema = new mongoose.Schema({
             }
         }
     ],
+    subscription: [
+        {
+            start_date:{
+                type:Date,
+                required:true
+            },
+            end_date:{
+                type:Date,
+                required:true
+            },
+            amount:{
+                type:Number
+            },
+            pay_by:{
+                type:String,
+                enum:["apple","google"]
+            },
+            created_date:{
+                type:Date,
+                default:Date.now()
+            }
+        }
+    ],
     gallery: [
         {
             name: {

@@ -1285,5 +1285,66 @@ exports.enableServices = function(req, res) {
       })
     }
   })
-
 }
+// exports.subscribe = function(req, res) {
+//   req.checkHeaders("user_id", "User id is required.").notEmpty();
+//   req.assert("start_date", "Start Date is required.").notEmpty();
+//   req.assert("end_date", "End_date is required.").notEmpty();
+//   req.assert("amount", "Amount is required.").notEmpty();
+//   req.assert("pay_by", "pay by is required.").notEmpty();
+//   let errors = req.validationErrors();
+//   if (errors) {
+//     return res.status(400).send({
+//       msg: "error in your request",
+//       err: errors
+//     });
+//   }
+//   let amount = req.body.amount;
+//   User.findOne({
+//     _id: req.headers.user_id
+//   }).exec(function(err, data) {
+//     if (err) {
+//       res.status(400).send({
+//         msg: "This user is not present.",
+//         "err": err
+//       });
+//     } else {
+//       console.log("user_id", data);
+//       if (data) {
+//             let updateData = {
+//               "$push": {
+//                 subscription:{
+//                   start_date:
+//                   end_date:
+//                   amount:
+//                   pay_by:
+//                 }
+//               }
+//             }
+//             User.update({
+//               _id: req.headers.user_id
+//             }, updateData, function(err, updateInfo) {
+//               if (err) {
+//                 res.status(400).send({
+//                   msg: "Error occurred in subscription.",
+//                   "err": err
+//                 });
+//               } else {
+//                 User.findOne({
+//                   _id: req.headers.user_id
+//                 }).exec(function(err, user) {
+//                   res.status(200).send({
+//                     "msg": "You are successfully subscribed."
+//                   });
+//                 })
+//               }
+//             })
+//           }).catch(function(err) {
+//             return res.status(400).send({
+//               msg: err.message
+//             })
+//           });
+//       }
+//     }
+//   })
+// }

@@ -24,8 +24,6 @@ let adminSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    password_reset_token: String,
-    password_reset_expires: Date,
     picture: String,
     created_date: {
         type: Date,

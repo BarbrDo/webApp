@@ -1216,10 +1216,10 @@ exports.referapp = function(req, res) {
     })
   } else if (req.body.referee_phone_number) {
     let text = "";
-    if (req.headers.device_type == 'ios') {
+    if (device_type == 'ios') {
       text = constantObj.appleUrl.url;
     }
-    if (req.headers.device_type == 'android') {
+    if (device_type == 'android') {
       text = constantObj.androidUrl.url;
     }
     commonObj.sentMessage(text, req.body.referee_phone_number, function(err, result) {

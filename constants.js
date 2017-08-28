@@ -35,7 +35,7 @@ const appleUrl = {
 }
 
 const androidUrl = {
-    url : "Hello install this app \n"+"https://play.google.com/store/apps/dev?id=5700313618786177705"
+    url : "Hello install the app \n"+"https://play.google.com/store/apps/dev?id=5700313618786177705"
 }
 
 const barbermailId = {

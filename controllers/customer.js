@@ -223,7 +223,7 @@ exports.customerRequestToBarber = function(req, res) {
         })
       } else {
         return res.status(400).send({
-          msg: "Barber goes offline now."
+          msg: "The barber has gone offline. Please try searching for another barber."
         });
       }
     } else {

@@ -21,7 +21,7 @@ options = {
 };
 let nodemailer = require('nodemailer');
 let mg = require('nodemailer-mailgun-transport');
-console.log("in common",process.env.MAILGUN_DOMAIN);
+// console.log("in common",process.env.MAILGUN_DOMAIN);
 exports.sendMail = function(to, from, subject, text, cb) {
   console.log("to",to);
   console.log("from",from);

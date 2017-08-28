@@ -532,18 +532,7 @@ let callNotification = function(type, to_user_id, from_user_id, data) {
 
 //Admin function
 
-exports.login = function(req, res) {
-  console.log(req.body);
-  if (req.body.username === process.env.ADMIN_USERNAME && req.body.password === process.env.ADMIN_PASSWORD) {
-    res.status(200).send({
-      "msg": "You have successfully login."
-    })
-  } else {
-    res.status(400).send({
-      "msg": "You are not authorized."
-    })
-  }
-}
+
 exports.countcustomer = function(req, res) {
   user.find({
     user_type: "customer"

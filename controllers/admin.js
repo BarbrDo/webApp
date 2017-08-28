@@ -104,7 +104,6 @@ exports.signupPost = function(req, res, next) {
 }
 
 exports.createPlan = function(req, res) {
-	console.log("this owrki");
 	req.assert('name', 'First name cannot be blank.').notEmpty();
 	req.assert('duration', 'Last name cannot be blank.').notEmpty();
 	req.assert('price', 'price is not valid').notEmpty();
@@ -123,6 +122,13 @@ exports.createPlan = function(req, res) {
 		});
 	}
 	let saveData = req.body;
+	if(req.body.apple_id){
+		saveData.plan_type = "ios"
+	}
+	else{
+		saveData.plan_type = "android"
+	}
+	console.log("saveData",saveData);
 	Plan(saveData).save(function(err, result) {
 		if (err) {
 			return res.status(400).send({
@@ -135,5 +141,30 @@ exports.createPlan = function(req, res) {
 				data: result
 			});
 		}
+	})
+}
+exports.getPlans = function(req,res){
+	req.checkHeaders("device_type","Device type is required.").notEmpty();
+	let errors = req.validationErrors();
+	if (errors) {
+		return res.status(400).send({
+			msg: "error in your request",
+			err: errors
+		});
+	}
+	var device_type = req.headers.device_type.toLowerCase();
+	Plan.find({plan_type:device_type},function(err,data){
+		res.status(200).send({
+				msg: constantObj.messages.successRetreivingData,
+				data: data
+			});
+	})
+}
+exports.getallPlans = function(req,res){
+	Plan.find({"is_deleted" : false,"is_active" : true},function(err,data){
+		res.status(200).send({
+				msg: constantObj.messages.successRetreivingData,
+				data: data
+			});
 	})
 }

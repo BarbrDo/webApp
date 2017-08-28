@@ -15,13 +15,18 @@ let plansSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    apple_id:{
+    short_description:{
         type:String,
-        unique:true
+        required:true
+    },
+    plan_type:{
+        type:String
+    },
+    apple_id:{
+        type:String
     },
     google_id:{
-       type:String,
-        unique:true
+       type:String
     },
     created_date: {
         type: Date,

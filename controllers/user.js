@@ -95,6 +95,11 @@ exports.loginPost = function(req, res, next) {
   let errors = req.validationErrors();
   console.log("error",errors); 
   console.log("headers",req.headers);
+
+  return res.status(402).send({
+      msg: "Subscription required."
+    });
+
   if (errors) {
     return res.status(400).send({
       msg: "Missing required fields.",
@@ -834,7 +839,7 @@ exports.checkFaceBook = function(req, res) {
       if (response.length > 0) {
 
         User.update({
-            _id: user._id
+            _id: response._id
           }, {
             $set: {
               "device_type": device_type,

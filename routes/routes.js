@@ -65,7 +65,7 @@ module.exports = function(app, express) {
         app.post('/api/v2/customer/gallery', upload.any(), userController.uploadCustomerGallery);
         app.delete('/api/v2/customer/gallery/:image_id', userController.deleteImages); //Delete image from gallery
         // app.post('/api/v2/ratebarber',barber.rateBarber);
-        app.get('/api/v2/customer/timeSlots', customer.timeSlots);
+        // app.get('/api/v2/customer/timeSlots', customer.timeSlots);
         app.post('/api/v2/customer/messageToBarber', customer.sendMessageToBarber)
         app.post('/api/v2/ratebarber', customer.rateBarber);
 
@@ -105,6 +105,8 @@ module.exports = function(app, express) {
         // Subscription Implementation API
         // app.post('/api/v2/subscribe',userController.subscribe);
         app.post('/api/v2/plan',adminController.createPlan);
+        app.get('/api/v2/plan',adminController.getPlans);
+        app.get('/api/v2/allplan',adminController.getallPlans);
 
         app.get('/admin', function(req, res) {
             res.sendFile(path.join(__dirname + './../public/indexAdmin.html'));

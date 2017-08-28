@@ -1,0 +1,54 @@
+<div>
+    <div ng-if="vm.loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+        <li class="breadcrumb-item active">Plans</li>
+    </ol>
+    <div class="panel">
+        <div class="panel-heading">
+            All Plans
+        </div>
+        <div class="panel-body" ng-init="allPlans()">
+            <!-- RAHUL  CODE -->
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-6" style="margin-left: 300px;">
+                        </div>
+                        <div>
+                            <span type="button" class="btn btn-default" ui-sref="add_plans">Add Plan</span>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="font-size: 13px;" width="15%">Name</a>
+                                </th>
+                                <th style="font-size: 13px;" width="20%">Duration</th>
+                                <th style="font-size: 13px;">Price</th>
+                                <th style="font-size: 13px;">Plan Type</th>
+                                <th style="font-size: 13px;">Short Description</th>
+                                <th style="font-size: 13px;">Created Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="results in myplans">
+                                <td>{{results.name}}</td>
+                                <td>{{results.duration}}</td>
+                                <td>{{results.price}}</td>
+                                <td>{{results.plan_type}}</td>
+                                 <td>{{results.short_description}}</td>
+                                <td>{{results.created_date | date}}</td>
+                                
+                                <!-- <td><i class="fa fa-pencil-square-o" aria-hidden="true" style="cursor:pointer;" ng-click="vm.edit(results,'update')"></i></td>
+                                <td><i class="fa fa-trash" aria-hidden="true" style="cursor:pointer;" ng-click="vm.del(results)"></i>
+                                </td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

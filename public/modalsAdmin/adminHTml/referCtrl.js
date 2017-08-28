@@ -105,5 +105,13 @@ app_admin.controller("referCtrl", [
           $scope.shop_invites();
         })
     }
+    $scope.allPlans = function(){
+      Admin.featuringPlans().then(function(response){
+        $scope.myplans = response.data.data
+      })
+    }
+    $scope.addPlan = function(){
+      $state.go('add_plans');
+    }
 }
 ]);

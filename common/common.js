@@ -186,7 +186,7 @@ exports.sentMessage = function(text,to,cb) {
   console.log("inside sentMessage",text,to);
   client.messages.create({
     body: text, to: to, // Text this number
-    from: '+646798-2288' // From a valid Twilio number
+    from: '646798-2288' // From a valid Twilio number
   },function (err,result) {
     console.log("twilio",err,result)
     if(err){

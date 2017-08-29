@@ -34,7 +34,7 @@
                     <span style="color:red " ng-show="planForm.duration.$error.maxlength && planForm.duration.$dirty">Duration maximum length exceeds</span>
                 </div>
                 <div class="col-sm-4 form-group">
-                    <label>Price</label>
+                    <label>Price (In USD)</label>
                     <input type="text" class="form-control" name="price" id="price" ng-pattern="/^\d*[1-9]\d*$/" ng-model="user.price" ng-minlength="1" ng-maxlength="10" maxlength="10" required/>
                     <span style="color:red;" ng-show="planForm.price.$touched && planForm.price.$invalid && planForm.price.$error.required">Price  is required.</span>
                     <span style="color:red;" ng-show="planForm.price.$error.minlength">Phone have 3-digits minimum.</span>
@@ -48,7 +48,7 @@
                     <span style="color:red;" ng-show="planForm.short_description.$error.pattern">Enter Valid Character</span><br>
                     <span style="color:red " ng-show="planForm.short_description.$error.maxlength && planForm.short_description.$dirty">short_description maximum length exceeds</span>
                 </div>
-                <div class="col-sm-4 form-group">
+                <!-- <div class="col-sm-4 form-group">
                     <label class="form-control-placeholder">Plan For</label>
                     <div class="inline col-sm-12" style="margin-left:-26px;margin-top:10px;">
                     <div class="col-sm-6">
@@ -64,17 +64,17 @@
                      </label>
                     </div>
                      </div>
-                </div>
-                <div class="col-sm-4 form-group" ng-if="user.planfor=='ios'">
+                </div> -->
+                <div class="col-sm-4 form-group">
                     <label class="form-control-placeholder">Apple id</label>
-                    <input type="text" class="form-control" name="apple_id" ng-model="user.apple_id" ng-pattern="/^[a-z0-9]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                    <input type="text" class="form-control" name="apple_id" ng-model="user.apple_id"  maxlength="21" />
                     <span style="color:red;" ng-show="planForm.apple_id.$touched && planForm.apple_id.$invalid && planForm.apple_id.$error.required">Apple id is required.</span>
                     <span style="color:red;" ng-show="planForm.apple_id.$error.pattern">Enter Valid Character</span><br>
                     <span style="color:red " ng-show="planForm.apple_id.$error.maxlength && planForm.apple_id.$dirty">apple_id maximum length exceeds</span>
                 </div>
-                <div class="col-sm-4 form-group" ng-if="user.planfor=='android'">
+                <div class="col-sm-4 form-group">
                     <label>Google id</label>
-                    <input type="text" class="form-control" name="google_id" ng-model="user.google_id" ng-pattern="/^[a-z0-9]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                    <input type="text" class="form-control" name="google_id" ng-model="user.google_id" />
                     <span style="color:red;" ng-show="planForm.google_id.$touched && planForm.google_id.$invalid && planForm.google_id.$error.required">Google id is required.</span>
                     <span style="color:red;" ng-show="planForm.google_id.$error.pattern">Enter Valid Character</span><br>
                     <span style="color:red " ng-show="planForm.google_id.$error.maxlength && planForm.google_id.$dirty">google_id maximum length exceeds</span>

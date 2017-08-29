@@ -120,12 +120,6 @@ exports.createPlan = function(req, res) {
 		});
 	}
 	let saveData = req.body;
-	if(req.body.apple_id){
-		saveData.plan_type = "ios"
-	}
-	else{
-		saveData.plan_type = "android"
-	}
 	console.log("saveData",saveData);
 	Plan(saveData).save(function(err, result) {
 		if (err) {
@@ -160,6 +154,15 @@ exports.getPlans = function(req,res){
 }
 exports.getallPlans = function(req,res){
 	Plan.find({"is_deleted" : false,"is_active" : true},function(err,data){
+		res.status(200).send({
+				msg: constantObj.messages.successRetreivingData,
+				data: data
+			});
+	})
+}
+exports.getCurrentPlan = function(req,res){
+	console.log("req.",req.params);
+	Plan.findOne({_id:req.params.id},function(err,data){
 		res.status(200).send({
 				msg: constantObj.messages.successRetreivingData,
 				data: data

@@ -21,6 +21,7 @@ let stripeToken = process.env.STRIPE
 let stripe = require('stripe')(stripeToken);
 let LoggedInUser = require('../models/logged_in_user')
 let service = require('../models/service');
+let Plan = require('../models/plans');
 
 function generateToken(user) {
   let payload = {
@@ -80,21 +81,21 @@ exports.loginPost = function(req, res, next) {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('password', 'Password cannot be blank').notEmpty();
-  req.checkHeaders("device_id","Device id is required.").notEmpty();
-  req.checkHeaders("device_type","Device type is required.").notEmpty();
+  req.checkHeaders("device_id", "Device id is required.").notEmpty();
+  req.checkHeaders("device_type", "Device type is required.").notEmpty();
   req.checkHeaders('device_longitude', 'Device longitude cannot be blank.').notEmpty();
   req.checkHeaders("device_latitude", 'services cannot be blank.').notEmpty();
   req.sanitize('email').normalizeEmail({
     remove_dots: false
   });
-  if(!(req.headers.device_latitude && req.headers.device_longitude)){
+  if (!(req.headers.device_latitude && req.headers.device_longitude)) {
     return res.status(400).send({
       msg: "Location services are not enabled. Please turn on your GPS."
     });
   }
   let errors = req.validationErrors();
-  console.log("error",errors); 
-  console.log("headers",req.headers);
+  console.log("error", errors);
+  console.log("headers", req.headers);
 
   // return res.status(402).send({
   //     msg: "Subscription required."
@@ -142,7 +143,7 @@ exports.loginPost = function(req, res, next) {
             $set: {
               "device_type": device_type,
               "device_id": device_token,
-              "latLong":[req.headers.device_longitude,req.headers.device_latitude],
+              "latLong": [req.headers.device_longitude, req.headers.device_latitude],
               "is_active": false,
               'remark': "Subscription required."
             }
@@ -182,7 +183,7 @@ exports.loginPost = function(req, res, next) {
                 $set: {
                   "device_type": device_type,
                   "device_id": device_token,
-                  "latLong":[req.headers.device_longitude,req.headers.device_latitude],
+                  "latLong": [req.headers.device_longitude, req.headers.device_latitude],
                 }
               }).exec(function(userErr, userUpdate) {
                 console.log(userUpdate)
@@ -314,14 +315,14 @@ exports.signupPost = function(req, res, next) {
         }
       })
     },
-    function(saveData,done){
+    function(saveData, done) {
       User(saveData).save(function(err, data) {
         if (err) {
           return res.status(400).send({
             msg: constantObj.messages.errorInSave,
             "err": err
           })
-        } else {         
+        } else {
           let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
           if (req.body.user_type == 'shop') {
             let saveDataForShop = {};
@@ -403,16 +404,16 @@ exports.accountPut = function(req, res, next) {
       if (req.body.is_available) {
         user.is_available = req.body.is_available
       }
-      if(req.body.bio){
+      if (req.body.bio) {
         user.bio = req.body.bio
       }
-      if(req.body.is_active==false || req.body.is_active==true){
+      if (req.body.is_active == false || req.body.is_active == true) {
         user.is_active = req.body.is_active
       }
-      if(req.body.is_verified== false || req.body.is_verified== true){
+      if (req.body.is_verified == false || req.body.is_verified == true) {
         user.is_verified = req.body.is_verified
       }
-      if(req.body.is_deleted== false || req.body.is_deleted== true){
+      if (req.body.is_deleted == false || req.body.is_deleted == true) {
         user.is_verified = req.body.is_verified
       }
     }
@@ -815,8 +816,8 @@ exports.authGoogleCallback = function(req, res) {
 
 exports.checkFaceBook = function(req, res) {
   req.assert('facebook_id', 'facebook_id is required').notEmpty();
-  req.checkHeaders("device_id","Device id is required.").notEmpty();
-  req.checkHeaders("device_type","Device type is required.").notEmpty();
+  req.checkHeaders("device_id", "Device id is required.").notEmpty();
+  req.checkHeaders("device_type", "Device type is required.").notEmpty();
   req.checkHeaders('device_longitude', 'Device longitude cannot be blank.').notEmpty();
   req.checkHeaders("device_latitude", 'services cannot be blank.').notEmpty();
   let errors = req.validationErrors();
@@ -826,7 +827,7 @@ exports.checkFaceBook = function(req, res) {
       err: errors
     });
   }
-   var device_token = req.headers.device_id;
+  var device_token = req.headers.device_id;
   var device_type = req.headers.device_type.toLowerCase();
   User.find({
     "facebook": req.body.facebook_id
@@ -839,16 +840,16 @@ exports.checkFaceBook = function(req, res) {
       if (response.length > 0) {
 
         User.update({
-            _id: response._id
-          }, {
-            $set: {
-              "device_type": device_type,
-              "device_id": device_token,
-              "latLong":[req.headers.device_longitude,req.headers.device_latitude],
-              "is_active": false,
-              'remark': "Subscription required."
-            }
-          })
+          _id: response._id
+        }, {
+          $set: {
+            "device_type": device_type,
+            "device_id": device_token,
+            "latLong": [req.headers.device_longitude, req.headers.device_latitude],
+            "is_active": false,
+            'remark': "Subscription required."
+          }
+        })
 
         res.status(200).send({
           msg: constantObj.messages.successRetreivingData,
@@ -991,31 +992,29 @@ exports.getProfiles = function(req, res) {
       } else {
         let newData = JSON.parse(JSON.stringify(result))
         let rateing = [];
-        if(newData.ratings.length>0){
-          for (var i = 0; i<newData.ratings.length; i++) {
+        if (newData.ratings.length > 0) {
+          for (var i = 0; i < newData.ratings.length; i++) {
             let obj = {
-              rated_by:newData.ratings[i].rated_by._id,
-              score:newData.ratings[i].score,
-              rated_by_name:newData.ratings[i].rated_by.first_name+" "+newData.ratings[i].rated_by.last_name,
-              picture:newData.ratings[i].rated_by.picture,
-              appointment_date:newData.ratings[i].appointment_date
+              rated_by: newData.ratings[i].rated_by._id,
+              score: newData.ratings[i].score,
+              rated_by_name: newData.ratings[i].rated_by.first_name + " " + newData.ratings[i].rated_by.last_name,
+              picture: newData.ratings[i].rated_by.picture,
+              appointment_date: newData.ratings[i].appointment_date
             }
             console.log(obj);
             rateing.push(obj)
           };
           newData.ratings = rateing
-        }
-        else{
+        } else {
           newData.ratings = rateing
         }
-        if(newData.barber_shop_id){
+        if (newData.barber_shop_id) {
           delete newData.barber_shop_id;
         }
-        if(result.barber_shop_id){
-           newData.shop_info = result.barber_shop_id
-        }
-        else{
-           newData.shop_info = {}
+        if (result.barber_shop_id) {
+          newData.shop_info = result.barber_shop_id
+        } else {
+          newData.shop_info = {}
         }
         res.status(200).send({
           msg: constantObj.messages.successRetreivingData,
@@ -1291,65 +1290,74 @@ exports.enableServices = function(req, res) {
     }
   })
 }
-// exports.subscribe = function(req, res) {
-//   req.checkHeaders("user_id", "User id is required.").notEmpty();
-//   req.assert("start_date", "Start Date is required.").notEmpty();
-//   req.assert("end_date", "End_date is required.").notEmpty();
-//   req.assert("amount", "Amount is required.").notEmpty();
-//   req.assert("pay_by", "pay by is required.").notEmpty();
-//   let errors = req.validationErrors();
-//   if (errors) {
-//     return res.status(400).send({
-//       msg: "error in your request",
-//       err: errors
-//     });
-//   }
-//   let amount = req.body.amount;
-//   User.findOne({
-//     _id: req.headers.user_id
-//   }).exec(function(err, data) {
-//     if (err) {
-//       res.status(400).send({
-//         msg: "This user is not present.",
-//         "err": err
-//       });
-//     } else {
-//       console.log("user_id", data);
-//       if (data) {
-//             let updateData = {
-//               "$push": {
-//                 subscription:{
-//                   start_date:
-//                   end_date:
-//                   amount:
-//                   pay_by:
-//                 }
-//               }
-//             }
-//             User.update({
-//               _id: req.headers.user_id
-//             }, updateData, function(err, updateInfo) {
-//               if (err) {
-//                 res.status(400).send({
-//                   msg: "Error occurred in subscription.",
-//                   "err": err
-//                 });
-//               } else {
-//                 User.findOne({
-//                   _id: req.headers.user_id
-//                 }).exec(function(err, user) {
-//                   res.status(200).send({
-//                     "msg": "You are successfully subscribed."
-//                   });
-//                 })
-//               }
-//             })
-//           }).catch(function(err) {
-//             return res.status(400).send({
-//               msg: err.message
-//             })
-//           });
-//       }
-//     }
-//   })
-// }
+exports.subscribe = function(req, res) {
+  req.checkHeaders("user_id", "User id is required.").notEmpty();
+  req.body("plan_id", "Plan ObjectId is required").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+  Plan.findOne({
+    _id: req.body.plan_id
+  }, function(err, planResult) {
+    if (!data) {
+      return res.status(400).send({
+        msg: "Plan not found in database."
+      });
+    } else {
+      User.findOne({
+        _id: req.headers.user_id
+      }).exec(function(err, data) {
+        if (err) {
+          res.status(400).send({
+            msg: "This user is not present.",
+            "err": err
+          });
+        } else {
+          if (data) {
+            let updateData = {
+                  plan_name:planResult.name,
+                  // start_date:planResult.new Date(),
+                  price:planResult.price,
+                  pay_by:planResult.plan_type
+            }
+            updateData.end_date = moment(updateData.start_date, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
+            if(planResult.plan_type=='android'){
+              updateData.pay_id=planResult.google_id
+            }
+            else{
+               updateData.pay_id=planResult.apple_id
+            }
+            console.log(updateData);
+            return false;
+            User.update({
+              _id: req.headers.user_id
+            }, updateData, function(err, updateInfo) {
+              if (err) {
+                res.status(400).send({
+                  msg: "Error occurred in subscription.",
+                  "err": err
+                });
+              } else {
+                User.findOne({
+                  _id: req.headers.user_id
+                }).exec(function(err, user) {
+                  res.status(200).send({
+                    "msg": "You are successfully subscribed."
+                  });
+                })
+              }
+            })
+          } else {
+            res.status(400).send({
+              msg: "This user is not present."
+            });
+          }
+        }
+      })
+    }
+  })
+}

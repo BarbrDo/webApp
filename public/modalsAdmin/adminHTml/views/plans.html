@@ -27,17 +27,20 @@
                                 </th>
                                 <th style="font-size: 13px;" width="20%">Duration</th>
                                 <th style="font-size: 13px;">Price</th>
-                                <th style="font-size: 13px;">Plan Type</th>
+                                <th style="font-size: 13px;">Google Id</th>
+                                <th style="font-size: 13px;">Apple Id</th>
                                 <th style="font-size: 13px;">Short Description</th>
                                 <th style="font-size: 13px;">Created Date</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr data-ng-repeat="results in myplans">
-                                <td>{{results.name}}</td>
+                                <td>
+                                <a data-toggle="tooltip" title="View Details" ui-sref="edit_plan({id:results._id})">{{results.name}}</a></td>
                                 <td>{{results.duration}}</td>
                                 <td>{{results.price}}</td>
-                                <td>{{results.plan_type}}</td>
+                                <td>{{results.google_id}}</td>
+                                <td>{{results.apple_id}}</td>
                                  <td>{{results.short_description}}</td>
                                 <td>{{results.created_date | date}}</td>
                                 

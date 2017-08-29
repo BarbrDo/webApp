@@ -174,6 +174,22 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     url: '/plans',
     controller: "referCtrl",
     templateUrl: "/modalsAdmin/adminHTml/views/plans.html"
+  }).state('edit_plan', {
+    resolve: {
+      mess: function($localStorage, $q, $state) {
+        var deferred = $q.defer();
+        if ($localStorage.loggedIn != true) {
+          setTimeout(function() {
+            deferred.resolve()
+            $state.go('login');
+          }, 0);
+          return deferred.promise;
+        }
+      }
+    },
+    url: '/editplan/:id',
+    controller: "referCtrl",
+    templateUrl: "/modalsAdmin/adminHTml/views/add_new_plan.html"
   }).state('add_plans', {
     resolve: {
       mess: function($localStorage, $q, $state) {

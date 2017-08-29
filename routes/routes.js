@@ -103,10 +103,11 @@ module.exports = function(app, express) {
         app.post('/api/v2/referapp', customer.referapp);
 
         // Subscription Implementation API
-        // app.post('/api/v2/subscribe',userController.subscribe);
+        app.post('/api/v2/subscribe',userController.subscribe);
         app.post('/api/v2/plan',adminController.createPlan);
         app.get('/api/v2/plan',adminController.getPlans);
         app.get('/api/v2/allplan',adminController.getallPlans);
+        app.get('/api/v2/plan/get/:id',adminController.getCurrentPlan);
 
         app.get('/admin', function(req, res) {
             res.sendFile(path.join(__dirname + './../public/indexAdmin.html'));

@@ -99,6 +99,9 @@ let userSchema = new mongoose.Schema({
     ],
     subscription: [
         {
+            plan_name:{
+                type:String
+            },
             start_date:{
                 type:Date,
                 required:true
@@ -107,12 +110,15 @@ let userSchema = new mongoose.Schema({
                 type:Date,
                 required:true
             },
-            amount:{
+            price:{
                 type:Number
             },
             pay_by:{
                 type:String,
                 enum:["apple","google"]
+            },
+            pay_id:{
+                type:String,
             },
             created_date:{
                 type:Date,

@@ -113,17 +113,19 @@ app_admin.controller("referCtrl", [
     }
     $scope.addPlan = function() {
       console.log($scope.user);
-      if(!$scope.user.planfor){
-        return toastr.error("Must Select plan for.")
-      }
-      else{
-        $scope.user.plan_type = !$scope.user.planfor
         Admin.createPlan($scope.user).then(function(response) {
           console.log(response.data.msg)
           toastr.success(response.data.msg);
           $state.go('plans');
-        })
+        })    }
+    if($state.current.name=='edit_plan'){
+      console.log("edit plan");
+      let obj = {
+        _id:$stateParams.id
       }
+      Admin.getPlanById(obj).then(function(response){
+        $scope.user = response.data.data
+      })
     }
   }
 ]);

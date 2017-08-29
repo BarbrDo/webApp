@@ -17,81 +17,82 @@
         <div class="title">
             Plan Information
         </div>
-        <form name="signUpForm">
+        <form name="planForm">
             <div class="clearfix">
                 <div class="col-sm-4 form-group">
                     <label>Name</label>
-                    <input type="text" class="form-control" name="first_name" ng-model="user.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required />
-                    <span style="color:red;" ng-show="signUpForm.first_name.$touched && signUpForm.first_name.$invalid && signUpForm.first_name.$error.required">First Name is required.</span>
-                    <span style="color:red;" ng-show="signUpForm.first_name.$error.pattern">Enter Valid Character</span><br>
-                    <span style="color:red " ng-show="signUpForm.first_name.$error.maxlength && signUpForm.first_name.$dirty">First name maximum length exceeds</span>
+                    <input type="text" class="form-control" name="name" ng-model="user.name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required />
+                    <span style="color:red;" ng-show="planForm.name.$touched && planForm.name.$invalid && planForm.name.$error.required">Name is required.</span>
+                    <span style="color:red;" ng-show="planForm.name.$error.pattern">Enter Valid Character</span><br>
+                    <span style="color:red " ng-show="planForm.name.$error.maxlength && planForm.name.$dirty">Name maximum length exceeds</span>
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Duration (In Days)</label>
-                    <input type="number" class="form-control" name="last_name" ng-model="user.last_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required />
-                    <span style="color:red;" ng-show="signUpForm.last_name.$touched && signUpForm.last_name.$invalid && signUpForm.last_name.$error.required">Last Name is required.</span>
-                    <span style="color:red;" ng-show="signUpForm.last_name.$error.pattern">Enter Valid Character</span><br>
-                    <span style="color:red " ng-show="signUpForm.last_name.$error.maxlength && signUpForm.last_name.$dirty">First name maximum length exceeds</span>
+                    <input type="text" class="form-control" name="duration" ng-model="user.duration" ng-pattern="/^\d*[1-9]\d*$/" ng-minlength="1" ng-maxlength="3" maxlength="3" required />
+                    <span style="color:red;" ng-show="planForm.duration.$touched && planForm.duration.$invalid && planForm.duration.$error.required">Duration is required.</span>
+                    <span style="color:red;" ng-show="planForm.duration.$error.pattern">Enter Valid Character</span><br>
+                    <span style="color:red " ng-show="planForm.duration.$error.maxlength && planForm.duration.$dirty">Duration maximum length exceeds</span>
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Price</label>
-                    <input type="text" class="form-control" name="mobile_number" id="mobile_number" ng-model="user.mobile_number" mask="(999) 999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="14" ng-maxlength="14" maxlength="14" required/>
-                    <span style="color:red;" ng-show="signUpForm.mobile_number.$touched && signUpForm.mobile_number.$invalid && signUpForm.mobile_number.$error.required">Mobile number is required.</span>
-                    <span style="color:red;" ng-show="signUpForm.mobile_number.$error.minlength">Phone have 10-digits minimum.</span>
+                    <input type="text" class="form-control" name="price" id="price" ng-pattern="/^\d*[1-9]\d*$/" ng-model="user.price" ng-minlength="1" ng-maxlength="10" maxlength="10" required/>
+                    <span style="color:red;" ng-show="planForm.price.$touched && planForm.price.$invalid && planForm.price.$error.required">Price  is required.</span>
+                    <span style="color:red;" ng-show="planForm.price.$error.minlength">Phone have 3-digits minimum.</span>
                 </div>
             </div>
             <div class="clearfix">
                 <div class="col-sm-4 form-group">
                     <label>Short Description</label>
-                    <input type="password" name="password" id="password" class="form-control" ng-model="user.password" ng-minlength="6" ng-maxlength="20" maxlength="21" required />
-                    <span class="validationError" ng-messages="signUpForm.password.$error" ng-show="
-                signUpForm.password.$error.required && signUpForm.password.$touched && signUpForm.password.$invalid" role="alert">
-               <span style="color:red" ng-message="required">password is required</span>
-                    </span>
-                    <div class="validationError" ng-if="!updateButton" ng-show="signUpForm.password.$error.minlength">
-                        <span style="color:red ">password too Short (atleast 6 characters)</span>
-                    </div>
-                    <div class="validationError" ng-if="!updateButton" ng-show="signUpForm.password.$error.maxlength && signUpForm.password.$dirty">
-                        <span style="color:red ">password maximum length exceeds</span>
-                    </div>
+                    <input type="text" class="form-control" name="short_description" ng-model="user.short_description" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required />
+                    <span style="color:red;" ng-show="planForm.short_description.$touched && planForm.short_description.$invalid && planForm.short_description.$error.required">short_description is required.</span>
+                    <span style="color:red;" ng-show="planForm.short_description.$error.pattern">Enter Valid Character</span><br>
+                    <span style="color:red " ng-show="planForm.short_description.$error.maxlength && planForm.short_description.$dirty">short_description maximum length exceeds</span>
                 </div>
                 <div class="col-sm-4 form-group">
-                    <label>plan_type</label>
-                    <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" ng-model="user.confirmPassword" required ng-pattern="user.password" />
-                    <div class="validationError" ng-messages="signUpForm.confirmPassword.$error" ng-show=" signUpForm.confirmPassword.$error.pattern && (!signUpForm.confirmPassword.$pristine || signUpForm.$submitted)" role="alert ">
-                        <span style="color:red " ng-if="!updateButton" ng-message="pattern">password do not match</span>
+                    <label class="form-control-placeholder">Plan For</label>
+                    <div class="inline col-sm-12" style="margin-left:-26px;margin-top:10px;">
+                    <div class="col-sm-6">
+                        <label>
+                        <input type="radio" ng-model="user.planfor" value="android">
+                        Android
+                        </label>
                     </div>
-                    <div ng-if="!updateButton" class="validationError" ng-messages="signUpForm.confirmPassword.$error" ng-show=" signUpForm.confirmPassword.$error.required && signUpForm.confirmPassword.$touched && signUpForm.confirmPassword.$invalid" role="alert">
-                        <span ng-if="!updateButton" style="color:red " ng-message="required" class="error-message">Confirm password is required</span>
+                    <div class="col-sm-6">
+                        <label>
+                        <input type="radio" ng-model="user.planfor" value="ios">
+                        iOS
+                     </label>
                     </div>
+                     </div>
                 </div>
-                <div class="col-sm-4 form-group">
-                    <label class="form-control-placeholder">apple_id</label>
-                    <input type="text" name="email" id="email" class="form-control" ng-model="user.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" required/>
-                        <span style="color:red" ng-message="pattern" class="error-message" ng-show="signUpForm.email.$invalid && (!signUpForm.email.$pristine || signUpForm.$submitted)">Email is not valid</span>
-                    <div class="validationError" ng-messages="signUpForm.email.$error" ng-show="signUpForm.email.$error.required &&
-                  signUpForm.email.$touched && signUpForm.email.$invalid" role="alert">
-                        <span style="color:red" ng-message="required" class="error-message">Email is required</span>
-                    </div>
+                <div class="col-sm-4 form-group" ng-if="user.planfor=='ios'">
+                    <label class="form-control-placeholder">Apple id</label>
+                    <input type="text" class="form-control" name="apple_id" ng-model="user.apple_id" ng-pattern="/^[a-z0-9]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                    <span style="color:red;" ng-show="planForm.apple_id.$touched && planForm.apple_id.$invalid && planForm.apple_id.$error.required">Apple id is required.</span>
+                    <span style="color:red;" ng-show="planForm.apple_id.$error.pattern">Enter Valid Character</span><br>
+                    <span style="color:red " ng-show="planForm.apple_id.$error.maxlength && planForm.apple_id.$dirty">apple_id maximum length exceeds</span>
+                </div>
+                <div class="col-sm-4 form-group" ng-if="user.planfor=='android'">
+                    <label>Google id</label>
+                    <input type="text" class="form-control" name="google_id" ng-model="user.google_id" ng-pattern="/^[a-z0-9]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                    <span style="color:red;" ng-show="planForm.google_id.$touched && planForm.google_id.$invalid && planForm.google_id.$error.required">Google id is required.</span>
+                    <span style="color:red;" ng-show="planForm.google_id.$error.pattern">Enter Valid Character</span><br>
+                    <span style="color:red " ng-show="planForm.google_id.$error.maxlength && planForm.google_id.$dirty">google_id maximum length exceeds</span>
                 </div>
             </div>
-            <div class="clearfix">
-                <div class="col-sm-6 form-group" ng-hide="true">
-                    {{user.user_type = "barber"}}
-                    <label>User Type</label>
-                    <input type="text" class="form-control" ng-model="user.user_type">
-                </div>
+            <!-- <div class="clearfix">
                 <div class="col-sm-4 form-group">
-                    <label>google_id</label>
-                    <input type="text" class="form-control" name="license_number" ng-model="user.license_number" required>
-                    <span style="color:red;" ng-show="signUpForm.license_number.$touched && signUpForm.license_number.$invalid && signUpForm.license_number.$error.required">Licence number is required.</span>
+                    <label>Google id</label>
+                    <input type="text" class="form-control" name="google_id" ng-model="user.google_id" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" />
+                    <span style="color:red;" ng-show="planForm.google_id.$error.pattern">Enter Valid Character</span><br>
+                    <span style="color:red " ng-show="planForm.google_id.$error.maxlength && planForm.google_id.$dirty">google_id maximum length exceeds</span>
                 </div>
-            </div>
+            </div> -->
         <div class="clearfix text-center">
-            <button type="submit" id="save" ng-show="signUpForm.$invalid==false" class="btn btn-primary" ng-click="addcustomer('barbers')" style="background-color: #97f580;">
+            <button type="submit" id="save" ng-show="planForm.$invalid==false" class="btn btn-primary" ng-click="addPlan()" style="background-color: #97f580;">
                 <i class="fa fa-check" aria-hidden="true" style="color: #000000;"></i> Save
             </button>
-            <button type="submit" ng-hide="signUpForm.$invalid==false" class="btn btn-primary" ng-disabled="signUpForm.$invalid" data-toggle="tooltip" title="Invalid Form">
+            <button type="submit" ng-hide="planForm.$invalid==false" class="btn btn-primary" ng-disabled="planForm.$invalid" data-toggle="tooltip" title="Invalid Form">
                 <i class="fa fa-check" aria-hidden="true"></i>
                 <span>Save
       </button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -103,6 +104,3 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">
-window.addEventListener('keydown',function(e){if(e.keyIdentifier=='U+000A'||e.keyIdentifier=='Enter'||e.keyCode==13){if(e.target.nodeName=='INPUT'&&e.target.type=='text'){e.preventDefault();return false;}}},true);
-</script>

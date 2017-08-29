@@ -274,7 +274,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
       return $http.get('/api/v2/allplan', data);
     },
     createPlan:function (data) {
-      return $http.post('/api/v2/stripe/createPlan', data)
+      return $http.post('/api/v2/plan', data)
     },
     updatePlan:function (data) {
       return $http.put('/api/v2/stripe/updatePlan', data)

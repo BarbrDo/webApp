@@ -292,7 +292,7 @@ exports.cancelAppointment = function(req, res) {
             });
           } else {
             res.status(200).send({
-              msg: 'You cancelled the appointment.',
+              msg: 'You have successfully cancelled your request!',
               data: result
             });
           }

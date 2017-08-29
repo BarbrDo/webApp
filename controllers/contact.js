@@ -15,13 +15,8 @@ exports.contactGet = function(req, res) {
  * POST /contact
  */
 exports.contactBarbrDo = function(req, res) {
-  req.assert('name', 'Name cannot be blank').notEmpty();
-  req.assert('email', 'Email is not valid').isEmail();
-  req.assert('email', 'Email cannot be blank').notEmpty();
-  req.assert('message', 'Message cannot be blank').notEmpty();
-  req.sanitize('email').normalizeEmail({
-    remove_dots: false
-  });
+  req.checkHeaders("user_id","User id is required.").notEmpty();
+  req.assert("message","message is required").notEmpty();
   var errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -36,20 +31,32 @@ exports.contactBarbrDo = function(req, res) {
     }
   }
   let nodemailerMailgun = nodemailer.createTransport(mg(auth));
+    user.findOne({_id:req.headers.user_id},function(err,data){
+    if(!data){
+      return res.status(400).send({
+        msg: "Your required information is not present."
+      });
+    }
+    else{
 
-  var mailOptions = {
-    from: req.body.name + ' ' + '<' + req.body.email + '>',
-    to: constantObj.messages.email,
-    subject: '✔ Contact Form',
-    text: req.body.message
-  };
+      let messages = req.body.message+"\n\n"+"Mobile"+":"+data.mobile_number+"\n"+"email"+":"+data.email;
 
-  nodemailerMailgun.sendMail(mailOptions, function(err) {
-    return res.status(200).send({
-      msg: constantObj.messages.emailsend
-    });
-  });
-};
+      var mailOptions = {
+        from: data.first_name +" "+data.last_name+ ' ' + '<' + data.email + '>',
+        to:"hshussain86@gmail.com",
+        // to: constantObj.messages.email,
+        subject: '✔ Contact Form',
+        text: messages
+      };
+
+      nodemailerMailgun.sendMail(mailOptions, function(err) {
+        return res.status(200).send({
+          msg: constantObj.messages.emailsend
+        });
+      });
+    }
+  })
+}
 
 
 /**

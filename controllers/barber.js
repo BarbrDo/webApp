@@ -1709,41 +1709,25 @@ exports.getReferUsers = function(req, res) {
     }]
   }
   console.log(query);
-  referal.aggregate([{
-    $group: {
-      _id: "$referral",
-      count: {
-        $sum: 1
-      }
-    }
-  }, {
-    $lookup: {
-      from: 'users',
-      localField: '_id',
-      foreignField: '_id',
-      as: 'users'
-    }
-  }, {
-    $project: {
-      _id: "$_id",
-      first_name: {
-        $arrayElemAt: ["$users.first_name", 0]
-      },
-      last_name: {
-        $arrayElemAt: ["$users.last_name", 0]
-      },
-      count: "$count"
-    }
-  }, {
-    $match: query
-  }]).exec(function(err, result) {
-    referal.aggregate([{
+  referal.aggregate([
+    {
+     $project:{
+         "invite_as" : 1,
+        "referee_email" : 1,
+        "referral" : 1,
+        "created_date" :1,
+        "is_refer_code_used" : {  $cond: [ { $eq: ['$is_refer_code_used', true ] }, 1, 0]}
+     }
+         
+     },
+    {
       $group: {
         _id: "$referral",
         count: {
           $sum: 1
-        }
-      }
+        },
+        subscribe_users:{$sum:"$is_refer_code_used"}
+}
     }, {
       $lookup: {
         from: 'users',
@@ -1751,7 +1735,8 @@ exports.getReferUsers = function(req, res) {
         foreignField: '_id',
         as: 'users'
       }
-    }, {
+    }, 
+    {
       $project: {
         _id: "$_id",
         first_name: {
@@ -1760,7 +1745,52 @@ exports.getReferUsers = function(req, res) {
         last_name: {
           $arrayElemAt: ["$users.last_name", 0]
         },
-        count: "$count"
+        count: "$count",
+        subscribe_users:"$subscribe_users",
+        
+      }
+    }, {
+    $match: query
+  }]).exec(function(err, result) {
+    referal.aggregate([
+    {
+     $project:{
+         "invite_as" : 1,
+        "referee_email" : 1,
+        "referral" : 1,
+        "created_date" :1,
+        "is_refer_code_used" : {  $cond: [ { $eq: ['$is_refer_code_used', true ] }, 1, 0]}
+     }
+         
+     },
+    {
+      $group: {
+        _id: "$referral",
+        count: {
+          $sum: 1
+        },
+        subscribe_users:{$sum:"$is_refer_code_used"}
+}
+    }, {
+      $lookup: {
+        from: 'users',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'users'
+      }
+    }, 
+    {
+      $project: {
+        _id: "$_id",
+        first_name: {
+          $arrayElemAt: ["$users.first_name", 0]
+        },
+        last_name: {
+          $arrayElemAt: ["$users.last_name", 0]
+        },
+        count: "$count",
+        subscribe_users:"$subscribe_users",
+        
       }
     }, {
       $match: query

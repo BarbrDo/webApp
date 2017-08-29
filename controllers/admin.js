@@ -107,13 +107,11 @@ exports.createPlan = function(req, res) {
 	req.assert('name', 'First name cannot be blank.').notEmpty();
 	req.assert('duration', 'Last name cannot be blank.').notEmpty();
 	req.assert('price', 'price is not valid').notEmpty();
-	if (req.body.apple_id || req.body.google_id) {
-
-	} else {
+	if (!(req.body.apple_id || req.body.google_id)) {
 		return res.status(400).send({
 			"msg": "Apple_id or Google_id is required."
 		})
-	}
+	} 
 	let errors = req.validationErrors();
 	if (errors) {
 		return res.status(400).send({

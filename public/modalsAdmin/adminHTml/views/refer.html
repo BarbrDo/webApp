@@ -1,11 +1,11 @@
 <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
 <ol class="breadcrumb">
     <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
-    <li class="breadcrumb-item active">Barbers</li>
+    <li class="breadcrumb-item active">Refers</li>
 </ol>
 <div class="panel" ng-init="pageChanged()">
     <div class="panel-heading">
-        All Barbers
+        All Users
     </div>
     <div class="panel-body">
         <!-- RAHUL  CODE -->
@@ -24,7 +24,8 @@
                     <thead>
                         <tr>
                             <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
-                            <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">Total Refer Users Count<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
+                            <th style="font-size: 13px;">Total Refer Users Count</th>
+                            <th style="font-size: 13px;">Successfully Register User Count</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -33,6 +34,7 @@
                                 <a data-toggle="tooltip" title="View Details" ui-sref="refer_detail({_id:barber._id})">{{barber.first_name}} {{barber.last_name}}</a>
                             </td>
                             <td>{{barber.count}}
+                            <td>{{barber.subscribe_users}}
                         </tr>
                     </tbody>
                 </table>

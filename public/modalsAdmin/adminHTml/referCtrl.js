@@ -11,9 +11,10 @@ app_admin.controller("referCtrl", [
   '$localStorage',
   function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage, $uibModal) {
     $scope.myobj.currentPage = 1;
+    $scope.user = {};
     $scope.referObj = {
-      currentPage :1
-      } ;
+      currentPage: 1
+    };
     $scope.pageChanged = function() {
       $scope.loaderStart = true;
       var passingObj = {
@@ -25,26 +26,26 @@ app_admin.controller("referCtrl", [
       }
       Admin.getReferUsers(passingObj).then(function(response) {
         $scope.loaderStart = false;
-        $scope.myobj.totalItems = response.data.count ;
-        console.log("response is",response.data.data)
+        $scope.myobj.totalItems = response.data.count;
+        console.log("response is", response.data.data)
         $rootScope.barbers = response.data.data;
       }).catch(function(result) {
-        console.log("result",result);
+        console.log("result", result);
         $scope.loaderStart = false;
         $scope.messages = result.data.msg
       })
     }
-    $scope.particularUserData = function(){
+    $scope.particularUserData = function() {
       let obj = {
-        _id:$stateParams._id
+        _id: $stateParams._id
       }
       console.log(obj)
-      Admin.getUserData(obj).then(function(response){
+      Admin.getUserData(obj).then(function(response) {
         console.log(response);
         $scope.referInfo = response.data.data;
       })
     }
-    $scope.shop_invites = function(){
+    $scope.shop_invites = function() {
       $scope.loaderStart = true;
       var passingObj = {
         page: $scope.referObj.currentPage,
@@ -58,20 +59,20 @@ app_admin.controller("referCtrl", [
         $scope.loaderStart = false;
         console.log(response.data.data);
         console.log(response.data.count);
-        $scope.referObj.totalItems = response.data.count ;
+        $scope.referObj.totalItems = response.data.count;
         $scope.shops = response.data.data;
       }).catch(function(result) {
-        console.log("result",result);
+        console.log("result", result);
         $scope.loaderStart = false;
         $scope.messages = result.data.msg
       })
     }
-    if($state.current.name=='add_invited_shop'){
+    if ($state.current.name == 'add_invited_shop') {
       console.log("add_invited_shop");
       let passData = {
-        _id:$stateParams._id
+        _id: $stateParams._id
       }
-      Admin.getInviteShopProfile(passData).then(function(response){
+      Admin.getInviteShopProfile(passData).then(function(response) {
         console.log(response);
         $scope.user = response.data.data[0];
       })
@@ -80,12 +81,12 @@ app_admin.controller("referCtrl", [
       $scope.loaderStart = true;
       console.log($scope.user)
       Admin.addCustomer($scope.user).then(function(response) {
-          let passData = {
-          _id:$stateParams._id
+        let passData = {
+          _id: $stateParams._id
         }
-        Admin.updateInviteShopProfile(passData).then(function(response){
+        Admin.updateInviteShopProfile(passData).then(function(response) {
           console.log(response);
-           $scope.loaderStart = false;
+          $scope.loaderStart = false;
           $state.go('shop_invites');
           $scope.shop_invites();
         })
@@ -94,24 +95,35 @@ app_admin.controller("referCtrl", [
         $scope.messages = result.data.msg
       })
     };
-    $scope.reject = function(id){
+    $scope.reject = function(id) {
       let passData = {
-          _id:id
-        }
-        Admin.deleteInviteShopProfile(passData).then(function(response){
-          console.log(response);
-           $scope.loaderStart = false;
-          $state.go('shop_invites');
-          $scope.shop_invites();
-        })
+        _id: id
+      }
+      Admin.deleteInviteShopProfile(passData).then(function(response) {
+        console.log(response);
+        $scope.loaderStart = false;
+        $state.go('shop_invites');
+        $scope.shop_invites();
+      })
     }
-    $scope.allPlans = function(){
-      Admin.featuringPlans().then(function(response){
+    $scope.allPlans = function() {
+      Admin.featuringPlans().then(function(response) {
         $scope.myplans = response.data.data
       })
     }
-    $scope.addPlan = function(){
-      $state.go('add_plans');
+    $scope.addPlan = function() {
+      console.log($scope.user);
+      if(!$scope.user.planfor){
+        return toastr.error("Must Select plan for.")
+      }
+      else{
+        $scope.user.plan_type = !$scope.user.planfor
+        Admin.createPlan($scope.user).then(function(response) {
+          console.log(response.data.msg)
+          toastr.success(response.data.msg);
+          $state.go('plans');
+        })
+      }
     }
-}
+  }
 ]);

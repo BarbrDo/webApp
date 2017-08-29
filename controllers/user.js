@@ -97,9 +97,11 @@ exports.loginPost = function(req, res, next) {
   console.log("error", errors);
   console.log("headers", req.headers);
 
-  // return res.status(402).send({
-  //     msg: "Subscription required."
-  //   });
+  if(req.body.email=="sahil@email.com"){
+      return res.status(402).send({
+      msg: "Payment required."
+    });
+  }
 
   if (errors) {
     return res.status(400).send({

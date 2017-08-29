@@ -43,8 +43,8 @@ exports.contactBarbrDo = function(req, res) {
 
       var mailOptions = {
         from: data.first_name +" "+data.last_name+ ' ' + '<' + data.email + '>',
-        to:"hshussain86@gmail.com",
-        // to: constantObj.messages.email,
+        // to:"hshussain86@gmail.com",
+        to: constantObj.messages.email,
         subject: '✔ Contact Form',
         text: messages
       };

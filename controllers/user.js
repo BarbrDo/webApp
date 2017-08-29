@@ -96,9 +96,9 @@ exports.loginPost = function(req, res, next) {
   console.log("error",errors); 
   console.log("headers",req.headers);
 
-  return res.status(402).send({
-      msg: "Subscription required."
-    });
+  // return res.status(402).send({
+  //     msg: "Subscription required."
+  //   });
 
   if (errors) {
     return res.status(400).send({

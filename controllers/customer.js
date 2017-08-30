@@ -193,6 +193,7 @@ exports.customerRequestToBarber = function(req, res) {
   req.checkHeaders("device_latitude", 'services cannot be blank.').notEmpty();
 
   let errors = req.validationErrors();
+  console.log("error in request",errors)
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",

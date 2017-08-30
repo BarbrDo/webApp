@@ -13,11 +13,11 @@
             <div>
                 {{messages}}</div>
         </div>
-        <div class="title">
+        <!-- <div class="title">
             Shop Owner Information
-        </div>
+        </div> -->
         <form name="signUpForm">
-            <div class="clearfix">
+            <!-- <div class="clearfix">
                 <div class="col-sm-4 form-group">
                     <label>First Name</label>
                     <input type="text" class="form-control" name="first_name" ng-model="user.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required />
@@ -80,7 +80,7 @@
                     <label>User Type</label>
                     <input type="text" class="form-control" ng-model="user.user_type" value="shop" placeholder="shop">
                 </div>
-            </div>
+            </div> -->
             <div class="title">
                 Shop Information
             </div>
@@ -91,7 +91,8 @@
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Address</label>
-                    <input type="text " class="form-control " ng-model="user.address" required />
+                   <!--  <input type="text " class="form-control " ng-model="user.address" required /> -->
+                   <div><input type="text" class="form-control " ng-model="detail.formatted" ng-change="passData(detail)" googleplace/></div>
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>City</label>
@@ -108,13 +109,13 @@
                     <input type="text " class="form-control " ng-model="user.zip" required />
                 </div>
                 <div class="col-sm-4 form-group">
-                    <label>Licence No.</label>
-                    <input type="text" class="form-control" name="license_number" ng-model="user.license_number" required>
-                    <span style="color:red;" ng-show="signUpForm.license_number.$touched && signUpForm.license_number.$invalid && signUpForm.license_number.$error.required">Licence number is required.</span>
+                    <label>Street Address.</label>
+                    <input type="text" class="form-control" name="license_number" ng-model="user.street" required>
+
                 </div>
             </div>
             <div class="clearfix text-center">
-                <button type="submit" id="save" ng-show="signUpForm.$invalid==false" class="btn btn-primary" ng-click="addcustomer('shops')" style="background-color: #97f580;">
+                <button type="submit" id="save" ng-show="signUpForm.$invalid==false" class="btn btn-primary" ng-click="saveShop()" style="background-color: #97f580;">
                     <i class="fa fa-check" aria-hidden="true" style="color: #000000;"></i> Save
                 </button>
                 <button type="submit" ng-hide="signUpForm.$invalid==false" class="btn btn-primary" ng-disabled="signUpForm.$invalid" data-toggle="tooltip" title="Invalid Form">

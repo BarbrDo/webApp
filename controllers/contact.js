@@ -45,7 +45,7 @@ exports.contactBarbrDo = function(req, res) {
         from: data.first_name +" "+data.last_name+ ' ' + '<' + data.email + '>',
         // to:"hshussain86@gmail.com",
         to: constantObj.messages.email,
-        subject: '✔ Contact Form',
+        subject: 'New message from BarbrDo:'+data.first_name +" "+data.last_name,
         text: messages
       };
 

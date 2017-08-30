@@ -47,6 +47,7 @@ module.exports = function(app, express) {
     app.get('/api/v2/currentshopinvite/:_id', shopController.currentshopinvite);
     app.get('/api/v2/currentshopupdate/:_id', shopController.currentshopupdate);
     app.get('/api/v2/currentshopdelete/:_id', shopController.currentshopdelete);
+    app.post('/api/v2/shop/save',shopController.saveShop);
 
     // refer app module admin
     app.get('/api/v2/getReferUsers', barberController.getReferUsers)

@@ -36,9 +36,7 @@ let appointmentSchema = new mongoose.Schema({
         type:String
     },
     services: [],
-    next_in_chair:{
-        type:Boolean
-    },
+    reach_in:String,
     appointment_date: Date,
     totalPrice: Number,
     created_date: {

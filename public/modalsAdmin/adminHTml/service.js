@@ -417,5 +417,12 @@ angular.module('barbrdo').factory('Admin', function($http) {
     getPlanById: function(data) {
       return $http.get('/api/v2/plan/get/' + data._id, data);
     },
+    saveShopInfo:function (data) {
+      return $http({
+        method: 'post',
+        url: '/api/v2/shop/save',
+        data: data
+      });
+    },
   };
 });

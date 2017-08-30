@@ -226,12 +226,14 @@ exports.confirmRequest = function(req, res) {
       err: errors
     });
   }
-
+  let date = new Date();
+  date = removeOffset(date)
   appointment.update({
     _id: req.params.appointment_id
   }, {
     $set: {
-      "appointment_status": "confirm"
+      "appointment_status": "confirm",
+      "appointment_date":date
     }
   }, function(err, result) {
     if (err) {
@@ -299,6 +301,13 @@ exports.confirmRequest = function(req, res) {
   })
 }
 
+let removeOffset = function(dobFormat) {
+  let userOffset = new Date(dobFormat).getTimezoneOffset();
+  let userOffsetMilli = userOffset * 60 * 1000;
+  let dateInMilli = moment(dobFormat).unix() * 1000;
+  let dateInUtc = dateInMilli - userOffsetMilli;
+  return dateInUtc;
+}
 /*
 _________________________________________________________
 Author:Hussain,

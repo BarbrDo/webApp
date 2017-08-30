@@ -97,8 +97,9 @@ let userSchema = new mongoose.Schema({
             }
         }
     ],
-    subscription: [
+    subscribe: [
         {
+            tranaction_response:[],
             plan_name:{
                 type:String
             },
@@ -112,10 +113,6 @@ let userSchema = new mongoose.Schema({
             },
             price:{
                 type:Number
-            },
-            pay_by:{
-                type:String,
-                enum:["apple","google"]
             },
             pay_id:{
                 type:String,

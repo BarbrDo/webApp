@@ -622,13 +622,72 @@ app_admin.directive('setClassWhenAtTop', function($window) {
     }
   };
 })
-//  .run(['$rootScope', '$q', '$state', '$window', 'toastr','$localStorage', function($rootScope, $q, $state, $window, toastr,$localStorage) {
-//     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-//         if($localStorage.loggedIn=='true'){
-//             $rootScope.LoginUser = true;
-//           }
-//           else{
-//             $rootScope.LoginUser = false;
-//           }
-//     })
-// }]);
+app_admin.directive('googleplace', function() {
+    var componentForm = {
+            street_number: 'short_name',
+            route: 'long_name',
+            locality: 'long_name',
+            administrative_area_level_1: 'short_name',
+            country: 'long_name',
+            postal_code: 'short_name'
+        };
+        var mapping = {
+            street_number: 'number',
+            route: 'street',
+            locality: 'city',
+            administrative_area_level_1: 'state',
+            country: 'country',
+            postal_code: 'zip'
+        };
+        // https://gist.github.com/VictorBjelkholm/6687484 
+        // modified to have better structure for details
+        return {
+            require: 'ngModel',
+            scope: {
+                ngModel: '=',
+                details: '=?'
+            },
+            link: function (scope, element, attrs, model) {
+               var options = {
+                types: [],
+                componentRestrictions: {}
+            };
+
+                scope.gPlace = new google.maps.places.Autocomplete(element[0], options);
+
+                google.maps.event.addListener(scope.gPlace, 'place_changed', function () {
+                    var place = scope.gPlace.getPlace();
+                    var details = place.geometry && place.geometry.location ? {
+                        latitude: place.geometry.location.lat(),
+                        longitude: place.geometry.location.lng()
+                    } : {};
+                    // Get each component of the address from the place details
+                    // and fill the corresponding field on the form.
+                    for (var i = 0; i < place.address_components.length; i++) {
+                        var addressType = place.address_components[i].types[0];
+                        if (componentForm[addressType]) {
+                            var val = place.address_components[i][componentForm[addressType]];
+                            details[mapping[addressType]] = val;
+                        }
+                    }
+                    details.formatted = place.formatted_address;
+                    details.placeId = place.place_id;
+                    console.log(details);
+                    scope.$apply(function () {
+                        scope.user = details; // array containing each location component
+                        scope.shop_address_user = {
+                          address:details.formatted,
+                          city:details.city,
+                          state:details.state,
+                          zip:details.zip,
+                          country:details.country,
+                          street:details.street
+                        }
+                        console.log(element.val());
+                        model.$setViewValue(details);
+                    });
+                });
+            }
+        };
+});
+

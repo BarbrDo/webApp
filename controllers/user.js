@@ -77,6 +77,47 @@ let saveLoggedInUser = function(obj) {
    * POST /login
    * Sign in with email and password
    */
+
+exports.checkSubscription = function(req, res, next) {
+  User.aggregate([{
+    $match: {
+      "_id": mongoose.Types.ObjectId(req.headers.user_id)
+    }
+  }, {
+    $unwind: "$subscribe"
+  }, {
+    $sort: {
+      "subscribe.created_date": -1
+    }
+  }]).exec(function(err, data) {
+    console.log(data);
+    console.log(data[0].subscribe.end_date)
+    let date = new Date();
+    let currentDate = moment(date, "YYYY-MM-DD").format("YYYY-MM-DD")
+    var futureEnddate = moment(data[0].subscribe.end_date).format("YYYY-MM-DD");
+    console.log("both dates are",currentDate,futureEnddate);
+    if (currentDate > futureEnddate) {
+      User.update({
+        _id: user._id
+      }, {
+        $set: {
+          "device_type": req.headers.device_type,
+          "device_id": req.headers.device_token,
+          "latLong": [req.headers.device_longitude, req.headers.device_latitude],
+          'remark': "Subscription required."
+        }
+      }).exec(function(userErr, userUpdate) {
+        return res.status(402).send({
+          msg: 'Subscription required.',
+          user: user
+        });
+      })
+    }
+    else{
+       next();
+    }
+  })
+}
 exports.loginPost = function(req, res, next) {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
@@ -97,8 +138,8 @@ exports.loginPost = function(req, res, next) {
   console.log("error", errors);
   console.log("headers", req.headers);
 
-  if(req.body.email=="sahil@email.com"){
-      return res.status(402).send({
+  if (req.body.email == "sahil@email.com") {
+    return res.status(402).send({
       msg: "Payment required."
     });
   }
@@ -132,74 +173,49 @@ exports.loginPost = function(req, res, next) {
           msg: 'Invalid email or password'
         });
       } else {
-        let currentDate = moment().format("YYYY-MM-DD"),
-          createDate = moment(user.created_date).format("YYYY-MM-DD"),
-          futureMonth = moment(createDate).add(2, 'M');
-        futureMonth = moment(futureMonth).format("YYYY-MM-DD")
-        console.log("currentDate,createDate,futureMonth", currentDate, createDate, futureMonth);
-        console.log("condition", currentDate > futureMonth);
-        if (currentDate > futureMonth) {
-          User.update({
-            _id: user._id
-          }, {
-            $set: {
-              "device_type": device_type,
-              "device_id": device_token,
-              "latLong": [req.headers.device_longitude, req.headers.device_latitude],
-              "is_active": false,
-              'remark': "Subscription required."
-            }
-          }).exec(function(userErr, userUpdate) {
-            return res.status(402).send({
-              msg: 'Subscription required.',
-              user: user
-            });
-          })
-        } else {
-          let saveLoginUser = {
-            user_id: user._id,
-            token: generateToken(user)
-          };
-          async.parallel({
-            one: function(callback) {
-              LoggedInUser.findOne({
-                user_id: user._id
-              }, function(err, data) {
-                if (data) {
-                  LoggedInUser.remove({
-                    user_id: user._id
-                  }, function() {
-                    saveLoggedInUser(saveLoginUser);
-                    callback(null, 'abc\n');
-                  })
-                } else {
-                  saveLoggedInUser(saveLoginUser)
+        let saveLoginUser = {
+          user_id: user._id,
+          token: generateToken(user)
+        };
+        async.parallel({
+          one: function(callback) {
+            LoggedInUser.findOne({
+              user_id: user._id
+            }, function(err, data) {
+              if (data) {
+                LoggedInUser.remove({
+                  user_id: user._id
+                }, function() {
+                  saveLoggedInUser(saveLoginUser);
                   callback(null, 'abc\n');
-                }
-              })
-            },
-            two: function(callback) {
-              User.update({
-                _id: user._id
-              }, {
-                $set: {
-                  "device_type": device_type,
-                  "device_id": device_token,
-                  "latLong": [req.headers.device_longitude, req.headers.device_latitude],
-                }
-              }).exec(function(userErr, userUpdate) {
-                console.log(userUpdate)
+                })
+              } else {
+                saveLoggedInUser(saveLoginUser)
                 callback(null, 'abc\n');
-              })
-            }
-          }, function(err, result) {
-            res.status(200).send({
-              token: generateToken(user),
-              user: user.toJSON(),
-              "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-            });
-          })
-        }
+              }
+            })
+          },
+          two: function(callback) {
+            User.update({
+              _id: user._id
+            }, {
+              $set: {
+                "device_type": device_type,
+                "device_id": device_token,
+                "latLong": [req.headers.device_longitude, req.headers.device_latitude],
+              }
+            }).exec(function(userErr, userUpdate) {
+              console.log(userUpdate)
+              callback(null, 'abc\n');
+            })
+          }
+        }, function(err, result) {
+          res.status(200).send({
+            token: generateToken(user),
+            user: user.toJSON(),
+            "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+          });
+        })
       }
     });
   });
@@ -1294,7 +1310,8 @@ exports.enableServices = function(req, res) {
 }
 exports.subscribe = function(req, res) {
   req.checkHeaders("user_id", "User id is required.").notEmpty();
-  req.body("plan_id", "Plan ObjectId is required").notEmpty();
+  req.assert("plan_id", "Plan ObjectId is required").notEmpty();
+  req.assert("tranaction_response", "Tranaction response is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -1305,7 +1322,7 @@ exports.subscribe = function(req, res) {
   Plan.findOne({
     _id: req.body.plan_id
   }, function(err, planResult) {
-    if (!data) {
+    if (!planResult) {
       return res.status(400).send({
         msg: "Plan not found in database."
       });
@@ -1321,23 +1338,22 @@ exports.subscribe = function(req, res) {
         } else {
           if (data) {
             let updateData = {
-                  plan_name:planResult.name,
-                  // start_date:planResult.new Date(),
-                  price:planResult.price,
-                  pay_by:planResult.plan_type
+              plan_name: planResult.name,
+              price: planResult.price,
             }
-            updateData.end_date = moment(updateData.start_date, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
-            if(planResult.plan_type=='android'){
-              updateData.pay_id=planResult.google_id
-            }
-            else{
-               updateData.pay_id=planResult.apple_id
-            }
+            updateData.start_date = new Date();
+            updateData.end_date = moment(updateData.start_date, "YYYY-MM-DD").add(planResult.duration, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
+            updateData.pay_id = req.body.tranaction_response[0].productId;
+
+            updateData.tranaction_response = req.body.tranaction_response;
             console.log(updateData);
-            return false;
             User.update({
               _id: req.headers.user_id
-            }, updateData, function(err, updateInfo) {
+            }, {
+              $push: {
+                subscribe: updateData
+              }
+            }).exec(function(err, updateInfo) {
               if (err) {
                 res.status(400).send({
                   msg: "Error occurred in subscription.",

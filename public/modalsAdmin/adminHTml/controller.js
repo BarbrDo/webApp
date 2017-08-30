@@ -1006,5 +1006,27 @@ app_admin.controller("AdminCtrl", [
         alert(response);
       })
     }
+    $scope.passData = function(data){
+      console.log(data);
+      $scope.user.city = data.formatted.city
+      $scope.user.state=data.formatted.state
+      $scope.user.zip=data.formatted.zip
+      $scope.user.street = data.formatted.street
+    }
+    $scope.saveShop = function(){
+      console.log($scope.user);
+      console.log($scope.detail.formatted);
+      let passObj = $scope.user
+      passObj.address = $scope.detail.formatted.formatted;
+      passObj.street_address = $scope.user.street;
+      passObj.latitude = $scope.detail.formatted.latitude;
+      passObj.longitude = $scope.detail.formatted.longitude;
+      console.log(passObj)
+      Admin.saveShopInfo(passObj).then(function(response){
+        toastr.success("Shop added successfully.")
+      }).catch(function(response){
+        toastr.error("Error in adding shop");
+      })
+    }
   }
 ]);

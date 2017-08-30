@@ -1717,6 +1717,10 @@ exports.shopRequest = function(req, res) {
     req.assert("city", "City is required").notEmpty();
     req.assert("state", "Name is required.").notEmpty();
     req.assert("zip", "City is required").notEmpty();
+    req.assert("address", "Address is required.").notEmpty();
+    req.assert("street_address", "Street address is required.").notEmpty();
+    req.assert("latitude", "latitude is required").notEmpty();
+    req.assert("longitude", "longitude is required").notEmpty();
     var errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -1724,48 +1728,32 @@ exports.shopRequest = function(req, res) {
             err: errors
         });
     }
-    let zip = parseInt(req.body.zip);
     let saveData = req.body;
+    saveData.zip = parseInt(req.body.zip);
     saveData.request_by = req.headers.user_id;
-    geocoder.geocode(zip, function(errGeo, latlng) {
-        if (errGeo) {
+    saveData.latLong = [parseFloat(req.body.longitude), parseFloat(req.body.latitude)];
+    console.log("saveData", saveData);
+    shopRequest(saveData).save(function(err, results) {
+        if (err) {
             return res.status(400).send({
-                msg: constantObj.messages.errorInSave
+                msg: constantObj.messages.errorInSave,
+                err: err
             })
         } else {
-            console.log("shop_lat_long", JSON.stringify(latlng));
-            if (latlng.results.length > 0) {
-                saveData.latLong = [latlng.results[0].geometry.location.lng, latlng.results[0].geometry.location.lat];
-                saveData.address = latlng.results[0].formatted_address;
-                console.log("saveData", saveData);
-                shopRequest(saveData).save(function(err, results) {
-                    if (err) {
-                        return res.status(400).send({
-                            msg: constantObj.messages.errorInSave,
-                            err: err
-                        })
-                    } else {
-                        return res.status(200).send({
-                            msg: constantObj.messages.saveSuccessfully,
-                            data: results
-                        })
-                    }
-                })
-            } else {
-                res.status(400).send({
-                    msg: "Zip code is not valid"
-                })
-            }
+            return res.status(200).send({
+                msg: "Success! Request has been sent to BarbrDo.",
+                data: results
+            })
         }
-    });
+    })
 }
 exports.shopinvites = function(req, res) {
     var page = parseInt(req.query.page) || 1;
     var count = parseInt(req.query.count) || 10;
     var skipNo = (page - 1) * count;
     var query = {
-         "is_accepted" : false,
-         "is_deleted":false
+        "is_accepted": false,
+        "is_deleted": false
     };
     var searchStr = ""
     if (req.query.search) {
@@ -1802,7 +1790,7 @@ exports.shopinvites = function(req, res) {
                 $regex: searchStr,
                 '$options': 'i'
             }
-        },{
+        }, {
             address: {
                 $regex: searchStr,
                 '$options': 'i'
@@ -1822,10 +1810,10 @@ exports.shopinvites = function(req, res) {
             name: "$name",
             city: "$city",
             state: "$state",
-            address:"$address",
+            address: "$address",
             zip: "$zip",
-            is_accepted:"$is_accepted",
-            is_deleted:"$is_deleted",
+            is_accepted: "$is_accepted",
+            is_deleted: "$is_deleted",
             first_name: {
                 $arrayElemAt: ["$user_info.first_name", 0]
             },
@@ -1850,10 +1838,10 @@ exports.shopinvites = function(req, res) {
                 city: "$city",
                 state: "$state",
                 zip: "$zip",
-                address:"$address",
-                is_accepted:"$is_accepted",
-                is_deleted:"$is_deleted",
-                created_date:"$created_date",
+                address: "$address",
+                is_accepted: "$is_accepted",
+                is_deleted: "$is_deleted",
+                created_date: "$created_date",
                 first_name: {
                     $arrayElemAt: ["$user_info.first_name", 0]
                 },
@@ -1895,11 +1883,15 @@ exports.currentshopinvite = function(req, res) {
         })
     })
 }
-exports.currentshopupdate = function(req,res){
+exports.currentshopupdate = function(req, res) {
     console.log(req.params)
     shopRequest.update({
         _id: req.params._id
-    },{$set:{"is_accepted":true}}, function(err, data) {
+    }, {
+        $set: {
+            "is_accepted": true
+        }
+    }, function(err, data) {
         console.log(data)
         res.status(200).send({
             "msg": constantObj.messages.successRetreivingData,
@@ -1907,14 +1899,53 @@ exports.currentshopupdate = function(req,res){
         })
     })
 }
-exports.currentshopdelete = function(req,res){
+exports.currentshopdelete = function(req, res) {
     shopRequest.update({
         _id: req.params._id
-    },{$set:{"is_deleted":true}}, function(err, data) {
+    }, {
+        $set: {
+            "is_deleted": true
+        }
+    }, function(err, data) {
         console.log(data)
         res.status(200).send({
             "msg": constantObj.messages.successRetreivingData,
             "data": data
         })
+    })
+}
+exports.saveShop = function(req, res) {
+    req.assert("name", "Name is required.").notEmpty();
+    req.assert("address", "Address is required.").notEmpty();
+    req.assert("city", "City is required.").notEmpty();
+    req.assert("state", "State is required.").notEmpty();
+    req.assert("zip", "State is required.").notEmpty();
+    req.assert("street_address", "Street address is required.").notEmpty();
+    req.assert("latitude", "latitude is required").notEmpty();
+    req.assert("longitude", "longitude is required").notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).send({
+            msg: "error in your request",
+            err: errors
+        });
+    }
+    let saveData = req.body;
+    saveData.zip = parseInt(req.body.zip);
+    saveData.latLong = [parseFloat(req.body.longitude), parseFloat(req.body.latitude)];
+    console.log(saveData);
+    shop(saveData).save(function(err, result) {
+        if (err) {
+            console.log(err);
+            res.status(400).send({
+                "msg": constantObj.messages.userStatusUpdateFailure,
+                "err": err
+            });
+        } else {
+            res.status(200).send({
+                "msg": constantObj.messages.successRetreivingData,
+                "data": result
+            })
+        }
     })
 }

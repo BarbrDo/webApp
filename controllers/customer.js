@@ -187,6 +187,7 @@ exports.customerRequestToBarber = function(req, res) {
   req.assert("barber_id", "Barber Id cannot be blank").notEmpty();
   req.assert("services", "servies cannot be blank").notEmpty();
   req.assert("appointment_date", "appointment_date cannot be blank").notEmpty();
+  req.assert("reach_in", "reach_in cannot be blank").notEmpty();
   req.assert("totalPrice", "totalPrice cannot be blank").notEmpty();
   req.checkHeaders('device_longitude', 'Device longitude cannot be blank.').notEmpty();
   req.checkHeaders("device_latitude", 'services cannot be blank.').notEmpty();
@@ -201,7 +202,6 @@ exports.customerRequestToBarber = function(req, res) {
   let saveData = req.body;
   saveData.customer_id = req.headers.user_id;
   saveData.appointment_date = removeOffset(req.body.appointment_date);
-
   user.findOne({
     _id: req.body.barber_id
   }, function(usrerr, usrResult) {

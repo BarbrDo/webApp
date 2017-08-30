@@ -83,7 +83,7 @@ module.exports = function(app, express) {
         app.delete('/api/v2/barber/associatedshops', barber.removeAssociatedShops);
         app.post('/api/v2/barber/makeDefaultshop', barber.makeDefaultshop);
         app.get('/api/v2/barber/shops', barber.getShops); // get all shops against a berber
-        app.get('/api/v2/barber/home',userController.checkSubscription, barber.barberHomeScreen); // barber home screen map api
+        app.get('/api/v2/barber/home', barber.barberHomeScreen); // barber home screen map api
         app.post('/api/v2/barber/goOnline', barber.goOnline); // barber go onlint
         app.put('/api/v2/barber/goOffline', barber.goOffline); // barber go offline
         app.post('/api/v2/barber/messageToCustomer', barber.sendMessageToCustomer)

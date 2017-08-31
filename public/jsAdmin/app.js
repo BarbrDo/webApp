@@ -12,7 +12,8 @@ var app_admin = angular.module('barbrdo', [
   'toastr',
   'ngStorage',
   'angularjs-dropdown-multiselect',
-  'ngLodash'
+  'ngLodash',
+  'ngTable'
 ]);
 
 app_admin.config([
@@ -138,7 +139,7 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
         }
       }
     },
-    url: '/appointment/detail',
+    url: '/appointment/detail/:_id',
     controller: "AdminCtrl",
     templateUrl: "/modalsAdmin/adminHTml/views/appointment-details.html"
 

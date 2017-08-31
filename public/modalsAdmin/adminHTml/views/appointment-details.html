@@ -12,28 +12,31 @@
             <div class="item  col-xs-12 col-lg-12">
                 <div class="thumbnail">
                     <div class="caption">
-                        <div class="col-lg-12">
+                        <div class="col-lg-12" style="margin-top:15px;">
                             <table class="table table-striped">
                                 <tr>
                                     <td>
                                         <h5>Customer Name</h5></td>
-                                    <td> {{viewappoint.customer_name}} </td>
+                                    <td> {{viewappoint.customer_id.first_name}} {{viewappoint.customer_id.last_name}}</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <h5> Barber</h5></td>
-                                    <td> <a data-toggle="tooltip" title="View Details" ui-sref="barbersdetail({id:viewappoint.barber_id._id})" ng-click="viewbarbdetail(viewappoint.barber_id)"> {{viewappoint.barber_name}} </a> </td>
+                                    <td> {{viewappoint.barber_id.first_name}} {{viewappoint.barber_id.last_name}} </td>
                                 </tr>
                                 </a>
                                 <tr>
                                     <td>
                                         <h5> Shop</h5></td>
-                                    <td> <a data-toggle="tooltip" title="View Details" ui-sref="shopdetail({id:viewappoint.shop_id.user_id})" ng-click="viewshop(viewappoint.shop_id)">  {{viewappoint.shop_name}} </a> </td>
+                                    <td> {{viewappoint.shop_id.name}} </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <h5>Services</h5></td>
-                                    <td> {{viewappoint.services[0].name}} - Rs. {{viewappoint.services[0].price}} </td>
+                                    <td> {{viewappoint.services[0].name}}  {{viewappoint.services[0].price}} 
+
+                                    {{viewappoint.services[1].name}}  {{viewappoint.services[1].price}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -42,18 +45,30 @@
                                 </tr>
                                 <tr>
                                     <td>
+                                        <h5>Reach In After</h5></td>
+                                    <td> {{viewappoint.reach_in}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
                                         <h5>Appointment Status</h5></td>
                                     <td> {{viewappoint.appointment_status}} </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <h5>Payment Method</h5></td>
-                                    <td> {{viewappoint.payment_method}} </td>
+                                        <h5>Reason of Cancel</h5></td>
+                                    <td> {{viewappoint.cancel_reason}} </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <h5>Payment Status</h5></td>
-                                    <td> {{viewappoint.payment_status}} </td>
+                                        <h5>Cancel By</h5></td>
+                                    <td> {{viewappoint.cancel_by_user_type}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>Cancel By name</h5></td>
+                                    <td> {{viewappoint.cancel_by_user_id.first_name}}
+                                        {{viewappoint.cancel_by_user_id.last_name}}
+                                     </td>
                                 </tr>
                                 <tr>
                                     <td>

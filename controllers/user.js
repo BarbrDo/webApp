@@ -79,6 +79,21 @@ let saveLoggedInUser = function(obj) {
    */
 
 exports.checkSubscription = function(req, res, next) {
+  req.checkHeaders("device_id", "Device id is required.").notEmpty();
+  req.checkHeaders("device_type", "Device type is required.").notEmpty();
+  req.checkHeaders('device_longitude', 'Device longitude cannot be blank.').notEmpty();
+  req.checkHeaders("device_latitude", 'services cannot be blank.').notEmpty();
+  req.checkHeaders("user_id",'User Id is required.').notEmpty();
+  let errors = req.validationErrors();
+  console.log("error", errors);
+  console.log("headers", req.headers);
+  if (errors) {
+    return res.status(400).send({
+      msg: "Missing required fields.",
+      err: errors
+    });
+  }
+
   User.aggregate([{
     $match: {
       "_id": mongoose.Types.ObjectId(req.headers.user_id)
@@ -95,26 +110,25 @@ exports.checkSubscription = function(req, res, next) {
     let date = new Date();
     let currentDate = moment(date, "YYYY-MM-DD").format("YYYY-MM-DD")
     var futureEnddate = moment(data[0].subscribe.end_date).format("YYYY-MM-DD");
-    console.log("both dates are",currentDate,futureEnddate);
+    console.log("both dates are", currentDate, futureEnddate);
     if (currentDate > futureEnddate) {
       User.update({
-        _id: user._id
+        _id: data[0]._id
       }, {
         $set: {
           "device_type": req.headers.device_type,
-          "device_id": req.headers.device_token,
+          "device_id": req.headers.device_id,
           "latLong": [req.headers.device_longitude, req.headers.device_latitude],
           'remark': "Subscription required."
         }
       }).exec(function(userErr, userUpdate) {
         return res.status(402).send({
-          msg: 'Subscription required.',
-          user: user
+          msg: 'Payment required.',
+          user: userUpdate
         });
       })
-    }
-    else{
-       next();
+    } else {
+      next();
     }
   })
 }
@@ -137,12 +151,6 @@ exports.loginPost = function(req, res, next) {
   let errors = req.validationErrors();
   console.log("error", errors);
   console.log("headers", req.headers);
-
-  if (req.body.email == "sahil@email.com") {
-    return res.status(402).send({
-      msg: "Payment required."
-    });
-  }
 
   if (errors) {
     return res.status(400).send({
@@ -225,7 +233,6 @@ exports.loginPost = function(req, res, next) {
  * POST /signup
  */
 let accountActivateMailFunction = function(req, res, user, resetUrl) {
-  console.log("accountActivateMailFunction", user);
   let auth = {
     auth: {
       api_key: process.env.MAILGUN_APIKEY,
@@ -235,15 +242,15 @@ let accountActivateMailFunction = function(req, res, user, resetUrl) {
   let nodemailerMailgun = nodemailer.createTransport(mg(auth));
   let mailOptions = {
     to: user.email,
-    from: 'support@barbrdo.com',
-    subject: '✔ Activate Your Account',
-    text: 'Please Activate your account by clicking link \n\n' + resetUrl + '\n\n'
+    from: constantObj.messages.email,
+    subject: '✔ Welcome to BarbrDo',
+    text: 'Welcome'
   };
   console.log(user);
   if (!user.facebook) {
     nodemailerMailgun.sendMail(mailOptions, function(err, info) {
       res.send({
-        msg: 'An email has been sent to ' + user.email + ' with further instructions.'
+        msg: 'Thanks for signing up with BarbrDo.'
       });
     });
   } else {
@@ -277,7 +284,7 @@ exports.signupPost = function(req, res, next) {
     req.assert('password', 'Password must be at least 6 characters long').len(6);
   }
   req.assert('user_type', 'User type cannot be blank').notEmpty();
-  if (req.body.user_type == 'shop' || req.body.user_type == 'barber') {
+  if (req.body.user_type == 'barber') {
     req.assert('license_number', 'License number cannot be blank').notEmpty();
   }
 
@@ -297,9 +304,9 @@ exports.signupPost = function(req, res, next) {
   saveData.is_verified = true;
   let email_encrypt = "";
   let generatedText = "";
+  console.log("working");
   async.waterfall([
     function(done) {
-      console.log("first callback .");
       User.findOne({
         email: req.body.email
       }, function(err, user) {
@@ -334,6 +341,30 @@ exports.signupPost = function(req, res, next) {
       })
     },
     function(saveData, done) {
+      if (req.body.user_type == 'barber') {
+        Plan.findOne({
+          "apple_id": "free",
+          "google_id": "free"
+        }, function(err, data) {
+          if (!data) {
+            res.status(400).send({
+              msg: "Free plan not found in database! Please contact to BarbrDo."
+            })
+          } else {
+            let date = new Date();
+            saveData.subscribe = [{
+              plan_name: data.name,
+              start_date: date,
+              end_date: moment(date, "YYYY-MM-DD").add(data.duration, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z',              price: 0
+            }]
+            done(err, saveData)
+          }
+        })
+      } else {
+        done(null,saveData)
+      }
+    },
+    function(saveData, done) {
       User(saveData).save(function(err, data) {
         if (err) {
           return res.status(400).send({
@@ -342,34 +373,7 @@ exports.signupPost = function(req, res, next) {
           })
         } else {
           let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
-          if (req.body.user_type == 'shop') {
-            let saveDataForShop = {};
-            saveDataForShop.user_id = data._id
-            saveDataForShop.license_number = req.body.license_number;
-            saveDataForShop.name = req.body.name;
-            saveDataForShop.state = req.body.state;
-            saveDataForShop.city = req.body.city;
-            saveDataForShop.zip = req.body.zip;
-            if (req.headers.device_longitude && req.headers.device_latitude) {
-              saveDataForShop.latLong = [req.headers.device_longitude, req.headers.device_latitude];
-              saveShop(saveDataForShop, resetUrl, data, req, res);
-            } else if (req.body.zip) {
-              geocoder.geocode(req.body.zip, function(errGeo, latlng) {
-                if (errGeo) {
-                  return res.status(400).send({
-                    msg: constantObj.messages.errorInSave
-                  })
-                } else {
-                  saveDataForShop.latLong = [latlng.results[0].geometry.location.lng, latlng.results[0].geometry.location.lat];
-                  saveShop(saveDataForShop, resetUrl, data, req, res);
-                }
-              });
-            } else {
-              saveShop(saveDataForShop, resetUrl, data, req, res);
-            }
-          } else {
             accountActivateMailFunction(req, res, data, resetUrl)
-          }
         }
       });
       done()

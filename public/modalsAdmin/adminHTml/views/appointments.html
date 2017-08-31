@@ -20,7 +20,7 @@
                         <input ng-model="appointmentObj.search" placeholder="Search for..." ng-change="custAppoint()" />
                     </div>
                 </div>
-                <table class="table">
+                <!-- <table class="table">
                     <thead>
                         <tr>
                             <th style="font-size: 15px;"><a ng-click="Sort('customer_name')" class="name" style="color: #ffffff;">Customer<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
@@ -49,17 +49,35 @@
                                 {{appoint.appointment_date | date : dd/mm/yyyy}}
                             </td>
                             <td>
-                                <a type="submit" ui-sref="detailed_appointment" ng-click="appointdetail(appoint)" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a>
+                                <a type="submit" ui-sref="detailed_appointment({_id:appoint._id})" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a>
                             </td>
                         </tr>
                     </tbody>
+                </table> -->
+
+                <table id="example1" class="table table-bordered table-striped" ng-table="tableParams" show-filter="isFiltersVisible">
+                    <tr ng-repeat = "user in $data track by $index">
+                        <td data-title="'Customer'" sortable="'first_name'" filter="{name:'text'}">
+                            {{user.customer_first_name}} {{user.customer_last_name}}</a>
+                        </td>
+                        <td data-title="'Barber'" sortable="'barber_first_name'" filter="{name:'text'}">{{user.barber_first_name}} {{user.barber_last_name}}
+                        </td>
+                        <td data-title="'Shop'" sortable="'shop_name'" filter="{name:'text'}">
+                            {{user.shop_name}}
+                        </td>
+                        <td data-title="'Appointment Status'">
+                            {{user.appointment_status}}
+                        </td>
+                        <td data-title="'Appointment Date'" sortable="'appointment_date'" filter="{name:'text'}">
+                           {{user.appointment_date | date : dd/mm/yyyy}}
+                        </td>
+                        <td data-title="'View Detail'">
+                             <a type="submit" ui-sref="detailed_appointment({_id:user._id})" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a>
+                        </td>
+                    </tr>
                 </table>
 
                  <div>
-                <div class="col-sm-6">
-                    <ul uib-pagination total-items="appointmentObj.totalItems" ng-model="appointmentObj.currentPage" ng-change="custAppoint()"></ul>
-                </div>
-                <br>
             </div>
                 <!-- </span> -->
             </div>

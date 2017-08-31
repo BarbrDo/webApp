@@ -28,6 +28,7 @@ let appointmentSchema = new mongoose.Schema({
     },
     cancel_by_user_id:{
           type: Schema.Types.ObjectId,
+          ref: 'users'
     },
     cancel_by_user_type:{
         type:String

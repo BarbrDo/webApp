@@ -20,7 +20,8 @@ module.exports = function(app, express) {
     app.put('/api/v2/disapprovecust/:cust_id', customerController.disapprovecustomer);
     app.put('/api/v2/verifycust/:cust_id', customerController.verifycustomer);
     app.get('/api/v2/allcustomers', customerController.listcustomers);
-    app.get('/api/v2/allappointment', customerController.allappointment)
+    app.post('/api/v2/allappointment', customerController.allappointment);
+    app.get('/api/v2/appointment/current/:_id', customerController.currentAppointment);
 
 
     //Updation Of Barber
@@ -31,6 +32,7 @@ module.exports = function(app, express) {
     app.put('/api/v2/disapprovebarber/:barber_id', barberController.disapprovebarber);
     app.put('/api/v2/verifybarber/:barber_id', barberController.verifybarber);
     app.get('/api/v2/allbarbers', barberController.availableBarber);
+    app.post('/api/v2/allbarbers/new', barberController.availableBarbernew);
 
     //Updation Of Shop
     app.put('/api/v2/deleteshop/:shop_id', shopController.deleteshop);
@@ -53,7 +55,7 @@ module.exports = function(app, express) {
     app.get('/api/v2/getReferUsers', barberController.getReferUsers)
     app.get('/api/v2/referDetail/:id', barberController.referDetail)
 
-
+ app.get('/api/v2/barber/cutingservices', barberController.showServices);
 
     app.get('/api/v2/shopownerwithshops/:user_id', shopController.shopownerhavingshops);
     app.get('/api/v2/barberdetail/:barber_id', barberController.barberdetail); //get Barberdetails

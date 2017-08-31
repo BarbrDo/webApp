@@ -9,7 +9,8 @@ app_admin.controller("AdminCtrl", [
   '$state',
   'toastr',
   '$localStorage',
-  function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage, $uibModal) {
+  'ngTableParams',
+  function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage, ngTableParams, $uibModal) {
     $scope.loginUser = {};
     $scope.user = {};
     $scope.myobj = {};
@@ -144,26 +145,35 @@ app_admin.controller("AdminCtrl", [
       }
       return '';
     }
-
     $scope.appointmentObj = {};
-    $scope.appointmentObj.currentPage = 1;
     $scope.custAppoint = function() {
       $scope.loaderStart = true;
-      var passingObj = {
-        page: $scope.appointmentObj.currentPage,
-        count: 10
-      }
-      if ($scope.appointmentObj.search) {
-        passingObj.search = $scope.appointmentObj.search
-      }
-      console.log(passingObj)
-      Admin.appointments(passingObj)
-        .then(function(response) {
-          $scope.allAppointments = response.data.data;
-          $scope.appointmentObj.totalItems = response.data.count;
-          console.log("response.data.count",response.data.count);
-          $scope.loaderStart = false;
-        });
+      var passingObj = {}
+      passingObj.search = $scope.appointmentObj.search;
+      $scope.tableParams = new ngTableParams({
+        page: 1,
+        count: 10,
+        sorting: {
+          created_date: "desc"
+        }
+      }, {
+        counts: [],
+        getData: function($defer, params) {
+          passingObj.page = params.page();
+          passingObj.count = params.count();
+          passingObj.sort = params.sorting();
+          $scope.loaderStart = true;
+          Admin.appointments(passingObj).then(function(response) {
+            $scope.loaderStart = false;
+            params.total(response.data.count);
+            $scope.data = response.data.data;
+            $defer.resolve($scope.data);
+          }).catch(function(result) {
+            $scope.loaderStart = false;
+            $scope.messages = result.data.msg
+          })
+        }
+      })
 
     };
 
@@ -252,7 +262,16 @@ app_admin.controller("AdminCtrl", [
         $scope.messages = result.data.msg
       })
     };
-
+    if ($state.current.name == 'detailed_appointment') {
+      $scope.loaderStart = true;
+      let obj = {
+        _id: $stateParams._id
+      }
+      Admin.currentAppointmentData(obj).then(function(response) {
+        $scope.loaderStart = false;
+        $scope.viewappoint = response.data.data;
+      })
+    }
     $scope.appointdetail = function(appointment) {
       $rootScope.viewappoint = appointment
     };
@@ -330,23 +349,20 @@ app_admin.controller("AdminCtrl", [
 
     $scope.updatecustomer = function(customer) {
       $scope.loaderStart = true;
-      if(customer.is_active==true){
+      if (customer.is_active == true) {
         customer.is_active = true;
-      }
-      else{
+      } else {
         customer.is_active = false;
       }
-      if(customer.is_deleted=="true"){
-        customer.is_deleted=true
+      if (customer.is_deleted == "true") {
+        customer.is_deleted = true
+      } else {
+        customer.is_deleted = false
       }
-      else{
-        customer.is_deleted=false
-      }
-      if(customer.is_verified=="true"){
-        customer.is_verified=true
-      }
-      else{
-        customer.is_verified=false
+      if (customer.is_verified == "true") {
+        customer.is_verified = true
+      } else {
+        customer.is_verified = false
       }
       Admin.updateCustomer(customer).then(function(response) {
         $scope.loaderStart = false;
@@ -361,35 +377,30 @@ app_admin.controller("AdminCtrl", [
 
     $scope.updatebarber = function(barber) {
       $scope.loaderStart = true;
-      if(barber.is_active==true){
+      if (barber.is_active == true) {
         barber.is_active = true;
-      }
-      else{
+      } else {
         barber.is_active = false;
       }
-      if(barber.is_deleted=="true"){
-        barber.is_deleted=true
+      if (barber.is_deleted == "true") {
+        barber.is_deleted = true
+      } else {
+        barber.is_deleted = false
       }
-      else{
-        barber.is_deleted=false
+      if (barber.is_verified == "true") {
+        barber.is_verified = true
+      } else {
+        barber.is_verified = false
       }
-      if(barber.is_verified=="true"){
-        barber.is_verified=true
+      if (barber.is_online == "true") {
+        barber.is_online = true
+      } else {
+        barber.is_online = false
       }
-      else{
-        barber.is_verified=false
-      }
-      if(barber.is_online=="true"){
-        barber.is_online=true
-      }
-      else{
-        barber.is_online=false
-      }
-      if(barber.is_available=="true"){
-        barber.is_available=true
-      }
-      else{
-        barber.is_available=false
+      if (barber.is_available == "true") {
+        barber.is_available = true
+      } else {
+        barber.is_available = false
       }
       Admin.updateBarber(barber).then(function(response) {
         $scope.loaderStart = false;
@@ -880,28 +891,41 @@ app_admin.controller("AdminCtrl", [
     }
 
     $scope.pageChanged = function(argument) {
-      console.log("page changed");
       $scope.loaderStart = true;
-      var passingObj = {
-        page: $scope.myobj.currentPage,
-        count: 10
-      }
-      if ($scope.myobj.search) {
-        passingObj.search = $scope.myobj.search
-      }
-      Admin.barbers(passingObj).then(function(response) {
-        $scope.loaderStart = false;
-        $scope.myobj.totalItems = response.data.count;
-        $rootScope.barbers = response.data.data;
-      }).catch(function(result) {
-        $scope.loaderStart = false;
-        $scope.messages = result.data.msg
+      var passingObj = {}
+      passingObj.search = $scope.myobj.search;
+      $scope.tableParams = new ngTableParams({
+        page: 1,
+        count: 10,
+        sorting: {
+          created_date: "desc"
+        }
+      }, {
+        counts: [],
+        getData: function($defer, params) {
+          console.log("params url", params.url());
+          console.log("params sorting", params.sorting());
+          console.log("paramspage", params.page());
+          passingObj.page = params.page();
+          passingObj.count = params.count();
+          passingObj.sort = params.sorting();
+          $scope.loaderStart = true;
+          Admin.barbers(passingObj).then(function(response) {
+            $scope.loaderStart = false;
+            params.total(response.data.count);
+            $scope.data = response.data.data;
+            $defer.resolve($scope.data);
+          }).catch(function(result) {
+            $scope.loaderStart = false;
+            $scope.messages = result.data.msg
+          })
+        }
       })
     }
 
     $scope.barbrInfo = function(barber_id) {
       console.log("barber info");
-       $scope.price = [];
+      $scope.price = [];
       $scope.shopIds = {}
       Admin.barberServices().then(function(response) {
         $scope.allservices = response.data.data;
@@ -943,49 +967,49 @@ app_admin.controller("AdminCtrl", [
       })
     }
     $scope.addDefaultShop = function(shop_id) {
-      $scope.loaderStart = true;
-      let obj = {
-        shop_id: shop_id,
-        user_id: $stateParams.id
+        $scope.loaderStart = true;
+        let obj = {
+          shop_id: shop_id,
+          user_id: $stateParams.id
+        }
+        Admin.makeDefaultShop(obj).then(function(response) {
+          // console.log(response);
+          $scope.barberDetails()
+        })
       }
-      Admin.makeDefaultShop(obj).then(function(response) {
-        // console.log(response);
-        $scope.barberDetails()
-      })
-    }
-    // $scope.goOnline = function(shop_id) {
-    //   console.log(shop_id)
-    //   $scope.loaderStart = true;
-    //   let obj = {
-    //     shop_id: shop_id,
-    //     user_id: $rootScope.barber_id
-    //   }
-    //   Admin.goOnline(obj).then(function(response) {
-    //     // console.log(response);
-    //     $scope.barberDetails()
-    //   })
-    // }
+      // $scope.goOnline = function(shop_id) {
+      //   console.log(shop_id)
+      //   $scope.loaderStart = true;
+      //   let obj = {
+      //     shop_id: shop_id,
+      //     user_id: $rootScope.barber_id
+      //   }
+      //   Admin.goOnline(obj).then(function(response) {
+      //     // console.log(response);
+      //     $scope.barberDetails()
+      //   })
+      // }
     $scope.price = [];
 
     $scope.submit = function() {
       console.log("shopid", $scope.shopIds);
       console.log("myservice", $scope.price);
       let services = []
-      for(var i=0;i<$scope.price.length;i++){
-        if($scope.price[i]!=undefined){
+      for (var i = 0; i < $scope.price.length; i++) {
+        if ($scope.price[i] != undefined) {
           let obj = {
-            service_id:$scope.allservices[i]._id,
-            name:$scope.allservices[i].name,
-            price:$scope.price[i]
+            service_id: $scope.allservices[i]._id,
+            name: $scope.allservices[i].name,
+            price: $scope.price[i]
           }
           services.push(obj)
         }
       }
       var obj = {
-        shop_id:$scope.shopIds,
-        barber_id:$rootScope.barber_id
+        shop_id: $scope.shopIds,
+        barber_id: $rootScope.barber_id
       }
-      Admin.goOnline(obj,services).then(function(response) {
+      Admin.goOnline(obj, services).then(function(response) {
         $scope.pageChanged();
       })
     }
@@ -993,27 +1017,27 @@ app_admin.controller("AdminCtrl", [
     $scope.getUserId = function(userId) {
       $scope.shopIds = userId
     }
-    $scope.getBarberId = function(barber_id){
-     $rootScope.barber_obj_id = barber_id
+    $scope.getBarberId = function(barber_id) {
+      $rootScope.barber_obj_id = barber_id
     }
-    $scope.goOffline = function () {
-       var obj = {
-        barber_id:$rootScope.barber_obj_id
+    $scope.goOffline = function() {
+      var obj = {
+        barber_id: $rootScope.barber_obj_id
       }
       Admin.goOffline(obj).then(function(response) {
         $scope.pageChanged();
-      }).catch(function(response){
+      }).catch(function(response) {
         alert(response);
       })
     }
-    $scope.passData = function(data){
+    $scope.passData = function(data) {
       console.log(data);
       $scope.user.city = data.formatted.city
-      $scope.user.state=data.formatted.state
-      $scope.user.zip=data.formatted.zip
+      $scope.user.state = data.formatted.state
+      $scope.user.zip = data.formatted.zip
       $scope.user.street = data.formatted.street
     }
-    $scope.saveShop = function(){
+    $scope.saveShop = function() {
       console.log($scope.user);
       console.log($scope.detail.formatted);
       let passObj = $scope.user
@@ -1022,9 +1046,9 @@ app_admin.controller("AdminCtrl", [
       passObj.latitude = $scope.detail.formatted.latitude;
       passObj.longitude = $scope.detail.formatted.longitude;
       console.log(passObj)
-      Admin.saveShopInfo(passObj).then(function(response){
+      Admin.saveShopInfo(passObj).then(function(response) {
         toastr.success("Shop added successfully.")
-      }).catch(function(response){
+      }).catch(function(response) {
         toastr.error("Error in adding shop");
       })
     }

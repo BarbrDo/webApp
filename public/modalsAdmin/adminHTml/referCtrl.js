@@ -12,6 +12,7 @@ app_admin.controller("referCtrl", [
   function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage, $uibModal) {
     $scope.myobj.currentPage = 1;
     $scope.user = {};
+    $scope.updateButton = false;
     $scope.referObj = {
       currentPage: 1
     };
@@ -119,12 +120,23 @@ app_admin.controller("referCtrl", [
           $state.go('plans');
         })    }
     if($state.current.name=='edit_plan'){
+      $scope.updateButton = true;
       console.log("edit plan");
       let obj = {
         _id:$stateParams.id
       }
       Admin.getPlanById(obj).then(function(response){
         $scope.user = response.data.data
+      })
+    }
+    $scope.updatePlan = function(data){
+      console.log(data)
+      Admin.updatePlan(data).then(function(response){
+        toastr.success('Plan Updated successfully.');
+        $state.go('plans');
+      }).catch(function(result){
+        console.log(result);
+        toastr.error(result.data.msg);
       })
     }
   }

@@ -169,3 +169,46 @@ exports.getCurrentPlan = function(req,res){
 			});
 	})
 }
+exports.updatePlan = function(req,res){
+	req.assert('name', 'First name cannot be blank.').notEmpty();
+	req.assert('duration', 'Last name cannot be blank.').notEmpty();
+	req.assert('price', 'price is not valid').notEmpty();
+	req.assert('short_description','short_description required.').notEmpty();
+	if (!(req.body.apple_id || req.body.google_id)) {
+		return res.status(400).send({
+			"msg": "Apple_id or Google_id is required."
+		})
+	} 
+	let errors = req.validationErrors();
+	if (errors) {
+		return res.status(400).send({
+			msg: "error in your request",
+			err: errors
+		});
+	}
+	let plan = {
+		name:req.body.name,
+		duration:req.body.duration,
+		price:req.body.price,
+		short_description:req.body.short_description
+	}
+	if(req.body.google_id){
+		plan.google_id = req.body.google_id;
+	}
+	if(req.body.apple_id){
+		plan.apple_id = req.body.apple_id
+	}
+	Plan.update({_id:req.body._id},{$set:plan},function(err,data){
+		if (err) {
+			return res.status(400).send({
+				msg: constantObj.messages.userStatusUpdateFailure,
+				"err": err
+			})
+		} else {
+			res.status(200).send({
+				msg: constantObj.messages.userStatusUpdateSuccess,
+				data: data
+			});
+		}
+	})
+}

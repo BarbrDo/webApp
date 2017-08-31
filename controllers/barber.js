@@ -219,6 +219,7 @@ exports.confirmRequest = function(req, res) {
   //Mark Appointment as confirmed
   req.checkHeaders("user_id", "user_id is required.").notEmpty();
   req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
+  req.assert("appointment_date","appointment_date is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -226,8 +227,7 @@ exports.confirmRequest = function(req, res) {
       err: errors
     });
   }
-  let date = new Date();
-  date = removeOffset(date)
+  date = removeOffset(req.body.appointment_date)
   appointment.update({
     _id: req.params.appointment_id
   }, {
@@ -721,6 +721,160 @@ exports.barberdetail = function(req, res) {
     }
   })
 };
+
+exports.availableBarbernew = function(req, res) {
+  var page = parseInt(req.body.page) || 1;
+  var count = parseInt(req.body.count) || 30;
+  var skipNo = (page - 1) * count;
+  var query = {};
+  query.user_type = "barber"
+  var searchStr = ""
+  if (req.body.search) {
+    searchStr = req.query.search;
+  }
+  var sortkey = null;
+  for (key in req.body.sort) {
+    sortkey = key;
+  }
+  var sortquery = {};
+  if (sortkey) {
+    sortquery[sortkey ? sortkey : '_id'] = req.body.sort ? (req.body.sort[sortkey] == 'desc' ? -1 : 1) : -1;
+  }
+  if (searchStr) {
+    query.$or = [{
+      first_name: {
+        $regex: searchStr,
+        '$options': 'i'
+      }
+    }, {
+      last_name: {
+        $regex: searchStr,
+        '$options': 'i'
+      }
+    }, {
+      email: {
+        $regex: searchStr,
+        '$options': 'i'
+      }
+    }, {
+      name: {
+        $regex: searchStr,
+        '$options': 'i'
+      }
+    }]
+  }
+  console.log("sortquery",sortquery);
+  console.log(query);
+  user.aggregate([{
+    $project: {
+      _id: "$_id",
+      first_name: "$first_name",
+      last_name: "$last_name",
+      email: "$email",
+      mobile_number: "$mobile_number",
+      ratings: "$ratings",
+      created_date: "$created_date",
+      is_deleted: "$is_deleted",
+      is_active: "$is_active",
+      is_verified: "$is_verified",
+      user_type: "$user_type",
+      picture: "$picture"
+    }
+  }, {
+    $match: query
+  }]).exec(function(err, data) {
+    if (err) {
+      console.log(err)
+    } else {
+      var length = data.length;
+      user.aggregate([{
+        $lookup: {
+          from: "shops",
+          "localField": "_id",
+          "foreignField": "chairs.barber_id",
+          "as": "shopdetails"
+        }
+      }, {
+        $project: {
+          _id: "$_id",
+          first_name: "$first_name",
+          last_name: "$last_name",
+          email: "$email",
+          mobile_number: "$mobile_number",
+          created_date: "$created_date",
+          ratings: "$ratings",
+          is_deleted: "$is_deleted",
+          is_active: "$is_active",
+          is_verified: "$is_verified",
+          is_online: "$is_online",
+          is_available: "$is_available",
+          user_type: "$user_type",
+          latLong: "$latLong",
+          picture: "$picture",
+          name: "$shopdetails.name",
+          shop: "$shopdetails"
+        }
+      }, {
+        $match: query
+      }, {
+        "$sort": sortquery
+      }, {
+        "$skip": skipNo
+      }, {
+        "$limit": count
+      }]).exec(function(err, result) {
+        if (err) {
+          res.status(400).send({
+            "msg": constantObj.messages.userStatusUpdateFailure,
+            "err": err
+          });
+        } else {
+          shopBarber.aggregate([{
+            $lookup: {
+              from: 'shops',
+              localField: 'shop_id',
+              foreignField: '_id',
+              as: 'shopInfo'
+            }
+          }]).exec(function(shopBarberErr, shopBarberResult) {
+            if (err) {
+              res.status(400).send({
+                "msg": constantObj.messages.userStatusUpdateFailure,
+                "err": shopBarberErr
+              });
+            } else {
+              let arr = [];
+              if (shopBarberResult.length > 0) {
+                for (var i = 0; i < result.length; i++) {
+                  result[i].associateShops = [];
+                  for (j = 0; j < shopBarberResult.length; j++) {
+                    if (result[i]._id.equals(shopBarberResult[j].barber_id)) {
+                      result[i].associateShops.push({
+                        name: shopBarberResult[j].shopInfo[0].name
+                      })
+                    }
+                  }
+                }
+                res.status(200).send({
+                  "msg": constantObj.messages.successRetreivingData,
+                  "data": result,
+                  "count": length
+                })
+              } else {
+                res.status(200).send({
+                  "msg": constantObj.messages.successRetreivingData,
+                  "data": result,
+                  "count": length
+                })
+              }
+            }
+          })
+        }
+      })
+    }
+  })
+};
+
 exports.availableBarber = function(req, res) {
   var page = parseInt(req.query.page) || 1;
   var count = parseInt(req.query.count) || 30;

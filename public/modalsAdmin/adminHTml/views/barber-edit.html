@@ -47,9 +47,17 @@
                     <span style="color:red;" ng-show="editForm.email.$error.required">Email cannot left blank</span>
                 </div>
                 <div class="col-sm-4 form-group">
-                    <label>Date Of Creation</label>s
+                    <label>Date Of Creation</label>
                     <input size="30" height="30px" type="text" data-ng-model="barberdetail.created_date" readonly class="form-control">
                 </div>
+                <div class="col-md-4 form-group">
+                <label>Subscription End Date</label>
+                  <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="barberdetail.endDate" is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                  </span>
+                
+              </div>
             </div>
             <div class="clearfix">
                 <div class="col-sm-2 form-group">
@@ -76,12 +84,12 @@
                     <input type="radio" ng-model="barberdetail.is_online" name="online" value="true" ng-checked="barberdetail.is_online==true">YES&nbsp;&nbsp;&nbsp;
                     <input type="radio" name="online" value="false" ng-model="barberdetail.is_online" ng-checked="barberdetail.is_online == false">NO
                 </div> -->
-                <div class="col-sm-2 form-group">
+                <!-- <div class="col-sm-2 form-group">
                     <label>Is Available</label>
                     <br>
                     <input type="radio" ng-model="barberdetail.is_available" name="available" value="true" ng-checked="barberdetail.is_available==true">YES&nbsp;&nbsp;&nbsp;
                     <input type="radio" name="available" value="false" ng-model="barberdetail.is_available" ng-checked="barberdetail.is_available == false">NO
-                </div>
+                </div> -->
             </div>
     </div>
 </div>

@@ -193,7 +193,7 @@ exports.customerRequestToBarber = function(req, res) {
   req.checkHeaders("device_latitude", 'services cannot be blank.').notEmpty();
 
   let errors = req.validationErrors();
-  console.log("error in request",errors)
+  console.log("error in request", errors)
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",
@@ -469,7 +469,7 @@ exports.sendMessageToBarber = function(req, res) {
         if (err) {
           console.log(err);
         } else {
-          
+
         }
       })
     }
@@ -915,7 +915,7 @@ exports.rateBarber = function(req, res) {
     }
   }
 
- checkReference({
+  checkReference({
     _id: req.body.appointment_id
   });
 
@@ -1183,7 +1183,7 @@ exports.referapp = function(req, res) {
       err: errors
     });
   }
-  console.log("device_type",req.headers.device_type)
+  console.log("device_type", req.headers.device_type)
   var device_type = req.headers.device_type.toLowerCase();
   if (req.body.referee_email) {
     req.assert('referee_email', 'Email is not valid').isEmail();
@@ -1206,12 +1206,11 @@ exports.referapp = function(req, res) {
     }
     commonObj.sendMail(req.body.referee_email, from, subject, text, function(err, result) {
       console.log("mail in referapp", err, result)
-      if(err){
-           return res.status(400).send({
-           msg: "Error in sending mail"
+      if (err) {
+        return res.status(400).send({
+          msg: "Error in sending mail"
         });
-      }
-      else{
+      } else {
         saveRefferApp(req, res);
       }
     })
@@ -1240,7 +1239,7 @@ let saveRefferApp = function(req, res) {
   let saveObj = req.body;
   saveObj.referral = req.headers.user_id;
   referal.find(saveObj, function(findErr, findResult) {
-    console.log("findResult length",findResult);
+    console.log("findResult length", findResult);
     if (findResult.length > 0) {
       return res.status(400).send({
         msg: "You already refer this person. Please try again with another email."
@@ -1311,7 +1310,14 @@ exports.allappointment = function(req, res) {
       }
     }]
   }
-
+  var sortkey = null;
+  for (key in req.body.sort) {
+    sortkey = key;
+  }
+  var sortquery = {};
+  if (sortkey) {
+    sortquery[sortkey ? sortkey : '_id'] = req.body.sort ? (req.body.sort[sortkey] == 'desc' ? -1 : 1) : -1;
+  }
   console.log("query", JSON.stringify(query));
 
   appointment.aggregate([{
@@ -1444,6 +1450,8 @@ exports.allappointment = function(req, res) {
       }, {
         $match: query
       }, {
+        "$sort": sortquery
+      }, {
         "$skip": skipNo
       }, {
         "$limit": count
@@ -1464,28 +1472,34 @@ exports.allappointment = function(req, res) {
     }
   })
 }
-exports.countappoint = function(req,res){
+exports.countappoint = function(req, res) {
   async.parallel({
     one: function(parallelCb) {
       // This callback will get the total sale of barber
-      appointment.find({},function(err,result){
+      appointment.find({}, function(err, result) {
         parallelCb(null, result)
       });
     },
     two: function(parallelCb) {
       // get barber total sales of current month
-      appointment.find({appointment_status:"confirm"},function(err,result){
+      appointment.find({
+        appointment_status: "confirm"
+      }, function(err, result) {
         parallelCb(null, result)
       });
     },
     three: function(parallelCb) {
       // get barber sale of current week
-      appointment.find({appointment_status:"completed"},function(err,result){
+      appointment.find({
+        appointment_status: "completed"
+      }, function(err, result) {
         parallelCb(null, result)
       });
     },
     four: function(parallelCb) {
-      appointment.find({appointment_status:"cancel"},function(err,result){
+      appointment.find({
+        appointment_status: "cancel"
+      }, function(err, result) {
         parallelCb(null, result)
       });
     }
@@ -1500,4 +1514,22 @@ exports.countappoint = function(req,res){
       }
     })
   });
+}
+exports.currentAppointment = function(req, res) {
+  console.log("req.params", req.params);
+  appointment.findOne({
+    _id: req.params._id
+  }).populate('barber_id', 'first_name last_name').populate('customer_id', 'first_name last_name').populate('cancel_by_user_id', 'first_name last_name').populate('shop_id','name address city state').exec(function(err, data) {
+    if (err) {
+      res.status(400).send({
+        "msg": constantObj.messages.errorRetreivingData,
+        "err": err
+      })
+    } else {
+      res.status(200).send({
+        "msg": constantObj.messages.successRetreivingData,
+        "data": data
+      })
+    }
+  })
 }

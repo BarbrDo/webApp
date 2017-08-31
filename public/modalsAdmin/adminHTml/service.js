@@ -7,11 +7,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
       return $http.get('/api/v2/loggedin', data);
     },
     barbers: function(data) {
-      if (data.search) {
-        return $http.get('/api/v2/allbarbers?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);
-      } else {
-        return $http.get('/api/v2/allbarbers?page=' + data.page + '&count=' + data.count);
-      }
+        return $http.post('/api/v2/allbarbers/new', data);
     },
     shopsAll: function(data) {
       if (data.search) {
@@ -48,11 +44,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
     },
     appointments: function(data) {
       console.log("in service",data);
-      if (data.search) {
-        return $http.get('/api/v2/allappointment?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);
-      } else {
-        return $http.get('/api/v2/allappointment?page=' + data.page + '&count=' + data.count, data);
-      }
+      return $http.post('/api/v2/allappointment', data);
     },
     custAppoints: function(data) {
       return $http.get('/api/v2/customerappointments/' + data, data);
@@ -277,7 +269,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
       return $http.post('/api/v2/plan', data)
     },
     updatePlan:function (data) {
-      return $http.put('/api/v2/stripe/updatePlan', data)
+      return $http.put('/api/v2/updatePlan', data)
     },
     deletePlan:function (data) {
       return $http.put('/api/v2/stripe/deletePlan', data)
@@ -424,5 +416,8 @@ angular.module('barbrdo').factory('Admin', function($http) {
         data: data
       });
     },
+    currentAppointmentData: function(data) {
+      return $http.get('/api/v2/appointment/current/' + data._id, data);
+    }
   };
 });

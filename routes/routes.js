@@ -52,7 +52,7 @@ module.exports = function(app, express) {
         app.post('/api/v2/checkFaceBook', userController.checkFaceBook);
         //Shops
 
-        app.post('/api/v2/shop/request', shopController.shopRequest)
+        app.post('/api/v2/shop/request', userController.checkSubscription,shopController.shopRequest)
 
         //Customer
         app.get('/api/v2/customer/barbers', customer.getNearbyBarbers);
@@ -71,28 +71,28 @@ module.exports = function(app, express) {
 
         //Barber
         // app.post('/api/v2/barber/services',barber.addBarberServices); // add barber services
-        app.put('/api/v2/barber/appointment/decline/:appointment_id', barber.cancelAppointment); //barber cancel appointment
-        app.put('/api/v2/barber/appointment/accept/:appointment_id', barber.confirmRequest); //bar confirm appointment
+        app.put('/api/v2/barber/appointment/decline/:appointment_id',userController.checkSubscription, barber.cancelAppointment); //barber cancel appointment
+        app.put('/api/v2/barber/appointment/accept/:appointment_id',userController.checkSubscription, barber.confirmRequest); //bar confirm appointment
         // app.get('/api/v2/barber/services', barber.getAllServices); // barber get all services
         app.post('/api/v2/barber/services', barber.addBarberServices); //Add new barber service
-        app.put('/api/v2/barber/services/:barber_service_id', barber.editBarberServices); //edit new barber service
-        app.get('/api/v2/barber/services/:barber_id', barber.viewAllServiesOfBarber); // view service of a barber
-        app.delete('/api/v2/barber/services/:barber_service_id', barber.deleteBarberService); // delete a berber service
-        app.get('/api/v2/barber/profile/:barber_id', barber.viewBarberProfile); // view barber profile
+        app.put('/api/v2/barber/services/:barber_service_id',userController.checkSubscription, barber.editBarberServices); //edit new barber service
+        app.get('/api/v2/barber/services/:barber_id',userController.checkSubscription, barber.viewAllServiesOfBarber); // view service of a barber
+        app.delete('/api/v2/barber/services/:barber_service_id',userController.checkSubscription, barber.deleteBarberService); // delete a berber service
+        app.get('/api/v2/barber/profile/:barber_id',userController.checkSubscription, barber.viewBarberProfile); // view barber profile
         app.post('/api/v2/barber/shop', barber.addShop); // add shop against a barber
         app.delete('/api/v2/barber/associatedshops', barber.removeAssociatedShops);
         app.post('/api/v2/barber/makeDefaultshop', barber.makeDefaultshop);
-        app.get('/api/v2/barber/shops', barber.getShops); // get all shops against a berber
-        app.get('/api/v2/barber/home', barber.barberHomeScreen); // barber home screen map api
-        app.post('/api/v2/barber/goOnline', barber.goOnline); // barber go onlint
-        app.put('/api/v2/barber/goOffline', barber.goOffline); // barber go offline
-        app.post('/api/v2/barber/messageToCustomer', barber.sendMessageToCustomer)
-        app.put('/api/v2/barber/checkin/:appointment_id', barber.completeAppointment); //Barber mark appointment as completed
-        app.get('/api/v2/shopsearch', shopController.allShopsSearch)
-        app.get('/api/v2/states', barber.getUsStates);
-        app.get('/api/v2/barber/cutingservices', barber.showServices);
-        app.post('/api/v2/barber/gallery', upload.any(), barber.uploadBarberGallery);
-        app.get('/api/v2/barber/sale/:startDate/:endDate', barber.financeScreenResult);
+        app.get('/api/v2/barber/shops',userController.checkSubscription, barber.getShops); // get all shops against a berber
+        app.get('/api/v2/barber/home',userController.checkSubscription, barber.barberHomeScreen); // barber home screen map api
+        app.post('/api/v2/barber/goOnline',userController.checkSubscription, barber.goOnline); // barber go onlint
+        app.put('/api/v2/barber/goOffline',userController.checkSubscription, barber.goOffline); // barber go offline
+        app.post('/api/v2/barber/messageToCustomer',userController.checkSubscription, barber.sendMessageToCustomer)
+        app.put('/api/v2/barber/checkin/:appointment_id',userController.checkSubscription, barber.completeAppointment); //Barber mark appointment as completed
+        app.get('/api/v2/shopsearch',userController.checkSubscription, shopController.allShopsSearch)
+        app.get('/api/v2/states',userController.checkSubscription, barber.getUsStates);
+       
+        app.post('/api/v2/barber/gallery', upload.any(),userController.checkSubscription, barber.uploadBarberGallery);
+        app.get('/api/v2/barber/sale/:startDate/:endDate',userController.checkSubscription, barber.financeScreenResult);
         // app.get('/api/v1/barbers/:barber_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.viewBarberProfile);
 
 
@@ -108,6 +108,7 @@ module.exports = function(app, express) {
         app.get('/api/v2/plan',adminController.getPlans);
         app.get('/api/v2/allplan',adminController.getallPlans);
         app.get('/api/v2/plan/get/:id',adminController.getCurrentPlan);
+        app.put('/api/v2/updatePlan',adminController.updatePlan);
 
         app.get('/admin', function(req, res) {
             res.sendFile(path.join(__dirname + './../public/indexAdmin.html'));

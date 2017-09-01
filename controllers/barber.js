@@ -645,9 +645,18 @@ exports.barberdetail = function(req, res) {
   var query = {};
   let id = mongoose.Types.ObjectId(req.params.barber_id);
   query._id = id
-  query.user_type = "barber";
-  user.aggregate([{
-    $project: {
+  user.aggregate([
+    {
+    $match: {
+      "_id": id
+    }
+  }, {
+    $unwind: "$subscribe"
+  }, {
+    $sort: {
+      "subscribe.created_date": -1
+    }
+  },{$project: {
       _id: "$_id",
       first_name: "$first_name",
       last_name: "$last_name",
@@ -665,10 +674,9 @@ exports.barberdetail = function(req, res) {
       picture: "$picture",
       name: "$shopdetails.name",
       shop: "$shopdetails",
-      gallery: "$gallery"
+      gallery: "$gallery",
+      subscribe:"$subscribe"
     }
-  }, {
-    $match: query
   }]).exec(function(err, result) {
     if (err) {
       res.status(400).send({
@@ -1245,7 +1253,7 @@ exports.addShop = function(req, res) {
     })
   }
   res.status(200).send({
-    "msg": "Success! Your request has been sent to BarbrDo."
+    "msg": "Success! Shop added successfully."
   })
 };
 
@@ -1972,9 +1980,10 @@ exports.getReferUsers = function(req, res) {
   })
 }
 exports.referDetail = function(req,res){
-  console.log("req.params",req.params);
-  referal.find({referral:req.params.id}).populate('referral').exec(function(err,data){
-    console.log("err",err,data);
+  // console.log("req.params",req.params);
+  let findObj = req.body;
+  console.log(findObj)
+  referal.find(findObj).populate('referral').exec(function(err,data){
     res.status(200).send({
        msg: constantObj.messages.successRetreivingData,
         "data": data

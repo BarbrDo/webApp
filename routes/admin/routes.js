@@ -5,6 +5,7 @@ module.exports = function(app, express) {
     // let appointController = require('./../../controllers/appointment');
     let barberController = require('./../../controllers/barber');
     let userController = require('./../../controllers/user');
+    let adminController = require('./../../controllers/admin')
 
     //Count all Users, appointsments
     app.get('/api/v2/countbarber', barberController.countbarber);
@@ -22,6 +23,7 @@ module.exports = function(app, express) {
     app.get('/api/v2/allcustomers', customerController.listcustomers);
     app.post('/api/v2/allappointment', customerController.allappointment);
     app.get('/api/v2/appointment/current/:_id', customerController.currentAppointment);
+    app.put('/api/v2/barber/updateSubscription',userController.updateSubscribeDate);
 
 
     //Updation Of Barber
@@ -53,7 +55,8 @@ module.exports = function(app, express) {
 
     // refer app module admin
     app.get('/api/v2/getReferUsers', barberController.getReferUsers)
-    app.get('/api/v2/referDetail/:id', barberController.referDetail)
+    app.post('/api/v2/referDetail', barberController.referDetail)
+    app.post('/api/v2/giftCard',adminController.giftCard)
 
  app.get('/api/v2/barber/cutingservices', barberController.showServices);
 

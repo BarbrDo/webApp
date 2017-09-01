@@ -167,10 +167,12 @@ let userSchema = new mongoose.Schema({
         default: "Your account is not verified yet."
     },
     is_online: {
-        type: Boolean
+        type: Boolean,
+        default:false
     },
     is_available: {
-        type: Boolean
+        type: Boolean,
+        default:false
     }
 });
 

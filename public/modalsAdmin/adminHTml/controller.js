@@ -174,7 +174,6 @@ app_admin.controller("AdminCtrl", [
           })
         }
       })
-
     };
 
     $scope.viewappointment = function() {
@@ -309,24 +308,32 @@ app_admin.controller("AdminCtrl", [
 
     $scope.shoppageChanged = function() {
       $scope.loaderStart = true;
-      var passingObj = {
-        page: $scope.myobj.currentPage,
-        count: 10
-      }
-
-      if ($scope.myobj.search) {
-        passingObj.search = $scope.myobj.search
-      }
-
-      Admin.shopsAll(passingObj).then(function(response) {
-        $scope.loaderStart = false;
-        $scope.shops = response.data.data;
-        $scope.myobj.totalItems = response.data.count;
-      }).catch(function(result) {
-        $scope.loaderStart = false;
-        console.log(result);
+      var passingObj = {}
+      passingObj.search = $scope.myobj.search
+      $scope.tableParams = new ngTableParams({
+        page: 1,
+        count: 10,
+        sorting: {
+          created_date: "desc"
+        }
+      }, {
+        counts: [],
+        getData: function($defer, params) {
+          passingObj.page = params.page();
+          passingObj.count = params.count();
+          passingObj.sort = params.sorting();
+          $scope.loaderStart = true;
+          Admin.shopsAll(passingObj).then(function(response) {
+            $scope.loaderStart = false;
+            params.total(response.data.count);
+            $scope.data = response.data.data;
+            $defer.resolve($scope.data);
+          }).catch(function(result) {
+            $scope.loaderStart = false;
+            $scope.messages = result.data.msg
+          })
+        }
       })
-
     };
 
     $scope.Sort = function(val) {
@@ -375,6 +382,45 @@ app_admin.controller("AdminCtrl", [
 
     };
 
+    $scope.updatebarberinformation = function(barber) {
+      $scope.loaderStart = true;
+      if (barber.is_active == true) {
+        barber.is_active = true;
+      } else {
+        barber.is_active = false;
+      }
+      if (barber.is_deleted == "true") {
+        barber.is_deleted = true
+      } else {
+        barber.is_deleted = false
+      }
+      if (barber.is_verified == "true") {
+        barber.is_verified = true
+      } else {
+        barber.is_verified = false
+      }
+      if (barber.is_online == "true") {
+        barber.is_online = true
+      } else {
+        barber.is_online = false
+      }
+      if (barber.is_available == "true") {
+        barber.is_available = true
+      } else {
+        barber.is_available = false
+      }
+      console.log(barber);
+      Admin.updateBarberSubscription(barber).then(function(response) {
+        $scope.loaderStart = false;
+        toastr.success('Barber is updated Succesfully');
+        $rootScope.barbers = response.data;
+      }).catch(function(result) {
+        $scope.loaderStart = false;
+        $scope.messages = result.data.msg
+      });
+    };
+
+
     $scope.updatebarber = function(barber) {
       $scope.loaderStart = true;
       if (barber.is_active == true) {
@@ -402,6 +448,8 @@ app_admin.controller("AdminCtrl", [
       } else {
         barber.is_available = false
       }
+      console.log(barber);
+      return false;
       Admin.updateBarber(barber).then(function(response) {
         $scope.loaderStart = false;
         toastr.success('Barber is updated Succesfully');
@@ -448,10 +496,21 @@ app_admin.controller("AdminCtrl", [
       })
     };
 
-    $scope.updateshop = function(shop) {
+    $scope.updateshop = function() {
       $scope.loaderStart = true;
-      $scope.shop = shop;
-      Admin.updateShopinfo(shop).then(function(response) {
+      console.log($scope.user);
+      console.log($scope.detail);
+      let passObj = $scope.user;
+      if ($scope.detail.formatted) {
+          passObj.address = $scope.detail.formatted.formatted;
+          passObj.street_address = $scope.user.street_address;
+          passObj.latitude = $scope.user.latitude;
+          passObj.longitude = $scope.user.longitude;
+      } else {
+
+      }
+      console.log(passObj)
+      Admin.updateShopinfo(passObj).then(function(response) {
         $scope.loaderStart = false;
         toastr.success('Shop is updated Succesfully');
         $rootScope.shops = response.data;
@@ -654,40 +713,57 @@ app_admin.controller("AdminCtrl", [
         $scope.messages = result.data.msg
       })
     };
-
-    $scope.shopdetail = function() {
+    $scope.updateShopButton = true;
+    if ($state.current.name == 'edit_shops') {
+      $scope.updateShopButton = false;
       $scope.loaderStart = true;
-      setTimeout(function() {
-        Admin.shopDetail($stateParams.id).then(function(response) {
-          console.log(response)
-          $scope.loaderStart = false;
-          $rootScope.shopdetailview = response.data.data[0];
-          $rootScope.chairdetails = response.data.data[0].shopinfo[0].chairs;
-          console.log(response.data.data[0].shopinfo[0].chairs)
-          var shopsdet = [];
-          var object = {};
-          var len = response.data.data.length;
-          for (var i = 0; i < len; i++) {
-            var k = 0;
-            for (var j = 0; j < response.data.data[i].shopinfo[0].chairs.length; j++) {
-              if (response.data.data[i].shopinfo[0].chairs[j].barber_id) {
-                k++;
-              }
-            }
+      Admin.shopDetail($stateParams._id).then(function(response) {
+        $scope.user = response.data.data;
+        $scope.user.latitude = response.data.data.latLong[1];
+        $scope.user.longitude = response.data.data.latLong[0];
+        $scope.detail = {
+          formatted: response.data.data.address
+        }
+        $scope.loaderStart = false;
+      }).catch(function(result) {
+        toastr.error("Error");
+        console.log(result);
+        $scope.loaderStart = false;
+      })
+    }
+    // $scope.shopdetail = function() {
+    //   $scope.loaderStart = true;
+    //   setTimeout(function() {
+    //     Admin.shopDetail($stateParams.id).then(function(response) {
+    //       console.log(response)
+    //       $scope.loaderStart = false;
+    //       $rootScope.shopdetailview = response.data.data[0];
+    //       $rootScope.chairdetails = response.data.data[0].shopinfo[0].chairs;
+    //       console.log(response.data.data[0].shopinfo[0].chairs)
+    //       var shopsdet = [];
+    //       var object = {};
+    //       var len = response.data.data.length;
+    //       for (var i = 0; i < len; i++) {
+    //         var k = 0;
+    //         for (var j = 0; j < response.data.data[i].shopinfo[0].chairs.length; j++) {
+    //           if (response.data.data[i].shopinfo[0].chairs[j].barber_id) {
+    //             k++;
+    //           }
+    //         }
 
-            var object = {
-              totalBarbers: k
-            };
+    //         var object = {
+    //           totalBarbers: k
+    //         };
 
-            shopsdet.push(object);
-            $rootScope.totalbarbers = object;
-          }
-        }).catch(function(result) {
-          $scope.loaderStart = false;
-        })
-      }, 1000);
+    //         shopsdet.push(object);
+    //         $rootScope.totalbarbers = object;
+    //       }
+    //     }).catch(function(result) {
+    //       $scope.loaderStart = false;
+    //     })
+    //   }, 1000);
 
-    };
+    // };
 
     $scope.addchair = function(chair) {
       $scope.loaderStart = true;
@@ -870,6 +946,7 @@ app_admin.controller("AdminCtrl", [
       Admin.barberDetail($stateParams.id).then(function(response) {
         $scope.loaderStart = false;
         $scope.barberdetail = response.data.data[0];
+        $scope.barberdetail.endDate = new Date(response.data.data[0].subscribe.end_date);
         $scope.showShops = [];
         Admin.getAllShops().then(function(response) {
           console.log("all shops", response.data.data);
@@ -1032,19 +1109,31 @@ app_admin.controller("AdminCtrl", [
     }
     $scope.passData = function(data) {
       console.log(data);
+
       $scope.user.city = data.formatted.city
       $scope.user.state = data.formatted.state
       $scope.user.zip = data.formatted.zip
-      $scope.user.street = data.formatted.street
+      $scope.user.latitude = data.formatted.latitude;
+      $scope.user.longitude = data.formatted.longitude;
+      if(data.formatted.number){
+        $scope.user.street_address = data.formatted.number+", "+data.formatted.street;
+      }
+      else if(data.formatted.street){
+        $scope.user.street_address =data.formatted.street
+      }
+      else{
+        $scope.user.street_address= "";
+      }
+      
     }
     $scope.saveShop = function() {
       console.log($scope.user);
       console.log($scope.detail.formatted);
-      let passObj = $scope.user
-      passObj.address = $scope.detail.formatted.formatted;
-      passObj.street_address = $scope.user.street;
-      passObj.latitude = $scope.detail.formatted.latitude;
-      passObj.longitude = $scope.detail.formatted.longitude;
+      let passObj = $scope.user;
+        passObj.address = $scope.detail.formatted.formatted;
+        passObj.street_address = $scope.user.street_address;
+        passObj.latitude = $scope.user.latitude;
+        passObj.longitude = $scope.user.longitude;
       console.log(passObj)
       Admin.saveShopInfo(passObj).then(function(response) {
         toastr.success("Shop added successfully.")

@@ -429,6 +429,22 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     url: '/add_shops',
     controller: "AdminCtrl",
     templateUrl: "/modalsAdmin/adminHTml/views/shop-add.html"
+  }).state('edit_shops', {
+    resolve: {
+      mess: function($localStorage, $q, $state) {
+        var deferred = $q.defer();
+        if ($localStorage.loggedIn != true) {
+          setTimeout(function() {
+            deferred.resolve()
+            $state.go('login');
+          }, 0);
+          return deferred.promise;
+        }
+      }
+    },
+    url: '/edit_shop/:_id',
+    controller: "AdminCtrl",
+    templateUrl: "/modalsAdmin/adminHTml/views/shop-add.html"
   }).state('add_invited_shop', {
     resolve: {
       mess: function($localStorage, $q, $state) {
@@ -444,7 +460,7 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     },
     url: '/add/:_id',
     controller: "referCtrl",
-    templateUrl: "/modalsAdmin/adminHTml/views/shop-add.html"
+    templateUrl: "/modalsAdmin/adminHTml/views/add_invited_shop.html"
   }).state('add_customers', {
     resolve: {
       mess: function($localStorage, $q, $state) {

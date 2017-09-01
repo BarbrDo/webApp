@@ -28,14 +28,14 @@
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Duration (In Days)</label>
-                    <input type="text" class="form-control" name="duration" ng-model="user.duration" ng-pattern="/^\d*[1-9]\d*$/" ng-minlength="1" ng-maxlength="3" maxlength="3" required />
+                    <input type="text" class="form-control" name="duration" ng-model="user.duration" ng-pattern="/^\d*[0-9]\d*$/" ng-minlength="1" ng-maxlength="3" maxlength="3" required />
                     <span style="color:red;" ng-show="planForm.duration.$touched && planForm.duration.$invalid && planForm.duration.$error.required">Duration is required.</span>
                     <span style="color:red;" ng-show="planForm.duration.$error.pattern">Enter Valid Character</span><br>
                     <span style="color:red " ng-show="planForm.duration.$error.maxlength && planForm.duration.$dirty">Duration maximum length exceeds</span>
                 </div>
                 <div class="col-sm-4 form-group">
                     <label>Price (In USD)</label>
-                    <input type="text" class="form-control" name="price" id="price" ng-pattern="/^\d*[1-9]\d*$/" ng-model="user.price" ng-minlength="1" ng-maxlength="10" maxlength="10" required/>
+                    <input type="text" class="form-control" name="price" id="price" ng-pattern="/^\d*[0-9]\d*$/" ng-model="user.price" ng-minlength="1" ng-maxlength="10" maxlength="10" required/>
                     <span style="color:red;" ng-show="planForm.price.$touched && planForm.price.$invalid && planForm.price.$error.required">Price  is required.</span>
                     <span style="color:red;" ng-show="planForm.price.$error.minlength">Phone have 3-digits minimum.</span>
                 </div>
@@ -43,7 +43,7 @@
             <div class="clearfix">
                 <div class="col-sm-4 form-group">
                     <label>Short Description</label>
-                    <input type="text" class="form-control" name="short_description" ng-model="user.short_description" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required />
+                    <input type="text" class="form-control" name="short_description" ng-model="user.short_description" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="50" maxlength="51" required />
                     <span style="color:red;" ng-show="planForm.short_description.$touched && planForm.short_description.$invalid && planForm.short_description.$error.required">short_description is required.</span>
                     <span style="color:red;" ng-show="planForm.short_description.$error.pattern">Enter Valid Character</span><br>
                     <span style="color:red " ng-show="planForm.short_description.$error.maxlength && planForm.short_description.$dirty">short_description maximum length exceeds</span>

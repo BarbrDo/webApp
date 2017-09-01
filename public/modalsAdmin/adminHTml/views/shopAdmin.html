@@ -19,16 +19,29 @@
                         <input ng-model="myobj.search" placeholder="Search for..." ng-change="shoppageChanged()" />
                     </div>
                 </div>
-                <table class="table">
+                <table id="example1" class="table table-bordered table-striped" ng-table="tableParams" show-filter="isFiltersVisible"> 
+                     <tr ng-repeat = "user in $data track by $index">
+                        <td data-title="'Shop Name'" sortable="'first_name'" filter="{name:'text'}">
+                             <a data-toggle="tooltip" title="Edit Shop" ui-sref="edit_shops({_id:user._id})">
+                            {{user.name}}</a></td>
+                        <td data-title="'Address'" sortable="'first_name'" filter="{name:'text'}">
+                           {{user.address}}
+                        </td>
+                        <td data-title="'Street Address'" sortable="'first_name'" filter="{name:'text'}">{{user.street_address}}</td>
+                        <td data-title="'City'" sortable="'first_name'" filter="{name:'text'}">{{user.city}}</td>
+                        <td data-title="'State'" sortable="'first_name'" filter="{name:'text'}">{{user.state}}</td>
+                        <td data-title="'Zip'" sortable="'first_name'" filter="{name:'text'}">{{user.zip}}</td>
+                        <td data-title="'Created Date'" sortable="'first_name'" filter="{name:'text'}">{{user.created_date| date:dd/mm/yyyy}}</td>
+                     </tr>
+                </table>
+                <!-- <table class="table">
                     <thead>
                         <tr>
                             <th style="font-size: 13px;color: #ffffff;"><a ng-click="Sort('shopinfo[0].name')" class="name" style="color: #ffffff;">Shopname<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
                             <th style="font-size: 13px;color: #ffffff;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">Shop Owner<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
                             <th style="font-size: 13px;"><a ng-click="Sort('shopinfo[0].state')" class="location" style="color: #ffffff;">Location<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-                            <!-- <th style="font-size: 13px;"><a ng-click="Sort('shopsdata.shopinfo[0].chairs.length')" class="mobile_number" style="color: #ffffff;">Chairs<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th> -->
                             <th style="font-size: 13px;" width="20%"><a ng-click="Sort('email')" class="email" style="color: #ffffff;">Email  <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
                             <th style="font-size: 13px;"><a ng-click="Sort('created_date')" class="created_date" style="color: #ffffff;">Created Date  <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-                           <!--  <th style="font-size: 13px;"><a ng-click="Sort('totalBarbers')" class="mobile_number" style="color: #ffffff;">Barbers <span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -36,20 +49,11 @@
                             <td>{{shop.shopinfo[0].name}}</td>
                             <td><a data-toggle="tooltip" title="View {{shop.shopinfo[0].name}}'s detailed info" ui-sref="shopdetail({id:shop.shopinfo[0].user_id})">{{shop.first_name}} {{shop.last_name}}</a></td>
                             <td>{{shop.shopinfo[0].state}} </td>
-                            <!-- <td><a data-toggle="tooltip" title="View Chairs in {{shop.shopsdata.shopinfo[0].name}}" ui-sref="chairs({id:shop.shopsdata.shopinfo[0].user_id})"> {{shop.shopsdata.shopinfo[0].chairs.length}}</a> </td> -->
                             <td>{{shop.email}}</td>
                             <td>{{shop.created_date| date:dd/mm/yyyy}}</td>
-                            <!-- <td><a data-toggle="tooltip" title="VIEW BARBERS IN {{shop.shopsdata.shopinfo[0].name}}" ui-sref="barbdetail({id:shop.shopsdata.shopinfo[0].user_id})"> {{shop.totalBarbers}} </a> </td> -->
                         </tr>
                     </tbody>
-                </table>
-            </div>
-            <div>
-                <div class="col-sm-6">
-                    <ul uib-pagination total-items="myobj.totalItems" items-per-page="10" ng-model="myobj.currentPage" ng-change="shoppageChanged()"></ul>
-                </div>
-                <br>
-          
+                </table> -->
             </div>
             <!-- Modal -->
             <!-- RAHUL CODE -->

@@ -461,6 +461,39 @@ exports.accountPut = function(req, res, next) {
   });
 };
 
+
+exports.updateSubscribeDate = function(req, res, next) {
+  console.log(req.body);
+  let updateData = {
+    "first_name": req.body.first_name,
+    "last_name": req.body.last_name,
+    "mobile_number": req.body.mobile_number,
+    "is_active": req.body.is_active,
+    "is_verified": req.body.is_verified,
+    "is_deleted": req.body.is_deleted,
+    "subscribe.$.end_date": req.body.endDate
+  }
+  console.log("updateData",updateData);
+  User.update({
+    "_id": req.body._id,
+    "subscribe._id": req.body.subscribe._id
+  }, {
+    $set: updateData
+  }, function(err, data) {
+    if(err){
+      res.status(400).send({
+        msg:"error in updating! Please try again later.",
+        err:err
+      })
+    }
+    else{
+      res.status(200).send({
+        msg:"Successfully udpate.",
+        data:data
+      })
+    }
+  })
+};
 /**
  * DELETE /account
  */

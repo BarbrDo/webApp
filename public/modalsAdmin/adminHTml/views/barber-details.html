@@ -35,8 +35,8 @@
                                     </a>
                                 </div>
                                 <div style="width:50%;float:right;">
-                                    <button ng-click="removeShop(data._id)">Remove Shop</button>
-                                    <button ng-if="data.is_default==false" ng-click="addDefaultShop(data._id)">Make Default</button>
+                                    <button ng-click="removeShop(data._id)" title="Remove shop" style="border: none;background: none;margin: 4px 10px;font-size: 24px;color: #db241c;"><i class="fa fa-minus-circle"></i></button>
+                                    <button ng-if="data.is_default==false" title="Make default" ng-click="addDefaultShop(data._id)" style="border: none;background: none;margin: 4px 10px;font-size: 24px;color: #27499E;"><i class="fa fa-check-circle"></i></button>
                                 </div>
                             </div>
                            <h4 class="group inner list-group-item-heading" align="center"><b>
@@ -49,7 +49,7 @@
                                     </a>
                                 </div>
                                 <div style="width:50%;float:right;">
-                                    <button ng-click="addAssociateShop(data.id)">Add Shop</button>
+                                    <button ng-click="addAssociateShop(data.id)" title="Add shop" style="border: none;background: none;margin: 4px 10px;font-size: 24px;color: #359a0d;"><i class="fa fa-plus-circle"></i></button>
                                 </div>
                             </div>
                             </div>
@@ -93,7 +93,7 @@
                                         <h5>IS BARBER DELETED</h5></td>
                                     <td> {{barberdetail.is_deleted}} </td>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <td>
                                         <h5>IS BARBER ONLINE</h5></td>
                                     <td> {{barberdetail.is_online}} </td>
@@ -102,22 +102,22 @@
                                     <td>
                                         <h5>IS BARBER AVAILABLE</h5></td>
                                     <td> {{barberdetail.is_available}} </td>
-                                </tr>
+                                </tr> -->
                                 <!-- <tr>
                                     <td>
                                         <h5>GALLERY</h5></td>
                                     <td> {{barberdetail.gallery}} </td>
                                 </tr> -->
-                                <tr>
+                                <!-- <tr>
                                     <td>
                                         <h5>RATINGS</h5></td>
                                     <td> {{barberdetail.ratings[0].score}}</td>
-                                </tr>
-                                <tr>
+                                </tr> -->
+                                <!-- <tr>
                                     <td>
                                         <h5>LAT LONG</h5></td>
                                     <td>{{barberdetail.latLong}} </td>
-                                </tr>
+                                </tr> -->
                             </table>
                         </div>
                         <div class="clearfix"></div>

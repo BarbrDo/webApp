@@ -37,13 +37,21 @@ app_admin.controller("referCtrl", [
       })
     }
     $scope.particularUserData = function() {
+      $scope.loaderStart = true;
       let obj = {
-        _id: $stateParams._id
+        referral: $stateParams._id
+      }
+      if($scope.data.usertype){
+        obj.invite_as=$scope.data.usertype;
+      }
+      if($scope.data.login){
+        obj.is_refer_code_used=$scope.data.login;
       }
       console.log(obj)
       Admin.getUserData(obj).then(function(response) {
         console.log(response);
         $scope.referInfo = response.data.data;
+        $scope.loaderStart = false;
       })
     }
     $scope.shop_invites = function() {
@@ -76,6 +84,8 @@ app_admin.controller("referCtrl", [
       Admin.getInviteShopProfile(passData).then(function(response) {
         console.log(response);
         $scope.user = response.data.data[0];
+        $scope.user.latitude = response.data.data[0].latLong[1];
+        $scope.user.longitude = response.data.data[0].latLong[0];
       })
     }
     $scope.addcustomer = function(params) {
@@ -114,29 +124,87 @@ app_admin.controller("referCtrl", [
     }
     $scope.addPlan = function() {
       console.log($scope.user);
-        Admin.createPlan($scope.user).then(function(response) {
-          console.log(response.data.msg)
-          toastr.success(response.data.msg);
-          $state.go('plans');
-        })    }
-    if($state.current.name=='edit_plan'){
+      Admin.createPlan($scope.user).then(function(response) {
+        console.log(response.data.msg)
+        toastr.success(response.data.msg);
+        $state.go('plans');
+      })
+    }
+    if ($state.current.name == 'edit_plan') {
       $scope.updateButton = true;
       console.log("edit plan");
       let obj = {
-        _id:$stateParams.id
+        _id: $stateParams.id
       }
-      Admin.getPlanById(obj).then(function(response){
+      Admin.getPlanById(obj).then(function(response) {
         $scope.user = response.data.data
       })
     }
-    $scope.updatePlan = function(data){
+
+    $scope.passData = function(data) {
+      console.log(data);
+      $scope.user.city = data.formatted.city
+      $scope.user.state = data.formatted.state
+      $scope.user.zip = data.formatted.zip
+      $scope.user.latitude = data.formatted.latitude;
+      $scope.user.longitude = data.formatted.longitude;
+      if (data.formatted.number) {
+        $scope.user.street_address = data.formatted.number + ", " + data.formatted.street;
+      } else if (data.formatted.street) {
+        $scope.user.street_address = data.formatted.street
+      } else {
+        $scope.user.street_address = "";
+      }
+
+    }
+    $scope.updatePlan = function(data) {
       console.log(data)
-      Admin.updatePlan(data).then(function(response){
+      Admin.updatePlan(data).then(function(response) {
         toastr.success('Plan Updated successfully.');
         $state.go('plans');
-      }).catch(function(result){
+      }).catch(function(result) {
         console.log(result);
         toastr.error(result.data.msg);
+      })
+    }
+    $scope.saveShop = function() {
+      $scope.loaderStart = true;
+      let passObj = $scope.user;
+      if ($scope.detail) {
+        passObj.address = $scope.detail.formatted.formatted;
+        passObj.street_address = $scope.user.street_address;
+        passObj.latitude = $scope.detail.formatted.latitude;
+        passObj.longitude = $scope.detail.formatted.longitude;
+      } else {
+        passObj.latitude = $scope.user.latLong[1];
+        passObj.longitude = $scope.user.latLong[0];
+      }
+      console.log(passObj)
+      Admin.saveShopInfo(passObj).then(function(response) {
+        let passData = {
+          _id: $scope.user._id
+        }
+        Admin.deleteInviteShopProfile(passData).then(function(response) {
+          console.log(response);
+          $scope.loaderStart = false;
+          $state.go('shop_invites');
+          $scope.shop_invites();
+        })
+        toastr.success("Shop added successfully.")
+      }).catch(function(response) {
+        toastr.error("Error in adding shop");
+      })
+    }
+
+    $scope.sentGiftCard = function(){
+      console.log($scope.mailContent);
+      let obj = {
+        to:$scope.referInfo[0].referral.email,
+        content:$scope.mailContent
+      }
+      console.log(obj);
+      Admin.sentGiftCard(obj).then(function(response) {
+        toastr.success("Mail sent");
       })
     }
   }

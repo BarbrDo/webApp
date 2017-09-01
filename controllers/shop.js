@@ -12,32 +12,37 @@ let chairBook = require('../models/chair_booking');
 let shopRequest = require('../models/shop_request');
 
 exports.updateShop = function(req, res) {
-    console.log("req.body....", req.body);
-    req.assert("_id", "Shop id is required.").notEmpty();
-    var errors = req.validationErrors();
-    if (errors) {
-        return res.status(400).send({
-            msg: "error in your request",
-            err: errors
-        });
+    console.log(req.body);
+    let updateData = {
+        name:req.body.name,
+        city:req.body.city,
+        state:req.body.state,
+        zip:req.body.zip,
+        address:req.body.address,
+        street_address:req.body.street_address
     }
-    var updateData = JSON.parse(JSON.stringify(req.body));
-    if (req.body.zip) {
-        geocoder.geocode(req.body.zip, function(errGeo, latlng) {
-            if (errGeo) {
-                return res.status(400).send({
-                    msg: constantObj.messages.errorInSave
-                })
-            } else {
-                updateData.latLong = [latlng.results[0].geometry.location.lng, latlng.results[0].geometry.location.lat];
-                saveData(updateData, req.body._id, req, res);
-            }
-
-        });
-    } else {
-        saveData(updateData, req.body._id, req, res);
+    if(req.body.latitude && req.body.longitude){
+        updateData.latLong =  [req.body.longitude,req.body.latitude]
     }
-
+    else{
+        updateData.latLong = req.body.latLong;
+    } 
+    console.log(updateData); 
+     shop.update({
+        _id: req.body._id
+    }, updateData, function(err, data) {
+        if (err) {
+            res.status(400).send({
+                "msg": constantObj.messages.userStatusUpdateFailure,
+                "err": err
+            });
+        } else {
+            res.status(200).send({
+                "msg": constantObj.messages.userStatusUpdateSuccess,
+                "data": data,
+            });
+        }
+    });
 };
 
 let saveData = function(updateData, id, req, res) {
@@ -606,72 +611,71 @@ exports.listshops = function(req, res) {
     var count = parseInt(req.query.count) || 10;
     var skipNo = (page - 1) * count;
     var query = {};
-    query.user_type = "shop";
     var searchStr = ""
     if (req.query.search) {
         searchStr = req.query.search;
     }
     if (searchStr) {
         query.$or = [{
-            first_name: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            last_name: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            email: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
-            location: {
-                $regex: searchStr,
-                '$options': 'i'
-            }
-        }, {
             name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            city: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            state: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            zip: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            address: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            street_address: {
                 $regex: searchStr,
                 '$options': 'i'
             }
         }]
     }
 
-    user.aggregate([{
+    shop.aggregate([{
+        $project: {
+            _id: "$_id",
+            name: "$name",
+            city: "$city",
+            state: "$state",
+            zip: "$zip",
+            address: "$address",
+            street_address: "$street_address",
+            created_date: "$created_date",
+        }
+    }, {
         $match: query
     }]).exec(function(err, data) {
-
         if (err) {
             console.log(err)
         } else {
-            user.aggregate([{
-                $lookup: {
-                    from: "shops",
-                    localField: "_id",
-                    foreignField: "user_id",
-                    as: "shopinfo"
-                }
-            }, {
+            shop.aggregate([{
                 $project: {
                     _id: "$_id",
-                    first_name: "$first_name",
-                    last_name: "$last_name",
-                    email: "$email",
-                    mobile_number: "$mobile_number",
+                    name: "$name",
+                    city: "$city",
+                    state: "$state",
+                    zip: "$zip",
+                    address: "$address",
+                    street_address: "$street_address",
                     created_date: "$created_date",
-                    ratings: "$ratings",
-                    is_deleted: "$is_deleted",
-                    is_active: "$is_active",
-                    is_verified: "$is_verified",
-                    user_type: "$user_type",
-                    latLong: "$latLong",
-                    picture: "$picture",
-                    name: "$shopinfo.name",
-                    location: "$shopinfo.state",
-                    shopinfo: "$shopinfo"
                 }
             }, {
                 $match: query
@@ -680,7 +684,7 @@ exports.listshops = function(req, res) {
             }, {
                 "$limit": count
             }]).exec(function(err, result) {
-                var length = result.length;
+                var length = data.length;
                 if (err) {
                     res.status(400).send({
                         "msg": constantObj.messages.userStatusUpdateFailure,
@@ -831,7 +835,6 @@ exports.shopdetail = function(req, res) {
 
 exports.shopownerhavingshops = function(req, res) {
     req.checkParams("user_id", "user_id cannot be blank").notEmpty();
-
     let errors = req.validationErrors();
     if (errors) {
         return res.status(400).send({
@@ -840,46 +843,18 @@ exports.shopownerhavingshops = function(req, res) {
         });
     }
     var query = {};
-    query._id = mongoose.Types.ObjectId(req.params.user_id);
-    console.log(req.params.user_id)
-    user.aggregate([{
-        $match: query
-    }, {
-        $lookup: {
-            from: "shops",
-            localField: "_id",
-            foreignField: "user_id",
-            as: "shopinfo"
-        }
-    }, {
-        $project: {
-            _id: "$_id",
-            first_name: "$first_name",
-            last_name: "$last_name",
-            email: "$email",
-            mobile_number: "$mobile_number",
-            created_date: "$created_date",
-            ratings: "$ratings",
-            is_deleted: "$is_deleted",
-            is_active: "$is_active",
-            is_verified: "$is_verified",
-            user_type: "$user_type",
-            latLong: "$latLong",
-            picture: "$picture",
-            shopinfo: "$shopinfo",
-            gallery: "$gallery"
-        }
-    }]).exec(function(err, result) {
-        if (err) {
+    console.log(req.params);
+    shop.findOne({_id:req.params.user_id},function(err,data){
+        if(err){
             res.status(400).send({
-                "msg": constantObj.messages.userStatusUpdateFailure,
-                "err": err
-            });
-        } else {
-            console.log(result)
+                msg:"Error in shop",
+                err:err
+            })
+        }
+        else{
             res.status(200).send({
-                "msg": constantObj.messages.successRetreivingData,
-                "data": result
+                msg:"Success",
+                data:data
             })
         }
     })
@@ -1930,9 +1905,15 @@ exports.saveShop = function(req, res) {
             err: errors
         });
     }
-    let saveData = req.body;
+    let saveData = {
+        name:req.body.name,
+        address:req.body.address,
+        city:req.body.city,
+        state:req.body.state,
+        street_address:req.body.street_address
+    };
     saveData.zip = parseInt(req.body.zip);
-    saveData.latLong = [parseFloat(req.body.longitude), parseFloat(req.body.latitude)];
+    saveData.latLong = [parseFloat(req.body.longitude).toFixed(2), parseFloat(req.body.latitude).toFixed(2)];
     console.log(saveData);
     shop(saveData).save(function(err, result) {
         if (err) {

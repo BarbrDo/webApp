@@ -141,6 +141,16 @@ angular.module('barbrdo').factory('Admin', function($http) {
          data: data
       });
     },
+    updateBarberSubscription: function(data) {
+      return $http({
+        method: 'PUT',
+        url: '/api/v2/barber/updateSubscription',
+        headers: {
+          'user_id': data._id
+        },
+         data: data
+      });
+    },
     updateShop: function(data) {
       console.log(data)
       return $http({
@@ -388,7 +398,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
       }
     },
     getUserData: function(data) {
-      return $http.get('/api/v2/referDetail/' + data._id, data);
+      return $http.post('/api/v2/referDetail', data);
     },
     getShopInvites:function(data){
       if (data.search) {
@@ -418,6 +428,9 @@ angular.module('barbrdo').factory('Admin', function($http) {
     },
     currentAppointmentData: function(data) {
       return $http.get('/api/v2/appointment/current/' + data._id, data);
+    },
+    sentGiftCard:function(data){
+      return $http.post('/api/v2/giftCard', data);
     }
   };
 });

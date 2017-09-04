@@ -356,17 +356,17 @@ app_admin.controller("AdminCtrl", [
 
     $scope.updatecustomer = function(customer) {
       $scope.loaderStart = true;
-      if (customer.is_active == true) {
+      if (customer.is_active == "true" || customer.is_active == true) {
         customer.is_active = true;
       } else {
         customer.is_active = false;
       }
-      if (customer.is_deleted == "true") {
+      if (customer.is_deleted == "true" ||  customer.is_deleted == true) {
         customer.is_deleted = true
       } else {
         customer.is_deleted = false
       }
-      if (customer.is_verified == "true") {
+      if (customer.is_verified == "true" || customer.is_verified == true) {
         customer.is_verified = true
       } else {
         customer.is_verified = false

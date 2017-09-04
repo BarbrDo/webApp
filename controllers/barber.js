@@ -284,10 +284,18 @@ exports.confirmRequest = function(req, res) {
                 let passObj = {};
                 console.log("data of rating",data);
                 passObj.barberInfo = JSON.parse(JSON.stringify(userData))
-                passObj.barberInfo.rating_score = data[0].sum/data[0].count;
-                passObj.appointmentInfo = result
-                console.log("passObj",JSON.stringify(passObj));
-                callNotification("barber_confirm_appointment", result.customer_id, result.barber_id, passObj);
+                if(data){
+                  passObj.barberInfo.rating_score = data[0].sum/data[0].count;
+                  passObj.appointmentInfo = result
+                  console.log("passObj",JSON.stringify(passObj));
+                  callNotification("barber_confirm_appointment", result.customer_id, result.barber_id, passObj);
+                }
+                else{
+                  passObj.barberInfo.rating_score = 0;
+                  passObj.appointmentInfo = 0
+                  console.log("passObj",JSON.stringify(passObj));
+                  callNotification("barber_confirm_appointment", result.customer_id, result.barber_id, passObj);
+                }
               }
             })
             }

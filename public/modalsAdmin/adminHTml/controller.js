@@ -439,7 +439,6 @@ app_admin.controller("AdminCtrl", [
         barber.is_available = false
       }
       console.log(barber);
-      return false;
       Admin.updateBarber(barber).then(function(response) {
         $scope.loaderStart = false;
         toastr.success('Barber is updated Succesfully');
@@ -936,6 +935,7 @@ app_admin.controller("AdminCtrl", [
       Admin.barberDetail($stateParams.id).then(function(response) {
         $scope.loaderStart = false;
         $scope.barberdetail = response.data.data[0];
+        $scope.barberdetail.created_date = response.data.data[0].created_date;
         console.log(response.data.data[0]);
         $scope.barberdetail.endDate = new Date(response.data.data[0].subscription.end_date);
         $scope.showShops = [];

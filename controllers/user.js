@@ -299,6 +299,7 @@ exports.signupPost = function(req, res, next) {
       err: errors
     });
   }
+  console.log("checing live ************************");
   let saveData = req.body;
   saveData.is_active = true;
   saveData.is_verified = true;

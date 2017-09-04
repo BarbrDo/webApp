@@ -384,17 +384,18 @@ app_admin.controller("AdminCtrl", [
 
     $scope.updatebarberinformation = function(barber) {
       $scope.loaderStart = true;
-      if (barber.is_active == "true") {
+      console.log(barber);
+      if (barber.is_active == "true" || barber.is_active == true) {
         barber.is_active = true;
       } else {
         barber.is_active = false;
       }
-      if (barber.is_deleted == "true") {
+      if (barber.is_deleted == "true" ||  barber.is_deleted == true) {
         barber.is_deleted = true
       } else {
         barber.is_deleted = false
       }
-      if (barber.is_verified == "true") {
+      if (barber.is_verified == "true" || barber.is_verified == true) {
         barber.is_verified = true
       } else {
         barber.is_verified = false

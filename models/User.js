@@ -97,32 +97,6 @@ let userSchema = new mongoose.Schema({
             }
         }
     ],
-    subscribe: [
-        {
-            tranaction_response:[],
-            plan_name:{
-                type:String
-            },
-            start_date:{
-                type:Date,
-                required:true
-            },
-            end_date:{
-                type:Date,
-                required:true
-            },
-            price:{
-                type:Number
-            },
-            pay_id:{
-                type:String,
-            },
-            created_date:{
-                type:Date,
-                default:Date.now()
-            }
-        }
-    ],
     gallery: [
         {
             name: {
@@ -173,7 +147,33 @@ let userSchema = new mongoose.Schema({
     is_available: {
         type: Boolean,
         default:false
-    }
+    },
+    subscribe: [
+        {
+            tranaction_response:[],
+            plan_name:{
+                type:String
+            },
+            start_date:{
+                type:Date,
+                required:true
+            },
+            end_date:{
+                type:Date,
+                required:true
+            },
+            price:{
+                type:Number
+            },
+            pay_id:{
+                type:String,
+            },
+            created_date:{
+                type:Date,
+                default:Date.now()
+            }
+        }
+    ]
 });
 
 userSchema.pre('save', function (next) {

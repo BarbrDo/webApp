@@ -332,10 +332,10 @@ exports.signupPost = function(req, res, next) {
             saveData.is_verified = true;
             saveData.remark = '';
           }
-          email_encrypt = commonObj.encrypt(req.body.email);
-          generatedText = commonObj.makeid();
-          saveData.randomString = generatedText;
-          saveData.unique_code = Math.round((Math.pow(36, 6 + 1) - Math.random() * Math.pow(36, 6))).toString(36).slice(1);
+          // email_encrypt = commonObj.encrypt(req.body.email);
+          // generatedText = commonObj.makeid();
+          // saveData.randomString = generatedText;
+          // saveData.unique_code = Math.round((Math.pow(36, 6 + 1) - Math.random() * Math.pow(36, 6))).toString(36).slice(1);
           done(err, saveData)
         }
       })
@@ -365,6 +365,7 @@ exports.signupPost = function(req, res, next) {
       }
     },
     function(saveData, done) {
+      console.log("data saved in signup",saveData);
       User(saveData).save(function(err, data) {
         if (err) {
           return res.status(400).send({

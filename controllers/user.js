@@ -1368,7 +1368,7 @@ exports.subscribe = function(req, res) {
         _id: req.headers.user_id
       }).exec(function(err, data) {
         if (err) {
-          res.status(400).send({
+          return res.status(400).send({
             msg: "This user is not present.",
             "err": err
           });
@@ -1381,7 +1381,6 @@ exports.subscribe = function(req, res) {
             updateData.start_date = new Date();
             updateData.end_date = moment(updateData.start_date, "YYYY-MM-DD").add(planResult.duration, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
             updateData.pay_id = req.body.tranaction_response[0].productId;
-
             updateData.tranaction_response = req.body.tranaction_response;
             console.log(updateData);
             User.update({
@@ -1392,15 +1391,16 @@ exports.subscribe = function(req, res) {
               }
             }).exec(function(err, updateInfo) {
               if (err) {
-                res.status(400).send({
+                return res.status(400).send({
                   msg: "Error occurred in subscription.",
                   "err": err
                 });
               } else {
+                console.log("updateInfo in subscription",updateInfo);
                 User.findOne({
                   _id: req.headers.user_id
                 }).exec(function(err, user) {
-                  res.status(200).send({
+                  return res.status(200).send({
                     "msg": "You are successfully subscribed."
                   });
                 })

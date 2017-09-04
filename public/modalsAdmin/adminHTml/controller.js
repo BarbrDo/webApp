@@ -490,20 +490,26 @@ app_admin.controller("AdminCtrl", [
       $scope.loaderStart = true;
       console.log($scope.user);
       console.log($scope.detail);
+      console.log($scope.detail.formatted);
+      console.log(typeof($scope.detail.formatted));
       let passObj = $scope.user;
-      if ($scope.detail.formatted) {
-          passObj.address = $scope.detail.formatted.formatted;
-          passObj.street_address = $scope.user.street_address;
+      if (typeof($scope.detail.formatted)=='string') {
+          console.log("inside string");
+          passObj.formatted_address = $scope.detail.formatted;
+          passObj.address = $scope.user.street_address;
           passObj.latitude = $scope.user.latitude;
           passObj.longitude = $scope.user.longitude;
       } else {
-
+         passObj.formatted_address = $scope.detail.formatted.formatted;
+          passObj.address = $scope.user.street_address;
+          passObj.latitude = $scope.user.latitude;
+          passObj.longitude = $scope.user.longitude;
       }
       console.log(passObj)
       Admin.updateShopinfo(passObj).then(function(response) {
         $scope.loaderStart = false;
         toastr.success('Shop is updated Succesfully');
-        $rootScope.shops = response.data;
+        $state.go('shops')
       }).catch(function(result) {
         $scope.loaderStart = false;
         $scope.messages = result.data.msg
@@ -709,11 +715,13 @@ app_admin.controller("AdminCtrl", [
       $scope.loaderStart = true;
       Admin.shopDetail($stateParams._id).then(function(response) {
         $scope.user = response.data.data;
+        $scope.detail = {
+          formatted : response.data.data.formatted_address
+        }
+        $scope.user.street_address = response.data.data.address
         $scope.user.latitude = response.data.data.latLong[1];
         $scope.user.longitude = response.data.data.latLong[0];
-        $scope.detail = {
-          formatted: response.data.data.address
-        }
+        
         $scope.loaderStart = false;
       }).catch(function(result) {
         toastr.error("Error");
@@ -1130,6 +1138,7 @@ app_admin.controller("AdminCtrl", [
       console.log(passObj)
       Admin.saveShopInfo(passObj).then(function(response) {
         toastr.success("Shop added successfully.")
+        $state.go('shops')
       }).catch(function(response) {
         toastr.error("Error in adding shop");
       })

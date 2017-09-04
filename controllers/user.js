@@ -118,6 +118,8 @@ exports.checkSubscription = function(req, res, next) {
         $set: {
           "device_type": req.headers.device_type,
           "device_id": req.headers.device_id,
+          "is_online": false,
+          "is_available": false,
           "latLong": [req.headers.device_longitude, req.headers.device_latitude],
           'remark': "Subscription required."
         }
@@ -1193,8 +1195,6 @@ exports.totalUsers = function(req, res) {
   });
 }
 
-
-
 exports.logout = function(req, res) {
   LoggedInUser.remove({
     user_id: req.headers.user_id
@@ -1362,6 +1362,8 @@ exports.subscribe = function(req, res) {
       err: errors
     });
   }
+  console.log(req.headers.user_id);
+  console.log(req.body);
   Plan.findOne({
     _id: req.body.plan_id
   }, function(err, planResult) {
@@ -1393,7 +1395,7 @@ exports.subscribe = function(req, res) {
               _id: req.headers.user_id
             }, {
               $push: {
-                subscribe: updateData
+                subscription: updateData
               }
             }).exec(function(err, updateInfo) {
               if (err) {

@@ -19,7 +19,7 @@ exports.updateShop = function(req, res) {
         state:req.body.state,
         zip:req.body.zip,
         address:req.body.address,
-        street_address:req.body.street_address
+        formatted_address:req.body.formatted_address
     }
     if(req.body.latitude && req.body.longitude){
         updateData.latLong =  [req.body.longitude,req.body.latitude]
@@ -642,7 +642,7 @@ exports.listshops = function(req, res) {
                 '$options': 'i'
             }
         }, {
-            street_address: {
+            formatted_address: {
                 $regex: searchStr,
                 '$options': 'i'
             }
@@ -657,7 +657,7 @@ exports.listshops = function(req, res) {
             state: "$state",
             zip: "$zip",
             address: "$address",
-            street_address: "$street_address",
+            formatted_address: "$formatted_address",
             created_date: "$created_date",
         }
     }, {
@@ -674,7 +674,7 @@ exports.listshops = function(req, res) {
                     state: "$state",
                     zip: "$zip",
                     address: "$address",
-                    street_address: "$street_address",
+                    formatted_address: "$formatted_address",
                     created_date: "$created_date",
                 }
             }, {

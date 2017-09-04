@@ -370,7 +370,6 @@ exports.signupPost = function(req, res, next) {
       }
     },
     function(saveData, done) {
-     console.log("data saved in signup",saveinfo);
       User(saveinfo).save(saveinfo,function(err, data) {
         if (err) {
           return res.status(400).send({

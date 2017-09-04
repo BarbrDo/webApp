@@ -384,7 +384,7 @@ app_admin.controller("AdminCtrl", [
 
     $scope.updatebarberinformation = function(barber) {
       $scope.loaderStart = true;
-      if (barber.is_active == true) {
+      if (barber.is_active == "true") {
         barber.is_active = true;
       } else {
         barber.is_active = false;
@@ -398,16 +398,6 @@ app_admin.controller("AdminCtrl", [
         barber.is_verified = true
       } else {
         barber.is_verified = false
-      }
-      if (barber.is_online == "true") {
-        barber.is_online = true
-      } else {
-        barber.is_online = false
-      }
-      if (barber.is_available == "true") {
-        barber.is_available = true
-      } else {
-        barber.is_available = false
       }
       console.log(barber);
       Admin.updateBarberSubscription(barber).then(function(response) {

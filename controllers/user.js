@@ -99,17 +99,17 @@ exports.checkSubscription = function(req, res, next) {
       "_id": mongoose.Types.ObjectId(req.headers.user_id)
     }
   }, {
-    $unwind: "$subscribe"
+    $unwind: "$subscription"
   }, {
     $sort: {
-      "subscribe.created_date": -1
+      "subscription.created_date": -1
     }
   }]).exec(function(err, data) {
     console.log(data);
-    console.log(data[0].subscribe)
+    console.log(data[0].subscription)
     let date = new Date();
     let currentDate = moment(date, "YYYY-MM-DD").format("YYYY-MM-DD")
-    var futureEnddate = moment(data[0].subscribe.end_date).format("YYYY-MM-DD");
+    var futureEnddate = moment(data[0].subscription.end_date).format("YYYY-MM-DD");
     console.log("both dates are", currentDate, futureEnddate);
     if (currentDate > futureEnddate) {
       User.update({
@@ -304,6 +304,8 @@ exports.signupPost = function(req, res, next) {
   let saveData = req.body;
   saveData.is_active = true;
   saveData.is_verified = true;
+  saveData.is_online = false;
+  saveData.is_available = false;
   let email_encrypt = "";
   let generatedText = "";
   console.log("working");
@@ -354,7 +356,7 @@ exports.signupPost = function(req, res, next) {
             })
           } else {
             let date = new Date();
-            saveData.subscribe = [{
+            saveData.subscription = [{
               plan_name: data.name,
               start_date: date,
               end_date: moment(date, "YYYY-MM-DD").add(data.duration, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z',              price: 0

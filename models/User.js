@@ -148,8 +148,7 @@ let userSchema = new mongoose.Schema({
         type: String,
         default: "Your account is not verified yet."
     },
-    
-    subscribe: [
+    subscription: [
         {
             tranaction_response:[],
             plan_name:{

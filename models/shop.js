@@ -4,7 +4,7 @@ let Schema = mongoose.Schema;
 let shopSchema = new mongoose.Schema({
     name: String,
     address: String,
-    street_address:String,
+    formatted_address:String,
     city: String,
     state: String,
     zip: String,

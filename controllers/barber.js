@@ -284,7 +284,7 @@ exports.confirmRequest = function(req, res) {
                 let passObj = {};
                 console.log("data of rating",data);
                 passObj.barberInfo = JSON.parse(JSON.stringify(userData))
-                if(data){
+                if(data.length>0){
                   passObj.barberInfo.rating_score = data[0].sum/data[0].count;
                   passObj.appointmentInfo = result
                   console.log("passObj",JSON.stringify(passObj));

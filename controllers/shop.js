@@ -1895,7 +1895,6 @@ exports.saveShop = function(req, res) {
     req.assert("city", "City is required.").notEmpty();
     req.assert("state", "State is required.").notEmpty();
     req.assert("zip", "State is required.").notEmpty();
-    req.assert("street_address", "Street address is required.").notEmpty();
     req.assert("latitude", "latitude is required").notEmpty();
     req.assert("longitude", "longitude is required").notEmpty();
     var errors = req.validationErrors();
@@ -1910,7 +1909,7 @@ exports.saveShop = function(req, res) {
         address:req.body.address,
         city:req.body.city,
         state:req.body.state,
-        street_address:req.body.street_address
+        formatted_address:req.body.formatted_address
     };
     saveData.zip = parseInt(req.body.zip);
     saveData.latLong = [parseFloat(req.body.longitude).toFixed(2), parseFloat(req.body.latitude).toFixed(2)];

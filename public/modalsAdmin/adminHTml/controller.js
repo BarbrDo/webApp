@@ -1123,8 +1123,8 @@ app_admin.controller("AdminCtrl", [
       console.log($scope.user);
       console.log($scope.detail.formatted);
       let passObj = $scope.user;
-        passObj.address = $scope.detail.formatted.formatted;
-        passObj.street_address = $scope.user.street_address;
+        passObj.formatted_address = $scope.detail.formatted.formatted;
+        passObj.address = $scope.user.street_address;
         passObj.latitude = $scope.user.latitude;
         passObj.longitude = $scope.user.longitude;
       console.log(passObj)

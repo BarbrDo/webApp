@@ -370,7 +370,7 @@ exports.signupPost = function(req, res, next) {
       }
     },
     function(saveData, done) {
-      User(saveinfo).save(saveinfo,function(err, data) {
+      User(saveData).save(saveData,function(err, data) {
         if (err) {
           return res.status(400).send({
             msg: constantObj.messages.errorInSave,

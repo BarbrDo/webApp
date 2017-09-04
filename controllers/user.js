@@ -370,7 +370,28 @@ exports.signupPost = function(req, res, next) {
     },
     function(saveData, done) {
       console.log("data saved in signup",saveData);
-      User(saveData).save(saveData,function(err, data) {
+    let saveinfo = {
+      first_name: 'sdf',
+      last_name: 'shasdfdsfrma',
+      email: 'sudsfsss@gmail.com',
+      mobile_number: '7696516981',
+      password: '123456',
+      user_type: 'barber',
+      referral_code: 'f1eo3y',
+      license_number: '12ss56adfsdf',
+      is_active: true,
+      is_verified: true,
+      is_online: false,
+      is_available: false,
+      latLong: ['76.7179', '30.7046'],
+      subscription: [{
+        plan_name: 'Free Trial',
+        start_date: '2017-09-04T09:11:11.488Z',
+        end_date: '2017-10-04T14:41:11.488Z',
+        price: 0
+      }]
+    }
+      User(saveinfo).save(saveinfo,function(err, data) {
         if (err) {
           return res.status(400).send({
             msg: constantObj.messages.errorInSave,

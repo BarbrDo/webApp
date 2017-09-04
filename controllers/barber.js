@@ -546,7 +546,21 @@ exports.countbarber = function(req, res) {
   user.find({
     user_type: "barber"
   }, function(err, barber) {
-    res.json(barber);
+    user.find({
+      user_type: "barber",
+      "is_online":true
+    },function(activeErr,activeBar){
+      user.find({
+        user_type: "barber",
+        "is_online":false
+      },function(inActiveErr,inActiveData){
+        res.json({
+          total:barber.length,
+          online:activeBar.length,
+          offline:inActiveData.length
+        });
+      })
+    })
   });
 };
 exports.deletebarber = function(req, res) {

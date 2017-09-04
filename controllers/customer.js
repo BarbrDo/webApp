@@ -1473,17 +1473,31 @@ exports.allappointment = function(req, res) {
   })
 }
 exports.countappoint = function(req, res) {
+  let currentDate = moment().format("YYYY-MM-DD");
+  let appointmentStartdate = moment(currentDate, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
+  var appointmentEnddate = moment(currentDate, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
+  console.log("dates**********",appointmentStartdate, appointmentEnddate);
+
   async.parallel({
     one: function(parallelCb) {
       // This callback will get the total sale of barber
-      appointment.find({}, function(err, result) {
+      appointment.find({
+        appointment_date: {
+          $gte: new Date(appointmentStartdate),
+          $lt: new Date(appointmentEnddate)
+        }
+      }, function(err, result) {
         parallelCb(null, result)
       });
     },
     two: function(parallelCb) {
       // get barber total sales of current month
       appointment.find({
-        appointment_status: "confirm"
+        appointment_status: "confirm",
+        appointment_date: {
+          $gte: new Date(appointmentStartdate),
+          $lt: new Date(appointmentEnddate)
+        }
       }, function(err, result) {
         parallelCb(null, result)
       });
@@ -1491,14 +1505,22 @@ exports.countappoint = function(req, res) {
     three: function(parallelCb) {
       // get barber sale of current week
       appointment.find({
-        appointment_status: "completed"
+        appointment_status: "completed",
+        appointment_date: {
+          $gte: new Date(appointmentStartdate),
+          $lt: new Date(appointmentEnddate)
+        }
       }, function(err, result) {
         parallelCb(null, result)
       });
     },
     four: function(parallelCb) {
       appointment.find({
-        appointment_status: "cancel"
+        appointment_status: "cancel",
+        appointment_date: {
+          $gte: new Date(appointmentStartdate),
+          $lt: new Date(appointmentEnddate)
+        }
       }, function(err, result) {
         parallelCb(null, result)
       });

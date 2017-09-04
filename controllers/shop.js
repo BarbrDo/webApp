@@ -1218,10 +1218,9 @@ exports.manageChair = function(req, res) {
 }
 
 exports.countshop = function(req, res) {
-    user.find({
-        user_type: "shop"
+    shop.find({
     }, function(err, barber) {
-        res.json(barber);
+        res.json(barber.length);
     });
 };
 

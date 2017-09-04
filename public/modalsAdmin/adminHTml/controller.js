@@ -801,7 +801,10 @@ app_admin.controller("AdminCtrl", [
       });
 
       Admin.countBarber().then(function(response) {
-        $rootScope.totalbarber = response.data;
+        console.log("count",response);
+        $rootScope.totalbarber = response.data.total;
+        $scope.onlineBarber = response.data.online;
+        $scope.offlineBarber = response.data.offline;
       });
     };
 

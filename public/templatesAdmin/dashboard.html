@@ -2,13 +2,13 @@
 	<div class="col-sm-4 clearfix">
     	<a  ui-sref="barbers"><div class="panel-body dashboard-box clearfix">
         	<div class="col-md-6 box-left"><i class="icon" ng-include="'svgAdmin/user.svg'"></i></div>
-        	<div class="col-md-6 box-right text-right"><label>Total Barbers</label><span>{{totalbarber.length}}</span></div>
+        	<div class="col-md-6 box-right text-right"><label>Total Barbers</label><span>{{totalbarber}}</span></div>
         </div></a>
     </div>
     <div class="col-sm-4 clearfix">
     	<a  ui-sref="shops"><div class="panel-body dashboard-box clearfix">
         	<div class="col-md-6 box-left"><i class="icon" ng-include="'svgAdmin/factory.svg'"></i></div>
-        	<div class="col-md-6 box-right text-right"><label>Total Shops</label><span>{{totalshop.length}}</span></div>
+        	<div class="col-md-6 box-right text-right"><label>Total Shops</label><span>{{totalshop}}</span></div>
         </div></a>
     </div>
     <div class="col-sm-4 clearfix">
@@ -31,7 +31,7 @@
             	<div class="panel-body">
                 	<div class="title clearfix">
                     	Appointments
-                        <a href="#" class=" text-right">Check new requests</a>
+                        
                     </div>
                     <div class="dashboard-strip clearfix">
                     	<label class="col-xs-7">Total Appointments</label>
@@ -54,20 +54,20 @@
             <div class="col-lg-12 col-sm-6">
             	<div class="panel-body">
                 	<div class="title clearfix">
-                    	Users
+                    	Barbers
                       
                     </div>
                     <div class="dashboard-strip clearfix">
-                    	<label class="col-xs-7">Total Users</label>
-                        <div class="col-xs-5 text-right">{{totalbarber.length + totalshop.length + totalcustomer.length}} </div>
+                    	<label class="col-xs-7">Total Barbers</label>
+                        <div class="col-xs-5 text-right">{{totalbarber}} </div>
                     </div>
                     <div class="dashboard-strip clearfix">
-                    	<label class="col-xs-7">Active Users</label>
-                        <div class="col-xs-5 text-right">12</div>
+                    	<label class="col-xs-7">Active</label>
+                        <div class="col-xs-5 text-right">{{onlineBarber}}</div>
                     </div>
                     <div class="dashboard-strip clearfix">
-                    	<label class="col-xs-7">Inactive Users</label>
-                        <div class="col-xs-5 text-right">19</div>
+                    	<label class="col-xs-7">Inactive</label>
+                        <div class="col-xs-5 text-right">{{offlineBarber}}</div>
                     </div>
                     
                 </div>

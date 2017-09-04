@@ -368,7 +368,7 @@ exports.signupPost = function(req, res, next) {
     },
     function(saveData, done) {
       console.log("data saved in signup",saveData);
-      User(saveData).save(function(err, data) {
+      User(saveData).save(saveData,function(err, data) {
         if (err) {
           return res.status(400).send({
             msg: constantObj.messages.errorInSave,

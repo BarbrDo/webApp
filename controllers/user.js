@@ -378,7 +378,6 @@ exports.signupPost = function(req, res, next) {
           })
         } else {
           console.log("saveedonline data",data);
-          return false
           let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
             accountActivateMailFunction(req, res, data, resetUrl)
         }

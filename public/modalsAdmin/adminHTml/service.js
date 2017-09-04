@@ -371,7 +371,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
     goOnline:function  (obj,services) {
       return $http({
         method: 'post',
-        url: '/api/v2/barber/goOnline',
+        url: '/api/v2/admin/barber/goOnline',
         headers: {
           'user_id': obj.barber_id
         },
@@ -384,7 +384,7 @@ angular.module('barbrdo').factory('Admin', function($http) {
     goOffline:function(data){
       return $http({
         method: 'put',
-        url: '/api/v2/barber/goOffline',
+        url: '/api/v2/admin/barber/goOffline',
         headers: {
           'user_id': data.barber_id
         }

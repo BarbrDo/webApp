@@ -35,6 +35,8 @@ module.exports = function(app, express) {
     app.put('/api/v2/verifybarber/:barber_id', barberController.verifybarber);
     app.get('/api/v2/allbarbers', barberController.availableBarber);
     app.post('/api/v2/allbarbers/new', barberController.availableBarbernew);
+    app.post('/api/v2/admin/barber/goOnline', barberController.goOnline); // barber go onlint
+    app.put('/api/v2/admin/barber/goOffline', barberController.goOffline); // barber go offline
 
     //Updation Of Shop
     app.put('/api/v2/deleteshop/:shop_id', shopController.deleteshop);

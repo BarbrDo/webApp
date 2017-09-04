@@ -106,7 +106,7 @@ exports.checkSubscription = function(req, res, next) {
     }
   }]).exec(function(err, data) {
     console.log(data);
-    console.log(data[0].subscribe.end_date)
+    console.log(data[0].subscribe)
     let date = new Date();
     let currentDate = moment(date, "YYYY-MM-DD").format("YYYY-MM-DD")
     var futureEnddate = moment(data[0].subscribe.end_date).format("YYYY-MM-DD");
@@ -299,7 +299,8 @@ exports.signupPost = function(req, res, next) {
       err: errors
     });
   }
-  console.log("checing live ************************");
+  console.log("checing live ************************",req.body);
+
   let saveData = req.body;
   saveData.is_active = true;
   saveData.is_verified = true;

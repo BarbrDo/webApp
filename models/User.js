@@ -124,6 +124,14 @@ let userSchema = new mongoose.Schema({
         default: Date.now()
     },
     last_login: Date,
+    is_online: {
+        type: Boolean,
+        default:false
+    },
+    is_available: {
+        type: Boolean,
+        default:false
+    },
     is_deleted: {
         type: Boolean,
         default: false
@@ -140,14 +148,7 @@ let userSchema = new mongoose.Schema({
         type: String,
         default: "Your account is not verified yet."
     },
-    is_online: {
-        type: Boolean,
-        default:false
-    },
-    is_available: {
-        type: Boolean,
-        default:false
-    },
+    
     subscribe: [
         {
             tranaction_response:[],

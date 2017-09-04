@@ -651,10 +651,10 @@ exports.barberdetail = function(req, res) {
       "_id": id
     }
   }, {
-    $unwind: "$subscribe"
+    $unwind: "$subscription"
   }, {
     $sort: {
-      "subscribe.created_date": -1
+      "subscription.created_date": -1
     }
   },{$project: {
       _id: "$_id",
@@ -675,7 +675,7 @@ exports.barberdetail = function(req, res) {
       name: "$shopdetails.name",
       shop: "$shopdetails",
       gallery: "$gallery",
-      subscribe:"$subscribe"
+      subscription:"$subscription"
     }
   }]).exec(function(err, result) {
     if (err) {
@@ -738,7 +738,7 @@ exports.availableBarbernew = function(req, res) {
   query.user_type = "barber"
   var searchStr = ""
   if (req.body.search) {
-    searchStr = req.query.search;
+    searchStr = req.body.search;
   }
   var sortkey = null;
   for (key in req.body.sort) {
@@ -771,7 +771,7 @@ exports.availableBarbernew = function(req, res) {
       }
     }]
   }
-  console.log("sortquery",sortquery);
+  console.log("sortquery",sortquery,query);
   console.log(query);
   user.aggregate([{
     $project: {
@@ -831,6 +831,9 @@ exports.availableBarbernew = function(req, res) {
       }, {
         "$limit": count
       }]).exec(function(err, result) {
+
+        console.log("result are");
+
         if (err) {
           res.status(400).send({
             "msg": constantObj.messages.userStatusUpdateFailure,

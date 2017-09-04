@@ -359,7 +359,8 @@ exports.signupPost = function(req, res, next) {
             saveData.subscription = [{
               plan_name: data.name,
               start_date: date,
-              end_date: moment(date, "YYYY-MM-DD").add(data.duration, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z',              price: 0
+              end_date: moment(date, "YYYY-MM-DD").add(data.duration, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z',
+              price: 0
             }]
             done(err, saveData)
           }
@@ -369,28 +370,7 @@ exports.signupPost = function(req, res, next) {
       }
     },
     function(saveData, done) {
-      console.log("data saved in signup",saveData);
-    let saveinfo = {
-      first_name: 'sdf',
-      last_name: 'shasdfdsfrma',
-      email: 'sudsfsss@gmail.com',
-      mobile_number: '7696516981',
-      password: '123456',
-      user_type: 'barber',
-      referral_code: 'f1eo3y',
-      license_number: '12ss56adfsdf',
-      is_active: true,
-      is_verified: true,
-      is_online: false,
-      is_available: false,
-      latLong: ['76.7179', '30.7046'],
-      subscription: [{
-        plan_name: 'Free Trial',
-        start_date: '2017-09-04T09:11:11.488Z',
-        end_date: '2017-10-04T14:41:11.488Z',
-        price: 0
-      }]
-    }
+     console.log("data saved in signup",saveinfo);
       User(saveinfo).save(saveinfo,function(err, data) {
         if (err) {
           return res.status(400).send({
@@ -398,6 +378,8 @@ exports.signupPost = function(req, res, next) {
             "err": err
           })
         } else {
+          console.log("saveedonline data",data);
+          return false
           let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
             accountActivateMailFunction(req, res, data, resetUrl)
         }
@@ -497,12 +479,12 @@ exports.updateSubscribeDate = function(req, res, next) {
     "is_active": req.body.is_active,
     "is_verified": req.body.is_verified,
     "is_deleted": req.body.is_deleted,
-    "subscribe.$.end_date": req.body.endDate
+    "subscription.$.end_date": req.body.endDate
   }
   console.log("updateData",updateData);
   User.update({
     "_id": req.body._id,
-    "subscribe._id": req.body.subscribe._id
+    "subscription._id": req.body.subscription._id
   }, {
     $set: updateData
   }, function(err, data) {

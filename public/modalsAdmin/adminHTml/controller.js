@@ -936,7 +936,8 @@ app_admin.controller("AdminCtrl", [
       Admin.barberDetail($stateParams.id).then(function(response) {
         $scope.loaderStart = false;
         $scope.barberdetail = response.data.data[0];
-        $scope.barberdetail.endDate = new Date(response.data.data[0].subscribe.end_date);
+        console.log(response.data.data[0]);
+        $scope.barberdetail.endDate = new Date(response.data.data[0].subscription.end_date);
         $scope.showShops = [];
         Admin.getAllShops().then(function(response) {
           console.log("all shops", response.data.data);
@@ -953,7 +954,8 @@ app_admin.controller("AdminCtrl", [
         })
       }).catch(function(result) {
         $scope.loaderStart = false;
-        $scope.messages = result.data.msg
+        console.log("issue is",result);
+        $scope.messages = result
       })
     }
 

@@ -169,9 +169,10 @@ let userSchema = new mongoose.Schema({
     subscription_device_type:{
         type:String,
     },
+    subscription_transaction_response:[],
     subscription: [
         {
-            tranaction_response:[],
+            transaction_response:[],
             plan_name:{
                 type:String
             },

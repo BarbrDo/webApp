@@ -357,6 +357,7 @@ exports.signupPost = function(req, res, next) {
             saveData.subscription_pay_id = data._id;
             saveData.subscription_plan_name = data.name;
             saveData.subscription_device_type = req.headers.device_type;
+            saveData.subscription_transaction_response = [];
             saveData.subscription = [{
               plan_name: data.name,
               start_date: date,
@@ -1401,7 +1402,8 @@ exports.subscribe = function(req, res) {
                 $set: {
                   subscription_start_date: updateData.start_date,
                   subscription_end_date: updateData.end_date,
-                  subscription_device_type:req.headers.device_type
+                  subscription_device_type:req.headers.device_type,
+                  subscription_transaction_response:[req.body.tranaction_response]
                 }
             }).exec(function(err, updateInfo) {
               if (err) {

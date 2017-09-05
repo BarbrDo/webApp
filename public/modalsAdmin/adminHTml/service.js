@@ -431,7 +431,13 @@ angular.module('barbrdo').factory('Admin', function($http) {
       return $http.get('/api/v2/allAdmin', data);
     },
     addadmin: function(data) {
-        return $http.post('/api/v2/signupadmin', data);
+        return $http({
+        url: "/api/v2/signupadmin",
+        method: 'POST',
+        data: data,
+        headers: { 'Content-Type': undefined},
+        transformRequest: angular.identity
+      },data);
     },
     getAdminInfo: function(data) {
         return $http.post('/api/v2/getAdminInfo', data);

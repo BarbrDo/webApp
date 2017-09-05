@@ -13,7 +13,8 @@ var app_admin = angular.module('barbrdo', [
   'ngStorage',
   'angularjs-dropdown-multiselect',
   'ngLodash',
-  'ngTable'
+  'ngTable',
+  'ngFileUpload'
 ]);
 
 app_admin.config([

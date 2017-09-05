@@ -33,6 +33,8 @@ module.exports = function(app, express) {
         let shopController = require('./../controllers/shop');
         let adminController = require('./../controllers/admin')
 
+        app.post('/api/v2/signupadmin',upload.any(), adminController.signupPost); //Signup
+
         //Users
         app.post('/api/v2/activate', userController.activate) //Account activate
         app.post('/api/v2/signup', userController.signupPost); //Signup

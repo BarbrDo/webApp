@@ -76,6 +76,10 @@ exports.signupPost = function(req, res, next) {
 		});
 	}
 	let saveData = req.body;
+	console.log(req.files);
+	if(req.files.length>0){
+		saveData.picture = req.files[0].filename
+	}
 	Admin.findOne({
 		email: req.body.email
 	}, function(err, user) {

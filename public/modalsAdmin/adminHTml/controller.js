@@ -21,6 +21,14 @@ app_admin.controller("AdminCtrl", [
     if ($localStorage.loggedIn == true) {
       $rootScope.LoginUser = true;
       $rootScope.loggedInUserDetail = $localStorage.loginInfo;
+      if($localStorage.loginInfo.picture){
+        $rootScope.imageDisplay = $localStorage.imgPath+$localStorage.loginInfo.picture
+      }
+      else{
+        $rootScope.imageDisplay = "http://www.psdgraphics.com/file/user-icon.jpg"
+      }
+      
+      console.log($rootScope.imageDisplay);
     } else {
       $rootScope.LoginUser = false;
     }
@@ -37,8 +45,9 @@ app_admin.controller("AdminCtrl", [
       "2012",
       "2013",
       "2014",
-      "2017",
-      "2016"
+      "2015",
+      "2016",
+      "2017"
     ];
     $scope.series = ['Barbers', 'Shops', 'Customers'];
     $scope.data = [
@@ -104,6 +113,7 @@ app_admin.controller("AdminCtrl", [
         toastr.success('Welcome Admin');
         console.log(response.data)
         $localStorage.loginInfo = response.data.user
+        $localStorage.imgPath = response.data.imagesPath;
         $localStorage.loggedIn = true;
         $state.go('dashboard')
       }).catch(function(result) {

@@ -10,7 +10,8 @@ app_admin.controller("referCtrl", [
   'toastr',
   '$localStorage',
   'ngTableParams',
-  function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage,ngTableParams ,$uibModal) {
+  '$http',
+  function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage,ngTableParams ,$uibModal,$http) {
     $scope.myobj.currentPage = 1;
 
     if ($localStorage.loggedIn == true) {
@@ -223,7 +224,27 @@ app_admin.controller("referCtrl", [
     // Admin module from here
     $scope.addAdmin = function(){
       console.log($scope.admin);
-      Admin.addadmin($scope.admin).then(function(response){
+      console.log($scope.file);
+      var formdata = new FormData();
+      formdata.append("first_name",$scope.admin.first_name);
+      formdata.append("last_name",$scope.admin.last_name);
+      formdata.append("mobile_number",$scope.admin.mobile_number);
+      formdata.append("password",$scope.admin.password);
+      formdata.append("email",$scope.admin.email);
+      if($scope.file){
+        formdata.append("file",$scope.file);
+      }
+
+      // return $http({
+      //   url: "/api/v2/signupadmin",
+      //   method: 'POST',
+      //   data: formdata,
+      //   headers: { 'Content-Type': undefined},
+      //   transformRequest: angular.identity
+      // });
+
+      // return false;
+      Admin.addadmin(formdata).then(function(response){
         console.log(response);
         toastr.success("Admin created successfully.");
         $state.go('allAdmin');

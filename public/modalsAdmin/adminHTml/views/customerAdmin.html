@@ -52,7 +52,7 @@
             <table id="example1" class="table table-bordered table-striped" ng-table="tableParams" show-filter="isFiltersVisible"> 
                      <tr ng-repeat = "user in $data track by $index">
                         <td data-title="'First Name'" sortable="'first_name'" filter="{name:'text'}">
-                             <a data-toggle="tooltip" title="Edit Shop" ui-sref="edit_shops({_id:user._id})">
+                             <a data-toggle="tooltip" title="Edit Shop" ui-sref="customer_detail({id:user._id})">
                             {{user.first_name}}</a></td>
 
                         <td data-title="'Last Name'" sortable="'last_name'" filter="{name:'text'}">{{user.last_name}}</a></td>

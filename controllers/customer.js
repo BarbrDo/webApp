@@ -753,17 +753,24 @@ exports.deactivecustomer = function(req, res) {
 
 };
 exports.listcustomers = function(req, res) {
-  var page = parseInt(req.query.page) || 1;
-  var count = parseInt(req.query.count) || 10;
+  var page = parseInt(req.body.page) || 1;
+  var count = parseInt(req.body.count) || 10;
   var skipNo = (page - 1) * count;
-  console.log("skip", page)
   var query = {};
   query.user_type = "customer"
   var searchStr = ""
-  if (req.query.search) {
-    searchStr = req.query.search;
+  if (req.body.search) {
+    searchStr = req.body.search;
   }
 
+  var sortkey = null;
+  for (key in req.body.sort) {
+    sortkey = key;
+  }
+  var sortquery = {};
+  if (sortkey) {
+    sortquery[sortkey ? sortkey : '_id'] = req.body.sort ? (req.body.sort[sortkey] == 'desc' ? -1 : 1) : -1;
+  }
 
   if (searchStr) {
     query.$or = [{
@@ -811,7 +818,6 @@ exports.listcustomers = function(req, res) {
     if (err) {
       console.log(err)
     } else {
-
       var length = data.length;
       user.aggregate([{
         $match: query
@@ -831,7 +837,8 @@ exports.listcustomers = function(req, res) {
           latLong: "$latLong",
           picture: "$picture"
         }
-
+      }, {
+        "$sort": sortquery
       }, {
         "$skip": skipNo
       }, {
@@ -1476,7 +1483,7 @@ exports.countappoint = function(req, res) {
   let currentDate = moment().format("YYYY-MM-DD");
   let appointmentStartdate = moment(currentDate, "YYYY-MM-DD").format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
   var appointmentEnddate = moment(currentDate, "YYYY-MM-DD").add(1, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
-  console.log("dates**********",appointmentStartdate, appointmentEnddate);
+  console.log("dates**********", appointmentStartdate, appointmentEnddate);
 
   async.parallel({
     one: function(parallelCb) {
@@ -1541,7 +1548,7 @@ exports.currentAppointment = function(req, res) {
   console.log("req.params", req.params);
   appointment.findOne({
     _id: req.params._id
-  }).populate('barber_id', 'first_name last_name').populate('customer_id', 'first_name last_name').populate('cancel_by_user_id', 'first_name last_name').populate('shop_id','name address city state').exec(function(err, data) {
+  }).populate('barber_id', 'first_name last_name').populate('customer_id', 'first_name last_name').populate('cancel_by_user_id', 'first_name last_name').populate('shop_id', 'name address city state').exec(function(err, data) {
     if (err) {
       res.status(400).send({
         "msg": constantObj.messages.errorRetreivingData,

@@ -28,7 +28,7 @@ module.exports = function(app, express) {
     app.put('/api/v2/activatecust/:cust_id', customerController.activatecustomer);
     app.put('/api/v2/disapprovecust/:cust_id', customerController.disapprovecustomer);
     app.put('/api/v2/verifycust/:cust_id', customerController.verifycustomer);
-    app.get('/api/v2/allcustomers', customerController.listcustomers);
+    app.post('/api/v2/allcustomers', customerController.listcustomers);
     app.post('/api/v2/allappointment', customerController.allappointment);
     app.get('/api/v2/appointment/current/:_id', customerController.currentAppointment);
     app.put('/api/v2/barber/updateSubscription',userController.updateSubscribeDate);
@@ -54,7 +54,7 @@ module.exports = function(app, express) {
     app.put('/api/v2/disapproveshop/:shop_id', shopController.disapproveshop);
     app.put('/api/v2/verifyshop/:shop_id', shopController.verifyshop);
     app.get('/api/v2/allshops', shopController.listshops);
-    // app.post('/api/v2//allshopsnew',shopController.listshopsnew)
+    app.post('/api/v2/allshopsnew',shopController.listshopsnew)
     app.get('/api/v2/shopdetail/:shop_id', shopController.shopdetail);
     app.get('/api/v2/shops', shopController.allshops);
     app.put('/api/v2/shops', shopController.updateShop);

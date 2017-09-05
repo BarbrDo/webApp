@@ -10,14 +10,10 @@ angular.module('barbrdo').factory('Admin', function($http) {
         return $http.post('/api/v2/allbarbers/new', data);
     },
     shopsAll: function(data) {
-        return $http.get('/api/v2/allshops', data);
+        return $http.post('/api/v2/allshopsnew', data);
     },
     customersAll: function(data) {
-      if (data.search) {
-        return $http.get('/api/v2/allcustomers?page=' + data.page + '&count=' + data.count + '&search=' + data.search, data);
-      } else {
-        return $http.get('/api/v2/allcustomers?page=' + data.page + '&count=' + data.count, data);
-      }
+        return $http.post('/api/v2/allcustomers', data);
     },
     shopDetail: function(data) {
       return $http.get('/api/v2/shopownerwithshops/' + data, data);

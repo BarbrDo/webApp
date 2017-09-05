@@ -14,21 +14,20 @@ let shopRequest = require('../models/shop_request');
 exports.updateShop = function(req, res) {
     console.log(req.body);
     let updateData = {
-        name:req.body.name,
-        city:req.body.city,
-        state:req.body.state,
-        zip:req.body.zip,
-        address:req.body.address,
-        formatted_address:req.body.formatted_address
+        name: req.body.name,
+        city: req.body.city,
+        state: req.body.state,
+        zip: req.body.zip,
+        address: req.body.address,
+        formatted_address: req.body.formatted_address
     }
-    if(req.body.latitude && req.body.longitude){
-        updateData.latLong =  [req.body.longitude,req.body.latitude]
-    }
-    else{
+    if (req.body.latitude && req.body.longitude) {
+        updateData.latLong = [req.body.longitude, req.body.latitude]
+    } else {
         updateData.latLong = req.body.latLong;
-    } 
-    console.log(updateData); 
-     shop.update({
+    }
+    console.log(updateData);
+    shop.update({
         _id: req.body._id
     }, updateData, function(err, data) {
         if (err) {
@@ -702,6 +701,114 @@ exports.listshops = function(req, res) {
     })
 };
 
+exports.listshopsnew = function(req, res) {
+    var page = parseInt(req.body.page) || 1;
+    var count = parseInt(req.body.count) || 10;
+    var skipNo = (page - 1) * count;
+    var query = {};
+    var searchStr = ""
+
+    var sortkey = null;
+    for (key in req.body.sort) {
+        sortkey = key;
+    }
+    var sortquery = {};
+    if (sortkey) {
+        sortquery[sortkey ? sortkey : '_id'] = req.body.sort ? (req.body.sort[sortkey] == 'desc' ? -1 : 1) : -1;
+    }
+
+    if (req.body.search) {
+        searchStr = req.body.search;
+    }
+    if (searchStr) {
+        query.$or = [{
+            name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            city: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            state: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            zip: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            address: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            formatted_address: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }]
+    }
+    console.log("query is**********",query);
+    shop.aggregate([{
+        $project: {
+            _id: "$_id",
+            name: "$name",
+            city: "$city",
+            state: "$state",
+            zip: "$zip",
+            address: "$address",
+            formatted_address: "$formatted_address",
+            created_date: "$created_date",
+        }
+    }, {
+        $match: query
+    }]).exec(function(err, data) {
+        if (err) {
+            console.log(err)
+        } else {
+            shop.aggregate([{
+                $project: {
+                    _id: "$_id",
+                    name: "$name",
+                    city: "$city",
+                    state: "$state",
+                    zip: "$zip",
+                    address: "$address",
+                    formatted_address: "$formatted_address",
+                    created_date: "$created_date",
+                }
+            }, {
+                $match: query
+            }, {
+                "$sort": sortquery
+            }, {
+                "$skip": skipNo
+            }, {
+                "$limit": count
+            }]).exec(function(err, result) {
+                var length = data.length;
+                if (err) {
+                    res.status(400).send({
+                        "msg": constantObj.messages.userStatusUpdateFailure,
+                        "err": err
+                    });
+                } else {
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": result,
+                        "count": length
+                    })
+                }
+            })
+        }
+    })
+};
+
 exports.shopdetail = function(req, res) {
     console.log(req.params);
     req.checkParams("shop_id", "user_id cannot be blank").notEmpty();
@@ -844,17 +951,18 @@ exports.shopownerhavingshops = function(req, res) {
     }
     var query = {};
     console.log(req.params);
-    shop.findOne({_id:req.params.user_id},function(err,data){
-        if(err){
+    shop.findOne({
+        _id: req.params.user_id
+    }, function(err, data) {
+        if (err) {
             res.status(400).send({
-                msg:"Error in shop",
-                err:err
+                msg: "Error in shop",
+                err: err
             })
-        }
-        else{
+        } else {
             res.status(200).send({
-                msg:"Success",
-                data:data
+                msg: "Success",
+                data: data
             })
         }
     })
@@ -1218,8 +1326,7 @@ exports.manageChair = function(req, res) {
 }
 
 exports.countshop = function(req, res) {
-    shop.find({
-    }, function(err, barber) {
+    shop.find({}, function(err, barber) {
         res.json(barber.length);
     });
 };
@@ -1904,11 +2011,11 @@ exports.saveShop = function(req, res) {
         });
     }
     let saveData = {
-        name:req.body.name,
-        address:req.body.address,
-        city:req.body.city,
-        state:req.body.state,
-        formatted_address:req.body.formatted_address
+        name: req.body.name,
+        address: req.body.address,
+        city: req.body.city,
+        state: req.body.state,
+        formatted_address: req.body.formatted_address
     };
     saveData.zip = parseInt(req.body.zip);
     saveData.latLong = [parseFloat(req.body.longitude).toFixed(2), parseFloat(req.body.latitude).toFixed(2)];

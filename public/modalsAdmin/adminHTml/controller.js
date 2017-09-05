@@ -284,22 +284,32 @@ app_admin.controller("AdminCtrl", [
 
     $scope.custpageChanged = function() {
       $scope.loaderStart = true;
-      var passingObj = {
-        page: $scope.myobj.currentPage,
-        count: 10
-      }
-      if ($scope.myobj.search) {
-        passingObj.search = $scope.myobj.search
-      }
-      Admin.customersAll(passingObj).then(function(response) {
-        $scope.loaderStart = false;
-        $scope.myobj.totalItems = response.data.count / 3;
-        $rootScope.customers = response.data.data;
-      }).catch(function(result) {
-        $scope.loaderStart = false;
-        $scope.messages = result.data.msg
+      var passingObj = {}
+      passingObj.search = $scope.myobj.search
+      $scope.tableParams = new ngTableParams({
+        page: 1,
+        count: 10,
+        sorting: {
+          created_date: "desc"
+        }
+      }, {
+        counts: [],
+        getData: function($defer, params) {
+          passingObj.page = params.page();
+          passingObj.count = params.count();
+          passingObj.sort = params.sorting();
+          $scope.loaderStart = true;
+          Admin.customersAll(passingObj).then(function(response) {
+            $scope.loaderStart = false;
+            params.total(response.data.count);
+            $scope.data = response.data.data;
+            $defer.resolve($scope.data);
+          }).catch(function(result) {
+            $scope.loaderStart = false;
+            $scope.messages = result.data.msg
+          })
+        }
       })
-
     };
 
     var obj = {

@@ -104,7 +104,7 @@ exports.checkSubscription = function(req, res, next) {
     console.log("both dates are", currentDate, futureEnddate);
     if (currentDate > futureEnddate) {
       User.update({
-        _id: data[0]._id
+        _id: data._id
       }, {
         $set: {
           "device_type": req.headers.device_type,
@@ -343,8 +343,6 @@ exports.signupPost = function(req, res, next) {
           "apple_id": "free",
           "google_id": "free"
         }, function(err, data) {
-
-
           if (!data) {
             res.status(400).send({
               msg: "Free plan not found in database! Please contact to BarbrDo."

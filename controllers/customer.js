@@ -1,4 +1,4 @@
-let user = require('../models/user');
+let user = require('../models/User');
 let constantObj = require('./../constants.js');
 let notification = require('../models/notification');
 let appointment = require('../models/appointment');

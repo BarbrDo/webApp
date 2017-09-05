@@ -1,7 +1,7 @@
 var nodemailer = require('nodemailer');
 var mg = require('nodemailer-mailgun-transport');
 let constantObj = require('./../constants.js');
-let user = require('../models/user');
+let user = require('../models/User');
 /**
  * GET /contact
  */

@@ -1,5 +1,5 @@
 let shop = require('../models/shop');
-let user = require('../models/user');
+let user = require('../models/User');
 let constantObj = require('./../constants.js');
 let appointment = require('../models/appointment');
 let mongoose = require('mongoose');

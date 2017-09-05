@@ -1,4 +1,4 @@
-let user = require('../models/user');
+let user = require('../models/User');
 let shopBarber = require('../models/shop_barber');
 let service = require('../models/service');
 let constantObj = require('./../constants.js');

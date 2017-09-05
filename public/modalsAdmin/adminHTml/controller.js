@@ -968,7 +968,7 @@ app_admin.controller("AdminCtrl", [
         $scope.barberdetail = response.data.data[0];
         $scope.barberdetail.created_date = response.data.data[0].created_date;
         console.log(response.data.data[0]);
-        $scope.barberdetail.endDate = new Date(response.data.data[0].subscription.end_date);
+        $scope.barberdetail.endDate = new Date(response.data.data[0].subscription_end_date);
         $scope.showShops = [];
         Admin.getAllShops().then(function(response) {
           console.log("all shops", response.data.data);

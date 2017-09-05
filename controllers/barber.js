@@ -697,7 +697,8 @@ exports.barberdetail = function(req, res) {
       name: "$shopdetails.name",
       shop: "$shopdetails",
       gallery: "$gallery",
-      subscription:"$subscription"
+      subscription:"$subscription",
+      subscription_end_date:"$subscription_end_date"
     }
   }]).exec(function(err, result) {
     if (err) {

@@ -476,12 +476,11 @@ exports.updateSubscribeDate = function(req, res, next) {
     "is_active": req.body.is_active,
     "is_verified": req.body.is_verified,
     "is_deleted": req.body.is_deleted,
-    "subscription.$.end_date": req.body.endDate
+    "subscription_end_date": req.body.endDate
   }
   console.log("updateData", updateData);
   User.update({
-    "_id": req.body._id,
-    "subscription._id": req.body.subscription._id
+    "_id": req.body._id
   }, {
     $set: updateData
   }, function(err, data) {

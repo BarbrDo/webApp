@@ -20,6 +20,7 @@ app_admin.controller("AdminCtrl", [
     $scope.fieldDisabled = false;
     if ($localStorage.loggedIn == true) {
       $rootScope.LoginUser = true;
+      $rootScope.loggedInUserDetail = $localStorage.loginInfo;
     } else {
       $rootScope.LoginUser = false;
     }

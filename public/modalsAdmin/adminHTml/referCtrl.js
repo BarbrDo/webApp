@@ -12,6 +12,15 @@ app_admin.controller("referCtrl", [
   'ngTableParams',
   function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage,ngTableParams ,$uibModal) {
     $scope.myobj.currentPage = 1;
+
+    if ($localStorage.loggedIn == true) {
+      $rootScope.LoginUser = true;
+      $rootScope.loggedInUserDetail = $localStorage.loginInfo;
+    } else {
+      $rootScope.LoginUser = false;
+    }
+
+
     $scope.user = {};
     $scope.admin = {};
     $scope.myadmin = {};
@@ -217,6 +226,7 @@ app_admin.controller("referCtrl", [
       Admin.addadmin($scope.admin).then(function(response){
         console.log(response);
         toastr.success("Admin created successfully.");
+        $state.go('allAdmin');
       }).catch(function(result){
         console.log(result);
         toastr.error(result.data.err[0].msg);
@@ -232,6 +242,8 @@ app_admin.controller("referCtrl", [
     $scope.updateAdminInfo = function(){
       Admin.updateAdminInfo($scope.admin).then(function(response){
         toastr.success("Admin updated successfully.");
+        $state.go('allAdmin');
+        $localStorage.loginInfo = $scope.admin;
       }).catch(function(result){
         toastr.error("Error in updating admin fields.");
       })
@@ -240,6 +252,7 @@ app_admin.controller("referCtrl", [
       $scope.myadmin._id = $scope.admin._id;
       Admin.updatePassword($scope.myadmin).then(function(response){
         console.log(response);
+        $state.go('allAdmin');
       })
     }
     $scope.allAdmin = function(){

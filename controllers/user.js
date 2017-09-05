@@ -1,6 +1,6 @@
 let async = require('async');
 let crypto = require('crypto');
-let User = require('../models/user');
+let User = require('../models/User');
 let nodemailer = require('nodemailer');
 let geocoder = require('geocoder');
 let jwt = require('jsonwebtoken');

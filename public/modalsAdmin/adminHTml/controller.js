@@ -163,7 +163,7 @@ app_admin.controller("AdminCtrl", [
         page: 1,
         count: 10,
         sorting: {
-          created_date: "desc"
+          appointment_date: "desc"
         }
       }, {
         counts: [],

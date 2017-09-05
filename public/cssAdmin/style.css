@@ -1098,3 +1098,6 @@ header {
     top: 0;
     bottom: 0;
 }
+.ng-table th.sortable.sort-asc, .ng-table th.sortable.sort-desc{
+    color:#000;
+}

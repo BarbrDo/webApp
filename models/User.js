@@ -166,6 +166,9 @@ let userSchema = new mongoose.Schema({
          ref: 'plans',
          required:true
     },
+    subscription_device_type:{
+        type:String,
+    },
     subscription: [
         {
             tranaction_response:[],
@@ -190,6 +193,9 @@ let userSchema = new mongoose.Schema({
             created_date:{
                 type:Date,
                 default:Date.now()
+            },
+            device_type:{
+                type:String
             }
         }
     ]

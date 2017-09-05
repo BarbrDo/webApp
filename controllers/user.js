@@ -356,11 +356,13 @@ exports.signupPost = function(req, res, next) {
             saveData.subscription_price = data.price;
             saveData.subscription_pay_id = data._id;
             saveData.subscription_plan_name = data.name;
+            saveData.subscription_device_type = req.headers.device_type;
             saveData.subscription = [{
               plan_name: data.name,
               start_date: date,
               end_date: moment(date, "YYYY-MM-DD").add(data.duration, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z',
               price: data.price,
+              device_type:req.headers.device_type,
               pay_id:data._id
             }]
             done(err, saveData)
@@ -1388,6 +1390,7 @@ exports.subscribe = function(req, res) {
             updateData.end_date = moment(updateData.start_date, "YYYY-MM-DD").add(planResult.duration, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z';
             updateData.pay_id = req.body.tranaction_response[0].productId;
             updateData.tranaction_response = req.body.tranaction_response;
+            updateData.device_type = req.headers.device_type;
             console.log(updateData);
             User.update({
               _id: req.headers.user_id
@@ -1397,7 +1400,8 @@ exports.subscribe = function(req, res) {
               },
                 $set: {
                   subscription_start_date: updateData.start_date,
-                  subscription_end_date: updateData.end_date
+                  subscription_end_date: updateData.end_date,
+                  subscription_device_type:req.headers.device_type
                 }
             }).exec(function(err, updateInfo) {
               if (err) {

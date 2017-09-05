@@ -83,7 +83,7 @@ exports.checkSubscription = function(req, res, next) {
   req.checkHeaders("device_type", "Device type is required.").notEmpty();
   req.checkHeaders('device_longitude', 'Device longitude cannot be blank.').notEmpty();
   req.checkHeaders("device_latitude", 'services cannot be blank.').notEmpty();
-  req.checkHeaders("user_id",'User Id is required.').notEmpty();
+  req.checkHeaders("user_id", 'User Id is required.').notEmpty();
   let errors = req.validationErrors();
   console.log("error", errors);
   console.log("headers", req.headers);
@@ -94,22 +94,13 @@ exports.checkSubscription = function(req, res, next) {
     });
   }
 
-  User.aggregate([{
-    $match: {
+  User.findOne({
       "_id": mongoose.Types.ObjectId(req.headers.user_id)
-    }
-  }, {
-    $unwind: "$subscription"
-  }, {
-    $sort: {
-      "subscription.created_date": -1
-    }
-  }]).exec(function(err, data) {
+    }).exec(function(err, data) {
     console.log(data);
-    console.log(data[0].subscription)
     let date = new Date();
     let currentDate = moment(date, "YYYY-MM-DD").format("YYYY-MM-DD")
-    var futureEnddate = moment(data[0].subscription.end_date).format("YYYY-MM-DD");
+    var futureEnddate = moment(data.subscription_end_date).format("YYYY-MM-DD");
     console.log("both dates are", currentDate, futureEnddate);
     if (currentDate > futureEnddate) {
       User.update({
@@ -301,7 +292,7 @@ exports.signupPost = function(req, res, next) {
       err: errors
     });
   }
-  console.log("checing live ************************",req.body);
+  console.log("checing live ************************", req.body);
 
   let saveData = req.body;
   saveData.is_active = true;
@@ -358,30 +349,36 @@ exports.signupPost = function(req, res, next) {
             })
           } else {
             let date = new Date();
+            saveData.subscription_start_date = date
+            saveData.subscription_end_date = moment(date, "YYYY-MM-DD").add(data.duration, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z'
+            saveData.subscription_price = data.price;
+            saveData.subscription_pay_id = data._id;
+            saveData.subscription_plan_name = data.name;
             saveData.subscription = [{
               plan_name: data.name,
               start_date: date,
               end_date: moment(date, "YYYY-MM-DD").add(data.duration, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z',
-              price: 0
+              price: data.price,
+              pay_id:data._id
             }]
             done(err, saveData)
           }
         })
       } else {
-        done(null,saveData)
+        done(null, saveData)
       }
     },
     function(saveData, done) {
-      User(saveData).save(saveData,function(err, data) {
+      User(saveData).save(saveData, function(err, data) {
         if (err) {
           return res.status(400).send({
             msg: constantObj.messages.errorInSave,
             "err": err
           })
         } else {
-          console.log("saveedonline data",data);
+          console.log("saveedonline data", data);
           let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
-            accountActivateMailFunction(req, res, data, resetUrl)
+          accountActivateMailFunction(req, res, data, resetUrl)
         }
       });
       done()
@@ -481,23 +478,22 @@ exports.updateSubscribeDate = function(req, res, next) {
     "is_deleted": req.body.is_deleted,
     "subscription.$.end_date": req.body.endDate
   }
-  console.log("updateData",updateData);
+  console.log("updateData", updateData);
   User.update({
     "_id": req.body._id,
     "subscription._id": req.body.subscription._id
   }, {
     $set: updateData
   }, function(err, data) {
-    if(err){
+    if (err) {
       res.status(400).send({
-        msg:"error in updating! Please try again later.",
-        err:err
+        msg: "error in updating! Please try again later.",
+        err: err
       })
-    }
-    else{
+    } else {
       res.status(200).send({
-        msg:"Successfully udpate.",
-        data:data
+        msg: "Successfully udpate.",
+        data: data
       })
     }
   })
@@ -1396,7 +1392,11 @@ exports.subscribe = function(req, res) {
             }, {
               $push: {
                 subscription: updateData
-              }
+              },
+                $set: {
+                  subscription_start_date: updateData.start_date,
+                  subscription_end_date: updateData.end_date
+                }
             }).exec(function(err, updateInfo) {
               if (err) {
                 return res.status(400).send({
@@ -1404,7 +1404,7 @@ exports.subscribe = function(req, res) {
                   "err": err
                 });
               } else {
-                console.log("updateInfo in subscription",updateInfo);
+                console.log("updateInfo in subscription", updateInfo);
                 User.findOne({
                   _id: req.headers.user_id
                 }).exec(function(err, user) {

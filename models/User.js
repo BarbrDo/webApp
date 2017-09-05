@@ -148,6 +148,22 @@ let userSchema = new mongoose.Schema({
         type: String,
         default: "Your account is not verified yet."
     },
+    subscription_start_date :{
+        type:Date,
+    },
+    subscription_end_date :{
+        type:Date,
+    },
+    subscription_price:{
+        type:Number
+    },
+    subscription_plan_name:{
+        type:String
+    },
+    subscription_pay_id:{
+         type: Schema.Types.ObjectId,
+         ref: 'plans'
+    },
     subscription: [
         {
             tranaction_response:[],
@@ -166,7 +182,8 @@ let userSchema = new mongoose.Schema({
                 type:Number
             },
             pay_id:{
-                type:String,
+                 type: Schema.Types.ObjectId,
+                 ref: 'plans'
             },
             created_date:{
                 type:Date,

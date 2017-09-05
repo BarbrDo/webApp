@@ -152,7 +152,7 @@ exports.getPlans = function(req, res) {
 		});
 	}
 	var device_type = req.headers.device_type.toLowerCase();
-	Plan.find({}, function(err, data) {
+	Plan.find({apple_id:{$ne:"free"}}, function(err, data) {
 		res.status(200).send({
 			msg: constantObj.messages.successRetreivingData,
 			data: data

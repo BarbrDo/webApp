@@ -431,6 +431,21 @@ angular.module('barbrdo').factory('Admin', function($http) {
     },
     sentGiftCard:function(data){
       return $http.post('/api/v2/giftCard', data);
+    },
+    allAdmin:function(data){
+      return $http.get('/api/v2/allAdmin', data);
+    },
+    addadmin: function(data) {
+        return $http.post('/api/v2/signupadmin', data);
+    },
+    getAdminInfo: function(data) {
+        return $http.post('/api/v2/getAdminInfo', data);
+    },
+    updateAdminInfo:function(data){
+      return $http.post('/api/v2/updateAdminInfo', data);
+    },
+    updatePassword:function(data){
+      return $http.post('/api/v2/updatePassword', data);
     }
   };
 });

@@ -559,6 +559,54 @@ app_admin.config(function($stateProvider, $urlRouterProvider) {
     url: '/report',
     controller: "reportCtrl",
     templateUrl: "/modalsAdmin/adminHTml/views/reports.html"
+  }).state('allAdmin', {
+    resolve: {
+      mess: function($localStorage, $q, $state) {
+        var deferred = $q.defer();
+        if ($localStorage.loggedIn != true) {
+          setTimeout(function() {
+            deferred.resolve()
+            $state.go('login');
+          }, 0);
+          return deferred.promise;
+        }
+      }
+    },
+    url: '/admin',
+    controller: "referCtrl",
+    templateUrl: "/modalsAdmin/adminHTml/views/allAdmin.html"
+  }).state('addAdmin', {
+    resolve: {
+      mess: function($localStorage, $q, $state) {
+        var deferred = $q.defer();
+        if ($localStorage.loggedIn != true) {
+          setTimeout(function() {
+            deferred.resolve()
+            $state.go('login');
+          }, 0);
+          return deferred.promise;
+        }
+      }
+    },
+    url: '/addadmin',
+    controller: "referCtrl",
+    templateUrl: "/modalsAdmin/adminHTml/views/addAdmin.html"
+  }).state('edit_admin', {
+    resolve: {
+      mess: function($localStorage, $q, $state) {
+        var deferred = $q.defer();
+        if ($localStorage.loggedIn != true) {
+          setTimeout(function() {
+            deferred.resolve()
+            $state.go('login');
+          }, 0);
+          return deferred.promise;
+        }
+      }
+    },
+    url: '/editadmin',
+    controller: "referCtrl",
+    templateUrl: "/modalsAdmin/adminHTml/views/edit_admin.html"
   }).state('add_services', {
     resolve: {
       mess: function($localStorage, $q, $state) {

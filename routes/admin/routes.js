@@ -13,6 +13,14 @@ module.exports = function(app, express) {
     app.get('/api/v2/countcustomer', customerController.countcustomer);
     app.get('/api/v2/countappoint', customerController.countappoint);
 
+    // admin
+    app.post('/api/v2/signupadmin', adminController.signupPost); //Signup
+    app.post('/api/v2/loginadmin',adminController.login);
+    app.post('/api/v2/getAdminInfo',adminController.getAdminInfo);
+    app.post('/api/v2/updateAdminInfo',adminController.updateAdminInfo);
+    app.post('/api/v2/updatePassword',adminController.updatePassword);
+    app.get('/api/v2/allAdmin',adminController.allAdmin);
+
     //Updation Of Customer
     app.put('/api/v2/deletecustomer/:cust_id', customerController.deletecustomer);
     app.put('/api/v2/undeletecustomer/:cust_id', customerController.undeletecustomer);
@@ -60,7 +68,7 @@ module.exports = function(app, express) {
     app.post('/api/v2/referDetail', barberController.referDetail)
     app.post('/api/v2/giftCard',adminController.giftCard)
 
- app.get('/api/v2/barber/cutingservices', barberController.showServices);
+    app.get('/api/v2/barber/cutingservices', barberController.showServices);
 
     app.get('/api/v2/shopownerwithshops/:user_id', shopController.shopownerhavingshops);
     app.get('/api/v2/barberdetail/:barber_id', barberController.barberdetail); //get Barberdetails

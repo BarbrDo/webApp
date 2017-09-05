@@ -9,9 +9,12 @@ app_admin.controller("referCtrl", [
   '$state',
   'toastr',
   '$localStorage',
-  function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage, $uibModal) {
+  'ngTableParams',
+  function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage,ngTableParams ,$uibModal) {
     $scope.myobj.currentPage = 1;
     $scope.user = {};
+    $scope.admin = {};
+    $scope.myadmin = {};
     $scope.updateButton = false;
     $scope.referObj = {
       currentPage: 1
@@ -205,6 +208,44 @@ app_admin.controller("referCtrl", [
       console.log(obj);
       Admin.sentGiftCard(obj).then(function(response) {
         toastr.success("Mail sent");
+      })
+    }
+
+    // Admin module from here
+    $scope.addAdmin = function(){
+      console.log($scope.admin);
+      Admin.addadmin($scope.admin).then(function(response){
+        console.log(response);
+        toastr.success("Admin created successfully.");
+      }).catch(function(result){
+        console.log(result);
+        toastr.error(result.data.err[0].msg);
+      })
+    }
+    if($state.current.name =='edit_admin'){
+      $scope.admin = {};
+      $rootScope.LoginUserInfo = $localStorage.loginInfo
+      Admin.getAdminInfo({_id:$localStorage.loginInfo._id}).then(function(response){
+        $scope.admin = response.data.data;
+      })
+    }
+    $scope.updateAdminInfo = function(){
+      Admin.updateAdminInfo($scope.admin).then(function(response){
+        toastr.success("Admin updated successfully.");
+      }).catch(function(result){
+        toastr.error("Error in updating admin fields.");
+      })
+    }
+    $scope.updateAdminPassword = function(){
+      $scope.myadmin._id = $scope.admin._id;
+      Admin.updatePassword($scope.myadmin).then(function(response){
+        console.log(response);
+      })
+    }
+    $scope.allAdmin = function(){
+      Admin.allAdmin().then(function(response){
+        console.log(response.data.data)
+        $scope.adminData = response.data.data;
       })
     }
   }

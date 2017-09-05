@@ -76,7 +76,7 @@ exports.signupPost = function(req, res, next) {
 		});
 	}
 	let saveData = req.body;
-	User.findOne({
+	Admin.findOne({
 		email: req.body.email
 	}, function(err, user) {
 		if (user) {
@@ -87,16 +87,17 @@ exports.signupPost = function(req, res, next) {
 				}]
 			});
 		} else {
-			User(saveData).save(function(err, data) {
+			Admin(saveData).save(function(err, data) {
 				if (err) {
 					return res.status(400).send({
 						msg: constantObj.messages.errorInSave,
 						"err": err
 					})
 				} else {
+					console.log(data);
 					res.status(200).send({
 						user: user,
-						token: generateToken(user),
+						token: generateToken(data),
 						"imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
 					});
 				}
@@ -245,4 +246,60 @@ exports.giftCard = function(req, res) {
 			msg: constantObj.messages.emailsend
 		});
 	});
+}
+exports.getAdminInfo = function(req,res){
+	Admin.findOne({_id:req.body._id},function(err,data){
+		res.status(200).send({
+			msg:"Data retireve successfully",
+			data:data
+		})
+	})
+}
+exports.updateAdminInfo = function(req,res){
+	let updateData = {
+		first_name:req.body.first_name,
+		last_name:req.body.last_name,
+		mobile_number:req.body.mobile_number,
+		email:req.body.email
+	}
+	Admin.update({_id:req.body._id},{$set:updateData},function(err,data){
+		if (err) {
+			return res.status(400).send({
+				msg: constantObj.messages.userStatusUpdateFailure,
+				"err": err
+			})
+		} else {
+			res.status(200).send({
+				msg: constantObj.messages.userStatusUpdateSuccess,
+				data: data
+			});
+		}
+	})
+}
+exports.updatePassword = function(req, res) {
+	if ('password' in req.body) {
+		req.checkHeaders('_id', 'User ID is missing').notEmpty();
+		req.assert('password', 'Password must be at least 6 characters long').len(6);
+		req.assert('confirm', 'Passwords must match').equals(req.body.password);
+	}
+	Admin.findById(req.body._id, function(err, user) {
+		if ('password' in req.body) {
+			user.password = req.body.password;
+		}
+		user.save(function(err) {
+			if ('password' in req.body) {
+				res.send({
+					msg: 'Your password has been changed.',
+					user: user
+				});
+			}
+		})
+	})
+}
+exports.allAdmin = function(req,res){
+	Admin.find({},function(err,data){
+		res.send({
+			data:data
+		})
+	})
 }

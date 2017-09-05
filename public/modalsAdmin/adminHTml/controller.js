@@ -101,6 +101,8 @@ app_admin.controller("AdminCtrl", [
     $scope.loginAdmin = function() {
       Admin.login($scope.loginUser).then(function(response) {
         toastr.success('Welcome Admin');
+        console.log(response.data)
+        $localStorage.loginInfo = response.data.user
         $localStorage.loggedIn = true;
         $state.go('dashboard')
       }).catch(function(result) {
@@ -109,6 +111,7 @@ app_admin.controller("AdminCtrl", [
     }
     $scope.logout = function() {
       $localStorage.loggedIn = false;
+      $localStorage.loginInfo = {};
       $state.go('login');
     }
 

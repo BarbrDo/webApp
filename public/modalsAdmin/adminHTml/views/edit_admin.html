@@ -1,0 +1,113 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item"><a ui-sref="allAdmin">Admin</a></li>
+    <li class="breadcrumb-item active">Edit Admin</li>
+</ol>
+<div class="panel">
+    <div class="panel-heading">
+        Edit Admin
+    </div>
+    <div class="panel-body">
+        <div ng-if="messages" role="alert" class="alert alert-danger">
+            <div>
+                {{messages}}</div>
+        </div>
+        <div class="title">
+            Admin Information
+        </div>
+        <form name="adminForm">
+            <div class="clearfix">
+                <div class="col-sm-4 form-group">
+                    <label>First Name</label>
+                    <input type="text" class="form-control" name="first_name" data-ng-model="admin.first_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                    <span style="color:red;" ng-show="adminForm.first_name.$error.required">First Name cannot left blank</span>
+                    <span style="color:red;" ng-show="adminForm.first_name.$error.pattern">Enter Valid Character</span>
+                    <br>
+                    <span style="color:red " ng-show="adminForm.first_name.$error.maxlength && adminForm.first_name.$dirty">First name maximum length exceeds</span>
+                </div>
+                <div class="col-sm-4 form-group">
+                    <label>Last Name</label>
+                    <input type="text" class="form-control" name="last_name" data-ng-model="admin.last_name" ng-pattern="/^[a-z ,.'-]+$/i" ng-minlength="3" ng-maxlength="20" maxlength="21" required/>
+                    <span style="color:red;" ng-show="adminForm.last_name.$error.required">Last Name cannot left blank</span>
+                    <span style="color:red;" ng-show="adminForm.last_name.$error.pattern">Enter Valid Character</span>
+                    <br>
+                    <span style="color:red " ng-show="adminForm.last_name.$error.maxlength && adminForm.last_name.$dirty">First name maximum length exceeds</span>
+                </div>
+                <div class="col-sm-4 form-group">
+                    <label>Mobile Number</label>
+                    <input type="text" class="form-control" name="mobile_number" id="mobile_number" ng-model="admin.mobile_number" mask="(999) 999-9999" mask-clean='true' mask-restrict='reject' ng-minlength="14" ng-maxlength="14" maxlength="14" required/>
+                    <span style="color:red;" ng-show="adminForm.mobile_number.$error.minlength">Phone have 10-digits minimum.</span>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="col-sm-4 form-group">
+                    <label>Email</label>
+                    <input type="text" class="form-control" name="email" data-ng-model="admin.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" readonly/>
+                    <span style="color:red;" ng-show="adminForm.email.$error.required">Email cannot left blank</span>
+                </div>
+            </div>
+    </div>
+</div>
+<div class="clearfix text-center">
+    <button type="submit" class="btn btn-primary" ng-disabled="adminForm.$invalid" ng-click="updateAdminInfo()">
+        <i class="fa fa-check" aria-hidden="true"></i>
+        <span>Save
+      </button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="reset" class="btn btn-grey" ui-sref="barbersdetail({id:admin._id})">
+            <i class="fa fa-times" aria-hidden="true"></i>
+            <span>Cancel</span>
+        </button>
+</div>
+</form>
+</div>
+
+<div class- "panel-body">
+    <div ng-if="messages" role="alert" class="alert alert-danger">
+        <div>
+            {{messages}}</div>
+    </div>
+    <div class="title">
+        Update Password
+    </div>
+    <form name="updateForm">
+         <div class="clearfix">
+                <div class="col-sm-4 form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" name="password" data-ng-model="myadmin.password" ng-minlength="5" ng-maxlength="20" maxlength="21" required />
+                    <div class="validationError" ng-if="!updateButton" ng-show="updateForm.password.$error.minlength">
+                        <span style="color:red ">password too Short (atleast 5 characters)</span>
+                    </div>
+                    <div class="validationError" ng-if="!updateButton" ng-show="updateForm.password.$error.maxlength && updateForm.password.$dirty">
+                        <span style="color:red ">password maximum length exceeds</span>
+                    </div>
+                </div>
+                <div class="col-sm-4 form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" ng-model="myadmin.confirm" required ng-pattern="myadmin.password"/>
+                    <div class="validationError" ng-messages="updateForm.confirmPassword.$error" ng-show=" updateForm.confirmPassword.$error.pattern && (!updateForm.confirmPassword.$pristine || updateForm.$submitted)" role="alert ">
+                        <span style="color:red " ng-if="!updateButton" ng-message="pattern">password do not match</span>
+                    </div>
+                </div>
+                <div class="col-sm-4 form-group">
+                    <button type="submit" class="btn btn-primary" ng-disabled="updateForm.$invalid" ng-click="updateAdminPassword()" style="margin-top:25px">
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                    <span>Update
+                  </button>
+                </div>
+            </div>
+    </form>
+</div>
+
+
+</div>
+<script type="text/javascript">
+window.addEventListener('keydown', function(e) {
+    if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e.keyCode == 13) {
+        if (e.target.nodeName == 'INPUT' && e.target.type == 'text') {
+            e.preventDefault();
+            return false;
+        }
+    }
+}, true);
+</script>

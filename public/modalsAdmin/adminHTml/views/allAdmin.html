@@ -1,0 +1,46 @@
+<div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
+    <li class="breadcrumb-item active">Admin</li>
+</ol>
+<div class="panel">
+    <div class="panel-heading">
+        All Admin
+    </div>
+    <div class="panel-body" ng-init="allAdmin()">
+        <!-- RAHUL  CODE -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-6" style="margin-left: 300px;">
+                    </div>
+                    <!-- <div>
+                        <span class="glyphicon glyphicon-search" style="color:purple"></span>
+                        <input ng-model="myobj.search" placeholder="Search for..." ng-change="allAdmin()" />
+                    </div> -->
+                </div>
+                 <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="font-size: 13px;">First Name</th>
+                            <th style="font-size: 13px;">Last Name</th>
+                            <th style="font-size: 13px;">E-mail</th>
+                            <th style="font-size: 13px;">Mobile</th>
+                            <th style="font-size: 13px;" width="20%">Member Since</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="barber in adminData">
+                            <td>{{barber.first_name}}</td> 
+                            <td>{{barber.last_name}}</td>
+                            <td>{{barber.email}}</td>
+                            <td>{{barber.mobile_number}}</td>
+                            <td>{{barber.created_date | date:dd/mm/yyyy}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1403,7 +1403,10 @@ exports.subscribe = function(req, res) {
                   subscription_start_date: updateData.start_date,
                   subscription_end_date: updateData.end_date,
                   subscription_device_type:req.headers.device_type,
-                  subscription_transaction_response:req.body.tranaction_response
+                  subscription_price:planResult.price,
+                  subscription_transaction_response:req.body.tranaction_response,
+                  subscription_plan_name:planResult.name,
+                  subscription_pay_id:planResult._id
                 }
             }).exec(function(err, updateInfo) {
               if (err) {

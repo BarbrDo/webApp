@@ -158,11 +158,13 @@ let userSchema = new mongoose.Schema({
         type:Number
     },
     subscription_plan_name:{
-        type:String
+        type:String,
+        required:true
     },
     subscription_pay_id:{
          type: Schema.Types.ObjectId,
-         ref: 'plans'
+         ref: 'plans',
+         required:true
     },
     subscription: [
         {
@@ -191,7 +193,7 @@ let userSchema = new mongoose.Schema({
             }
         }
     ]
-});
+},{timeStamp: true});
 
 userSchema.pre('save', function (next) {
     let user = this;

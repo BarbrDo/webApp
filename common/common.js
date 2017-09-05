@@ -1,4 +1,4 @@
-let userObj = require('./../models/user.js');
+let userObj = require('./../models/User.js');
 let FCM = require('fcm-node');
 let apn = require("apn");
 let path = require('path');

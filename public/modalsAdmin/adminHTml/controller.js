@@ -151,6 +151,11 @@ app_admin.controller("AdminCtrl", [
     }
     $scope.appointmentObj = {};
     $scope.custAppoint = function() {
+
+      Admin.appointmentcount().then(function(response) {
+        $rootScope.totalappointment = response.data.data;
+      });
+
       $scope.loaderStart = true;
       var passingObj = {}
       passingObj.search = $scope.appointmentObj.search;

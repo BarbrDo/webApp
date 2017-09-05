@@ -4,9 +4,17 @@
     <li class="breadcrumb-item active">Customer Appointments</li>
 </ol>
 <div class="panel" ng-init="custAppoint()">
+    <div class="panel-body">
+        <ol class="breadcrumb">
+        <li class="breadcrumb-item">Total Completed : {{totalappointment.totalCompleted}}</li>
+        <li class="breadcrumb-item">Total Cancel : {{totalappointment.totalCancel}}</li>
+        <li class="breadcrumb-item">Total Decline : {{totalappointment.totalDecline}}</li>
+    </ol>
+    </div>
     <div class="panel-heading">
         All Customers Appointments
     </div>
+    
     <div class="panel-body">
         <br>
         <!-- Page Content -->
@@ -20,41 +28,6 @@
                         <input ng-model="appointmentObj.search" placeholder="Search for..." ng-change="custAppoint()" />
                     </div>
                 </div>
-                <!-- <table class="table">
-                    <thead>
-                        <tr>
-                            <th style="font-size: 15px;"><a ng-click="Sort('customer_name')" class="name" style="color: #ffffff;">Customer<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-                            <th style="font-size: 15px;"><a ng-click="Sort('barber_name')" class="name" style="color: #ffffff;">Barber<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-                            <th style="font-size: 15px;"><a ng-click="Sort('shop_name')" class="name" style="color: #ffffff;">Shop<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-                            <th style="font-size: 15px;"><a ng-click="Sort('appointment_status')" class="name" style="color: #ffffff;">Appointment Status<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-                            <th style="font-size: 15px;"><a ng-click="Sort('appointment_date')" class="name" style="color: #ffffff;">Appointment Date<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px; "></span></a></th>
-                            <th style="font-size: 15px;">View Detail</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr data-ng-repeat="appoint in allAppointments | orderBy:sort:reverse | filter:query">
-                            <td>
-                                {{appoint.customer_first_name}} {{appoint.customer_last_name}}
-                            </td>
-                            <td>
-                                {{appoint.barber_first_name}} {{appoint.barber_last_name}}
-                            </td>
-                            <td>
-                                {{appoint.shop_name}}
-                            </td>
-                            <td>
-                                {{appoint.appointment_status}}
-                            </td>
-                            <td>
-                                {{appoint.appointment_date | date : dd/mm/yyyy}}
-                            </td>
-                            <td>
-                                <a type="submit" ui-sref="detailed_appointment({_id:appoint._id})" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table> -->
-
                 <table id="example1" class="table table-bordered table-striped" ng-table="tableParams" show-filter="isFiltersVisible">
                     <tr ng-repeat = "user in $data track by $index">
                         <td data-title="'Customer'" sortable="'first_name'" filter="{name:'text'}">
@@ -70,6 +43,9 @@
                         </td>
                         <td data-title="'Appointment Date'" sortable="'appointment_date'" filter="{name:'text'}">
                            {{user.appointment_date | date : dd/mm/yyyy}}
+                        </td>
+                        <td data-title="'Total Cost'">
+                           {{user.totalPrice}}
                         </td>
                         <td data-title="'View Detail'">
                              <a type="submit" ui-sref="detailed_appointment({_id:user._id})" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a>

@@ -694,7 +694,7 @@ exports.customerAppointments = function(req, res) {
       }
     }).populate('barber_id', 'first_name last_name ratings picture created_date')
     .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong is_active is_verified is_deleted ratings')
-    .populate('shop_id', 'name address city state gallery latLong created_date user_id')
+    .populate('shop_id', 'name address zip city state gallery latLong created_date user_id')
     .exec(function(err, result) {
       if (err) {
         return res.status(400).send({
@@ -1544,6 +1544,43 @@ exports.countappoint = function(req, res) {
     })
   });
 }
+
+
+exports.appointmentcount = function(req, res) {
+  async.parallel({
+    one: function(parallelCb) {
+      appointment.find({
+        appointment_status:"completed"
+      }, function(err, result) {
+        parallelCb(null, result)
+      });
+    },
+    two: function(parallelCb) {
+      appointment.find({
+        appointment_status:"cancel"
+      }, function(err, result) {
+        parallelCb(null, result)
+      });
+    },
+    three: function(parallelCb) {
+      appointment.find({
+        appointment_status: "decline",
+      }, function(err, result) {
+        parallelCb(null, result)
+      });
+    }
+  }, function(err, results) {
+    res.status(200).send({
+      msg: constantObj.messages.successRetreivingData,
+      data: {
+        "totalCompleted": results.one.length,
+        "totalCancel": results.two.length,
+        "totalDecline": results.three.length
+      }
+    })
+  });
+}
+
 exports.currentAppointment = function(req, res) {
   console.log("req.params", req.params);
   appointment.findOne({

@@ -12,6 +12,7 @@ module.exports = function(app, express) {
     app.get('/api/v2/countshop', shopController.countshop);
     app.get('/api/v2/countcustomer', customerController.countcustomer);
     app.get('/api/v2/countappoint', customerController.countappoint);
+    app.get('/api/v2/appointmentcount', customerController.appointmentcount);
 
     // admin
     app.post('/api/v2/signupadmin', adminController.signupPost); //Signup

@@ -264,6 +264,9 @@ angular.module('barbrdo').factory('Admin', function($http) {
     countAppointment: function(data) {
       return $http.get('/api/v2/countappoint', data);
     },
+    appointmentcount: function(data) {
+      return $http.get('/api/v2/appointmentcount', data);
+    },
     featuringPlans: function(data) {
       return $http.get('/api/v2/allplan', data);
     },

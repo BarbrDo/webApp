@@ -159,12 +159,10 @@ let userSchema = new mongoose.Schema({
     },
     subscription_plan_name:{
         type:String,
-        required:true
     },
     subscription_pay_id:{
          type: Schema.Types.ObjectId,
          ref: 'plans',
-         required:true
     },
     subscription_device_type:{
         type:String,

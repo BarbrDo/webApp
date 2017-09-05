@@ -354,7 +354,7 @@ exports.signupPost = function(req, res, next) {
             saveData.subscription_start_date = date
             saveData.subscription_end_date = moment(date, "YYYY-MM-DD").add(data.duration, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z'
             saveData.subscription_price = data.price;
-            saveData.subscription_pay_id = data._id;
+            // saveData.subscription_pay_id = data._id;
             saveData.subscription_plan_name = data.name;
             saveData.subscription = [{
               plan_name: data.name,

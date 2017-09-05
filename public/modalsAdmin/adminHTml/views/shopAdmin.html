@@ -21,17 +21,17 @@
                 </div>
                 <table id="example1" class="table table-bordered table-striped" ng-table="tableParams" show-filter="isFiltersVisible"> 
                      <tr ng-repeat = "user in $data track by $index">
-                        <td data-title="'Shop Name'" sortable="'first_name'" filter="{name:'text'}">
+                        <td data-title="'Shop Name'" sortable="'name'" filter="{name:'text'}">
                              <a data-toggle="tooltip" title="Edit Shop" ui-sref="edit_shops({_id:user._id})">
                             {{user.name}}</a></td>
-                        <td data-title="'Address'" sortable="'first_name'" filter="{name:'text'}">
+                        <td data-title="'Address'" sortable="'address'" filter="{name:'text'}">
                            {{user.address}}
                         </td>
-                        <td data-title="'Formatted Address'" sortable="'formatted_address'" filter="{name:'text'}">{{user.formatted_address}}</td>
-                        <td data-title="'City'" sortable="'first_name'" filter="{name:'text'}">{{user.city}}</td>
-                        <td data-title="'State'" sortable="'first_name'" filter="{name:'text'}">{{user.state}}</td>
-                        <td data-title="'Zip'" sortable="'first_name'" filter="{name:'text'}">{{user.zip}}</td>
-                        <td data-title="'Created Date'" sortable="'first_name'" filter="{name:'text'}">{{user.created_date| date:dd/mm/yyyy}}</td>
+                        <!-- <td data-title="'Formatted Address'" sortable="'formatted_address'" filter="{name:'text'}">{{user.formatted_address}}</td> -->
+                        <td data-title="'City'" sortable="'city'" filter="{name:'text'}">{{user.city}}</td>
+                        <td data-title="'State'" sortable="'state'" filter="{name:'text'}">{{user.state}}</td>
+                        <td data-title="'Zip'">{{user.zip}}</td>
+                        <td data-title="'Created Date'" sortable="'created_date'" filter="{name:'text'}">{{user.created_date| date:dd/mm/yyyy}}</td>
                      </tr>
                 </table>
                 <!-- <table class="table">

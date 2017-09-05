@@ -242,7 +242,7 @@ app_admin.controller("referCtrl", [
     $scope.updateAdminInfo = function(){
       Admin.updateAdminInfo($scope.admin).then(function(response){
         toastr.success("Admin updated successfully.");
-        $state.go('allAdmin');
+        $state.go('dashboard');
         $localStorage.loginInfo = $scope.admin;
       }).catch(function(result){
         toastr.error("Error in updating admin fields.");

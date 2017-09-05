@@ -369,6 +369,7 @@ exports.signupPost = function(req, res, next) {
       }
     },
     function(saveData, done) {
+      console.log("******************",saveData);
       User(saveData).save(saveData, function(err, data) {
         if (err) {
           return res.status(400).send({

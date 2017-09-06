@@ -95,31 +95,35 @@ exports.checkSubscription = function(req, res, next) {
   }
 
   User.findOne({
-      "_id": mongoose.Types.ObjectId(req.headers.user_id)
-    }).exec(function(err, data) {
+    "_id": mongoose.Types.ObjectId(req.headers.user_id)
+  }).exec(function(err, data) {
     console.log(data);
-    let date = new Date();
-    let currentDate = moment(date, "YYYY-MM-DD").format("YYYY-MM-DD")
-    var futureEnddate = moment(data.subscription_end_date).format("YYYY-MM-DD");
-    console.log("both dates are", currentDate, futureEnddate);
-    if (currentDate > futureEnddate) {
-      User.update({
-        _id: data._id
-      }, {
-        $set: {
-          "device_type": req.headers.device_type,
-          "device_id": req.headers.device_id,
-          "is_online": false,
-          "is_available": false,
-          "latLong": [req.headers.device_longitude, req.headers.device_latitude],
-          'remark': "Subscription required."
-        }
-      }).exec(function(userErr, userUpdate) {
-        return res.status(402).send({
-          msg: 'Payment required.',
-          user: userUpdate
-        });
-      })
+    if (data) {
+      let date = new Date();
+      let currentDate = moment(date, "YYYY-MM-DD").format("YYYY-MM-DD")
+      var futureEnddate = moment(data.subscription_end_date).format("YYYY-MM-DD");
+      console.log("both dates are", currentDate, futureEnddate);
+      if (currentDate > futureEnddate) {
+        User.update({
+          _id: data._id
+        }, {
+          $set: {
+            "device_type": req.headers.device_type,
+            "device_id": req.headers.device_id,
+            "is_online": false,
+            "is_available": false,
+            "latLong": [req.headers.device_longitude, req.headers.device_latitude],
+            'remark': "Subscription required."
+          }
+        }).exec(function(userErr, userUpdate) {
+          return res.status(402).send({
+            msg: 'Payment required.',
+            user: userUpdate
+          });
+        })
+      } else {
+        next();
+      }
     } else {
       next();
     }
@@ -361,8 +365,8 @@ exports.signupPost = function(req, res, next) {
               start_date: date,
               end_date: moment(date, "YYYY-MM-DD").add(data.duration, 'day').format("YYYY-MM-DD[T]HH:mm:ss.SSS") + 'Z',
               price: data.price,
-              device_type:req.headers.device_type,
-              pay_id:data._id
+              device_type: req.headers.device_type,
+              pay_id: data._id
             }]
             done(err, saveData)
           }
@@ -372,7 +376,7 @@ exports.signupPost = function(req, res, next) {
       }
     },
     function(saveData, done) {
-      console.log("******************",saveData);
+      console.log("******************", saveData);
       User(saveData).save(saveData, function(err, data) {
         if (err) {
           return res.status(400).send({
@@ -1397,15 +1401,15 @@ exports.subscribe = function(req, res) {
               $push: {
                 subscription: updateData
               },
-                $set: {
-                  subscription_start_date: updateData.start_date,
-                  subscription_end_date: updateData.end_date,
-                  subscription_device_type:req.headers.device_type,
-                  subscription_price:planResult.price,
-                  subscription_transaction_response:req.body.tranaction_response,
-                  subscription_plan_name:planResult.name,
-                  subscription_pay_id:planResult._id
-                }
+              $set: {
+                subscription_start_date: updateData.start_date,
+                subscription_end_date: updateData.end_date,
+                subscription_device_type: req.headers.device_type,
+                subscription_price: planResult.price,
+                subscription_transaction_response: req.body.tranaction_response,
+                subscription_plan_name: planResult.name,
+                subscription_pay_id: planResult._id
+              }
             }).exec(function(err, updateInfo) {
               if (err) {
                 return res.status(400).send({

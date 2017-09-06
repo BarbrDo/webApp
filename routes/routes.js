@@ -92,6 +92,7 @@ module.exports = function(app, express) {
        
         app.post('/api/v2/barber/gallery', upload.any(),userController.checkSubscription, barber.uploadBarberGallery);
         app.get('/api/v2/barber/sale/:startDate/:endDate',userController.checkSubscription, barber.financeScreenResult);
+        app.delete('/api/v2/barber/gallery/:image_id',barber.deleteImages); //Delete image from gallery
         // app.get('/api/v1/barbers/:barber_id',userController.ensureAuthenticated,userController.checkLoggedInUser,barber.viewBarberProfile);
 
 

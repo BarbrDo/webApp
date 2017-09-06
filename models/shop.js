@@ -2,6 +2,21 @@ let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let shopSchema = new mongoose.Schema({
+    owner_first_name:{
+        type:String
+    },
+    owner_last_name:{
+        type:String
+    },
+    owner_mobile_number:{
+        type:Number
+    },
+    license_number:{
+        type:String
+    },
+    owner_email:{
+        type:String
+    },
     name: String,
     address: String,
     formatted_address:String,

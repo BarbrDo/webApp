@@ -6,9 +6,10 @@
 <div class="panel" ng-init="custAppoint()">
     <div class="panel-body">
         <ol class="breadcrumb">
-        <li class="breadcrumb-item">Total Completed : {{totalappointment.totalCompleted}}</li>
-        <li class="breadcrumb-item">Total Cancel : {{totalappointment.totalCancel}}</li>
-        <li class="breadcrumb-item">Total Decline : {{totalappointment.totalDecline}}</li>
+        <li class="breadcrumb-item" ng-click="filterAppointment('completed')"><a href="" >Total Completed : {{totalappointment.totalCompleted}}</a></li>
+        <li class="breadcrumb-item" ng-click="filterAppointment('cancel')"><a href="" >Total Cancel : {{totalappointment.totalCancel}}</a></li>
+        <li class="breadcrumb-item" ng-click="filterAppointment('confirm')"><a href="" >Total Confirm : {{totalappointment.totalConfirm}}</a> </li>
+        <li class="breadcrumb-item" ng-click="filterAppointment('')"><a href="" >Reset View </a> </li>
     </ol>
     </div>
     <div class="panel-heading">
@@ -38,6 +39,14 @@
                         <td data-title="'Shop'" sortable="'shop_name'" filter="{name:'text'}">
                             {{user.shop_name}}
                         </td>
+                        <td data-title="'Services'">
+                            <span ng-if="user.services[0].name">
+                                {{user.services[0].name}}  ${{user.services[0].price}}
+                            </span>  
+                            <span ng-if="user.services[1].name">,
+                                 {{user.services[1].name}}  ${{user.services[1].price}}
+                             </span>
+                        </td>
                         <td data-title="'Appointment Status'">
                             {{user.appointment_status}}
                         </td>
@@ -45,7 +54,7 @@
                            {{user.appointment_date | date:'MM/dd/yyyy h:mma'}}
                         </td>
                         <td data-title="'Total Cost'">
-                           {{user.totalPrice}}
+                          ${{user.totalPrice | number:2}}
                         </td>
                         <td data-title="'View Detail'">
                              <a type="submit" ui-sref="detailed_appointment({_id:user._id})" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a>

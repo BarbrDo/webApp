@@ -159,14 +159,20 @@ app_admin.controller("AdminCtrl", [
       return '';
     }
     $scope.appointmentObj = {};
-    $scope.custAppoint = function() {
+    // $rootScope.applyFilter = "";
+    $scope.filterAppointment = function(data){
+      $rootScope.applyFilter = data;
+      $scope.custAppoint();
+    }
 
+    $scope.custAppoint = function() {
       Admin.appointmentcount().then(function(response) {
         $rootScope.totalappointment = response.data.data;
       });
 
       $scope.loaderStart = true;
       var passingObj = {}
+      passingObj.applyFilter = $rootScope.applyFilter;
       passingObj.search = $scope.appointmentObj.search;
       $scope.tableParams = new ngTableParams({
         page: 1,
@@ -1181,6 +1187,7 @@ app_admin.controller("AdminCtrl", [
     $scope.saveShop = function() {
       console.log($scope.user);
       console.log($scope.detail.formatted);
+
       let passObj = $scope.user;
       passObj.formatted_address = $scope.detail.formatted.formatted;
       passObj.address = $scope.user.street_address;

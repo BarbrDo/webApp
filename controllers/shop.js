@@ -13,14 +13,15 @@ let shopRequest = require('../models/shop_request');
 
 exports.updateShop = function(req, res) {
     console.log(req.body);
-    let updateData = {
-        name: req.body.name,
-        city: req.body.city,
-        state: req.body.state,
-        zip: req.body.zip,
-        address: req.body.address,
-        formatted_address: req.body.formatted_address
-    }
+    let updateData = req.body;
+    // let updateData = {
+    //     name: req.body.name,
+    //     city: req.body.city,
+    //     state: req.body.state,
+    //     zip: req.body.zip,
+    //     address: req.body.address,
+    //     formatted_address: req.body.formatted_address
+    // }
     if (req.body.latitude && req.body.longitude) {
         updateData.latLong = [req.body.longitude, req.body.latitude]
     } else {
@@ -746,6 +747,11 @@ exports.listshopsnew = function(req, res) {
                 $regex: searchStr,
                 '$options': 'i'
             }
+        },{
+            license_number: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
         }, {
             formatted_address: {
                 $regex: searchStr,
@@ -764,6 +770,7 @@ exports.listshopsnew = function(req, res) {
             address: "$address",
             formatted_address: "$formatted_address",
             created_date: "$created_date",
+            license_number:"$license_number"
         }
     }, {
         $match: query
@@ -781,6 +788,7 @@ exports.listshopsnew = function(req, res) {
                     address: "$address",
                     formatted_address: "$formatted_address",
                     created_date: "$created_date",
+                    license_number:"$license_number"
                 }
             }, {
                 $match: query
@@ -2095,13 +2103,7 @@ exports.saveShop = function(req, res) {
             err: errors
         });
     }
-    let saveData = {
-        name: req.body.name,
-        address: req.body.address,
-        city: req.body.city,
-        state: req.body.state,
-        formatted_address: req.body.formatted_address
-    };
+    let saveData = req.body;
     saveData.zip = parseInt(req.body.zip);
     saveData.latLong = [parseFloat(req.body.longitude).toFixed(2), parseFloat(req.body.latitude).toFixed(2)];
     console.log(saveData);

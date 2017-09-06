@@ -1053,6 +1053,7 @@ let checkReference = function(objFind) {
           created_date: 1
         }).exec(function(refErr, refResult) {
           console.log("if customer reference ", refResult);
+          if(refResult){
           if (refResult.length > 0) {
             appointment.find({
               customer_id: cus_profile._id,
@@ -1093,6 +1094,10 @@ let checkReference = function(objFind) {
           } else {
             done(null, barber_profile);
           }
+        }
+        else{
+          done(null, barber_profile);
+        }
         })
       },
       function(barber_profile, done) {
@@ -1276,6 +1281,9 @@ exports.allappointment = function(req, res) {
   var searchStr = ""
   console.log("skipNo", skipNo);
   console.log("count", count);
+  if(req.body.applyFilter){
+    query.appointment_status = req.body.applyFilter 
+  }
   if (req.query.search) {
     searchStr = req.query.search;
   }
@@ -1564,7 +1572,7 @@ exports.appointmentcount = function(req, res) {
     },
     three: function(parallelCb) {
       appointment.find({
-        appointment_status: "decline",
+        appointment_status: "confirm",
       }, function(err, result) {
         parallelCb(null, result)
       });
@@ -1575,7 +1583,7 @@ exports.appointmentcount = function(req, res) {
       data: {
         "totalCompleted": results.one.length,
         "totalCancel": results.two.length,
-        "totalDecline": results.three.length
+        "totalConfirm": results.three.length
       }
     })
   });

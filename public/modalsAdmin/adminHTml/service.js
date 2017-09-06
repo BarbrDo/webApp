@@ -443,7 +443,13 @@ angular.module('barbrdo').factory('Admin', function($http) {
         return $http.post('/api/v2/getAdminInfo', data);
     },
     updateAdminInfo:function(data){
-      return $http.post('/api/v2/updateAdminInfo', data);
+       return $http({
+        url: "/api/v2/updateAdminInfo",
+        method: 'POST',
+        data: data,
+        headers: { 'Content-Type': undefined},
+        transformRequest: angular.identity
+      },data);
     },
     updatePassword:function(data){
       return $http.post('/api/v2/updatePassword', data);

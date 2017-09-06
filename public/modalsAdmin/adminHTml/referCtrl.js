@@ -11,7 +11,7 @@ app_admin.controller("referCtrl", [
   '$localStorage',
   'ngTableParams',
   '$http',
-  function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage,ngTableParams ,$uibModal,$http) {
+  function($scope, $rootScope, $location, Admin, $filter, $log, $stateParams, $state, toastr, $localStorage, ngTableParams, $uibModal, $http) {
     $scope.myobj.currentPage = 1;
 
     if ($localStorage.loggedIn == true) {
@@ -54,11 +54,11 @@ app_admin.controller("referCtrl", [
       let obj = {
         referral: $stateParams._id
       }
-      if($scope.data.usertype){
-        obj.invite_as=$scope.data.usertype;
+      if ($scope.data.usertype) {
+        obj.invite_as = $scope.data.usertype;
       }
-      if($scope.data.login){
-        obj.is_refer_code_used=$scope.data.login;
+      if ($scope.data.login) {
+        obj.is_refer_code_used = $scope.data.login;
       }
       console.log(obj)
       Admin.getUserData(obj).then(function(response) {
@@ -209,11 +209,11 @@ app_admin.controller("referCtrl", [
       })
     }
 
-    $scope.sentGiftCard = function(){
+    $scope.sentGiftCard = function() {
       console.log($scope.mailContent);
       let obj = {
-        to:$scope.referInfo[0].referral.email,
-        content:$scope.mailContent
+        to: $scope.referInfo[0].referral.email,
+        content: $scope.mailContent
       }
       console.log(obj);
       Admin.sentGiftCard(obj).then(function(response) {
@@ -222,17 +222,17 @@ app_admin.controller("referCtrl", [
     }
 
     // Admin module from here
-    $scope.addAdmin = function(){
+    $scope.addAdmin = function() {
       console.log($scope.admin);
       console.log($scope.file);
       var formdata = new FormData();
-      formdata.append("first_name",$scope.admin.first_name);
-      formdata.append("last_name",$scope.admin.last_name);
-      formdata.append("mobile_number",$scope.admin.mobile_number);
-      formdata.append("password",$scope.admin.password);
-      formdata.append("email",$scope.admin.email);
-      if($scope.file){
-        formdata.append("file",$scope.file);
+      formdata.append("first_name", $scope.admin.first_name);
+      formdata.append("last_name", $scope.admin.last_name);
+      formdata.append("mobile_number", $scope.admin.mobile_number);
+      formdata.append("password", $scope.admin.password);
+      formdata.append("email", $scope.admin.email);
+      if ($scope.file) {
+        formdata.append("file", $scope.file);
       }
 
       // return $http({
@@ -244,40 +244,59 @@ app_admin.controller("referCtrl", [
       // });
 
       // return false;
-      Admin.addadmin(formdata).then(function(response){
+      Admin.addadmin(formdata).then(function(response) {
         console.log(response);
         toastr.success("Admin created successfully.");
         $state.go('allAdmin');
-      }).catch(function(result){
+      }).catch(function(result) {
         console.log(result);
         toastr.error(result.data.err[0].msg);
       })
     }
-    if($state.current.name =='edit_admin'){
+    if ($state.current.name == 'edit_admin') {
       $scope.admin = {};
       $rootScope.LoginUserInfo = $localStorage.loginInfo
-      Admin.getAdminInfo({_id:$localStorage.loginInfo._id}).then(function(response){
+      Admin.getAdminInfo({
+        _id: $localStorage.loginInfo._id
+      }).then(function(response) {
         $scope.admin = response.data.data;
+        console.log("admin info",response.data.data)
+        $localStorage.loginInfo = response.data.data;
+        $rootScope.imageDisplay = $localStorage.imgPath + response.data.data.picture
+        console.log("response",response.data.data)
       })
     }
-    $scope.updateAdminInfo = function(){
-      Admin.updateAdminInfo($scope.admin).then(function(response){
+    $scope.updateAdminInfo = function() {
+      console.log("===", $scope.admin)
+      console.log("===-----", $scope.file)
+      var formdata = new FormData();
+      formdata.append("first_name", $scope.admin.first_name);
+      formdata.append("last_name", $scope.admin.last_name);
+      formdata.append("mobile_number", $scope.admin.mobile_number);
+      formdata.append("password", $scope.admin.password);
+      formdata.append("email", $scope.admin.email);
+      formdata.append("_id", $scope.admin._id);
+      if ($scope.file) {
+        formdata.append("file", $scope.file);
+      }
+      Admin.updateAdminInfo(formdata).then(function(response) {
         toastr.success("Admin updated successfully.");
         $state.go('dashboard');
-        $localStorage.loginInfo = $scope.admin;
-      }).catch(function(result){
+      }).catch(function(result) {
         toastr.error("Error in updating admin fields.");
       })
     }
-    $scope.updateAdminPassword = function(){
+    $scope.updateAdminPassword = function() {
       $scope.myadmin._id = $scope.admin._id;
-      Admin.updatePassword($scope.myadmin).then(function(response){
+      Admin.updatePassword($scope.myadmin).then(function(response) {
         console.log(response);
         $state.go('allAdmin');
       })
     }
-    $scope.allAdmin = function(){
-      Admin.allAdmin().then(function(response){
+
+
+    $scope.allAdmin = function() {
+      Admin.allAdmin().then(function(response) {
         console.log(response.data.data)
         $scope.adminData = response.data.data;
       })

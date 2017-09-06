@@ -18,7 +18,7 @@ module.exports = function(app, express) {
     
     app.post('/api/v2/loginadmin',adminController.login);
     app.post('/api/v2/getAdminInfo',adminController.getAdminInfo);
-    app.post('/api/v2/updateAdminInfo',adminController.updateAdminInfo);
+    
     app.post('/api/v2/updatePassword',adminController.updatePassword);
     app.get('/api/v2/allAdmin',adminController.allAdmin);
 

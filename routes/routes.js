@@ -34,6 +34,7 @@ module.exports = function(app, express) {
         let adminController = require('./../controllers/admin')
 
         app.post('/api/v2/signupadmin',upload.any(), adminController.signupPost); //Signup
+        app.post('/api/v2/updateAdminInfo',upload.any(),adminController.updateAdminInfo);
 
         //Users
         app.post('/api/v2/activate', userController.activate) //Account activate

@@ -988,8 +988,8 @@ app_admin.controller("AdminCtrl", [
         console.log("oooooo", response);
         $rootScope.images = response.data.data[0].gallery;
         $rootScope.barbernow = response.data.data[0]._id
-        $rootScope.pathimg = "http://52.39.212.226:4062/uploadedFiles/";
-        // $rootScope.pathimg = response.data.imagesPath;
+        // $rootScope.pathimg = "http://52.39.212.226:4062/uploadedFiles/";
+        $rootScope.pathimg = response.data.imagesPath;
         $scope.barberdetail.endDate = new Date(response.data.data[0].subscription_end_date);
         $scope.showShops = [];
         var passingObj = {}

@@ -324,7 +324,12 @@ angular.module('barbrdo').factory('Admin', function($http) {
       });
     },
     getAllShops:function (data) {
-      return $http.get('/api/v2/shops');
+      console.log("data",data)
+       return $http({
+        method: 'POST',
+        url: '/api/v2/shops',
+        data: data
+      });
     },
     addShopsWithbarber:function (data) {
       return $http({

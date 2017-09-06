@@ -759,7 +759,7 @@ exports.listshopsnew = function(req, res) {
             }
         }]
     }
-    console.log("query is**********",query);
+    console.log("query is**********", query);
     shop.aggregate([{
         $project: {
             _id: "$_id",
@@ -816,6 +816,91 @@ exports.listshopsnew = function(req, res) {
         }
     })
 };
+
+exports.allshopsnew = function(req, res) {
+    console.log("req.body", req.body)
+
+    var page = parseInt(req.body.page) || 1;
+    var count = parseInt(req.body.count) || 10;
+    var skipNo = (page - 1) * count;
+    var query = {};
+    var searchStr = ""
+
+    var sortkey = null;
+    for (key in req.body.sort) {
+        sortkey = key;
+    }
+    var sortquery = {};
+    if (sortkey) {
+        sortquery[sortkey ? sortkey : '_id'] = req.body.sort ? (req.body.sort[sortkey] == 'desc' ? -1 : 1) : -1;
+    }
+
+    if (req.body.search) {
+        searchStr = req.body.search;
+    }
+    if (searchStr) {
+        query.$or = [{
+            name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }]
+    }
+    console.log("query is**********", sortquery);
+    shop.aggregate([{
+        $project: {
+            _id: "$_id",
+            name: "$name",
+            city: "$city",
+            state: "$state",
+            zip: "$zip",
+            address: "$address",
+            formatted_address: "$formatted_address",
+            created_date: "$created_date",
+        }
+    }, {
+        $match: query
+    }]).exec(function(err, data) {
+        if (err) {
+            console.log(err)
+        } else {
+            shop.aggregate([{
+                $project: {
+                    _id: "$_id",
+                    name: "$name",
+                    city: "$city",
+                    state: "$state",
+                    zip: "$zip",
+                    address: "$address",
+                    formatted_address: "$formatted_address",
+                    created_date: "$created_date",
+                }
+            }, {
+                $match: query
+            }, {
+                "$sort": sortquery
+            }, {
+                "$skip": skipNo
+            }, {
+                "$limit": count
+            }]).exec(function(err, result) {
+                var length = data.length;
+                if (err) {
+                    res.status(400).send({
+                        "msg": constantObj.messages.userStatusUpdateFailure,
+                        "err": err
+                    });
+                } else {
+                    res.status(200).send({
+                        "msg": constantObj.messages.successRetreivingData,
+                        "data": result,
+                        "count": length
+                    })
+                }
+            })
+        }
+    })
+}
 
 exports.shopdetail = function(req, res) {
     console.log(req.params);

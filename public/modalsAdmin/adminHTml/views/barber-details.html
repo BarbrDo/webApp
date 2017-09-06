@@ -4,12 +4,11 @@
     <li class="breadcrumb-item"><a ui-sref="barbers">Barbers</a></li>
     <li class="breadcrumb-item active">View Barber Details</li>
 </ol>
-
-    <ul class="nav nav-tabs">
-        <li class="active"><a ui-sref="barbersdetail({id:barberdetail._id})" style="color: black;font-size: 15px;">View Barber</a></li>
-       <!--  <li><a ui-sref="assoc" style="color: black;font-size: 15px;">Associated Shops-Chairs</a></li>
+<ul class="nav nav-tabs">
+    <li class="active"><a ui-sref="barbersdetail({id:barberdetail._id})" style="color: black;font-size: 15px;">View Barber</a></li>
+    <!--  <li><a ui-sref="assoc" style="color: black;font-size: 15px;">Associated Shops-Chairs</a></li>
         <li><a ui-sref="barber-appointments({id:barberdetail._id})"  style="color: black;font-size: 15px;">Appointments</a></li> -->
-    </ul>
+</ul>
 <br>
 <div class="container" ng-init="barberDetails()">
     <div>
@@ -28,8 +27,8 @@
                             <h4 class="group inner list-group-item-heading" align="center"><b>
                         Associated Shops</b></h4>
                             <span ng-if="!barberdetail.associateShops"><br><br><br>Not Assiciated With Any Shop</span>
-                            <div ng-repeat = "data in barberdetail.associateShops" style="width: 100%;float: left;">
-                                <div style="width:50%;float:left;" class="list-group" >
+                            <div ng-repeat="data in barberdetail.associateShops" style="width: 100%;float: left;">
+                                <div style="width:50%;float:left;" class="list-group">
                                     <a class="list-group-item list-group-item-action">
                                         {{data.name}}
                                     </a>
@@ -39,21 +38,31 @@
                                     <button ng-if="data.is_default==false" title="Make default" ng-click="addDefaultShop(data._id)" style="border: none;background: none;margin: 4px 10px;font-size: 24px;color: #27499E;"><i class="fa fa-check-circle"></i></button>
                                 </div>
                             </div>
-                           <h4 class="group inner list-group-item-heading" align="center"><b>
+                            <h4 class="group inner list-group-item-heading" align="center"><b>
                         Add Shops</b></h4>
+                            <span class="glyphicon glyphicon-search" style="color:purple"></span>
+                            <input ng-model="myobj.search" placeholder="Search for..." ng-change="barberDetails()" style="width: 150px; margin-top: 10px;" />
+                            <br>
                             <div>
                                 <!-- <input type="text" class="form-control" name="first_name" ng-model="searchshop" placeholder="search shops"/><br> -->
-
-                                <div ng-repeat = "data in showShops" style="width: 100%;float: left;">
-                                <div style="width:50%;float:left;" class="list-group" >
-                                    <a class="list-group-item list-group-item-action">
+                                <!--        <div ng-repeat="data in showShops" style="width: 100%;float: left;">
+                                    <div style="width:50%;float:left;" class="list-group">
+                                        <a class="list-group-item list-group-item-action">
                                         {{data.label}}
                                     </a>
-                                </div>
-                                <div style="width:50%;float:right;">
-                                    <button ng-click="addAssociateShop(data.id)" title="Add shop" style="border: none;background: none;margin: 4px 10px;font-size: 24px;color: #359a0d;"><i class="fa fa-plus-circle"></i></button>
-                                </div>
-                            </div>
+                                    </div>
+                                    <div style="width:50%;float:right;">
+                                        <button ng-click="addAssociateShop(data.id)" title="Add shop" style="border: none;background: none;margin: 4px 10px;font-size: 24px;color: #359a0d;"><i class="fa fa-plus-circle"></i></button>
+                                    </div>
+                                </div> -->
+                                <table id="example1" class="table table-bordered table-striped" ng-table="tableParams" show-filter="isFiltersVisible" style="margin-top: 10px;">
+                                    <tr ng-repeat="user in data track by $index">
+                                        <td data-title="'Name'" sortable="'name'">{{user.name}}</td>
+                                        <td data-title="'Add'">
+                                            <button ng-click="addAssociateShop(user._id)" title="Add shop" style="border: none;background: none;margin: 4px 10px;font-size: 24px;color: #359a0d;"><i class="fa fa-plus-circle"></i></button>
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
                         <div class="  col-lg-6">

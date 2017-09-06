@@ -46,6 +46,13 @@
                     <input type="text" class="form-control" name="email" data-ng-model="admin.email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" readonly/>
                     <span style="color:red;" ng-show="adminForm.email.$error.required">Email cannot left blank</span>
                 </div>
+                <div class="col-sm-4 form-group">
+                    <label>Profile Pic</label><br>
+                    <img src="{{imageDisplay}}" alt="Userpic" /><br><br>
+                   <input type="file" ngf-select ng-model="file" name="file" ngf-pattern="'image/*'"
+                    ngf-accept="'image/*'" ngf-max-size="20MB" ngf-min-height="100" 
+                    ngf-resize="{width: 100, height: 100}"/>
+                </div>
             </div>
     </div>
 </div>
@@ -61,7 +68,6 @@
 </div>
 </form>
 </div>
-
 <div class- "panel-body">
     <div ng-if="messages" role="alert" class="alert alert-danger">
         <div>
@@ -71,26 +77,26 @@
         Update Password
     </div>
     <form name="updateForm">
-         <div class="clearfix">
-                <div class="col-sm-4 form-group">
-                    <label>Password</label>
-                    <input type="password" class="form-control" name="password" data-ng-model="myadmin.password" ng-minlength="5" ng-maxlength="20" maxlength="21" required />
-                    <div class="validationError" ng-if="!updateButton" ng-show="updateForm.password.$error.minlength">
-                        <span style="color:red ">password too Short (atleast 5 characters)</span>
-                    </div>
-                    <div class="validationError" ng-if="!updateButton" ng-show="updateForm.password.$error.maxlength && updateForm.password.$dirty">
-                        <span style="color:red ">password maximum length exceeds</span>
-                    </div>
+        <div class="clearfix">
+            <div class="col-sm-4 form-group">
+                <label>Password</label>
+                <input type="password" class="form-control" name="password" data-ng-model="myadmin.password" ng-minlength="5" ng-maxlength="20" maxlength="21" required />
+                <div class="validationError" ng-if="!updateButton" ng-show="updateForm.password.$error.minlength">
+                    <span style="color:red ">password too Short (atleast 5 characters)</span>
                 </div>
-                <div class="col-sm-4 form-group">
-                    <label>Confirm Password</label>
-                    <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" ng-model="myadmin.confirm" required ng-pattern="myadmin.password"/>
-                    <div class="validationError" ng-messages="updateForm.confirmPassword.$error" ng-show=" updateForm.confirmPassword.$error.pattern && (!updateForm.confirmPassword.$pristine || updateForm.$submitted)" role="alert ">
-                        <span style="color:red " ng-if="!updateButton" ng-message="pattern">password do not match</span>
-                    </div>
+                <div class="validationError" ng-if="!updateButton" ng-show="updateForm.password.$error.maxlength && updateForm.password.$dirty">
+                    <span style="color:red ">password maximum length exceeds</span>
                 </div>
-                <div class="col-sm-4 form-group">
-                    <button type="submit" class="btn btn-primary" ng-disabled="updateForm.$invalid" ng-click="updateAdminPassword()" style="margin-top:25px">
+            </div>
+            <div class="col-sm-4 form-group">
+                <label>Confirm Password</label>
+                <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" ng-model="myadmin.confirm" required ng-pattern="myadmin.password" />
+                <div class="validationError" ng-messages="updateForm.confirmPassword.$error" ng-show=" updateForm.confirmPassword.$error.pattern && (!updateForm.confirmPassword.$pristine || updateForm.$submitted)" role="alert ">
+                    <span style="color:red " ng-if="!updateButton" ng-message="pattern">password do not match</span>
+                </div>
+            </div>
+            <div class="col-sm-4 form-group">
+                <button type="submit" class="btn btn-primary" ng-disabled="updateForm.$invalid" ng-click="updateAdminPassword()" style="margin-top:25px">
                     <i class="fa fa-check" aria-hidden="true"></i>
                     <span>Update
                   </button>

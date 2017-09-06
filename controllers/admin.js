@@ -260,12 +260,18 @@ exports.getAdminInfo = function(req,res){
 	})
 }
 exports.updateAdminInfo = function(req,res){
+	console.log("req.files",req.files)
+	console.log("req.body",req.body)
 	let updateData = {
 		first_name:req.body.first_name,
 		last_name:req.body.last_name,
 		mobile_number:req.body.mobile_number,
 		email:req.body.email
 	}
+	if(req.files.length>0){
+		updateData.picture = req.files[0].filename
+	}
+	console.log("updated data",updateData)
 	Admin.update({_id:req.body._id},{$set:updateData},function(err,data){
 		if (err) {
 			return res.status(400).send({

@@ -21,7 +21,7 @@ app_admin.controller("AdminCtrl", [
     if ($localStorage.loggedIn == true) {
       $rootScope.LoginUser = true;
       $rootScope.loggedInUserDetail = $localStorage.loginInfo;
-      if($localStorage.loginInfo.picture){
+      if($rootScope.loggedInUserDetail){
         $rootScope.imageDisplay = $localStorage.imgPath+$localStorage.loginInfo.picture
       }
       else{

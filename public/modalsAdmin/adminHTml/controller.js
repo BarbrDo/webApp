@@ -1006,8 +1006,9 @@ app_admin.controller("AdminCtrl", [
             passingObj.page = params.page();
             passingObj.count = params.count();
             passingObj.sort = params.sorting();
-            $scope.loaderStart = true;
+            // $scope.loaderStart = true;
             Admin.getAllShops(passingObj).then(function(response) {
+              $scope.loaderStart = false;
               console.log("all shops", response.data.data);
               for (var i = 0; i < $scope.barberdetail.associateShops.length; i++) {
                 for (var j = 0; j < response.data.data.length; j++) {
@@ -1020,7 +1021,7 @@ app_admin.controller("AdminCtrl", [
               }
               $scope.data = response.data.data;
               console.log("========++++++++++========", response.data.data)
-              $scope.loaderStart = false;
+              
             })
           }
         })

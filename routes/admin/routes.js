@@ -58,6 +58,7 @@ module.exports = function(app, express) {
     app.post('/api/v2/allshopsnew',shopController.listshopsnew)
     app.get('/api/v2/shopdetail/:shop_id', shopController.shopdetail);
     app.get('/api/v2/shops', shopController.allshops);
+    app.post('/api/v2/shops', shopController.allshopsnew);
     app.put('/api/v2/shops', shopController.updateShop);
     app.get('/api/v2/shopinvites', shopController.shopinvites);
     app.get('/api/v2/currentshopinvite/:_id', shopController.currentshopinvite);

@@ -747,7 +747,7 @@ exports.listshopsnew = function(req, res) {
                 $regex: searchStr,
                 '$options': 'i'
             }
-        },{
+        }, {
             license_number: {
                 $regex: searchStr,
                 '$options': 'i'
@@ -770,7 +770,7 @@ exports.listshopsnew = function(req, res) {
             address: "$address",
             formatted_address: "$formatted_address",
             created_date: "$created_date",
-            license_number:"$license_number"
+            license_number: "$license_number"
         }
     }, {
         $match: query
@@ -788,7 +788,7 @@ exports.listshopsnew = function(req, res) {
                     address: "$address",
                     formatted_address: "$formatted_address",
                     created_date: "$created_date",
-                    license_number:"$license_number"
+                    license_number: "$license_number"
                 }
             }, {
                 $match: query
@@ -841,6 +841,36 @@ exports.allshopsnew = function(req, res) {
     if (searchStr) {
         query.$or = [{
             name: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            zip: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            city: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            state: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            address: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            license_number: {
+                $regex: searchStr,
+                '$options': 'i'
+            }
+        }, {
+            formatted_address: {
                 $regex: searchStr,
                 '$options': 'i'
             }

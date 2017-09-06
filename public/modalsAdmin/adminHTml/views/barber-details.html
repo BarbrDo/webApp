@@ -41,9 +41,9 @@
                             <h4 class="group inner list-group-item-heading" align="center"><b>
                         Add Shops</b></h4>
                             <span class="glyphicon glyphicon-search" style="color:purple"></span>
-                            <input ng-model="myobj.search" placeholder="Search for..." ng-change="barberDetails()" style="width: 150px; margin-top: 10px;" />
+                            <input ng-model="myobj.search" placeholder="Search by Name , City , Zip " ng-change="barberDetails()" style="width: 100%; margin-top: 10px;" />
                             <br>
-                            <div>
+                            <div ng-show="myobj.search">
                                 <!-- <input type="text" class="form-control" name="first_name" ng-model="searchshop" placeholder="search shops"/><br> -->
                                 <!--        <div ng-repeat="data in showShops" style="width: 100%;float: left;">
                                     <div style="width:50%;float:left;" class="list-group">
@@ -57,7 +57,8 @@
                                 </div> -->
                                 <table id="example1" class="table table-bordered table-striped" ng-table="tableParams" show-filter="isFiltersVisible" style="margin-top: 10px;">
                                     <tr ng-repeat="user in data track by $index">
-                                        <td data-title="'Name'" sortable="'name'">{{user.name}}</td>
+                                        <td data-title="'Name'" sortable="'name'"><i class="fa fa-info-circle" data-toggle="tooltip" title="{{user.address}}" aria-hidden="true"></i>
+                                        {{user.name}}</td>
                                         <td data-title="'Add'">
                                             <button ng-click="addAssociateShop(user._id)" title="Add shop" style="border: none;background: none;margin: 4px 10px;font-size: 24px;color: #359a0d;"><i class="fa fa-plus-circle"></i></button>
                                         </td>

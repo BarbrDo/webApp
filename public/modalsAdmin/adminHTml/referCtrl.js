@@ -21,7 +21,6 @@ app_admin.controller("referCtrl", [
       $rootScope.LoginUser = false;
     }
 
-
     $scope.user = {};
     $scope.admin = {};
     $scope.myadmin = {};
@@ -280,6 +279,10 @@ app_admin.controller("referCtrl", [
         formdata.append("file", $scope.file);
       }
       Admin.updateAdminInfo(formdata).then(function(response) {
+        console.log("response---00",response);
+        $localStorage.loginInfo = response.data.data;
+        $localStorage.imgPath = response.data.imagesPath;
+        $rootScope.imageDisplay = $localStorage.imgPath + response.data.data.picture
         toastr.success("Admin updated successfully.");
         $state.go('dashboard');
       }).catch(function(result) {

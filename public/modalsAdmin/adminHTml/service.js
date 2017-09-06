@@ -50,6 +50,16 @@ angular.module('barbrdo').factory('Admin', function($http) {
         }
       });
     },
+    deleteImage :function(data,user)
+    {
+      return $http({
+        method: 'DELETE',
+        url: '/api/v2/customer/gallery/'+data._id,
+        headers: {
+          'user_id': user
+        }
+      });
+    },
     confirmAppoint: function(data) {
       console.log(data)
       return $http.put('/api/v2/barber/confirmappointment/' + data._id);

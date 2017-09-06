@@ -99,6 +99,25 @@ header {
     bottom: 0;
     margin: auto;
     border-radius: 100px;
+    width: 100%;
+    height: 100%;
+}
+
+.allgallery {
+    float: left;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.allgallery a {
+    float: left;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.allgallery a img {
+    border: 5px solid #e0e0e0;
+    width: 100%;
 }
 
 .header .header-user .username {
@@ -201,6 +220,7 @@ header {
 .profiledropdwn a .icon {
     margin-right: 15px;
 }
+
 
 
 
@@ -316,6 +336,7 @@ header {
 
 
 
+
 /* css for pages */
 
 .search-box {
@@ -342,6 +363,7 @@ header {
     color: #fff;
     background: #2e2e2e;
 }
+
 
 
 
@@ -612,11 +634,13 @@ header {
 
 
 
+
 /*Plan Page*/
 
 .reload {
     font-size: 19px;
 }
+
 
 
 
@@ -660,6 +684,7 @@ header {
 
 
 
+
 /*service-subservice*/
 
 .panel-subtitle {
@@ -686,6 +711,7 @@ header {
     display: block;
     padding-top: 20px;
 }
+
 
 
 
@@ -732,6 +758,7 @@ header {
 .modal-wrap .grey-fnt {
     color: #6e6e6e;
 }
+
 
 
 
@@ -849,6 +876,7 @@ header {
 
 
 
+
 /* add beacons */
 
 .levelbox-1 {
@@ -957,6 +985,7 @@ header {
 
 
 
+
 /* levels */
 
 .beaconsite .level-box>span,
@@ -1053,6 +1082,7 @@ header {
 .rzslider .rz-selection {
     background: #c23333;
 }
+
 
 
 

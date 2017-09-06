@@ -51,13 +51,12 @@
                     <input size="30" height="30px" type="text" data-ng-model="barberdetail.created_date" readonly class="form-control">
                 </div>
                 <div class="col-md-4 form-group">
-                <label>Subscription End Date</label>
-                  <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="barberdetail.endDate" is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
-                  <span class="input-group-btn">
+                    <label>Subscription End Date</label>
+                    <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="barberdetail.endDate" is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+                    <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
                   </span>
-                
-              </div>
+                </div>
             </div>
             <div class="clearfix">
                 <div class="col-sm-2 form-group">
@@ -105,7 +104,37 @@
 </div>
 </form>
 </div>
-
+<br>
+<br>
+<div class="panel" ng-init="barberDetails()">
+    <div class="panel-heading">
+        Barber Gallery
+    </div>
+    <div class="panel-body">
+        <div ng-if="messages" role="alert" class="alert alert-danger">
+            <div>
+                {{messages}}</div>
+        </div>
+        <div class="block">
+            <span ng-if="images==''"><h3 align="center">No images in gallery</h3></span>
+            <span ng-if="images!=''">
+                    <div class="allgallery">
+                        <div class="row" style="position: relative;" ng-repeat="pic in images">
+                            <div class="col-md-3 col-sm-4 " >
+                                <img src="{{pathimg+pic.name}}" alt="" style="height: 300px;">
+                            </div>
+                            <div style="position: absolute;">
+                            <a ng-click="delpic(pic)"><i class="fa fa-window-close" aria-hidden="true" style="
+    margin-left: 185px;
+    font-size: 20px;
+"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    </span>
+        </div>
+    </div>
+</div>
 <div class- "panel-body">
     <div ng-if="messages" role="alert" class="alert alert-danger">
         <div>
@@ -115,26 +144,26 @@
         Update Password
     </div>
     <form name="updateForm">
-         <div class="clearfix">
-                <div class="col-sm-4 form-group">
-                    <label>Password</label>
-                    <input type="password" class="form-control" name="password" data-ng-model="barberdetail.password" ng-minlength="5" ng-maxlength="20" maxlength="21" required />
-                    <div class="validationError" ng-if="!updateButton" ng-show="updateForm.password.$error.minlength">
-                        <span style="color:red ">password too Short (atleast 5 characters)</span>
-                    </div>
-                    <div class="validationError" ng-if="!updateButton" ng-show="updateForm.password.$error.maxlength && updateForm.password.$dirty">
-                        <span style="color:red ">password maximum length exceeds</span>
-                    </div>
+        <div class="clearfix">
+            <div class="col-sm-4 form-group">
+                <label>Password</label>
+                <input type="password" class="form-control" name="password" data-ng-model="barberdetail.password" ng-minlength="5" ng-maxlength="20" maxlength="21" required />
+                <div class="validationError" ng-if="!updateButton" ng-show="updateForm.password.$error.minlength">
+                    <span style="color:red ">password too Short (atleast 5 characters)</span>
                 </div>
-                <div class="col-sm-4 form-group">
-                    <label>Confirm Password</label>
-                    <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" ng-model="barberdetail.confirm" required ng-pattern="barberdetail.password"/>
-                    <div class="validationError" ng-messages="updateForm.confirmPassword.$error" ng-show=" updateForm.confirmPassword.$error.pattern && (!updateForm.confirmPassword.$pristine || updateForm.$submitted)" role="alert ">
-                        <span style="color:red " ng-if="!updateButton" ng-message="pattern">password do not match</span>
-                    </div>
+                <div class="validationError" ng-if="!updateButton" ng-show="updateForm.password.$error.maxlength && updateForm.password.$dirty">
+                    <span style="color:red ">password maximum length exceeds</span>
                 </div>
-                <div class="col-sm-4 form-group">
-                    <button type="submit" class="btn btn-primary" ng-disabled="updateForm.$invalid" ng-click="updatebarber(barberdetail)" style="margin-top:25px">
+            </div>
+            <div class="col-sm-4 form-group">
+                <label>Confirm Password</label>
+                <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" ng-model="barberdetail.confirm" required ng-pattern="barberdetail.password" />
+                <div class="validationError" ng-messages="updateForm.confirmPassword.$error" ng-show=" updateForm.confirmPassword.$error.pattern && (!updateForm.confirmPassword.$pristine || updateForm.$submitted)" role="alert ">
+                    <span style="color:red " ng-if="!updateButton" ng-message="pattern">password do not match</span>
+                </div>
+            </div>
+            <div class="col-sm-4 form-group">
+                <button type="submit" class="btn btn-primary" ng-disabled="updateForm.$invalid" ng-click="updatebarber(barberdetail)" style="margin-top:25px">
                     <i class="fa fa-check" aria-hidden="true"></i>
                     <span>Update
                   </button>
@@ -155,3 +184,4 @@ window.addEventListener('keydown', function(e) {
     }
 }, true);
 </script>
+

@@ -119,8 +119,8 @@
             <span ng-if="images==''"><h3 align="center">No images in gallery</h3></span>
             <span ng-if="images!=''">
                     <div class="allgallery">
-                        <div class="row" style="position: relative;">
-                            <div class="col-md-3 col-sm-4 " ng-repeat="pic in images">
+                        <div class="row" style="position: relative;" ng-repeat="pic in images">
+                            <div class="col-md-3 col-sm-4 " >
                                 <img src="{{pathimg+pic.name}}" alt="" style="height: 300px;">
                             </div>
                             <div style="position: absolute;">

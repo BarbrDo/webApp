@@ -45,6 +45,10 @@
                         <div class="col-xs-5 text-right">{{totalappointment.cancelAppoint}}</a></div>
                     </div>
                     <div class="dashboard-strip clearfix">
+                        <a ui-sref="cust_appointments" ng-click="filterAppointment('decline')"><label class="col-xs-7" style="cursor:pointer;">Decline</label>
+                        <div class="col-xs-5 text-right">{{totalappointment.declineAppoint}}</a></div>
+                    </div>
+                    <div class="dashboard-strip clearfix">
                         <label class="col-xs-7">Total</label>
                         <div class="col-xs-5 text-right">{{totalappointment.totalAppoint}}</div>
                     </div>

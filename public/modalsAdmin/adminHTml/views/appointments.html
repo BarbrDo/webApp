@@ -9,6 +9,7 @@
         <li class="breadcrumb-item" ng-click="filterAppointment('completed')"><a href="" >Total Completed : {{totalappointment.totalCompleted}}</a></li>
         <li class="breadcrumb-item" ng-click="filterAppointment('cancel')"><a href="" >Total Cancel : {{totalappointment.totalCancel}}</a></li>
         <li class="breadcrumb-item" ng-click="filterAppointment('confirm')"><a href="" >Total Confirm : {{totalappointment.totalConfirm}}</a> </li>
+        <li class="breadcrumb-item" ng-click="filterAppointment('decline')"><a href="" >Total Decline : {{totalappointment.totalDecline}}</a> </li>
         <li class="breadcrumb-item" ng-click="filterAppointment('')"><a href="" >Reset View </a> </li>
     </ol>
     </div>
@@ -41,10 +42,10 @@
                         </td>
                         <td data-title="'Services'">
                             <span ng-if="user.services[0].name">
-                                {{user.services[0].name}}  ${{user.services[0].price}}
+                                {{user.services[0].name}}  (${{user.services[0].price}})
                             </span>  
                             <span ng-if="user.services[1].name">,
-                                 {{user.services[1].name}}  ${{user.services[1].price}}
+                                 {{user.services[1].name}}  (${{user.services[1].price}})
                              </span>
                         </td>
                         <td data-title="'Appointment Status'">

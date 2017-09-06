@@ -1539,6 +1539,17 @@ exports.countappoint = function(req, res) {
       }, function(err, result) {
         parallelCb(null, result)
       });
+    },
+    five:function(parallelCb){
+      appointment.find({
+        appointment_status:"decline",
+        appointment_date: {
+          $gte: new Date(appointmentStartdate),
+          $lt: new Date(appointmentEnddate)
+        }
+      }, function(err, result) {
+        parallelCb(null, result)
+      });
     }
   }, function(err, results) {
     res.status(200).send({
@@ -1547,7 +1558,8 @@ exports.countappoint = function(req, res) {
         "totalAppoint": results.one.length,
         "confirmAppoint": results.two.length,
         "completedAppoint": results.three.length,
-        "cancelAppoint": results.four.length
+        "cancelAppoint": results.four.length,
+        "declineAppoint":results.five.length
       }
     })
   });
@@ -1576,14 +1588,22 @@ exports.appointmentcount = function(req, res) {
       }, function(err, result) {
         parallelCb(null, result)
       });
-    }
+    },
+    four: function(parallelCb) {
+      appointment.find({
+        appointment_status:"decline"
+      }, function(err, result) {
+        parallelCb(null, result)
+      });
+    },
   }, function(err, results) {
     res.status(200).send({
       msg: constantObj.messages.successRetreivingData,
       data: {
         "totalCompleted": results.one.length,
         "totalCancel": results.two.length,
-        "totalConfirm": results.three.length
+        "totalConfirm": results.three.length,
+        "totalDecline":results.four.length
       }
     })
   });

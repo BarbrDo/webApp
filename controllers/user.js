@@ -1437,3 +1437,116 @@ exports.subscribe = function(req, res) {
     }
   })
 }
+exports.getGraphData = function(req, res) {
+  User.aggregate([{
+    $match: {
+      "created_date": {
+        $gte: new Date(new Date().getFullYear(), 0, 1),
+        $lt: new Date()
+      }
+    }
+  }, {
+    $project: {
+      year: {
+        $year: "$created_date"
+      },
+      month: {
+        $month: "$created_date"
+      },
+      day: {
+        $dayOfMonth: "$created_date"
+      },
+      user_type: 1
+
+    }
+  }, {
+    $group: {
+      _id: {
+        "month": "$month",
+        "user_type": "$user_type"
+      },
+      count: {
+        "$sum": 1
+      }
+    }
+  }]).exec(function(userErr, userData) {
+    Shop.aggregate([{
+      $match: {
+        "created_date": {
+          $gte: new Date(new Date().getFullYear(), 0, 1),
+          $lt: new Date()
+        }
+      }
+    }, {
+      $project: {
+        year: {
+          $year: "$created_date"
+        },
+        month: {
+          $month: "$created_date"
+        },
+        day: {
+          $dayOfMonth: "$created_date"
+        }
+      }
+    }, {
+      $group: {
+        _id: {
+          "month": "$month",
+          "user_type": "$user_type"
+        },
+        count: {
+          "$sum": 1
+        }
+      }
+    }]).exec(function(shopErr, shopData) {
+      console.log(userData);
+      console.log(shopData);
+      let customer = [],
+        barber = [],
+        shop = [];
+      for (var i = 1; i <= 12; i++) {
+        let customerCount = 0;
+        let barberCount = 0;
+        for (var j = 0; j < userData.length; j++) {
+          if (i == userData[j]._id.month && userData[j]._id.user_type == "customer") {
+            customer.push(userData[j].count);
+            customerCount = 1
+          }
+          if (i == userData[j]._id.month && userData[j]._id.user_type == "barber") {
+            barber.push(userData[j].count);
+            barberCount = 1;
+          }
+        }
+        if (customerCount == 0) {
+          customer.push(0);
+        }
+        if (barberCount == 0) {
+          barber.push(0);
+        }
+      }
+      for (var i = 1; i <= 12; i++) {
+        let shopCount = 0;
+        for (var j = 0; j < shopData.length; j++) {
+          if (i == shopData[j]._id.month) {
+            shop.push(shopData[j].count);
+            shopCount = 1
+          }
+        }
+        if (shopCount == 0) {
+          shop.push(0);
+        }
+      }
+
+      console.log(customer);
+      console.log(barber);
+      console.log(shop);
+      return res.status(200).send({
+        "msg": "You are successfully subscribed.",
+        customer: customer,
+        barber: barber,
+        shop: shop
+      });
+    })
+  })
+}

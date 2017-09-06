@@ -15,7 +15,7 @@ module.exports = function(app, express) {
     app.get('/api/v2/appointmentcount', customerController.appointmentcount);
 
     // admin
-    
+    app.post('/api/v2/getGraphData',userController.getGraphData);
     app.post('/api/v2/loginadmin',adminController.login);
     app.post('/api/v2/getAdminInfo',adminController.getAdminInfo);
     

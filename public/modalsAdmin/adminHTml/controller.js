@@ -1164,6 +1164,7 @@ app_admin.controller("AdminCtrl", [
     $scope.saveShop = function() {
       console.log($scope.user);
       console.log($scope.detail.formatted);
+
       let passObj = $scope.user;
         passObj.formatted_address = $scope.detail.formatted.formatted;
         passObj.address = $scope.user.street_address;

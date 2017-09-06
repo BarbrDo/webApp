@@ -77,7 +77,7 @@ exports.signupPost = function(req, res, next) {
 	}
 	let saveData = req.body;
 	console.log(req.files);
-	if(req.files.length>0){
+	if (req.files.length > 0) {
 		saveData.picture = req.files[0].filename
 	}
 	Admin.findOne({
@@ -152,7 +152,11 @@ exports.getPlans = function(req, res) {
 		});
 	}
 	var device_type = req.headers.device_type.toLowerCase();
-	Plan.find({apple_id:{$ne:"free"}}, function(err, data) {
+	Plan.find({
+		apple_id: {
+			$ne: "free"
+		}
+	}, function(err, data) {
 		res.status(200).send({
 			msg: constantObj.messages.successRetreivingData,
 			data: data
@@ -251,38 +255,49 @@ exports.giftCard = function(req, res) {
 		});
 	});
 }
-exports.getAdminInfo = function(req,res){
-	Admin.findOne({_id:req.body._id},function(err,data){
+exports.getAdminInfo = function(req, res) {
+	Admin.findOne({
+		_id: req.body._id
+	}, function(err, data) {
 		res.status(200).send({
-			msg:"Data retireve successfully",
-			data:data
+			msg: "Data retireve successfully",
+			data: data
 		})
 	})
 }
-exports.updateAdminInfo = function(req,res){
-	console.log("req.files",req.files)
-	console.log("req.body",req.body)
+exports.updateAdminInfo = function(req, res) {
+	console.log("req.files", req.files)
+	console.log("req.body", req.body)
 	let updateData = {
-		first_name:req.body.first_name,
-		last_name:req.body.last_name,
-		mobile_number:req.body.mobile_number,
-		email:req.body.email
+		first_name: req.body.first_name,
+		last_name: req.body.last_name,
+		mobile_number: req.body.mobile_number,
+		email: req.body.email
 	}
-	if(req.files.length>0){
+	if (req.files.length > 0) {
 		updateData.picture = req.files[0].filename
 	}
-	console.log("updated data",updateData)
-	Admin.update({_id:req.body._id},{$set:updateData},function(err,data){
+	console.log("updated data", updateData)
+	Admin.update({
+		_id: req.body._id
+	}, {
+		$set: updateData
+	}, function(err, data) {
 		if (err) {
 			return res.status(400).send({
 				msg: constantObj.messages.userStatusUpdateFailure,
 				"err": err
 			})
 		} else {
-			res.status(200).send({
-				msg: constantObj.messages.userStatusUpdateSuccess,
-				data: data
-			});
+			Admin.findOne({
+				_id: req.body._id
+			}, function(err, userdata) {
+				res.status(200).send({
+					msg: constantObj.messages.userStatusUpdateSuccess,
+					data: userdata,
+					"imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+				})
+			})
 		}
 	})
 }
@@ -306,10 +321,10 @@ exports.updatePassword = function(req, res) {
 		})
 	})
 }
-exports.allAdmin = function(req,res){
-	Admin.find({},function(err,data){
+exports.allAdmin = function(req, res) {
+	Admin.find({}, function(err, data) {
 		res.send({
-			data:data
+			data: data
 		})
 	})
 }

@@ -21,6 +21,7 @@ app_admin.controller("AdminCtrl", [
     if ($localStorage.loggedIn == true) {
       $rootScope.LoginUser = true;
       $rootScope.loggedInUserDetail = $localStorage.loginInfo;
+      console.log("path", $localStorage.imgPath)
       if ($rootScope.loggedInUserDetail) {
         $rootScope.imageDisplay = $localStorage.imgPath + $localStorage.loginInfo.picture
       } else {
@@ -160,7 +161,7 @@ app_admin.controller("AdminCtrl", [
     }
     $scope.appointmentObj = {};
     // $rootScope.applyFilter = "";
-    $scope.filterAppointment = function(data){
+    $scope.filterAppointment = function(data) {
       $rootScope.applyFilter = data;
       $scope.custAppoint();
     }
@@ -984,7 +985,11 @@ app_admin.controller("AdminCtrl", [
         $scope.numberOfCuts = response.data.cuts;
         $scope.ratings = response.data.ratings;
         $scope.barberdetail.created_date = response.data.data[0].created_date;
-        console.log(response.data.data[0]);
+        console.log("oooooo", response);
+        $rootScope.images = response.data.data[0].gallery;
+        $rootScope.barbernow = response.data.data[0]._id
+        $rootScope.pathimg = "http://52.39.212.226:4062/uploadedFiles/";
+        // $rootScope.pathimg = response.data.imagesPath;
         $scope.barberdetail.endDate = new Date(response.data.data[0].subscription_end_date);
         $scope.showShops = [];
         var passingObj = {}
@@ -1014,7 +1019,7 @@ app_admin.controller("AdminCtrl", [
                 }
               }
               $scope.data = response.data.data;
-              console.log("========++++++++++========",response.data.data)
+              console.log("========++++++++++========", response.data.data)
               $scope.loaderStart = false;
             })
           }
@@ -1025,6 +1030,22 @@ app_admin.controller("AdminCtrl", [
         console.log("issue is", result);
         $scope.messages = result
       })
+    }
+
+    // $scope.viewimg = function(pic) {
+    //   $rootScope.pic = pic;
+    // }
+
+    $scope.delpic = function(pic) {
+      $scope.loaderStart = true;
+      // console.log("---------------",$rootScope.barbernow)
+      Admin.deleteImage(pic,$rootScope.barbernow)
+        .then(function(response) {
+           $scope.barberDetails();
+          toastr.success('Deleted')
+        }).catch(function(result) {
+          toastr.error('Error in deleting Image');
+        })
     }
 
     $scope.pageChanged = function(argument) {

@@ -793,14 +793,16 @@ let findRatingAndCuts = function(req, res, result) {
               "msg": constantObj.messages.successRetreivingData,
               "data": result,
               "cuts":appData.length,
-              "ratings":data[0].sum / data[0].count
+              "ratings":data[0].sum / data[0].count,
+              "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
         })
       } else {
         res.status(200).send({
               "msg": constantObj.messages.successRetreivingData,
               "data": result,
               "cuts":appData.length,
-              "ratings":0
+              "ratings":0,
+              "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
         })
       }
 

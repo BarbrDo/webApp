@@ -976,6 +976,8 @@ app_admin.controller("AdminCtrl", [
       Admin.barberDetail($stateParams.id).then(function(response) {
         $scope.loaderStart = false;
         $scope.barberdetail = response.data.data[0];
+        $scope.numberOfCuts = response.data.cuts;
+        $scope.ratings = response.data.ratings;
         $scope.barberdetail.created_date = response.data.data[0].created_date;
         console.log(response.data.data[0]);
         $scope.barberdetail.endDate = new Date(response.data.data[0].subscription_end_date);

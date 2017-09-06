@@ -42,6 +42,8 @@
                            <h4 class="group inner list-group-item-heading" align="center"><b>
                         Add Shops</b></h4>
                             <div>
+                                <!-- <input type="text" class="form-control" name="first_name" ng-model="searchshop" placeholder="search shops"/><br> -->
+
                                 <div ng-repeat = "data in showShops" style="width: 100%;float: left;">
                                 <div style="width:50%;float:left;" class="list-group" >
                                     <a class="list-group-item list-group-item-action">
@@ -72,6 +74,16 @@
                                     <td>
                                         <h5> EMAIL</h5></td>
                                     <td> {{barberdetail.email}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5> Number Of Cuts</h5></td>
+                                    <td> {{numberOfCuts}} </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5> Rating</h5></td>
+                                    <td> {{ratings}} </td>
                                 </tr>
                                 <tr>
                                     <td>

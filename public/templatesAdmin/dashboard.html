@@ -30,24 +30,23 @@
         	<div class="col-lg-12 col-sm-6 beacon-box">
             	<div class="panel-body">
                 	<div class="title clearfix">
-                    	Appointments
-                        
-                    </div>
-                    <div class="dashboard-strip clearfix">
-                    	<label class="col-xs-7">Total Appointments</label>
-                        <div class="col-xs-5 text-right">{{totalappointment.totalAppoint}}</div>
+                    	Today's Appointments
                     </div>
                     <div class="dashboard-strip clearfix" >
-                    	<label class="col-xs-7">Completed</label>
-                        <div class="col-xs-5 text-right">{{totalappointment.completedAppoint}}</div>
+                    	<a ui-sref="cust_appointments" ng-click="filterAppointment('completed')"><label class="col-xs-7" style="cursor:pointer;">Completed</label>
+                        <div class="col-xs-5 text-right">{{totalappointment.completedAppoint}}</a></div>
                     </div>
                     <div class="dashboard-strip clearfix">
-                    	<label class="col-xs-7">Confirmed</label>
-                        <div class="col-xs-5 text-right">{{totalappointment.confirmAppoint}}</div>
+                    	<a ui-sref="cust_appointments" ng-click="filterAppointment('confirm')"><label class="col-xs-7" style="cursor:pointer;">Confirmed</label>
+                        <div class="col-xs-5 text-right">{{totalappointment.confirmAppoint}}</a></div>
                     </div>
                     <div class="dashboard-strip clearfix">
-                        <label class="col-xs-7">Cancel</label>
-                        <div class="col-xs-5 text-right">{{totalappointment.cancelAppoint}}</div>
+                        <a ui-sref="cust_appointments" ng-click="filterAppointment('cancel')"><label class="col-xs-7" style="cursor:pointer;">Cancel</label>
+                        <div class="col-xs-5 text-right">{{totalappointment.cancelAppoint}}</a></div>
+                    </div>
+                    <div class="dashboard-strip clearfix">
+                        <label class="col-xs-7">Total</label>
+                        <div class="col-xs-5 text-right">{{totalappointment.totalAppoint}}</div>
                     </div>
                 </div>
             </div>

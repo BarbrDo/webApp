@@ -33,9 +33,13 @@
                                 <tr>
                                     <td>
                                         <h5>Services</h5></td>
-                                    <td> {{viewappoint.services[0].name}}  {{viewappoint.services[0].price}} 
-
-                                    {{viewappoint.services[1].name}}  {{viewappoint.services[1].price}}
+                                    <td><span ng-if="viewappoint.services[0].name">
+                                        {{viewappoint.services[0].name}}  ${{viewappoint.services[0].price}}
+                                    </span>  
+                                    <span ng-if="viewappoint.services[1].name">,
+                                         {{viewappoint.services[1].name}}  ${{viewappoint.services[1].price}}
+                                     </span>
+                                   
                                     </td>
                                 </tr>
                                 <tr>

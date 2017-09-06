@@ -1276,6 +1276,9 @@ exports.allappointment = function(req, res) {
   var searchStr = ""
   console.log("skipNo", skipNo);
   console.log("count", count);
+  if(req.body.applyFilter){
+    query.appointment_status = req.body.applyFilter 
+  }
   if (req.query.search) {
     searchStr = req.query.search;
   }
@@ -1564,7 +1567,7 @@ exports.appointmentcount = function(req, res) {
     },
     three: function(parallelCb) {
       appointment.find({
-        appointment_status: "decline",
+        appointment_status: "confirm",
       }, function(err, result) {
         parallelCb(null, result)
       });
@@ -1575,7 +1578,7 @@ exports.appointmentcount = function(req, res) {
       data: {
         "totalCompleted": results.one.length,
         "totalCancel": results.two.length,
-        "totalDecline": results.three.length
+        "totalConfirm": results.three.length
       }
     })
   });

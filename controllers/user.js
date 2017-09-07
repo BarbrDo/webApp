@@ -1440,12 +1440,10 @@ exports.subscribe = function(req, res) {
   })
 }
 exports.getGraphData = function(req, res) {
-  let d = new Date();
   let date = new Date();
   date.setFullYear(date.getFullYear() - 1);
   date.setMonth(date.getMonth()+1);
   let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-  console.log("last year",firstDay)
   User.aggregate([{
     $match: {
       "created_date": {
@@ -1465,7 +1463,6 @@ exports.getGraphData = function(req, res) {
         $dayOfMonth: "$created_date"
       },
       user_type: 1
-
     }
   }, {
     $group: {

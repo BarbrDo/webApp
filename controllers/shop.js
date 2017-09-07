@@ -2135,7 +2135,7 @@ exports.saveShop = function(req, res) {
         });
     }
     let saveData = req.body;
-    saveData.zip = parseInt(req.body.zip);
+    saveData.zip = req.body.zip;
     saveData.latLong = [parseFloat(req.body.longitude).toFixed(2), parseFloat(req.body.latitude).toFixed(2)];
     console.log(saveData);
     shop(saveData).save(function(err, result) {

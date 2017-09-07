@@ -995,23 +995,6 @@ exports.rateBarber = function(req, res) {
   ])
 }
 
-// checkReference({_id:req.body.appointment_id});
-
-let check_for_customer = function() {
-  // 1.check_customer_appointment
-  // 2.check_this_customer_reference
-  // 3.Search for the barber who request for this if count is 10 then mail sent
-
-}
-let check_for_barber = function() {
-  // 1.check_barber_appointment
-  // 2.check_this_barber_reference
-  // 3.if(some_barber_refer_this  ||  some_customer_refer_this){
-  //   and an count of particular user will b increased and is_refer_code_used key will b true
-  //   then mail send of appreciation
-  // 4.
-}
-
 let checkReference = function(objFind) {
   console.log("checkReference pass obj\n\n\n", objFind);
   appointment.findOne(objFind, function(err, appResult) {
@@ -1052,7 +1035,7 @@ let checkReference = function(objFind) {
         }).sort({
           created_date: 1
         }).exec(function(refErr, refResult) {
-          console.log("if customer reference ", refResult);
+          console.log("if customer reference ",refErr, refResult);
           if(refResult){
           if (refResult.length > 0) {
             appointment.find({
@@ -1117,7 +1100,7 @@ let checkReference = function(objFind) {
         }).sort({
           created_date: 1
         }).exec(function(refErr, refResult) {
-          console.log("if barber reference ", refResult);
+          console.log("if barber reference ",refErr, refResult);
           if(refResult){
           if (refResult.length > 0) {
             appointment.find({

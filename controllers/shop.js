@@ -760,6 +760,7 @@ exports.listshopsnew = function(req, res) {
         }]
     }
     console.log("query is**********", query);
+    console.log("sortquery is**********",sortquery);
     shop.aggregate([{
         $project: {
             _id: "$_id",
@@ -778,27 +779,27 @@ exports.listshopsnew = function(req, res) {
         if (err) {
             console.log(err)
         } else {
-            shop.aggregate([{
-                $project: {
-                    _id: "$_id",
-                    name: "$name",
-                    city: "$city",
-                    state: "$state",
-                    zip: "$zip",
-                    address: "$address",
-                    formatted_address: "$formatted_address",
-                    created_date: "$created_date",
-                    license_number: "$license_number"
-                }
-            }, {
-                $match: query
-            }, {
-                "$sort": sortquery
-            }, {
-                "$skip": skipNo
-            }, {
-                "$limit": count
-            }]).exec(function(err, result) {
+                shop.aggregate([{
+                    $project: {
+                        _id: "$_id",
+                        name: {"$toUpper": "$name"},
+                        city: {"$toUpper": "$city"},
+                        state: {"$toUpper": "$state"},
+                        zip: "$zip",
+                        address: {"$toLower": "$address"},
+                        formatted_address: {"$toLower": "$formatted_address"},
+                        created_date: "$created_date",
+                        license_number: "$license_number"
+                    }
+                }, {
+                    $match: query
+                }, {
+                    "$sort": sortquery
+                }, {
+                    "$skip": skipNo
+                }, {
+                    "$limit": count
+                }]).exec(function(err, result) {
                 var length = data.length;
                 if (err) {
                     res.status(400).send({

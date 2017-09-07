@@ -468,6 +468,9 @@ angular.module('barbrdo').factory('Admin', function($http) {
     },
     updatePassword:function(data){
       return $http.post('/api/v2/updatePassword', data);
+    },
+    getGraph:function(data){
+      return $http.post('/api/v2/getGraphData', data);
     }
   };
 });

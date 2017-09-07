@@ -39,46 +39,16 @@ app_admin.controller("AdminCtrl", [
       $scope.toggleleftclass = !$scope.toggleleftclass;
 
     }
-    $scope.labels = [
-      "2010",
-      "2011",
-      "2012",
-      "2013",
-      "2014",
-      "2015",
-      "2016",
-      "2017"
-    ];
-    $scope.series = ['Barbers', 'Shops', 'Customers'];
-    $scope.data = [
-      [
-        5,
-        15,
-        20,
-        25,
-        30,
-        45,
-        50
-      ],
-      [
-        10,
-        20,
-        30,
-        40,
-        50,
-        60,
-        70
-      ],
-      [
-        30,
-        60,
-        90,
-        120,
-        150,
-        180,
-        210
-      ]
-    ];
+
+    $scope.getGraph = function(){
+      Admin.getGraph().then(function(response){
+        $scope.labels = [
+          "Jan", "Feb", "March", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"
+        ];
+        $scope.series = ['Customers','Barbers','Shops'];
+        $scope.data = [response.data.customer,response.data.barber,response.data.shop];
+      })
+    }
 
     $scope.datasetOverride = [{
       yAxisID: 'y-axis-1'
@@ -823,6 +793,7 @@ app_admin.controller("AdminCtrl", [
     };
 
     $scope.countall = function() {
+      $scope.getGraph();
       Admin.countAppointment().then(function(response) {
         $rootScope.totalappointment = response.data.data;
       });

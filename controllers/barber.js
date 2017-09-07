@@ -698,6 +698,8 @@ exports.barberdetail = function(req, res) {
       mobile_number: "$mobile_number",
       created_date: "$created_date",
       is_deleted: "$is_deleted",
+      bio:"$bio",
+      license_number:"$license_number",
       is_active: "$is_active",
       is_online: "$is_online",
       is_available: "$is_available",
@@ -855,8 +857,8 @@ exports.availableBarbernew = function(req, res) {
   user.aggregate([{
     $project: {
       _id: "$_id",
-      first_name: "$first_name",
-      last_name: "$last_name",
+      first_name: {"$toUpper": "$first_name"},
+      last_name: {"$toUpper": "$last_name"},
       email: "$email",
       mobile_number: "$mobile_number",
       ratings: "$ratings",

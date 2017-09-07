@@ -246,13 +246,9 @@ let accountActivateMailFunction = function(req, res, user, resetUrl) {
   console.log(user);
   if (!user.facebook) {
     nodemailerMailgun.sendMail(mailOptions, function(err, info) {
-      
-    });
-    res.status(200).send({
-      msg: 'Thanks for signing up with BarbrDo.',
-      user: user,
-      token: generateToken(user),
-      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+      res.send({
+        msg: 'Thanks for signing up with BarbrDo.'
+      });
     });
   } else {
     res.status(200).send({
@@ -908,6 +904,7 @@ exports.checkFaceBook = function(req, res) {
       });
     } else {
       if (response.length > 0) {
+
         User.update({
           _id: response._id
         }, {
@@ -915,7 +912,8 @@ exports.checkFaceBook = function(req, res) {
             "device_type": device_type,
             "device_id": device_token,
             "latLong": [req.headers.device_longitude, req.headers.device_latitude],
-            "is_active": false
+            "is_active": false,
+            'remark': "Subscription required."
           }
         })
 
@@ -1440,14 +1438,10 @@ exports.subscribe = function(req, res) {
   })
 }
 exports.getGraphData = function(req, res) {
-  let date = new Date();
-  date.setFullYear(date.getFullYear() - 1);
-  date.setMonth(date.getMonth()+1);
-  let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
   User.aggregate([{
     $match: {
       "created_date": {
-        $gte: firstDay,
+        $gte: new Date(new Date().getFullYear(), 0, 1),
         $lt: new Date()
       }
     }
@@ -1463,6 +1457,7 @@ exports.getGraphData = function(req, res) {
         $dayOfMonth: "$created_date"
       },
       user_type: 1
+
     }
   }, {
     $group: {
@@ -1478,7 +1473,7 @@ exports.getGraphData = function(req, res) {
     Shop.aggregate([{
       $match: {
         "created_date": {
-          $gte: firstDay,
+          $gte: new Date(new Date().getFullYear(), 0, 1),
           $lt: new Date()
         }
       }
@@ -1505,8 +1500,8 @@ exports.getGraphData = function(req, res) {
         }
       }
     }]).exec(function(shopErr, shopData) {
-      console.log("================",userData);
-      console.log("---------------",shopData);
+      console.log(userData);
+      console.log(shopData);
       let customer = [],
         barber = [],
         shop = [];
@@ -1543,7 +1538,7 @@ exports.getGraphData = function(req, res) {
         }
       }
 
-      console.log("customer",customer);
+      console.log(customer);
       console.log(barber);
       console.log(shop);
       return res.status(200).send({

@@ -827,6 +827,7 @@ app_admin.controller("AdminCtrl", [
         Admin.custDetail($stateParams.id).then(function(response) {
           $scope.loaderStart = false;
           $rootScope.customerdetail = response.data.data[0];
+          $scope.noOfCuts = response.data.cuts;
         }).catch(function(result) {
           $scope.loaderStart = false;
           $scope.messages = result.data.msg

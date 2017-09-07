@@ -20,7 +20,7 @@ app_admin.controller("referCtrl", [
     } else {
       $rootScope.LoginUser = false;
     }
-
+    $scope.data = {};
     $scope.user = {};
     $scope.admin = {};
     $scope.myadmin = {};
@@ -50,6 +50,7 @@ app_admin.controller("referCtrl", [
     }
     $scope.particularUserData = function() {
       $scope.loaderStart = true;
+      console.log($scope.data);
       let obj = {
         referral: $stateParams._id
       }

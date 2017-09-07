@@ -665,9 +665,15 @@ exports.custdetail = function(req, res) {
         "err": err
       });
     } else {
-      res.status(200).send({
-        "msg": constantObj.messages.successRetreivingData,
-        "data": result
+      appointment.find({
+        barber_id: req.params.barber_id,
+        appointment_status: "completed"
+      }, function(appErr, appData) {
+        res.status(200).send({
+          "msg": constantObj.messages.successRetreivingData,
+          "data": result,
+          "cuts":appData.length
+        })
       })
     }
   })

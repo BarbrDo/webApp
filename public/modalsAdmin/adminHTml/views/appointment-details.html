@@ -17,18 +17,18 @@
                                 <tr>
                                     <td>
                                         <h5>Customer Name</h5></td>
-                                    <td> {{viewappoint.customer_id.first_name}} {{viewappoint.customer_id.last_name}}</td>
+                                    <td> <a data-toggle="tooltip" title="Edit Shop" ui-sref="customer_detail({id:viewappoint.customer_id._id})">{{viewappoint.customer_id.first_name}} {{viewappoint.customer_id.last_name}}</a></td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <h5> Barber</h5></td>
-                                    <td> {{viewappoint.barber_id.first_name}} {{viewappoint.barber_id.last_name}} </td>
+                                    <td> <a data-toggle="tooltip" title="View Details" ui-sref="barbersdetail({id:viewappoint.barber_id._id})">{{viewappoint.barber_id.first_name}} {{viewappoint.barber_id.last_name}} </a></td>
                                 </tr>
                                 </a>
                                 <tr>
                                     <td>
                                         <h5> Shop</h5></td>
-                                    <td> {{viewappoint.shop_id.name}} </td>
+                                    <td><a data-toggle="tooltip" title="Edit Shop" ui-sref="edit_shops({_id:viewappoint.shop_id._id})"> {{viewappoint.shop_id.name}} </td>
                                 </tr>
                                 <tr>
                                     <td>

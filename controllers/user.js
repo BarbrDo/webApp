@@ -245,10 +245,14 @@ let accountActivateMailFunction = function(req, res, user, resetUrl) {
   };
   console.log(user);
   if (!user.facebook) {
+    
     nodemailerMailgun.sendMail(mailOptions, function(err, info) {
-      res.send({
-        msg: 'Thanks for signing up with BarbrDo.'
-      });
+      
+    });
+    res.status(200).send({
+      user: user,
+      token: generateToken(user),
+      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
     });
   } else {
     res.status(200).send({

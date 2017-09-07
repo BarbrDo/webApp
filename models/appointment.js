@@ -26,6 +26,9 @@ let appointmentSchema = new mongoose.Schema({
         enum: ["decline", "confirm", "completed","cancel"],
         default: "decline"
     },
+    next_in_chair:{
+        type:Boolean
+    },
     cancel_by_user_id:{
           type: Schema.Types.ObjectId,
           ref: 'users'

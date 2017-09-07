@@ -17,7 +17,7 @@ let referalSchema = new mongoose.Schema({
         type: String,
     },
     referee_phone_number:{
-        type:Number
+        type:String
     },
     is_refer_code_used:{
         type:Boolean,

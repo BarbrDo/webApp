@@ -1118,6 +1118,7 @@ let checkReference = function(objFind) {
           created_date: 1
         }).exec(function(refErr, refResult) {
           console.log("if barber reference ", refResult);
+          if(refResult){
           if (refResult.length > 0) {
             appointment.find({
               customer_id: barber_profile._id,
@@ -1158,6 +1159,7 @@ let checkReference = function(objFind) {
           } else {
             done(null);
           }
+        }
         })
       }
     ])

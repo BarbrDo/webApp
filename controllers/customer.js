@@ -672,7 +672,7 @@ exports.custdetail = function(req, res) {
         res.status(200).send({
           "msg": constantObj.messages.successRetreivingData,
           "data": result,
-          "cuts":appData.length
+          "cuts": appData.length
         })
       })
     }
@@ -807,8 +807,12 @@ exports.listcustomers = function(req, res) {
   }, {
     $project: {
       _id: "$_id",
-      first_name: {"$toUpper": "$first_name"},
-      last_name: {"$toUpper": "$last_name"},
+      first_name: {
+        "$toUpper": "$first_name"
+      },
+      last_name: {
+        "$toUpper": "$last_name"
+      },
       email: "$email",
       mobile_number: "$mobile_number",
       ratings: "$ratings",
@@ -1041,52 +1045,51 @@ let checkReference = function(objFind) {
         }).sort({
           created_date: 1
         }).exec(function(refErr, refResult) {
-          console.log("if customer reference ",refErr, refResult);
-          if(refResult){
-          if (refResult.length > 0) {
-            appointment.find({
-              customer_id: cus_profile._id,
-              appointment_status: "completed"
-            }, function(apointErr, apointEesult) {
-              console.log("Total appointment of customer", apointEesult.length)
-              if (apointEesult.length == 1) {
-                console.log("first appointment of the customer");
-                async.waterfall([
-                  function(done) {
-                    referal.update({
-                      _id: refResult[0]._id
-                    }, {
-                      $set: {
-                        is_refer_code_used: true
-                      }
-                    }).exec(function(err, data) {
-                      console.log("update status of referal", data)
-                    })
-                  },
-                  function(done) {
-                    referal.find({
-                      referral: refResult[0].referral
-                    }, function(err, refCountResult) {
-                      if (refCountResult.length % 10 == 0) {
-                        // mail sent to the admin for the amazon gift card
-                        done(null, barber_profile);
-                      } else {
-                        done(null, barber_profile);
-                      }
-                    })
-                  }
-                ])
-              } else {
-                done(null, barber_profile);
-              }
-            })
+          console.log("if customer reference ", refErr, refResult);
+          if (refResult) {
+            if (refResult.length > 0) {
+              appointment.find({
+                customer_id: cus_profile._id,
+                appointment_status: "completed"
+              }, function(apointErr, apointEesult) {
+                console.log("Total appointment of customer", apointEesult.length)
+                if (apointEesult.length == 1) {
+                  console.log("first appointment of the customer");
+                  async.waterfall([
+                    function(done) {
+                      referal.update({
+                        _id: refResult[0]._id
+                      }, {
+                        $set: {
+                          is_refer_code_used: true
+                        }
+                      }).exec(function(err, data) {
+                        console.log("update status of referal", data)
+                      })
+                    },
+                    function(done) {
+                      referal.find({
+                        referral: refResult[0].referral
+                      }, function(err, refCountResult) {
+                        if (refCountResult.length % 10 == 0) {
+                          // mail sent to the admin for the amazon gift card
+                          done(null, barber_profile);
+                        } else {
+                          done(null, barber_profile);
+                        }
+                      })
+                    }
+                  ])
+                } else {
+                  done(null, barber_profile);
+                }
+              })
+            } else {
+              done(null, barber_profile);
+            }
           } else {
             done(null, barber_profile);
           }
-        }
-        else{
-          done(null, barber_profile);
-        }
         })
       },
       function(barber_profile, done) {
@@ -1106,49 +1109,49 @@ let checkReference = function(objFind) {
         }).sort({
           created_date: 1
         }).exec(function(refErr, refResult) {
-          console.log("if barber reference ",refErr, refResult);
-          if(refResult){
-          if (refResult.length > 0) {
-            appointment.find({
-              customer_id: barber_profile._id,
-              appointment_status: "completed"
-            }, function(apointErr, apointEesult) {
-              console.log("Total appointment of barber", apointEesult.length)
-              if (apointEesult.length == 1) {
-                console.log("first appointment of the customer");
-                async.waterfall([
-                  function(done) {
-                    referal.update({
-                      _id: refResult[0]._id
-                    }, {
-                      $set: {
-                        is_refer_code_used: true
-                      }
-                    }).exec(function(err, data) {
-                      console.log("update status of referal", data)
-                    })
-                  },
-                  function(done) {
-                    referal.find({
-                      referral: refResult[0].referral
-                    }, function(err, refCountResult) {
-                      if (refCountResult.length % 10 == 0) {
-                        // mail sent to the admin for the amazon gift card
-                        done(null);
-                      } else {
-                        done(null);
-                      }
-                    })
-                  }
-                ])
-              } else {
-                done(null);
-              }
-            })
-          } else {
-            done(null);
+          console.log("if barber reference ", refErr, refResult);
+          if (refResult) {
+            if (refResult.length > 0) {
+              appointment.find({
+                customer_id: barber_profile._id,
+                appointment_status: "completed"
+              }, function(apointErr, apointEesult) {
+                console.log("Total appointment of barber", apointEesult.length)
+                if (apointEesult.length == 1) {
+                  console.log("first appointment of the customer");
+                  async.waterfall([
+                    function(done) {
+                      referal.update({
+                        _id: refResult[0]._id
+                      }, {
+                        $set: {
+                          is_refer_code_used: true
+                        }
+                      }).exec(function(err, data) {
+                        console.log("update status of referal", data)
+                      })
+                    },
+                    function(done) {
+                      referal.find({
+                        referral: refResult[0].referral
+                      }, function(err, refCountResult) {
+                        if (refCountResult.length % 10 == 0) {
+                          // mail sent to the admin for the amazon gift card
+                          done(null);
+                        } else {
+                          done(null);
+                        }
+                      })
+                    }
+                  ])
+                } else {
+                  done(null);
+                }
+              })
+            } else {
+              done(null);
+            }
           }
-        }
         })
       }
     ])
@@ -1272,8 +1275,8 @@ exports.allappointment = function(req, res) {
   var searchStr = ""
   console.log("skipNo", skipNo);
   console.log("count", count);
-  if(req.body.applyFilter){
-    query.appointment_status = req.body.applyFilter 
+  if (req.body.applyFilter) {
+    query.appointment_status = req.body.applyFilter
   }
   if (req.query.search) {
     searchStr = req.query.search;
@@ -1531,9 +1534,9 @@ exports.countappoint = function(req, res) {
         parallelCb(null, result)
       });
     },
-    five:function(parallelCb){
+    five: function(parallelCb) {
       appointment.find({
-        appointment_status:"decline",
+        appointment_status: "decline",
         appointment_date: {
           $gte: new Date(appointmentStartdate),
           $lt: new Date(appointmentEnddate)
@@ -1550,7 +1553,7 @@ exports.countappoint = function(req, res) {
         "confirmAppoint": results.two.length,
         "completedAppoint": results.three.length,
         "cancelAppoint": results.four.length,
-        "declineAppoint":results.five.length
+        "declineAppoint": results.five.length
       }
     })
   });
@@ -1561,14 +1564,14 @@ exports.appointmentcount = function(req, res) {
   async.parallel({
     one: function(parallelCb) {
       appointment.find({
-        appointment_status:"completed"
+        appointment_status: "completed"
       }, function(err, result) {
         parallelCb(null, result)
       });
     },
     two: function(parallelCb) {
       appointment.find({
-        appointment_status:"cancel"
+        appointment_status: "cancel"
       }, function(err, result) {
         parallelCb(null, result)
       });
@@ -1582,7 +1585,7 @@ exports.appointmentcount = function(req, res) {
     },
     four: function(parallelCb) {
       appointment.find({
-        appointment_status:"decline"
+        appointment_status: "decline"
       }, function(err, result) {
         parallelCb(null, result)
       });
@@ -1594,7 +1597,7 @@ exports.appointmentcount = function(req, res) {
         "totalCompleted": results.one.length,
         "totalCancel": results.two.length,
         "totalConfirm": results.three.length,
-        "totalDecline":results.four.length
+        "totalDecline": results.four.length
       }
     })
   });
@@ -1611,9 +1614,26 @@ exports.currentAppointment = function(req, res) {
         "err": err
       })
     } else {
-      res.status(200).send({
-        "msg": constantObj.messages.successRetreivingData,
-        "data": data
+      console.log(data);
+      user.findOne({
+        _id: data.barber_id._id,
+        "ratings.appointment_id": data._id
+      }, {
+        "ratings.$": 1
+      }, function(err, ratingData) {
+        if (ratingData) {
+          res.status(200).send({
+            "msg": constantObj.messages.successRetreivingData,
+            "data": data,
+            "rating": ratingData.ratings[0].score
+          })
+        } else {
+          res.status(200).send({
+            "msg": constantObj.messages.successRetreivingData,
+            "data": data,
+            "rating": "No rating."
+          })
+        }
       })
     }
   })

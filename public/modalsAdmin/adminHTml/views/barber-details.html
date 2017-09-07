@@ -57,7 +57,7 @@
                                 </div> -->
                                 <table id="example1" class="table table-bordered table-striped" ng-table="tableParams" show-filter="isFiltersVisible" style="margin-top: 10px;">
                                     <tr ng-repeat="user in data track by $index">
-                                        <td data-title="'Name'" sortable="'name'"><i class="fa fa-info-circle" data-toggle="tooltip" title="{{user.address}}" aria-hidden="true"></i>
+                                        <td data-title="'Name'" sortable="'name'"><i class="fa fa-info-circle" data-toggle="tooltip" title="{{user.address}},{{user.city}},{{user.state}}" aria-hidden="true"></i>
                                         {{user.name}}</td>
                                         <td data-title="'Add'">
                                             <button ng-click="addAssociateShop(user._id)" title="Add shop" style="border: none;background: none;margin: 4px 10px;font-size: 24px;color: #359a0d;"><i class="fa fa-plus-circle"></i></button>

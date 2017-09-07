@@ -51,7 +51,6 @@ app_admin.controller("AdminCtrl", [
         var month = [];
         for(var i = firstDay.getMonth(); i<12 ; i++)
         {
-          
           month.push(i);
         }
         for(var j = 0 ; j < firstDay.getMonth(); j++)

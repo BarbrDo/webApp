@@ -258,6 +258,7 @@ app_admin.controller("AdminCtrl", [
       Admin.currentAppointmentData(obj).then(function(response) {
         $scope.loaderStart = false;
         $scope.viewappoint = response.data.data;
+        console.log(response.data.data)
       })
     }
     $scope.appointdetail = function(appointment) {

@@ -45,6 +45,7 @@ app_admin.controller("AdminCtrl", [
         $scope.labels = [
           "Jan", "Feb", "March", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"
         ];
+        $scope.colors = ["rgb(204,0,0)","rgb(0,0,204)","rgb(153,76,0)"];
         $scope.series = ['Customers','Barbers','Shops'];
         $scope.data = [response.data.customer,response.data.barber,response.data.shop];
       })
@@ -52,8 +53,6 @@ app_admin.controller("AdminCtrl", [
 
     $scope.datasetOverride = [{
       yAxisID: 'y-axis-1'
-    }, {
-      yAxisID: 'y-axis-2'
     }];
     $scope.options = {
       scales: {
@@ -62,11 +61,6 @@ app_admin.controller("AdminCtrl", [
           type: 'linear',
           display: true,
           position: 'left'
-        }, {
-          id: 'y-axis-2',
-          type: 'linear',
-          display: true,
-          position: 'right'
         }]
       }
     };

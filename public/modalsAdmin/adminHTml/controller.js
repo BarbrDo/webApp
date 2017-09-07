@@ -21,14 +21,12 @@ app_admin.controller("AdminCtrl", [
     if ($localStorage.loggedIn == true) {
       $rootScope.LoginUser = true;
       $rootScope.loggedInUserDetail = $localStorage.loginInfo;
-      console.log("path", $localStorage.imgPath)
       if ($rootScope.loggedInUserDetail) {
         $rootScope.imageDisplay = $localStorage.imgPath + $localStorage.loginInfo.picture
       } else {
         $rootScope.imageDisplay = "http://www.psdgraphics.com/file/user-icon.jpg"
       }
 
-      console.log($rootScope.imageDisplay);
     } else {
       $rootScope.LoginUser = false;
     }
@@ -40,14 +38,32 @@ app_admin.controller("AdminCtrl", [
 
     }
 
-    $scope.getGraph = function(){
-      Admin.getGraph().then(function(response){
-        $scope.labels = [
-          "Jan", "Feb", "March", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"
+    $scope.getGraph = function() {
+      Admin.getGraph().then(function(response) {
+        var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June",
+          "July", "Aug", "Sept", "Oct", "Nov", "Dec"
         ];
-        $scope.colors = ["rgb(204,0,0)","rgb(0,0,204)","rgb(153,76,0)"];
-        $scope.series = ['Customers','Barbers','Shops'];
-        $scope.data = [response.data.customer,response.data.barber,response.data.shop];
+        var d = new Date();
+        var date = new Date();
+        date.setFullYear(date.getFullYear() - 1);
+        date.setMonth(date.getMonth() + 1);
+        var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+        var month = [];
+        for(var i = firstDay.getMonth(); i<12 ; i++)
+        {
+          
+          month.push(i);
+        }
+        for(var j = 0 ; j < firstDay.getMonth(); j++)
+        {
+          month.push(j)
+        }
+        $scope.labels = [
+          monthNames[month[0]], monthNames[month[1]], monthNames[month[2]], monthNames[month[3]], monthNames[month[4]], monthNames[month[5]], monthNames[month[6]], monthNames[month[7]], monthNames[month[8]], monthNames[month[9]], monthNames[month[10]], monthNames[month[11]]
+        ];
+        $scope.colors = ["rgb(204,0,0)", "rgb(0,0,204)", "rgb(153,76,0)"];
+        $scope.series = ['Customers', 'Barbers', 'Shops'];
+        $scope.data = [response.data.customer, response.data.barber, response.data.shop];
       })
     }
 
@@ -75,7 +91,6 @@ app_admin.controller("AdminCtrl", [
     $scope.loginAdmin = function() {
       Admin.login($scope.loginUser).then(function(response) {
         toastr.success('Welcome Admin');
-        console.log(response.data)
         $localStorage.loginInfo = response.data.user
         $localStorage.imgPath = response.data.imagesPath;
         $localStorage.loggedIn = true;
@@ -168,7 +183,6 @@ app_admin.controller("AdminCtrl", [
     $scope.viewappointment = function() {
       $scope.loaderStart = true;
       Admin.custAppoints($stateParams.id).then(function(response) {
-        console.log(response)
         $scope.loaderStart = false;
         $rootScope.upcoming = response.data.data.upcoming;
         $rootScope.complete = response.data.data.complete;
@@ -239,7 +253,6 @@ app_admin.controller("AdminCtrl", [
 
     $scope.addcustomer = function(params) {
       $scope.loaderStart = true;
-      console.log($scope.user)
       Admin.addCustomer($scope.user).then(function(response) {
         $scope.loaderStart = false;
         $state.go(params);
@@ -802,7 +815,6 @@ app_admin.controller("AdminCtrl", [
       });
 
       Admin.countBarber().then(function(response) {
-        console.log("count", response);
         $rootScope.totalbarber = response.data.total;
         $scope.onlineBarber = response.data.online;
         $scope.offlineBarber = response.data.offline;
@@ -952,10 +964,9 @@ app_admin.controller("AdminCtrl", [
         $scope.numberOfCuts = response.data.cuts;
         $scope.ratings = response.data.ratings;
         $scope.barberdetail.created_date = response.data.data[0].created_date;
-        console.log("oooooo", response);
         $rootScope.images = response.data.data[0].gallery;
         $rootScope.barbernow = response.data.data[0]._id
-        // $rootScope.pathimg = "http://52.39.212.226:4062/uploadedFiles/";
+          // $rootScope.pathimg = "http://52.39.212.226:4062/uploadedFiles/";
         $rootScope.pathimg = response.data.imagesPath;
         $scope.barberdetail.endDate = new Date(response.data.data[0].subscription_end_date);
         $scope.showShops = [];
@@ -976,7 +987,6 @@ app_admin.controller("AdminCtrl", [
             // $scope.loaderStart = true;
             Admin.getAllShops(passingObj).then(function(response) {
               $scope.loaderStart = false;
-              console.log("all shops", response.data.data);
               for (var i = 0; i < $scope.barberdetail.associateShops.length; i++) {
                 for (var j = 0; j < response.data.data.length; j++) {
                   // console.log(response.data.data[j].id, $scope.barberdetail.associateShops[i]._id)
@@ -987,8 +997,7 @@ app_admin.controller("AdminCtrl", [
                 }
               }
               $scope.data = response.data.data;
-              console.log("========++++++++++========", response.data.data)
-              
+
             })
           }
         })
@@ -1007,9 +1016,9 @@ app_admin.controller("AdminCtrl", [
     $scope.delpic = function(pic) {
       $scope.loaderStart = true;
       // console.log("---------------",$rootScope.barbernow)
-      Admin.deleteImage(pic,$rootScope.barbernow)
+      Admin.deleteImage(pic, $rootScope.barbernow)
         .then(function(response) {
-           $scope.barberDetails();
+          $scope.barberDetails();
           toastr.success('Deleted')
         }).catch(function(result) {
           toastr.error('Error in deleting Image');
@@ -1029,9 +1038,6 @@ app_admin.controller("AdminCtrl", [
       }, {
         counts: [],
         getData: function($defer, params) {
-          console.log("params url", params.url());
-          console.log("params sorting", params.sorting());
-          console.log("paramspage", params.page());
           passingObj.page = params.page();
           passingObj.count = params.count();
           passingObj.sort = params.sorting();

@@ -1438,10 +1438,16 @@ exports.subscribe = function(req, res) {
   })
 }
 exports.getGraphData = function(req, res) {
+  var d = new Date();
+  var date = new Date();
+  date.setFullYear(date.getFullYear() - 1);
+  date.setMonth(date.getMonth()+1);
+  var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+  console.log("last year",firstDay)
   User.aggregate([{
     $match: {
       "created_date": {
-        $gte: new Date(new Date().getFullYear(), 0, 1),
+        $gte: firstDay,
         $lt: new Date()
       }
     }
@@ -1473,7 +1479,7 @@ exports.getGraphData = function(req, res) {
     Shop.aggregate([{
       $match: {
         "created_date": {
-          $gte: new Date(new Date().getFullYear(), 0, 1),
+          $gte: firstDay,
           $lt: new Date()
         }
       }
@@ -1500,8 +1506,8 @@ exports.getGraphData = function(req, res) {
         }
       }
     }]).exec(function(shopErr, shopData) {
-      console.log(userData);
-      console.log(shopData);
+      console.log("================",userData);
+      console.log("---------------",shopData);
       let customer = [],
         barber = [],
         shop = [];
@@ -1538,7 +1544,7 @@ exports.getGraphData = function(req, res) {
         }
       }
 
-      console.log(customer);
+      console.log("customer",customer);
       console.log(barber);
       console.log(shop);
       return res.status(200).send({

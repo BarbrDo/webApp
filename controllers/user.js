@@ -246,9 +246,13 @@ let accountActivateMailFunction = function(req, res, user, resetUrl) {
   console.log(user);
   if (!user.facebook) {
     nodemailerMailgun.sendMail(mailOptions, function(err, info) {
-      res.send({
-        msg: 'Thanks for signing up with BarbrDo.'
-      });
+      
+    });
+    res.status(200).send({
+      msg: 'Thanks for signing up with BarbrDo.',
+      user: user,
+      token: generateToken(user),
+      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
     });
   } else {
     res.status(200).send({
@@ -904,7 +908,6 @@ exports.checkFaceBook = function(req, res) {
       });
     } else {
       if (response.length > 0) {
-
         User.update({
           _id: response._id
         }, {
@@ -912,8 +915,7 @@ exports.checkFaceBook = function(req, res) {
             "device_type": device_type,
             "device_id": device_token,
             "latLong": [req.headers.device_longitude, req.headers.device_latitude],
-            "is_active": false,
-            'remark': "Subscription required."
+            "is_active": false
           }
         })
 

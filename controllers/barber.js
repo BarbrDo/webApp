@@ -1113,6 +1113,7 @@ exports.rateBarber = function(req, res) {
   req.assert("appointment_id", "Appointment _id is required.").notEmpty();
   req.assert("barber_id", "Barber id is required.").notEmpty();
   req.assert("score", "score is required.").notEmpty();
+  req.assert("next_in_chair","Next in chair is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -1127,7 +1128,8 @@ exports.rateBarber = function(req, res) {
       "ratings": {
         "rated_by": req.headers.user_id,
         "score": parseInt(req.body.score),
-        "appointment_id": req.body.appointment_id
+        "appointment_id": req.body.appointment_id,
+        "next_in_chair":req.body.next_in_chair
       }
     }
   }

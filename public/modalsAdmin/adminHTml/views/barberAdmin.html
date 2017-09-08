@@ -68,9 +68,22 @@
                         </td>
                         <td data-title="'Is Available'">
                             <span ng-hide="user.is_available!=true">
-              <a title="Not Available" ng-click="notavailable(user._id)" data-toggle="modal" data-target="#notavailable"><i class="fa fa-toggle-on" style="font-size: 30px;color:green;" aria-hidden="true"></i></a></span>
-                            <span ng-show="user.is_available==false">
-              <a title="Available" ng-click="available(user._id)" data-toggle="modal" data-target="#available"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;color:red;"></i></a> </span></td>
+                                <span ng-if="user.is_online==true">
+                                <a title="Not Available" ng-click="notavailable(user._id)" data-toggle="modal" data-target="#notavailable"><i class="fa fa-toggle-on" style="font-size: 30px;color:green;" aria-hidden="true"></i></a>
+                                </span>
+                                <span ng-if="user.is_online!=true">
+                                <i class="fa fa-toggle-on" style="font-size: 30px;color:green;" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span ng-show="user.is_available==false" >
+                                <span ng-if="user.is_online==true">
+                                <a title="Available" ng-click="available(user._id)" data-toggle="modal" data-target="#available"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;color:red;"></i></a> 
+                                </span>
+                                <span ng-if="user.is_online!=true">
+                                <i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;color:red;"></i>
+                                </span>
+                             </span>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -137,37 +150,35 @@
         </div>
     </div>
 </div>
-
- <div class="modal" id="available" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-body">
-                    <p>
-                        Are You Sure!!!!!! You want to Available 
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="goavailable()" data-toggle="modal" >Yes</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
-                </div>
+<div class="modal" id="available" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>
+                    Are You Sure!!!!!! You want to Available
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="goavailable()" data-toggle="modal">Yes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
             </div>
         </div>
     </div>
-
-    <div class="modal" id="notavailable" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-body">
-                    <p>
-                        Are You Sure!!!!!! You want to UnAvailable 
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="gounavailable()" data-toggle="modal" >Yes</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
-                </div>
+</div>
+<div class="modal" id="notavailable" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>
+                    Are You Sure!!!!!! You want to UnAvailable
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="gounavailable()" data-toggle="modal">Yes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button>
             </div>
         </div>
     </div>
+</div>

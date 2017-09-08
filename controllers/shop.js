@@ -1924,33 +1924,66 @@ exports.shopRequest = function(req, res) {
     req.assert("zip", "City is required").notEmpty();
     req.assert("address", "Address is required.").notEmpty();
     req.assert("street_address", "Street address is required.").notEmpty();
-    req.assert("latitude", "latitude is required").notEmpty();
-    req.assert("longitude", "longitude is required").notEmpty();
+    // req.assert("latitude", "latitude is required").notEmpty();
+    // req.assert("longitude", "longitude is required").notEmpty();
     var errors = req.validationErrors();
+
+    console.log(errors);
     if (errors) {
         return res.status(400).send({
             msg: "error in your request",
             err: errors
         });
     }
-    let saveData = req.body;
-    saveData.zip = parseInt(req.body.zip);
-    saveData.request_by = req.headers.user_id;
-    saveData.latLong = [parseFloat(req.body.longitude), parseFloat(req.body.latitude)];
-    console.log("saveData", saveData);
-    shopRequest(saveData).save(function(err, results) {
-        if (err) {
-            return res.status(400).send({
-                msg: constantObj.messages.errorInSave,
-                err: err
-            })
-        } else {
-            return res.status(200).send({
-                msg: "Success! Request has been sent to BarbrDo.",
-                data: results
-            })
-        }
-    })
+
+    if (!(req.body.latitude && req.body.longitude)) {
+        geocoder.geocode(req.body.zip, function(errGeo, latlng) {
+            if (errGeo) {
+                return res.status(400).send({
+                    msg: constantObj.messages.errorInSave
+                })
+            } else {
+                let saveData = req.body;
+                saveData.latLong = [latlng.results[0].geometry.location.lng, latlng.results[0].geometry.location.lat];
+                saveData.zip = parseInt(req.body.zip);
+                saveData.request_by = req.headers.user_id;
+                console.log("saveData", saveData);
+                shopRequest(saveData).save(function(err, results) {
+                    if (err) {
+                        return res.status(400).send({
+                            msg: constantObj.messages.errorInSave,
+                            err: err
+                        })
+                    } else {
+                        return res.status(200).send({
+                            msg: "Success! Request has been sent to BarbrDo.",
+                            data: results
+                        })
+                    }
+                })
+
+            }
+        });
+    } else {
+        let saveData = req.body;
+        saveData.zip = parseInt(req.body.zip);
+        saveData.request_by = req.headers.user_id;
+        saveData.latLong = [parseFloat(req.body.longitude), parseFloat(req.body.latitude)];
+        console.log("saveData", saveData);
+        shopRequest(saveData).save(function(err, results) {
+            if (err) {
+                return res.status(400).send({
+                    msg: constantObj.messages.errorInSave,
+                    err: err
+                })
+            } else {
+                return res.status(200).send({
+                    msg: "Success! Request has been sent to BarbrDo.",
+                    data: results
+                })
+            }
+        })
+    }
 }
 exports.shopinvites = function(req, res) {
     var page = parseInt(req.query.page) || 1;

@@ -469,6 +469,12 @@ angular.module('barbrdo').factory('Admin', function($http) {
     updatePassword:function(data){
       return $http.post('/api/v2/updatePassword', data);
     },
+    available:function(data){
+      return $http.post('/api/v2/barberavailable/'+data);
+    },
+    unavailable:function(data){
+      return $http.post('/api/v2/barberunavailable/'+data);
+    },
     getGraph:function(data){
       return $http.post('/api/v2/getGraphData', data);
     }

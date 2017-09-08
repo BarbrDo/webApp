@@ -698,8 +698,8 @@ exports.barberdetail = function(req, res) {
       mobile_number: "$mobile_number",
       created_date: "$created_date",
       is_deleted: "$is_deleted",
-      bio:"$bio",
-      license_number:"$license_number",
+      bio: "$bio",
+      license_number: "$license_number",
       is_active: "$is_active",
       is_online: "$is_online",
       is_available: "$is_available",
@@ -754,13 +754,13 @@ exports.barberdetail = function(req, res) {
             //   "msg": constantObj.messages.successRetreivingData,
             //   "data": result
             // })
-              findRatingAndCuts(req,res,result);
+            findRatingAndCuts(req, res, result);
           } else {
             // res.status(200).send({
             //   "msg": constantObj.messages.successRetreivingData,
             //   "data": result
             // })
-              findRatingAndCuts(req,res,result);
+            findRatingAndCuts(req, res, result);
           }
         }
       })
@@ -792,19 +792,19 @@ let findRatingAndCuts = function(req, res, result) {
     }, function(appErr, appData) {
       if (data.length > 0) {
         res.status(200).send({
-              "msg": constantObj.messages.successRetreivingData,
-              "data": result,
-              "cuts":appData.length,
-              "ratings":data[0].sum / data[0].count,
-              "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+          "msg": constantObj.messages.successRetreivingData,
+          "data": result,
+          "cuts": appData.length,
+          "ratings": data[0].sum / data[0].count,
+          "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
         })
       } else {
         res.status(200).send({
-              "msg": constantObj.messages.successRetreivingData,
-              "data": result,
-              "cuts":appData.length,
-              "ratings":0,
-              "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+          "msg": constantObj.messages.successRetreivingData,
+          "data": result,
+          "cuts": appData.length,
+          "ratings": 0,
+          "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
         })
       }
 
@@ -857,8 +857,12 @@ exports.availableBarbernew = function(req, res) {
   user.aggregate([{
     $project: {
       _id: "$_id",
-      first_name: {"$toUpper": "$first_name"},
-      last_name: {"$toUpper": "$last_name"},
+      first_name: {
+        "$toUpper": "$first_name"
+      },
+      last_name: {
+        "$toUpper": "$last_name"
+      },
       email: "$email",
       mobile_number: "$mobile_number",
       ratings: "$ratings",
@@ -1113,7 +1117,7 @@ exports.rateBarber = function(req, res) {
   req.assert("appointment_id", "Appointment _id is required.").notEmpty();
   req.assert("barber_id", "Barber id is required.").notEmpty();
   req.assert("score", "score is required.").notEmpty();
-  req.assert("next_in_chair","Next in chair is required.").notEmpty();
+  req.assert("next_in_chair", "Next in chair is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -1129,7 +1133,7 @@ exports.rateBarber = function(req, res) {
         "rated_by": req.headers.user_id,
         "score": parseInt(req.body.score),
         "appointment_id": req.body.appointment_id,
-        "next_in_chair":req.body.next_in_chair
+        "next_in_chair": req.body.next_in_chair
       }
     }
   }
@@ -2084,48 +2088,93 @@ exports.referDetail = function(req, res) {
 }
 
 exports.deleteImages = function(req, res) {
-    req.checkHeaders("user_id", "").notEmpty();
-    req.checkParams("image_id", "Image _id is required").notEmpty();
-    let errors = req.validationErrors();
-    if (errors) {
-        return res.status(400).send({
-            msg: "error in your request",
-            err: errors
-        });
+  req.checkHeaders("user_id", "").notEmpty();
+  req.checkParams("image_id", "Image _id is required").notEmpty();
+  let errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send({
+      msg: "error in your request",
+      err: errors
+    });
+  }
+  // let filePath = "../public/uploadedFiles/" + req.body.image_name;
+  // fs.unlinkSync(filePath);
+  user.update({
+    "_id": req.headers.user_id
+  }, {
+    $pull: {
+      "gallery": {
+        "_id": req.params.image_id
+      }
     }
-    // let filePath = "../public/uploadedFiles/" + req.body.image_name;
-    // fs.unlinkSync(filePath);
-    user.update({
-        "_id": req.headers.user_id
-    }, {
-        $pull: {
-            "gallery": {
-                "_id": req.params.image_id
-            }
-        }
-    }, function(error, result) {
-        if (error) {
-            res.status(400).send({
-                msg: constantObj.messages.errorRetreivingData,
-                "err": err
-            });
+  }, function(error, result) {
+    if (error) {
+      res.status(400).send({
+        msg: constantObj.messages.errorRetreivingData,
+        "err": err
+      });
+    } else {
+      user.findOne({
+        _id: req.headers.user_id
+      }, function(err, response) {
+        if (err) {
+          res.status(400).send({
+            msg: constantObj.messages.errorRetreivingData,
+            "err": err
+          });
         } else {
-            user.findOne({
-                _id: req.headers.user_id
-            }, function(err, response) {
-                if (err) {
-                    res.status(400).send({
-                        msg: constantObj.messages.errorRetreivingData,
-                        "err": err
-                    });
-                } else {
-                    res.status(200).send({
-                        msg: 'Successfully updated fields.',
-                        "user": response,
-                        "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
-                    });
-                }
-            })
+          res.status(200).send({
+            msg: 'Successfully updated fields.',
+            "user": response,
+            "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
+          });
         }
-    })
+      })
+    }
+  })
+}
+
+exports.barberunavailable = function(req, res) {
+  user.update({
+    _id: req.params._id
+  }, {
+    $set: {
+      is_available: false
+    }
+  }, function(err, data) {
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.errorRetreivingData,
+        "err": err
+      });
+    } else {
+      res.status(200).send({
+        msg: 'Successfully updated fields.',
+        "user": data,
+      });
+    }
+  })
+}
+
+
+exports.barberavailable = function(req, res) {
+  user.update({
+    _id: req.params._id
+  }, {
+    $set: {
+      is_available: true
+    }
+  }, function(err, data) {
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.errorRetreivingData,
+        "err": err
+      });
+    } else {
+      res.status(200).send({
+        msg: 'Successfully updated fields.',
+        "user": data,
+      });
+    }
+  })
 }

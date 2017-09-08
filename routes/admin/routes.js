@@ -15,12 +15,12 @@ module.exports = function(app, express) {
     app.get('/api/v2/appointmentcount', customerController.appointmentcount);
 
     // admin
-    app.post('/api/v2/getGraphData',userController.getGraphData);
-    app.post('/api/v2/loginadmin',adminController.login);
-    app.post('/api/v2/getAdminInfo',adminController.getAdminInfo);
-    
-    app.post('/api/v2/updatePassword',adminController.updatePassword);
-    app.get('/api/v2/allAdmin',adminController.allAdmin);
+    app.post('/api/v2/getGraphData', userController.getGraphData);
+    app.post('/api/v2/loginadmin', adminController.login);
+    app.post('/api/v2/getAdminInfo', adminController.getAdminInfo);
+
+    app.post('/api/v2/updatePassword', adminController.updatePassword);
+    app.get('/api/v2/allAdmin', adminController.allAdmin);
 
     //Updation Of Customer
     app.put('/api/v2/deletecustomer/:cust_id', customerController.deletecustomer);
@@ -32,7 +32,8 @@ module.exports = function(app, express) {
     app.post('/api/v2/allcustomers', customerController.listcustomers);
     app.post('/api/v2/allappointment', customerController.allappointment);
     app.get('/api/v2/appointment/current/:_id', customerController.currentAppointment);
-    app.put('/api/v2/barber/updateSubscription',userController.updateSubscribeDate);
+    app.put('/api/v2/barber/updateSubscription', userController.updateSubscribeDate);
+
 
 
     //Updation Of Barber
@@ -46,6 +47,8 @@ module.exports = function(app, express) {
     app.post('/api/v2/allbarbers/new', barberController.availableBarbernew);
     app.post('/api/v2/admin/barber/goOnline', barberController.goOnline); // barber go onlint
     app.put('/api/v2/admin/barber/goOffline', barberController.goOffline); // barber go offline
+    app.post('/api/v2/barberunavailable/:_id', barberController.barberunavailable);
+    app.post('/api/v2/barberavailable/:_id', barberController.barberavailable);
 
     //Updation Of Shop
     app.put('/api/v2/deleteshop/:shop_id', shopController.deleteshop);
@@ -55,7 +58,7 @@ module.exports = function(app, express) {
     app.put('/api/v2/disapproveshop/:shop_id', shopController.disapproveshop);
     app.put('/api/v2/verifyshop/:shop_id', shopController.verifyshop);
     app.get('/api/v2/allshops', shopController.listshops);
-    app.post('/api/v2/allshopsnew',shopController.listshopsnew)
+    app.post('/api/v2/allshopsnew', shopController.listshopsnew)
     app.get('/api/v2/shopdetail/:shop_id', shopController.shopdetail);
     app.get('/api/v2/shops', shopController.allshops);
     app.post('/api/v2/shops', shopController.allshopsnew);
@@ -64,12 +67,12 @@ module.exports = function(app, express) {
     app.get('/api/v2/currentshopinvite/:_id', shopController.currentshopinvite);
     app.get('/api/v2/currentshopupdate/:_id', shopController.currentshopupdate);
     app.get('/api/v2/currentshopdelete/:_id', shopController.currentshopdelete);
-    app.post('/api/v2/shop/save',shopController.saveShop);
+    app.post('/api/v2/shop/save', shopController.saveShop);
 
     // refer app module admin
     app.get('/api/v2/getReferUsers', barberController.getReferUsers)
     app.post('/api/v2/referDetail', barberController.referDetail)
-    app.post('/api/v2/giftCard',adminController.giftCard)
+    app.post('/api/v2/giftCard', adminController.giftCard)
 
     app.get('/api/v2/barber/cutingservices', barberController.showServices);
 

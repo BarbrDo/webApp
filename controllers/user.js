@@ -246,9 +246,13 @@ let accountActivateMailFunction = function(req, res, user, resetUrl) {
   console.log(user);
   if (!user.facebook) {
     nodemailerMailgun.sendMail(mailOptions, function(err, info) {
-      res.send({
-        msg: 'Thanks for signing up with BarbrDo.'
-      });
+
+    });
+    res.status(200).send({
+      msg: 'Thanks for signing up with BarbrDo.',
+      user: user,
+      token: generateToken(user),
+      "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"
     });
   } else {
     res.status(200).send({
@@ -904,7 +908,6 @@ exports.checkFaceBook = function(req, res) {
       });
     } else {
       if (response.length > 0) {
-
         User.update({
           _id: response._id
         }, {
@@ -912,8 +915,7 @@ exports.checkFaceBook = function(req, res) {
             "device_type": device_type,
             "device_id": device_token,
             "latLong": [req.headers.device_longitude, req.headers.device_latitude],
-            "is_active": false,
-            'remark': "Subscription required."
+            "is_active": false
           }
         })
 
@@ -1438,10 +1440,16 @@ exports.subscribe = function(req, res) {
   })
 }
 exports.getGraphData = function(req, res) {
+  let d = new Date();
+  let date = new Date();
+  date.setFullYear(date.getFullYear() - 1);
+  date.setMonth(date.getMonth() + 1);
+  let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+  console.log("last year", d.getFullYear())
   User.aggregate([{
     $match: {
       "created_date": {
-        $gte: new Date(new Date().getFullYear(), 0, 1),
+        $gte: firstDay,
         $lt: new Date()
       }
     }
@@ -1457,13 +1465,13 @@ exports.getGraphData = function(req, res) {
         $dayOfMonth: "$created_date"
       },
       user_type: 1
-
     }
   }, {
     $group: {
       _id: {
         "month": "$month",
-        "user_type": "$user_type"
+        "user_type": "$user_type",
+        "year": "$year"
       },
       count: {
         "$sum": 1
@@ -1473,7 +1481,7 @@ exports.getGraphData = function(req, res) {
     Shop.aggregate([{
       $match: {
         "created_date": {
-          $gte: new Date(new Date().getFullYear(), 0, 1),
+          $gte: firstDay,
           $lt: new Date()
         }
       }
@@ -1493,27 +1501,30 @@ exports.getGraphData = function(req, res) {
       $group: {
         _id: {
           "month": "$month",
-          "user_type": "$user_type"
+          "user_type": "$user_type",
+          "year": "$year"
         },
         count: {
           "$sum": 1
         }
       }
     }]).exec(function(shopErr, shopData) {
-      console.log(userData);
-      console.log(shopData);
+      console.log("userdata================", userData);
+      console.log("shopdata---------------", shopData);
       let customer = [],
         barber = [],
         shop = [];
-      for (var i = 1; i <= 12; i++) {
+
+
+      for (var i = firstDay.getMonth() + 1; i <= 12; i++) {
         let customerCount = 0;
         let barberCount = 0;
         for (var j = 0; j < userData.length; j++) {
-          if (i == userData[j]._id.month && userData[j]._id.user_type == "customer") {
+          if (i == userData[j]._id.month && userData[j]._id.user_type == "customer" && firstDay.getFullYear() == userData[j]._id.year) {
             customer.push(userData[j].count);
             customerCount = 1
           }
-          if (i == userData[j]._id.month && userData[j]._id.user_type == "barber") {
+          if (i == userData[j]._id.month && userData[j]._id.user_type == "barber" && firstDay.getFullYear() == userData[j]._id.year) {
             barber.push(userData[j].count);
             barberCount = 1;
           }
@@ -1525,10 +1536,43 @@ exports.getGraphData = function(req, res) {
           barber.push(0);
         }
       }
-      for (var i = 1; i <= 12; i++) {
+      for (var k = 1; k <= firstDay.getMonth(); k++) {
+        let customerCount = 0;
+        let barberCount = 0;
+        for (var j = 0; j < userData.length; j++) {
+          if (k == userData[j]._id.month && userData[j]._id.user_type == "customer" && d.getFullYear() == userData[j]._id.year) {
+            customer.push(userData[j].count);
+            customerCount = 1
+          }
+          if (k == userData[j]._id.month && userData[j]._id.user_type == "barber" && d.getFullYear() == userData[j]._id.year) {
+            barber.push(userData[j].count);
+            barberCount = 1;
+          }
+        }
+        if (customerCount == 0) {
+          customer.push(0);
+        }
+        if (barberCount == 0) {
+          barber.push(0);
+        }
+      }
+
+      for (var i = firstDay.getMonth() + 1; i <= 12; i++) {
         let shopCount = 0;
         for (var j = 0; j < shopData.length; j++) {
-          if (i == shopData[j]._id.month) {
+          if (i == shopData[j]._id.month && firstDay.getFullYear() == shopData[j]._id.year) {
+            shop.push(shopData[j].count);
+            shopCount = 1
+          }
+        }
+        if (shopCount == 0) {
+          shop.push(0);
+        }
+      }
+      for (var k = 1; k <= firstDay.getMonth(); k++) {
+        let shopCount = 0;
+        for (var j = 0; j < shopData.length; j++) {
+          if (k == shopData[j]._id.month && d.getFullYear() == shopData[j]._id.year) {
             shop.push(shopData[j].count);
             shopCount = 1
           }
@@ -1538,7 +1582,7 @@ exports.getGraphData = function(req, res) {
         }
       }
 
-      console.log(customer);
+      console.log("customer", customer);
       console.log(barber);
       console.log(shop);
       return res.status(200).send({

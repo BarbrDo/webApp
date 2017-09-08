@@ -246,7 +246,6 @@ let accountActivateMailFunction = function(req, res, user, resetUrl) {
   console.log(user);
   if (!user.facebook) {
     nodemailerMailgun.sendMail(mailOptions, function(err, info) {
-
     });
     res.status(200).send({
       msg: 'Thanks for signing up with BarbrDo.',
@@ -256,6 +255,7 @@ let accountActivateMailFunction = function(req, res, user, resetUrl) {
     });
   } else {
     res.status(200).send({
+      msg: 'Thanks for signing up with BarbrDo.',
       user: user,
       token: generateToken(user),
       "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"

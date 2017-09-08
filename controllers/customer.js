@@ -1210,14 +1210,26 @@ exports.referapp = function(req, res) {
     if (device_type == 'android') {
       text = constantObj.androidUrl.url;
     }
-    commonObj.sendMail(req.body.referee_email, from, subject, text, function(err, result) {
-      console.log("mail in referapp", err, result)
-      if (err) {
+
+    let saveObj = req.body;
+    saveObj.referral = req.headers.user_id;
+    referal.find(saveObj, function(findErr, findResult) {
+      console.log("findResult length", findResult);
+      if (findResult.length > 0) {
         return res.status(400).send({
-          msg: "Error in sending mail"
+          msg: "You already refer this person. Please try again with another email."
         });
       } else {
-        saveRefferApp(req, res);
+        commonObj.sendMail(req.body.referee_email, from, subject, text, function(err, result) {
+          console.log("mail in referapp", err, result)
+          if (err) {
+            return res.status(400).send({
+              msg: "Error in sending mail"
+            });
+          } else {
+            saveRefferApp(req, res);
+          }
+        })
       }
     })
   } else if (req.body.referee_phone_number) {
@@ -1228,10 +1240,22 @@ exports.referapp = function(req, res) {
     if (device_type == 'android') {
       text = constantObj.androidUrl.url;
     }
-    commonObj.sentMessage(text, req.body.referee_phone_number, function(err, result) {
-      console.log("twilio in referapp", err, result)
-      if (result) {
-        saveRefferApp(req, res);
+
+    let saveObj = req.body;
+    saveObj.referral = req.headers.user_id;
+    referal.find(saveObj, function(findErr, findResult) {
+      console.log("findResult length", findResult);
+      if (findResult.length > 0) {
+        return res.status(400).send({
+          msg: "You already refer this person. Please try again with another email."
+        });
+      } else {
+        commonObj.sentMessage(text, req.body.referee_phone_number, function(err, result) {
+          console.log("twilio in referapp", err, result)
+          if (result) {
+            saveRefferApp(req, res);
+          }
+        })
       }
     })
   } else {
@@ -1244,25 +1268,16 @@ exports.referapp = function(req, res) {
 let saveRefferApp = function(req, res) {
   let saveObj = req.body;
   saveObj.referral = req.headers.user_id;
-  referal.find(saveObj, function(findErr, findResult) {
-    console.log("findResult length", findResult);
-    if (findResult.length > 0) {
+  referal(saveObj).save(function(err, result) {
+    if (err) {
       return res.status(400).send({
-        msg: "You already refer this person. Please try again with another email."
+        msg: constantObj.messages.errorInSave,
+        err: err
       });
     } else {
-      referal(saveObj).save(function(err, result) {
-        if (err) {
-          return res.status(400).send({
-            msg: constantObj.messages.errorInSave,
-            err: err
-          });
-        } else {
-          return res.status(200).send({
-            msg: "You successfully refer the app."
-          });
-        }
-      })
+      return res.status(200).send({
+        msg: "You successfully refer the app."
+      });
     }
   })
 }

@@ -249,7 +249,7 @@ let accountActivateMailFunction = function(req, res, user, resetUrl) {
       
     });
     res.status(200).send({
-      msg: 'Thanks for signing up with BarbrDo.'
+      msg: 'Thanks for signing up with BarbrDo.',
       user: user,
       token: generateToken(user),
       "imagesPath": "http://" + req.headers.host + "/" + "uploadedFiles/"

@@ -1592,6 +1592,8 @@ exports.completeAppointment = function(req, res) {
   req.checkHeaders("user_id", "barber_id is required.").notEmpty();
   req.assert("request_check_in","Request Check in time required.").notEmpty();
   let errors = req.validationErrors();
+  console.log(req.body.request_check_in);
+  console.log(errors);
   if (errors) {
     return res.status(400).send({
       msg: "error in your request",

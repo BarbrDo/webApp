@@ -49,7 +49,13 @@
                              </span>
                         </td>
                         <td data-title="'Appointment Status'">
-                            {{user.appointment_status}}
+                            {{user.appointment_status }}
+                        </td>
+                        <td data-title="'Cancel Time'">
+                            {{user.request_cancel_on | date:'MM/dd/yyyy h:mma' }}
+                        </td>
+                        <td data-title="'Check In'">
+                            {{user.request_check_in | date:'MM/dd/yyyy h:mma'}}
                         </td>
                         <td data-title="'Appointment Date'" sortable="'appointment_date'" filter="{name:'text'}">
                            {{user.appointment_date | date:'MM/dd/yyyy h:mma'}}

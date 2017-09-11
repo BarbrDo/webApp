@@ -1013,7 +1013,7 @@ exports.rateBarber = function(req, res) {
           "appointment_status": "completed"
         }, function(err, data) {
           if (data.length) {
-            let cuts = data.length + 1;
+            let cuts = data.length;
             user.update({
               _id: req.headers.user_id
             }, {
@@ -1071,7 +1071,7 @@ exports.rateBarber = function(req, res) {
           "appointment_status": "completed"
         }, function(err, data) {
           if (data.length) {
-            let cuts = data.length + 1;
+            let cuts = data.length ;
             user.update({
               _id: req.body.barber_id
             }, {
@@ -1500,6 +1500,8 @@ exports.allappointment = function(req, res) {
       totalPrice: "$totalPrice",
       created_date: "$created_date",
       services: "$services",
+      request_cancel_on:"$request_cancel_on",
+      request_check_in:"$request_check_in",
       appointment_status: "$appointment_status",
       is_rating_given: "$is_rating_given",
       cancel_by_user_type: "$cancel_by_user_type",
@@ -1567,6 +1569,8 @@ exports.allappointment = function(req, res) {
           totalPrice: "$totalPrice",
           created_date: "$created_date",
           services: "$services",
+          request_cancel_on:"$request_cancel_on",
+          request_check_in:"$request_check_in",
           appointment_status: "$appointment_status",
           is_rating_given: "$is_rating_given",
           cancel_by_user_type: "$cancel_by_user_type",

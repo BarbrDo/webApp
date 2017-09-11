@@ -822,6 +822,8 @@ exports.listcustomers = function(req, res) {
       is_verified: "$is_verified",
       gallery: "$gallery",
       latLong: "$latLong",
+      customer_rating:"$customer_rating",
+      customer_numberof_cuts:"$customer_numberof_cuts",
       picture: "$picture"
     }
   }]).exec(function(err, data) {
@@ -844,6 +846,8 @@ exports.listcustomers = function(req, res) {
           is_active: "$is_active",
           is_verified: "$is_verified",
           gallery: "$gallery",
+          customer_rating:"$customer_rating",
+          customer_numberof_cuts:"$customer_numberof_cuts",
           latLong: "$latLong",
           picture: "$picture"
         }
@@ -906,7 +910,6 @@ exports.getCustomerLastAppointment = function(req, res) {
 }
 
 exports.rateBarber = function(req, res) {
-  console.log("req.body", req.body);
   req.checkHeaders("user_id", "User id is required.").notEmpty();
   req.assert("appointment_id", "Appointment _id is required.").notEmpty();
   req.assert("appointment_date", "Appointment Date is required").notEmpty();
@@ -932,12 +935,11 @@ exports.rateBarber = function(req, res) {
     }
   }
 
-  checkReference({
-    _id: req.body.appointment_id
-  });
+  // checkReference({
+  //   _id: req.body.appointment_id
+  // });
 
   if (req.body.is_favourite) {
-    console.log("inside is_favourite");
     user.findOne({
       _id: req.headers.user_id,
       "favourite_barber.barber_id": req.body.barber_id
@@ -980,9 +982,125 @@ exports.rateBarber = function(req, res) {
               err: err
             });
           } else {
-            done(err, result);
+          done(err, result);
           }
         }
+      })
+    },
+    function(status, done) {
+      // This callback will upate the no. of ratings of the user and number of cuts
+      console.log("user result callback");
+      user.find({
+        "ratings.rated_by": req.headers.user_id
+      }, {
+        "ratings.$": 1
+      }).exec(function(cusRatingerr, customerRatingData) {
+        console.log(JSON.stringify(customerRatingData));
+        let totalsum = 0;
+        for (var i = 0; i < customerRatingData.length; i++) {
+          totalsum += customerRatingData[i].ratings[0].score;
+        }
+        console.log(totalsum);
+        totalsum += parseInt(req.body.score);
+        console.log(totalsum);
+        let totalRating = totalsum / (customerRatingData.length + 1);
+        console.log(totalRating);
+        appointment.find({
+          customer_id: req.headers.user_id,
+          "appointment_status": "completed"
+        }, function(err, data) {
+          if (data.length) {
+            let cuts = data.length + 1;
+            user.update({
+              _id: req.headers.user_id
+            }, {
+              $set: {
+                customer_numberof_cuts: cuts,
+                customer_rating: totalRating
+              }
+            }, function(err, result) {
+              console.log("update user result", result);
+              if (err) {
+                console.log("rate user error", err)
+              } else {
+                done(err, result);
+              }
+            })
+          } else {
+            user.update({
+              _id: req.headers.user_id
+            }, {
+              $set: {
+                customer_numberof_cuts: 1,
+                customer_rating: totalRating
+              }
+            }, function(err, result) {
+              if (err) {
+                console.log("rate user error", err)
+              } else {
+                done(err, result);
+              }
+            })
+          }
+        })
+      })
+    },
+    function(status, done) {
+      // This callback will update the barber, no of ratings and no of cuts
+        user.find({
+          _id: req.body.barber_id,
+          "ratings.rated_by": req.body.barber_id
+        }, {
+          "ratings.$": 1
+      }).exec(function(cusRatingerr, customerRatingData) {
+        console.log("barber result",JSON.stringify(customerRatingData));
+        let totalsum = 0;
+        for (var i = 0; i < customerRatingData.length; i++) {
+          totalsum += customerRatingData[i].ratings[0].score;
+        }
+        console.log(totalsum);
+        totalsum += parseInt(req.body.score);
+        console.log(totalsum);
+        let totalRating = totalsum / (customerRatingData.length + 1);
+        console.log(totalRating);
+        appointment.find({
+          barber_id: req.body.barber_id,
+          "appointment_status": "completed"
+        }, function(err, data) {
+          if (data.length) {
+            let cuts = data.length + 1;
+            user.update({
+              _id: req.body.barber_id
+            }, {
+              $set: {
+                barber_numberof_cuts: cuts,
+                barber_rating: totalRating
+              }
+            }, function(err, result) {
+              console.log("update user result", result);
+              if (err) {
+                console.log("rate user error", err)
+              } else {
+                done(err, result);
+              }
+            })
+          } else {
+            user.update({
+              _id: req.body.barber_id
+            }, {
+              $set: {
+                barber_numberof_cuts: 1,
+                barber_rating: totalRating
+              }
+            }, function(err, result) {
+              if (err) {
+                console.log("rate user error", err)
+              } else {
+                done(err, result);
+              }
+            })
+          }
+        })
       })
     },
     function(status, done) {

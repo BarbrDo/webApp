@@ -81,6 +81,18 @@ let userSchema = new mongoose.Schema({
     bio: {
         type: String
     },
+    customer_rating:{
+        type:Number
+    },
+    customer_numberof_cuts:{
+        type:Number
+    },
+    barber_rating:{
+        type:Number
+    },
+    barber_numberof_cuts:{
+        type:Number
+    },    
     ratings: [
         {
             rated_by: {

@@ -20,39 +20,6 @@
                         <input ng-model="myobj.search" placeholder="Search for..." ng-change="pageChanged()" />
                     </div>
                 </div>
-                <!-- table class="table">
-                    <thead>
-                        <tr>
-                            <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">Name<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
-                            <th style="font-size: 13px;"><a ng-click="Sort('first_name')" class="first_name" style="color: #ffffff;">E-mail<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
-                            <th style="font-size: 13px;" width="20%"><a ng-click="Sort('created_date')" class="created_date" style="color: #ffffff;">Member Since<span class="glyphicon glyphicon-sort" style="margin-left: 10px; font-size: 12px;"></span></a></th>
-                            <th style="font-size: 13px;" width="20%">Is Online</th>
-                            <th style="font-size: 13px;" width="20%">Is Available</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr data-ng-repeat="barber in barbers| orderBy:sort:reverse " data-ng-class="{danger:!barber.active}">
-                            <td>
-                                <a data-toggle="tooltip" title="View Details" ui-sref="barbersdetail({id:barber._id})">{{barber.first_name}} {{barber.last_name}}</a>
-                            </td>
-                            <td>{{barber.email}}
-                            </td>
-                            <td>
-                                {{barber.created_date | date:dd/mm/yyyy}}
-                            </td>
-                            <td>
-                               
-                                <span ng-hide="barber.is_online!=true">
-              <a title="DEACTIVATE RECORD" ng-click="getBarberId(barber._id)" data-toggle="modal" data-target="#secondModel"><i class="fa fa-toggle-on" style="font-size: 30px;color:green;" aria-hidden="true"></i></a></span>
-                                <span ng-show="barber.is_online==false">
-              <a ng-click="barbrInfo(barber._id)" data-toggle="modal" data-target="#myModal"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;color:red;"></i></a> </span>
-                            </td>
-                            <td>
-                                {{barber.is_available}}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table> -->
                 <table id="example1" class="table table-bordered table-striped" ng-table="tableParams" show-filter="isFiltersVisible">
                     <tr ng-repeat="user in $data track by $index">
                         <td data-title="'Name'" sortable="'first_name'" filter="{name:'text'}">
@@ -60,6 +27,8 @@
                         </td>
                         <td data-title="'Email'">{{user.email}}</td>
                         <td data-title="'Member Since'" sortable="'created_date'" filter="{created_date:'text'}">{{user.created_date | date:dd/mm/yyyy}}</td>
+                        <td data-title="'Rating'" sortable="'barber_rating'" filter="{barber_rating:'text'}">{{user.barber_rating}}</td>
+                        <td data-title="'Total_Cuts'" sortable="'barber_numberof_cuts'" filter="{barber_numberof_cuts:'text'}">{{user.barber_numberof_cuts}}</td>
                         <td data-title="'Is Online'">
                             <span ng-hide="user.is_online!=true">
               <a title="Go Offline" ng-click="getBarberId(user._id)" data-toggle="modal" data-target="#secondModel"><i class="fa fa-toggle-on" style="font-size: 30px;color:green;" aria-hidden="true"></i></a></span>

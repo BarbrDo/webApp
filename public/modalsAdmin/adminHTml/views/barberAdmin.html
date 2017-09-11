@@ -60,6 +60,7 @@
                         </td>
                         <td data-title="'Email'">{{user.email}}</td>
                         <td data-title="'Member Since'" sortable="'created_date'" filter="{created_date:'text'}">{{user.created_date | date:dd/mm/yyyy}}</td>
+                        <td data-title="'Ratings'" sortable="'ratings'" filter="{ratings:'text'}">{{ratings | number:1}}</td>
                         <td data-title="'Is Online'">
                             <span ng-hide="user.is_online!=true">
               <a title="Go Offline" ng-click="getBarberId(user._id)" data-toggle="modal" data-target="#secondModel"><i class="fa fa-toggle-on" style="font-size: 30px;color:green;" aria-hidden="true"></i></a></span>
@@ -72,7 +73,7 @@
                                 <a title="Not Available" ng-click="notavailable(user._id)" data-toggle="modal" data-target="#notavailable"><i class="fa fa-toggle-on" style="font-size: 30px;color:green;" aria-hidden="true"></i></a>
                                 </span>
                                 <span ng-if="user.is_online!=true">
-                                <i class="fa fa-toggle-on" style="font-size: 30px;color:green;" aria-hidden="true"></i>
+                                <i title="You can change availability only if Barber Is online" data-toggle="modal" class="fa fa-toggle-on" style="font-size: 30px;color:green;" aria-hidden="true"></i>
                                 </span>
                             </span>
                             <span ng-show="user.is_available==false" >
@@ -80,7 +81,7 @@
                                 <a title="Available" ng-click="available(user._id)" data-toggle="modal" data-target="#available"><i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;color:red;"></i></a> 
                                 </span>
                                 <span ng-if="user.is_online!=true">
-                                <i class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;color:red;"></i>
+                                <i title="You can change availability only if Barber Is online" data-toggle="modal" class="fa fa-toggle-off" aria-hidden="true" style="font-size: 30px;color:red;"></i>
                                 </span>
                              </span>
                         </td>

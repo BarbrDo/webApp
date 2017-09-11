@@ -325,7 +325,7 @@ app_admin.controller("AdminCtrl", [
         }
       }, {
         filterDelay: 0,
-        counts: [5, 10, 20, 50],
+        counts: [10, 25, 50, 100],
         // total: data.length, // length of data
         getData: function($defer, params) {
           passingObj.page = params.page();
@@ -364,7 +364,7 @@ app_admin.controller("AdminCtrl", [
           created_date: "desc"
         }
       }, {
-        counts: [5, 10, 20, 50],
+        counts: [10, 25, 50, 100],
         getData: function($defer, params) {
           passingObj.page = params.page();
           passingObj.count = params.count();
@@ -1070,16 +1070,18 @@ app_admin.controller("AdminCtrl", [
           created_date: "desc"
         }
       }, {
-        counts: [5, 10, 20, 50],
+        counts: [10, 25, 50, 100],
         getData: function($defer, params) {
           passingObj.page = params.page();
           passingObj.count = params.count();
           passingObj.sort = params.sorting();
           $scope.loaderStart = true;
           Admin.barbers(passingObj).then(function(response) {
+            console.log("barbers",response)
             $scope.loaderStart = false;
             params.total(response.data.count);
             $scope.data = response.data.data;
+            // $scope.ratings = response.data.data.ratings;
             $defer.resolve($scope.data);
           }).catch(function(result) {
             $scope.loaderStart = false;

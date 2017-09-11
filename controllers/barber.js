@@ -866,6 +866,8 @@ exports.availableBarbernew = function(req, res) {
       email: "$email",
       mobile_number: "$mobile_number",
       ratings: "$ratings",
+      barber_rating:"$barber_rating",
+      barber_numberof_cuts:"$barber_numberof_cuts",
       created_date: "$created_date",
       is_deleted: "$is_deleted",
       is_active: "$is_active",
@@ -903,6 +905,8 @@ exports.availableBarbernew = function(req, res) {
           is_available: "$is_available",
           user_type: "$user_type",
           latLong: "$latLong",
+          barber_rating:"$barber_rating",
+          barber_numberof_cuts:"$barber_numberof_cuts",
           picture: "$picture",
           name: "$shopdetails.name",
           shop: "$shopdetails"
@@ -916,9 +920,7 @@ exports.availableBarbernew = function(req, res) {
       }, {
         "$limit": count
       }]).exec(function(err, result) {
-
         console.log("result are");
-
         if (err) {
           res.status(400).send({
             "msg": constantObj.messages.userStatusUpdateFailure,

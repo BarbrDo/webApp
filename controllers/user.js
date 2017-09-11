@@ -1360,6 +1360,7 @@ exports.subscribe = function(req, res) {
   req.checkHeaders("user_id", "User id is required.").notEmpty();
   req.assert("plan_id", "Plan ObjectId is required").notEmpty();
   req.assert("tranaction_response", "Tranaction response is required.").notEmpty();
+  req.checkHeaders("device_type", "Device type is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({

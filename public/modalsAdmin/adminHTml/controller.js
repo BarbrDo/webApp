@@ -40,7 +40,7 @@ app_admin.controller("AdminCtrl", [
 
     $scope.getGraph = function() {
       Admin.getGraph().then(function(response) {
-        console.log("response",response)
+        console.log("response", response)
         var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June",
           "July", "Aug", "Sept", "Oct", "Nov", "Dec"
         ];
@@ -50,12 +50,10 @@ app_admin.controller("AdminCtrl", [
         date.setMonth(date.getMonth() + 1);
         var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
         var month = [];
-        for(var i = firstDay.getMonth(); i<12 ; i++)
-        {
+        for (var i = firstDay.getMonth(); i < 12; i++) {
           month.push(i);
         }
-        for(var j = 0 ; j < firstDay.getMonth(); j++)
-        {
+        for (var j = 0; j < firstDay.getMonth(); j++) {
           month.push(j)
         }
         $scope.labels = [
@@ -194,19 +192,16 @@ app_admin.controller("AdminCtrl", [
       })
     }
 
-    $scope.available = function(user_id)
-    {
+    $scope.available = function(user_id) {
       $scope.userid = user_id;
 
     }
-    $scope.notavailable = function(user_id)
-    {
+    $scope.notavailable = function(user_id) {
       $scope.userid = user_id;
     }
 
 
-    $scope.goavailable = function()
-    {
+    $scope.goavailable = function() {
       $scope.loaderStart = true;
 
       Admin.available($scope.userid).then(function(response) {
@@ -218,13 +213,12 @@ app_admin.controller("AdminCtrl", [
       })
     }
 
-    $scope.gounavailable = function()
-    {
+    $scope.gounavailable = function() {
       $scope.loaderStart = true;
       Admin.unavailable($scope.userid).then(function(response) {
         $scope.pageChanged();
         $scope.loaderStart = false;
-        
+
       }).catch(function(result) {
         $scope.loaderStart = false;
         $scope.messages = result.data.msg
@@ -330,7 +324,9 @@ app_admin.controller("AdminCtrl", [
           created_date: "desc"
         }
       }, {
-        counts: [],
+        filterDelay: 0,
+        counts: [5, 10, 20, 50],
+        // total: data.length, // length of data
         getData: function($defer, params) {
           passingObj.page = params.page();
           passingObj.count = params.count();
@@ -368,7 +364,7 @@ app_admin.controller("AdminCtrl", [
           created_date: "desc"
         }
       }, {
-        counts: [],
+        counts: [5, 10, 20, 50],
         getData: function($defer, params) {
           passingObj.page = params.page();
           passingObj.count = params.count();
@@ -1074,7 +1070,7 @@ app_admin.controller("AdminCtrl", [
           created_date: "desc"
         }
       }, {
-        counts: [],
+        counts: [5, 10, 20, 50],
         getData: function($defer, params) {
           passingObj.page = params.page();
           passingObj.count = params.count();

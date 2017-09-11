@@ -44,8 +44,13 @@ let appointmentSchema = new mongoose.Schema({
     appointment_date: Date,
     totalPrice: Number,
     created_date: {
-        type: Date,
-        default: Date.now()
+        type: Date
+    },
+    request_check_in:{
+        type:Date
+    },
+    request_cancel_on:{
+        type:Date
     }
 });
 

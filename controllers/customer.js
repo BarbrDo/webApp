@@ -203,6 +203,7 @@ exports.customerRequestToBarber = function(req, res) {
   let saveData = req.body;
   saveData.customer_id = req.headers.user_id;
   saveData.appointment_date = removeOffset(req.body.appointment_date);
+  saveData.created_date = removeOffset(req.body.appointment_date);
   user.findOne({
     _id: req.body.barber_id
   }, function(usrerr, usrResult) {

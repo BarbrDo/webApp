@@ -98,6 +98,7 @@ exports.cancelAppointment = function(req, res) {
   req.checkParams("appointment_id", "Appointment id is required.").notEmpty();
   req.checkHeaders("user_type", "User type is required.").notEmpty();
   req.checkHeaders("user_id", "User Id cannot be blank").notEmpty();
+  req.assert("request_cancel_on","Request cancel Date is required.").notEmpty();
   // req.assert("cancel_reason","Cancel appointment reason is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
@@ -111,7 +112,8 @@ exports.cancelAppointment = function(req, res) {
     $set: {
       "cancel_by_user_type": req.headers.user_type,
       "cancel_by_user_id": req.headers.user_id,
-      "appointment_status": "cancel"
+      "appointment_status": "cancel",
+      "request_cancel_on":req.body.request_cancel_on
     }
   }
   if (req.body.cancel_reason) {
@@ -1588,6 +1590,7 @@ let currentRevenue = function(req, res, cb) {
 exports.completeAppointment = function(req, res) {
   req.checkParams("appointment_id", "Appointment _id is required.").notEmpty();
   req.checkHeaders("user_id", "barber_id is required.").notEmpty();
+  req.assert("request_check_in","Request Check in time required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -1622,7 +1625,8 @@ exports.completeAppointment = function(req, res) {
           _id: req.params.appointment_id
         }, {
           $set: {
-            "appointment_status": "completed"
+            "appointment_status": "completed",
+            "request_check_in":req.body.request_check_in
           }
         }).exec(function(updateErr, UpdateData) {
           let mydata = "";

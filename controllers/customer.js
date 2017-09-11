@@ -248,6 +248,7 @@ exports.cancelAppointment = function(req, res) {
   req.checkParams("appointment_id", "Appointment id is required.").notEmpty();
   req.checkHeaders("user_type", "User type is required.").notEmpty();
   req.checkHeaders("user_id", "User Id cannot be blank").notEmpty();
+  req.assert("request_cancel_on","Request cancel Date is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -284,7 +285,8 @@ exports.cancelAppointment = function(req, res) {
           $set: {
             "cancel_by_user_type": req.headers.user_type,
             "cancel_by_user_id": req.headers.user_id,
-            "appointment_status": "cancel"
+            "appointment_status": "cancel",
+            "request_cancel_on":req.body.request_cancel_on
           }
         }, function(err, result) {
           if (err) {

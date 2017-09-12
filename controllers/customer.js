@@ -938,9 +938,9 @@ exports.rateBarber = function(req, res) {
     }
   }
 
-  // checkReference({
-  //   _id: req.body.appointment_id
-  // });
+  checkReference({
+    _id: req.body.appointment_id
+  });
 
   if (req.body.is_favourite) {
     user.findOne({
@@ -1014,6 +1014,10 @@ exports.rateBarber = function(req, res) {
         }, function(err, data) {
           if (data.length) {
             let cuts = data.length;
+
+            console.log("customer rating",totalRating);
+            console.log("customer total cuts",cuts);
+
             user.update({
               _id: req.headers.user_id
             }, {
@@ -1072,6 +1076,8 @@ exports.rateBarber = function(req, res) {
         }, function(err, data) {
           if (data.length) {
             let cuts = data.length ;
+            console.log("customer rating",totalRating);
+            console.log("customer total cuts",cuts);
             user.update({
               _id: req.body.barber_id
             }, {

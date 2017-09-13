@@ -203,6 +203,7 @@ exports.customerRequestToBarber = function(req, res) {
   let saveData = req.body;
   saveData.customer_id = req.headers.user_id;
   saveData.appointment_date = removeOffset(req.body.appointment_date);
+  saveData.created_date = removeOffset(req.body.appointment_date);
   user.findOne({
     _id: req.body.barber_id
   }, function(usrerr, usrResult) {
@@ -247,6 +248,7 @@ exports.cancelAppointment = function(req, res) {
   req.checkParams("appointment_id", "Appointment id is required.").notEmpty();
   req.checkHeaders("user_type", "User type is required.").notEmpty();
   req.checkHeaders("user_id", "User Id cannot be blank").notEmpty();
+  req.assert("request_cancel_on","Request cancel Date is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -283,7 +285,8 @@ exports.cancelAppointment = function(req, res) {
           $set: {
             "cancel_by_user_type": req.headers.user_type,
             "cancel_by_user_id": req.headers.user_id,
-            "appointment_status": "cancel"
+            "appointment_status": "cancel",
+            "request_cancel_on":req.body.request_cancel_on
           }
         }, function(err, result) {
           if (err) {
@@ -1010,7 +1013,11 @@ exports.rateBarber = function(req, res) {
           "appointment_status": "completed"
         }, function(err, data) {
           if (data.length) {
-            let cuts = data.length + 1;
+            let cuts = data.length;
+
+            console.log("customer rating",totalRating);
+            console.log("customer total cuts",cuts);
+
             user.update({
               _id: req.headers.user_id
             }, {
@@ -1068,7 +1075,9 @@ exports.rateBarber = function(req, res) {
           "appointment_status": "completed"
         }, function(err, data) {
           if (data.length) {
-            let cuts = data.length + 1;
+            let cuts = data.length ;
+            console.log("customer rating",totalRating);
+            console.log("customer total cuts",cuts);
             user.update({
               _id: req.body.barber_id
             }, {
@@ -1497,6 +1506,8 @@ exports.allappointment = function(req, res) {
       totalPrice: "$totalPrice",
       created_date: "$created_date",
       services: "$services",
+      request_cancel_on:"$request_cancel_on",
+      request_check_in:"$request_check_in",
       appointment_status: "$appointment_status",
       is_rating_given: "$is_rating_given",
       cancel_by_user_type: "$cancel_by_user_type",
@@ -1564,6 +1575,8 @@ exports.allappointment = function(req, res) {
           totalPrice: "$totalPrice",
           created_date: "$created_date",
           services: "$services",
+          request_cancel_on:"$request_cancel_on",
+          request_check_in:"$request_check_in",
           appointment_status: "$appointment_status",
           is_rating_given: "$is_rating_given",
           cancel_by_user_type: "$cancel_by_user_type",

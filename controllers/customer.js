@@ -21,163 +21,171 @@ exports.getNearbyBarbers = function(req, res) {
       err: errors
     });
   }
-  let long = parseFloat(req.headers.device_longitude);
-  let lati = parseFloat(req.headers.device_latitude);
-  let maxDistanceToFind = constantObj.distance.shopDistance; // in miles in km 0.001
-  var id = mongoose.Types.ObjectId(req.headers.user_id);
-  user.aggregate([{
-    $geoNear: {
-      query: {
-        user_type: "barber",
-        is_active: true,
-        is_verified: true,
-        is_deleted: false,
-        is_online: true,
-        is_available: true
-      },
-      near: {
-        type: "Point",
-        coordinates: [long, lati]
-      },
-      distanceField: "dist.calculated",
-      distanceMultiplier: constantObj.distance.distanceMultiplierInMiles, // it returns distance in kilometers
-      maxDistance: maxDistanceToFind,
-      includeLocs: "dist.location",
-      spherical: true
+  user.findOne({
+    _id: req.headers.user_id
+  }, function(err, userInfo) {
+    let maxDistanceToFind = constantObj.distance.shopDistance; // in miles in km 0.001
+    if (userInfo) {
+      maxDistanceToFind = (userInfo.radius_search) * 10000;
     }
-  }, {
-    $lookup: {
-      from: 'shops',
-      localField: 'barber_shop_id',
-      foreignField: '_id',
-      as: 'shopInfo'
-    }
-  }, {
-    $project: {
-      _id: 1,
-      email: 1,
-      first_name: 1,
-      last_name: 1,
-      mobile_number: 1,
-      picture: 1,
-      gallery: 1,
-      ratings: 1,
-      is_online: 1,
-      is_available: 1,
-      barber_services: 1,
-      distance: "$dist.calculated",
-      units: {
-        $literal: "miles"
-      },
-      is_favourite: {
-        $literal: false
-      },
-      barber_shops: {
-        $arrayElemAt: ["$shopInfo", 0]
+    let long = parseFloat(req.headers.device_longitude);
+    let lati = parseFloat(req.headers.device_latitude);
+
+    var id = mongoose.Types.ObjectId(req.headers.user_id);
+    user.aggregate([{
+      $geoNear: {
+        query: {
+          user_type: "barber",
+          is_active: true,
+          is_verified: true,
+          is_deleted: false,
+          is_online: true,
+          is_available: true
+        },
+        near: {
+          type: "Point",
+          coordinates: [long, lati]
+        },
+        distanceField: "dist.calculated",
+        distanceMultiplier: constantObj.distance.distanceMultiplierInMiles, // it returns distance in kilometers
+        maxDistance: maxDistanceToFind,
+        includeLocs: "dist.location",
+        spherical: true
       }
-    }
-  }]).exec(function(err, result) {
-    if (err) {
-      res.status(400).send({
-        msg: constantObj.messages.errorRetreivingData,
-        "err": err
-      });
-    } else {
-      user.aggregate([{
-        $match: {
-          "_id": id
+    }, {
+      $lookup: {
+        from: 'shops',
+        localField: 'barber_shop_id',
+        foreignField: '_id',
+        as: 'shopInfo'
+      }
+    }, {
+      $project: {
+        _id: 1,
+        email: 1,
+        first_name: 1,
+        last_name: 1,
+        mobile_number: 1,
+        picture: 1,
+        gallery: 1,
+        ratings: 1,
+        is_online: 1,
+        is_available: 1,
+        barber_services: 1,
+        distance: "$dist.calculated",
+        units: {
+          $literal: "miles"
+        },
+        is_favourite: {
+          $literal: false
+        },
+        barber_shops: {
+          $arrayElemAt: ["$shopInfo", 0]
         }
-      }, {
-        $unwind: "$favourite_barber"
-      }, {
-        $lookup: {
-          from: 'users',
-          localField: 'favourite_barber.barber_id',
-          foreignField: '_id',
-          as: 'favBarbers'
-        }
-      }, {
-        $project: {
-          favBarbers: {
-            $arrayElemAt: ["$favBarbers", 0]
+      }
+    }]).exec(function(err, result) {
+      if (err) {
+        res.status(400).send({
+          msg: constantObj.messages.errorRetreivingData,
+          "err": err
+        });
+      } else {
+        user.aggregate([{
+          $match: {
+            "_id": id
           }
-        }
-      }, {
-        $lookup: {
-          from: 'shops',
-          localField: 'favBarbers.barber_shop_id',
-          foreignField: '_id',
-          as: 'shopInfo'
-        }
-      }, {
-        $project: {
-          _id: "$favBarbers._id",
-          first_name: "$favBarbers.first_name",
-          last_name: "$favBarbers.last_name",
-          email: "$favBarbers.email",
-          mobile_number: "$favBarbers.mobile_number",
-          gallery: "$favBarbers.gallery",
-          ratings: "$favBarbers.ratings",
-          picture: "$favBarbers.picture",
-          barber_services: "$favBarbers.barber_services",
-          is_available: "$favBarbers.is_available",
-          is_online: "$favBarbers.is_online",
-          barber_shop_latLong: "$favBarbers.barber_shops_latLong",
-          barber_shops: {
-            $arrayElemAt: ["$shopInfo", 0]
-          },
-          units: {
-            $literal: "miles"
-          },
-        }
-      }]).exec(function(err, favBarbers) {
-        console.log("favBarbers", JSON.stringify(favBarbers));
-        console.log("All barers", JSON.stringify(result));
-        console.log("length of fav barber", favBarbers.length);
-        console.log("length of all barber", result.length);
-        let resultTantArray = [];
-        if (favBarbers.length > 0) {
-          for (var i = 0; i < favBarbers.length; i++) {
-            let latLngGeo = geolib.getDistance({
-              latitude: lati,
-              longitude: long
-            }, {
-              latitude: favBarbers[i].barber_shop_latLong[1],
-              longitude: favBarbers[i].barber_shop_latLong[0]
-            });
-            let distance = geolib.convertUnit('mi', latLngGeo, 2);
-            let obj = favBarbers[i]
-            obj.is_favourite = true;
-            obj.distance = distance
-            resultTantArray.push(obj)
-            for (var j = 0; j < result.length; j++) {
-              console.log("fav and all", favBarbers[i]._id, result[j]._id)
-              if (favBarbers[i]._id.equals(result[j]._id)) {
-                result.splice(j, 1)
-              }
+        }, {
+          $unwind: "$favourite_barber"
+        }, {
+          $lookup: {
+            from: 'users',
+            localField: 'favourite_barber.barber_id',
+            foreignField: '_id',
+            as: 'favBarbers'
+          }
+        }, {
+          $project: {
+            favBarbers: {
+              $arrayElemAt: ["$favBarbers", 0]
             }
           }
-          resultTantArray = resultTantArray.concat(result);
-          resultTantArray.sort(function(a, b) {
-            return (a.distance > b.distance) ? 1 : ((b.distance > a.distance) ? -1 : 0);
-          });
+        }, {
+          $lookup: {
+            from: 'shops',
+            localField: 'favBarbers.barber_shop_id',
+            foreignField: '_id',
+            as: 'shopInfo'
+          }
+        }, {
+          $project: {
+            _id: "$favBarbers._id",
+            first_name: "$favBarbers.first_name",
+            last_name: "$favBarbers.last_name",
+            email: "$favBarbers.email",
+            mobile_number: "$favBarbers.mobile_number",
+            gallery: "$favBarbers.gallery",
+            ratings: "$favBarbers.ratings",
+            picture: "$favBarbers.picture",
+            barber_services: "$favBarbers.barber_services",
+            is_available: "$favBarbers.is_available",
+            is_online: "$favBarbers.is_online",
+            barber_shop_latLong: "$favBarbers.barber_shops_latLong",
+            barber_shops: {
+              $arrayElemAt: ["$shopInfo", 0]
+            },
+            units: {
+              $literal: "miles"
+            },
+          }
+        }]).exec(function(err, favBarbers) {
+          console.log("favBarbers", JSON.stringify(favBarbers));
+          console.log("All barers", JSON.stringify(result));
+          console.log("length of fav barber", favBarbers.length);
+          console.log("length of all barber", result.length);
+          let resultTantArray = [];
+          if (favBarbers.length > 0) {
+            for (var i = 0; i < favBarbers.length; i++) {
+              let latLngGeo = geolib.getDistance({
+                latitude: lati,
+                longitude: long
+              }, {
+                latitude: favBarbers[i].barber_shop_latLong[1],
+                longitude: favBarbers[i].barber_shop_latLong[0]
+              });
+              let distance = geolib.convertUnit('mi', latLngGeo, 2);
+              let obj = favBarbers[i]
+              obj.is_favourite = true;
+              obj.distance = distance
+              resultTantArray.push(obj)
+              for (var j = 0; j < result.length; j++) {
+                console.log("fav and all", favBarbers[i]._id, result[j]._id)
+                if (favBarbers[i]._id.equals(result[j]._id)) {
+                  result.splice(j, 1)
+                }
+              }
+            }
+            resultTantArray = resultTantArray.concat(result);
+            resultTantArray.sort(function(a, b) {
+              return (a.distance > b.distance) ? 1 : ((b.distance > a.distance) ? -1 : 0);
+            });
 
-          resultTantArray.sort(function(a, b) {
-            return (a.is_favourite < b.is_favourite) ? 1 : ((b.is_favourite < a.is_favourite) ? -1 : 0);
-          });
+            resultTantArray.sort(function(a, b) {
+              return (a.is_favourite < b.is_favourite) ? 1 : ((b.is_favourite < a.is_favourite) ? -1 : 0);
+            });
 
-          return res.status(200).send({
-            msg: constantObj.messages.successRetreivingData,
-            data: resultTantArray
-          });
-        } else {
-          return res.status(200).send({
-            msg: constantObj.messages.successRetreivingData,
-            data: result
-          });
-        }
-      })
-    }
+            return res.status(200).send({
+              msg: constantObj.messages.successRetreivingData,
+              data: resultTantArray
+            });
+          } else {
+            return res.status(200).send({
+              msg: constantObj.messages.successRetreivingData,
+              data: result
+            });
+          }
+        })
+      }
+    })
   })
 }
 
@@ -248,7 +256,7 @@ exports.cancelAppointment = function(req, res) {
   req.checkParams("appointment_id", "Appointment id is required.").notEmpty();
   req.checkHeaders("user_type", "User type is required.").notEmpty();
   req.checkHeaders("user_id", "User Id cannot be blank").notEmpty();
-  req.assert("request_cancel_on","Request cancel Date is required.").notEmpty();
+  req.assert("request_cancel_on", "Request cancel Date is required.").notEmpty();
   let errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -286,7 +294,7 @@ exports.cancelAppointment = function(req, res) {
             "cancel_by_user_type": req.headers.user_type,
             "cancel_by_user_id": req.headers.user_id,
             "appointment_status": "cancel",
-            "request_cancel_on":req.body.request_cancel_on
+            "request_cancel_on": req.body.request_cancel_on
           }
         }, function(err, result) {
           if (err) {
@@ -825,8 +833,8 @@ exports.listcustomers = function(req, res) {
       is_verified: "$is_verified",
       gallery: "$gallery",
       latLong: "$latLong",
-      customer_rating:"$customer_rating",
-      customer_numberof_cuts:"$customer_numberof_cuts",
+      customer_rating: "$customer_rating",
+      customer_numberof_cuts: "$customer_numberof_cuts",
       picture: "$picture"
     }
   }]).exec(function(err, data) {
@@ -849,8 +857,8 @@ exports.listcustomers = function(req, res) {
           is_active: "$is_active",
           is_verified: "$is_verified",
           gallery: "$gallery",
-          customer_rating:"$customer_rating",
-          customer_numberof_cuts:"$customer_numberof_cuts",
+          customer_rating: "$customer_rating",
+          customer_numberof_cuts: "$customer_numberof_cuts",
           latLong: "$latLong",
           picture: "$picture"
         }
@@ -985,7 +993,7 @@ exports.rateBarber = function(req, res) {
               err: err
             });
           } else {
-          done(err, result);
+            done(err, result);
           }
         }
       })
@@ -1015,8 +1023,8 @@ exports.rateBarber = function(req, res) {
           if (data.length) {
             let cuts = data.length;
 
-            console.log("customer rating",totalRating);
-            console.log("customer total cuts",cuts);
+            console.log("customer rating", totalRating);
+            console.log("customer total cuts", cuts);
 
             user.update({
               _id: req.headers.user_id
@@ -1054,13 +1062,13 @@ exports.rateBarber = function(req, res) {
     },
     function(status, done) {
       // This callback will update the barber, no of ratings and no of cuts
-        user.find({
-          _id: req.body.barber_id,
-          "ratings.rated_by": req.body.barber_id
-        }, {
-          "ratings.$": 1
+      user.find({
+        _id: req.body.barber_id,
+        "ratings.rated_by": req.body.barber_id
+      }, {
+        "ratings.$": 1
       }).exec(function(cusRatingerr, customerRatingData) {
-        console.log("barber result",JSON.stringify(customerRatingData));
+        console.log("barber result", JSON.stringify(customerRatingData));
         let totalsum = 0;
         for (var i = 0; i < customerRatingData.length; i++) {
           totalsum += customerRatingData[i].ratings[0].score;
@@ -1075,9 +1083,9 @@ exports.rateBarber = function(req, res) {
           "appointment_status": "completed"
         }, function(err, data) {
           if (data.length) {
-            let cuts = data.length ;
-            console.log("customer rating",totalRating);
-            console.log("customer total cuts",cuts);
+            let cuts = data.length;
+            console.log("customer rating", totalRating);
+            console.log("customer total cuts", cuts);
             user.update({
               _id: req.body.barber_id
             }, {
@@ -1506,8 +1514,8 @@ exports.allappointment = function(req, res) {
       totalPrice: "$totalPrice",
       created_date: "$created_date",
       services: "$services",
-      request_cancel_on:"$request_cancel_on",
-      request_check_in:"$request_check_in",
+      request_cancel_on: "$request_cancel_on",
+      request_check_in: "$request_check_in",
       appointment_status: "$appointment_status",
       is_rating_given: "$is_rating_given",
       cancel_by_user_type: "$cancel_by_user_type",
@@ -1575,8 +1583,8 @@ exports.allappointment = function(req, res) {
           totalPrice: "$totalPrice",
           created_date: "$created_date",
           services: "$services",
-          request_cancel_on:"$request_cancel_on",
-          request_check_in:"$request_check_in",
+          request_cancel_on: "$request_cancel_on",
+          request_check_in: "$request_check_in",
           appointment_status: "$appointment_status",
           is_rating_given: "$is_rating_given",
           cancel_by_user_type: "$cancel_by_user_type",

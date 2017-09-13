@@ -118,11 +118,11 @@
         <div class="block">
             <span ng-if="images==''"><h3 align="center">No images in gallery</h3></span>
             <span ng-if="images!=''">
-                    <div class="allgallery">
-                        <div class="row" style="position: relative;" ng-repeat="pic in images">
-                            <div class="col-md-3 col-sm-4 " >
+                    <div class="allgallery row">
+                        <div class="col-md-4 col-sm-4" style="position: relative;" ng-repeat="pic in images">
+                            
                                 <img src="{{pathimg+pic.name}}" alt="" style="height: 300px;">
-                            </div>
+                            
                             <div style="position: absolute;">
                             <a ng-click="delpic(pic)"><i class="fa fa-window-close" aria-hidden="true" style="
     margin-left: 185px;

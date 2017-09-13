@@ -159,7 +159,7 @@ app_admin.controller("AdminCtrl", [
           appointment_date: "desc"
         }
       }, {
-        counts: [],
+        counts: [10, 25, 50, 100],
         getData: function($defer, params) {
           passingObj.page = params.page();
           passingObj.count = params.count();

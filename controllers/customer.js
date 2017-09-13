@@ -935,9 +935,9 @@ exports.rateBarber = function(req, res) {
     }
   }
 
-  // checkReference({
-  //   _id: req.body.appointment_id
-  // });
+  checkReference({
+    _id: req.body.appointment_id
+  });
 
   if (req.body.is_favourite) {
     user.findOne({

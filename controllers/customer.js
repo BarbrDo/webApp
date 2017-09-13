@@ -1410,8 +1410,8 @@ let saveRefferApp = function(req, res) {
 }
 exports.allappointment = function(req, res) {
   console.log("req.query", req.query);
-  var page = parseInt(req.query.page) || 1;
-  var count = parseInt(req.query.count) || 100;
+  var page = parseInt(req.body.page) || 1;
+  var count = parseInt(req.body.count) || 100;
   var skipNo = (page - 1) * count;
   var query = {};
   var searchStr = ""
@@ -1420,8 +1420,8 @@ exports.allappointment = function(req, res) {
   if (req.body.applyFilter) {
     query.appointment_status = req.body.applyFilter
   }
-  if (req.query.search) {
-    searchStr = req.query.search;
+  if (req.body.search) {
+    searchStr = req.body.search;
   }
   if (searchStr) {
     query.$or = [{

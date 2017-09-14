@@ -32,6 +32,7 @@ exports.getNearbyBarbers = function(req, res) {
     let lati = parseFloat(req.headers.device_latitude);
 
     var id = mongoose.Types.ObjectId(req.headers.user_id);
+    console.log("max distance to find",maxDistanceToFind);
     user.aggregate([{
       $geoNear: {
         query: {

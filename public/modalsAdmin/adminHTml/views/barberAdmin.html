@@ -1,3 +1,18 @@
+<style type="text/css">
+table#example1 th:nth-child(4){
+    width: 10%;
+}
+table#example1 th:nth-child(5){
+    width: 10%;
+}
+table#example1 th:nth-child(2){
+    width: 25%;
+}
+table#example1 th:nth-child(1){
+    width: 15%;
+    word-wrap:break-word;
+}
+</style>
 <div ng-if="loaderStart" loader-css="line-scale-pulse-out" class="loader"></div>
 <ol class="breadcrumb">
     <li class="breadcrumb-item"><a ui-sref="dashboard">Home</a></li>
@@ -25,10 +40,10 @@
                         <td data-title="'Name'" sortable="'first_name'" filter="{name:'text'}">
                             <a data-toggle="tooltip" title="View Details" ui-sref="barbersdetail({id:user._id})">{{user.first_name}} {{user.last_name}}</a>
                         </td>
-                        <td data-title="'Email'">{{user.email}}</td>
+                        <td data-title="'Email'" width="40%">{{user.email}}</td>
                         <td data-title="'Member Since'" sortable="'created_date'" filter="{created_date:'text'}">{{user.created_date | date:dd/mm/yyyy}}</td>
-                        <td data-title="'Rating'" sortable="'barber_rating'" filter="{barber_rating:'text'}">{{user.barber_rating}}</td>
-                        <td data-title="'Total_Cuts'" sortable="'barber_numberof_cuts'" filter="{barber_numberof_cuts:'text'}">{{user.barber_numberof_cuts}}</td>
+                        <td data-title="'Rating'" sortable="'barber_rating'" filter="{barber_rating:'text'}" width="10%">{{user.barber_rating}}</td>
+                        <td data-title="'Total_Cuts'" sortable="'barber_numberof_cuts'" filter="{barber_numberof_cuts:'text'}" width="10%">{{user.barber_numberof_cuts}}</td>
 
                         <td data-title="'Is Online'">
                             <span ng-hide="user.is_online!=true">

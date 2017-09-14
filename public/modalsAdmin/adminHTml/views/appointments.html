@@ -52,13 +52,13 @@
                             {{user.appointment_status }}
                         </td>
                         <td data-title="'Cancel Time'">
-                            {{user.request_cancel_on | date:'MM/dd/yyyy h:mma' }}
+                            {{user.request_cancel_on | date: 'MMM d, y H:mm:ss' : 'UTC' }}
                         </td>
                         <td data-title="'Check In'">
-                            {{user.request_check_in | date:'MM/dd/yyyy h:mma'}}
+                            {{user.request_check_in | date: 'MMM d, y H:mm:ss' : 'UTC'}}
                         </td>
                         <td data-title="'Appointment Date'" sortable="'appointment_date'" filter="{name:'text'}">
-                           {{user.appointment_date | date:'MM/dd/yyyy h:mma'}}
+                           {{user.appointment_date | date: 'MMM d, y H:mm:ss' : 'UTC'}}
                         </td>
                         <td data-title="'Total Cost'">
                           ${{user.totalPrice | number:2}}

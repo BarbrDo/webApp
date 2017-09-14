@@ -10,6 +10,7 @@ let mg = require('nodemailer-mailgun-transport');
 let async = require('async');
 let chairBook = require('../models/chair_booking');
 let shopRequest = require('../models/shop_request');
+let shopBarber = require('../models/shop_barber');
 
 exports.updateShop = function(req, res) {
     console.log(req.body);
@@ -760,7 +761,7 @@ exports.listshopsnew = function(req, res) {
         }]
     }
     console.log("query is**********", query);
-    console.log("sortquery is**********",sortquery);
+    console.log("sortquery is**********", sortquery);
     shop.aggregate([{
         $project: {
             _id: "$_id",
@@ -779,27 +780,37 @@ exports.listshopsnew = function(req, res) {
         if (err) {
             console.log(err)
         } else {
-                shop.aggregate([{
-                    $project: {
-                        _id: "$_id",
-                        name: {"$toUpper": "$name"},
-                        city: {"$toUpper": "$city"},
-                        state: {"$toUpper": "$state"},
-                        zip: "$zip",
-                        address: {"$toLower": "$address"},
-                        formatted_address: {"$toLower": "$formatted_address"},
-                        created_date: "$created_date",
-                        license_number: "$license_number"
-                    }
-                }, {
-                    $match: query
-                }, {
-                    "$sort": sortquery
-                }, {
-                    "$skip": skipNo
-                }, {
-                    "$limit": count
-                }]).exec(function(err, result) {
+            shop.aggregate([{
+                $project: {
+                    _id: "$_id",
+                    name: {
+                        "$toUpper": "$name"
+                    },
+                    city: {
+                        "$toUpper": "$city"
+                    },
+                    state: {
+                        "$toUpper": "$state"
+                    },
+                    zip: "$zip",
+                    address: {
+                        "$toLower": "$address"
+                    },
+                    formatted_address: {
+                        "$toLower": "$formatted_address"
+                    },
+                    created_date: "$created_date",
+                    license_number: "$license_number"
+                }
+            }, {
+                $match: query
+            }, {
+                "$sort": sortquery
+            }, {
+                "$skip": skipNo
+            }, {
+                "$limit": count
+            }]).exec(function(err, result) {
                 var length = data.length;
                 if (err) {
                     res.status(400).send({
@@ -1956,7 +1967,7 @@ exports.shopRequest = function(req, res) {
                         })
                     } else {
                         return res.status(200).send({
-                            msg: "Success! Request has been sent to BarbrDo.",
+                            msg: "Pending verification.",
                             data: results
                         })
                     }
@@ -2179,6 +2190,21 @@ exports.saveShop = function(req, res) {
                 "err": err
             });
         } else {
+            if (req.body.request_by) {
+                let obj = {
+                    shop_id: result._id,
+                    barber_id: req.body.request_by
+                }
+                shopBarber.find(obj, function(shoperr, shopresult) {
+                    if (shopresult.length > 0) {
+
+                    } else {
+                        shopBarber(obj).save(function(err, result) {
+                            console.log(err, result);
+                        })
+                    }
+                })
+            }
             res.status(200).send({
                 "msg": constantObj.messages.successRetreivingData,
                 "data": result

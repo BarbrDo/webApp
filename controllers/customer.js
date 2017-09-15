@@ -848,8 +848,12 @@ exports.listcustomers = function(req, res) {
       }, {
         $project: {
           _id: "$_id",
-          first_name: "$first_name",
-          last_name: "$last_name",
+          first_name: {
+            "$toUpper": "$first_name"
+          },
+          last_name: {
+            "$toUpper": "$last_name"
+          },
           email: "$email",
           mobile_number: "$mobile_number",
           ratings: "$ratings",

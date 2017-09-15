@@ -32,7 +32,7 @@
                 </div>
                 <table id="example1" class="table table-bordered table-striped" ng-table="tableParams" show-filter="isFiltersVisible">
                     <tr ng-repeat = "user in $data track by $index">
-                        <td data-title="'Customer'" sortable="'first_name'" filter="{name:'text'}">
+                        <td data-title="'Customer'" sortable="'customer_first_name'" filter="{name:'text'}">
                             {{user.customer_first_name}} {{user.customer_last_name}}</a>
                         </td>
                         <td data-title="'Barber'" sortable="'barber_first_name'" filter="{name:'text'}">{{user.barber_first_name}} {{user.barber_last_name}}

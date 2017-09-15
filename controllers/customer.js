@@ -1479,6 +1479,7 @@ exports.allappointment = function(req, res) {
     sortquery[sortkey ? sortkey : '_id'] = req.body.sort ? (req.body.sort[sortkey] == 'desc' ? -1 : 1) : -1;
   }
   console.log("query", JSON.stringify(query));
+  console.log("sortquery",sortquery);
 
   appointment.aggregate([{
     $lookup: {

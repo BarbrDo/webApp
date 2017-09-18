@@ -708,6 +708,7 @@ exports.listshopsnew = function(req, res) {
     var count = parseInt(req.body.count) || 10;
     var skipNo = (page - 1) * count;
     var query = {};
+    query.is_deleted = false;
     var searchStr = ""
 
     var sortkey = null;
@@ -772,7 +773,8 @@ exports.listshopsnew = function(req, res) {
             address: "$address",
             formatted_address: "$formatted_address",
             created_date: "$created_date",
-            license_number: "$license_number"
+            license_number: "$license_number",
+            is_deleted:"$is_deleted"
         }
     }, {
         $match: query
@@ -799,6 +801,7 @@ exports.listshopsnew = function(req, res) {
                     formatted_address: {
                         "$toLower": "$formatted_address"
                     },
+                    is_deleted:"$is_deleted",
                     created_date: "$created_date",
                     license_number: "$license_number"
                 }
@@ -1539,24 +1542,39 @@ exports.verifyshop = function(req, res) {
 };
 
 exports.deleteshop = function(req, res) {
-    user.update({
+    console.log(req.params.shop_id);
+    shop.update({
         _id: req.params.shop_id
     }, {
         $set: {
             is_deleted: true
         }
-    }, function(err, count) {
-        user.find({
-            user_type: "shop"
-        }, function(err, shopss) {
-            res.json(shopss);
-        });
+    }, function(err, data) {
+        shopBarber.remove({shop_id:req.params.shop_id},function(errrmv,removeData){
+            if(errrmv){
+                console.log("Error in removing shop",err);
+            }
+            else{
+                 console.log("Shop removed",removeData);
+            }
+        })
+        if (err) {
+          res.status(400).send({
+            msg: constantObj.messages.errorRetreivingData,
+            "err": err
+          });
+        } else {
+          res.status(200).send({
+            msg: 'Successfully updated fields.',
+            "user": data,
+          });
+        }
     });
 
 };
 
 exports.undeleteshop = function(req, res) {
-    user.update({
+    shop.update({
         _id: req.params.shop_id
     }, {
         $set: {

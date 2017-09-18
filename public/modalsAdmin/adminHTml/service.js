@@ -237,24 +237,21 @@ angular.module('barbrdo').factory('Admin', function($http) {
         }
       });
     },
-    deleteBarber: function(data) {
-      return $http.put('/api/v2/deletebarber/' + data._id, data);
-    },
-    undeleteBarber: function(data) {
-      return $http.put('/api/v2/undeletebarber/' + data._id, data);
-    },
-    deleteShop: function(data) {
-      return $http.put('/api/v2/deleteshop/' + data._id, data);
-    },
-    undeleteShop: function(data) {
-      return $http.put('/api/v2/undeleteshop/' + data._id, data);
-    },
-    deleteCustomer: function(data) {
-      return $http.put('/api/v2/deletecustomer/' + data._id, data);
-    },
-    undeleteCustomer: function(data) {
-      return $http.put('/api/v2/undeletecustomer/' + data._id, data);
-    },
+    // undeleteBarber: function(data) {
+    //   return $http.put('/api/v2/undeletebarber/' + data._id, data);
+    // },
+    // deleteShop: function(data) {
+    //   return $http.put('/api/v2/deleteshop/' + data._id, data);
+    // },
+    // undeleteShop: function(data) {
+    //   return $http.put('/api/v2/undeleteshop/' + data._id, data);
+    // },
+    // deleteCustomer: function(data) {
+    //   return $http.put('/api/v2/deletecustomer/' + data._id, data);
+    // },
+    // undeleteCustomer: function(data) {
+    //   return $http.put('/api/v2/undeletecustomer/' + data._id, data);
+    // },
     barberList: function(data) {
       return $http.get('/api/v2/shops/barbers/' + data._id, data);
     },
@@ -477,6 +474,18 @@ angular.module('barbrdo').factory('Admin', function($http) {
     },
     getGraph:function(data){
       return $http.post('/api/v2/getGraphData', data);
+    },
+    deletebarber:function(data){
+      return $http({
+        method: 'DELETE',
+        url: '/api/v2/deleteBarber/'+data._id
+      });
+    },
+    deleteShop: function(data) {
+      return $http({
+        method: 'DELETE',
+        url: '/api/v2/deleteshopAdmin/'+data._id
+      });
     }
   };
 });

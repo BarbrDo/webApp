@@ -819,6 +819,7 @@ exports.availableBarbernew = function(req, res) {
   var skipNo = (page - 1) * count;
   var query = {};
   query.user_type = "barber"
+  query.is_deleted = false;
   var searchStr = ""
   if (req.body.search) {
     searchStr = req.body.search;
@@ -2164,13 +2165,35 @@ exports.barberunavailable = function(req, res) {
   })
 }
 
-
 exports.barberavailable = function(req, res) {
   user.update({
     _id: req.params._id
   }, {
     $set: {
       is_available: true
+    }
+  }, function(err, data) {
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.errorRetreivingData,
+        "err": err
+      });
+    } else {
+      res.status(200).send({
+        msg: 'Successfully updated fields.',
+        "user": data,
+      });
+    }
+  })
+}
+
+exports.deleteBarber = function(req,res){
+  console.log(req.params);
+  user.update({
+    _id: req.params._id
+  }, {
+    $set: {
+      is_deleted: true
     }
   }, function(err, data) {
     if (err) {

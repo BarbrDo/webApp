@@ -37,7 +37,7 @@ module.exports = function(app, express) {
 
 
     //Updation Of Barber
-    app.put('/api/v2/deletebarber/:barber_id', barberController.deletebarber);
+    // app.put('/api/v2/deletebarber/:barber_id', barberController.deletebarber);
     app.put('/api/v2/undeletebarber/:barber_id', barberController.undeletebarber);
     app.put('/api/v2/activatebarber/:barber_id', barberController.activatebarber);
     app.put('/api/v2/deactivebarber/:barber_id', barberController.deactivebarber);
@@ -49,9 +49,11 @@ module.exports = function(app, express) {
     app.put('/api/v2/admin/barber/goOffline', barberController.goOffline); // barber go offline
     app.post('/api/v2/barberunavailable/:_id', barberController.barberunavailable);
     app.post('/api/v2/barberavailable/:_id', barberController.barberavailable);
+    app.delete('/api/v2/deleteBarber/:_id',barberController.deleteBarber);
+
 
     //Updation Of Shop
-    app.put('/api/v2/deleteshop/:shop_id', shopController.deleteshop);
+    app.delete('/api/v2/deleteshopAdmin/:shop_id', shopController.deleteshop);
     app.put('/api/v2/undeleteshop/:shop_id', shopController.undeleteshop);
     app.put('/api/v2/activateshop/:shop_id', shopController.activateshop);
     app.put('/api/v2/deactiveshop/:shop_id', shopController.deactiveshop);

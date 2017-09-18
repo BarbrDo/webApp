@@ -776,6 +776,7 @@ exports.listcustomers = function(req, res) {
   var skipNo = (page - 1) * count;
   var query = {};
   query.user_type = "customer"
+  query.is_deleted = false;
   var searchStr = ""
   if (req.body.search) {
     searchStr = req.body.search;

@@ -564,95 +564,95 @@ app_admin.controller("AdminCtrl", [
 
     };
 
-    $scope.markchairasbooked = function(chair) {
-      $scope.loaderStart = true;
-      $scope.chair = chair;
-      Admin.markChairBooked(chair, $stateParams.id).then(function(response) {
-        $scope.loaderStart = false;
-        toastr.success('Chair is booked Succesfully');
-      }).catch(function(result) {
-        $scope.loaderStart = false;
-        $scope.messages = result.data.msg
-      })
-    };
+    // $scope.markchairasbooked = function(chair) {
+    //   $scope.loaderStart = true;
+    //   $scope.chair = chair;
+    //   Admin.markChairBooked(chair, $stateParams.id).then(function(response) {
+    //     $scope.loaderStart = false;
+    //     toastr.success('Chair is booked Succesfully');
+    //   }).catch(function(result) {
+    //     $scope.loaderStart = false;
+    //     $scope.messages = result.data.msg
+    //   })
+    // };
 
-    $scope.postchairtoallbarbers = function(chair) {
-      $scope.loaderStart = true;
-      $scope.chair = chair;
-      Admin.postChair(chair, $stateParams.id).then(function(response) {
-        $scope.loaderStart = false;
-        toastr.success('Chair successfully posted to all barbers');
-      }).catch(function(result) {
-        $scope.loaderStart = false;
-        $scope.messages = result.data.msg
-      })
-    };
+    // $scope.postchairtoallbarbers = function(chair) {
+    //   $scope.loaderStart = true;
+    //   $scope.chair = chair;
+    //   Admin.postChair(chair, $stateParams.id).then(function(response) {
+    //     $scope.loaderStart = false;
+    //     toastr.success('Chair successfully posted to all barbers');
+    //   }).catch(function(result) {
+    //     $scope.loaderStart = false;
+    //     $scope.messages = result.data.msg
+    //   })
+    // };
 
-    $scope.deleteconfirmchair = function(chair, shop) {
-      $scope.chairdel = chair;
-      $scope.chairshopdel = shop;
-    };
+    // $scope.deleteconfirmchair = function(chair, shop) {
+    //   $scope.chairdel = chair;
+    //   $scope.chairshopdel = shop;
+    // };
 
-    $scope.deletechair = function() {
-      $scope.loaderStart = true;
-      var objec = {
-        chair_id: $scope.chairdel._id,
-        shop_id: $scope.chairshopdel,
-        loggedInUser: $stateParams.id
-      }
-      Admin.deleteChair(objec).then(function(response) {
-        $scope.loaderStart = false;
-        $rootScope.message = response.data.msg;
-        toastr.success('Chair Succesfully Deleted');
-        history.go(0);
-      }).catch(function(result) {
-        $scope.loaderStart = false;
-        $scope.messages = result.data.msg
-      })
-    };
+    // $scope.deletechair = function() {
+    //   $scope.loaderStart = true;
+    //   var objec = {
+    //     chair_id: $scope.chairdel._id,
+    //     shop_id: $scope.chairshopdel,
+    //     loggedInUser: $stateParams.id
+    //   }
+    //   Admin.deleteChair(objec).then(function(response) {
+    //     $scope.loaderStart = false;
+    //     $rootScope.message = response.data.msg;
+    //     toastr.success('Chair Succesfully Deleted');
+    //     history.go(0);
+    //   }).catch(function(result) {
+    //     $scope.loaderStart = false;
+    //     $scope.messages = result.data.msg
+    //   })
+    // };
 
-    $scope.deletebarber = function(barber) {
-      Admin.deleteBarber($scope.barber).then(function(response) {
-        $rootScope.barbers = response.data;
-      });
+    // $scope.deletebarber = function(barber) {
+    //   Admin.deleteBarber($scope.barber).then(function(response) {
+    //     $rootScope.barbers = response.data;
+    //   });
 
-    };
-    $scope.undeletebarber = function(barber) {
-      Admin.undeleteBarber($scope.barber).then(function(response) {
-        $rootScope.barbers = response.data;
-      });
+    // };
+    // $scope.undeletebarber = function(barber) {
+    //   Admin.undeleteBarber($scope.barber).then(function(response) {
+    //     $rootScope.barbers = response.data;
+    //   });
 
-    };
+    // };
 
-    $scope.deleteshop = function(shop) {
-      $scope.shop = shop;
-      Admin.deleteShop(shop).then(function(response) {
-        $rootScope.shops = response.data;
-      });
+    // $scope.deleteshop = function(shop) {
+    //   $scope.shop = shop;
+    //   Admin.deleteShop(shop).then(function(response) {
+    //     $rootScope.shops = response.data;
+    //   });
 
-    };
+    // };
 
-    $scope.undeleteshop = function(shop) {
-      $scope.shop = shop;
-      Admin.undeleteShop(shop).then(function(response) {
-        $rootScope.shops = response.data;
-      });
+    // $scope.undeleteshop = function(shop) {
+    //   $scope.shop = shop;
+    //   Admin.undeleteShop(shop).then(function(response) {
+    //     $rootScope.shops = response.data;
+    //   });
 
-    };
+    // };
 
-    $scope.deletecustomer = function(customer) {
-      $scope.customer = customer;
-      Admin.deleteCustomer($scope.customer).then(function(response) {
-        $rootScope.customers = response.data;
-      });
-    };
+    // $scope.deletecustomer = function(customer) {
+    //   $scope.customer = customer;
+    //   Admin.deleteCustomer($scope.customer).then(function(response) {
+    //     $rootScope.customers = response.data;
+    //   });
+    // };
 
-    $scope.undeletecustomer = function(customer) {
-      $scope.customer = customer;
-      Admin.undeleteCustomer($scope.customer).then(function(response) {
-        $rootScope.customers = response.data;
-      });
-    };
+    // $scope.undeletecustomer = function(customer) {
+    //   $scope.customer = customer;
+    //   Admin.undeleteCustomer($scope.customer).then(function(response) {
+    //     $rootScope.customers = response.data;
+    //   });
+    // };
 
     $scope.deactivecust = function(customer) {
       $scope.customer = customer;
@@ -746,16 +746,16 @@ app_admin.controller("AdminCtrl", [
       });
     };
 
-    $scope.chairdetail = function() {
-      $scope.loaderStart = true;
-      Admin.chairDetail($stateParams.id).then(function(response) {
-        $scope.loaderStart = false;
-        $rootScope.chairdet = response.data.data[0].chairs[0];
-      }).catch(function(result) {
-        $scope.loaderStart = false;
-        $scope.messages = result.data.msg
-      })
-    };
+    // $scope.chairdetail = function() {
+    //   $scope.loaderStart = true;
+    //   Admin.chairDetail($stateParams.id).then(function(response) {
+    //     $scope.loaderStart = false;
+    //     $rootScope.chairdet = response.data.data[0].chairs[0];
+    //   }).catch(function(result) {
+    //     $scope.loaderStart = false;
+    //     $scope.messages = result.data.msg
+    //   })
+    // };
     $scope.updateShopButton = true;
     if ($state.current.name == 'edit_shops') {
       $scope.updateShopButton = false;
@@ -1230,6 +1230,43 @@ app_admin.controller("AdminCtrl", [
         $state.go('shops')
       }).catch(function(response) {
         toastr.error("Error in adding shop");
+      })
+    }
+
+    $scope.deleteBarber = function(barberId){
+      console.log(barberId);
+      var id = {
+        _id:barberId
+      }
+      Admin.deletebarber(id).then(function(response){
+        toastr.success("Barber Deleted.")
+        $scope.pageChanged();
+      }).catch(function(response){
+        toastr.error("Error in deleting barber.");
+      })
+    }
+    $scope.deleteShop = function(shopId) {
+      console.log(shopId);
+      var id = {
+        _id:shopId
+      }
+      Admin.deleteShop(id).then(function(response) {
+        toastr.success("Shop Deleted.")
+        $scope.shoppageChanged()
+      }).catch(function(response){
+        toastr.error("Error in deleting shop");
+      })
+    };
+    $scope.deleteCustomer = function(barberId){
+      console.log(barberId);
+      var id = {
+        _id:barberId
+      }
+      Admin.deletebarber(id).then(function(response){
+        toastr.success("Customer Deleted.")
+        $scope.custpageChanged();
+      }).catch(function(response){
+        toastr.error("Error in deleting customer.");
       })
     }
   }

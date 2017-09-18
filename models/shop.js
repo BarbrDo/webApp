@@ -27,6 +27,10 @@ let shopSchema = new mongoose.Schema({
         type: [Number], // longitude first and latitude after
         index: '2dsphere'
     },
+    is_deleted: {
+        type: Boolean,
+        default: false
+    },
     created_date: {
         type: Date,
         default: Date.now()

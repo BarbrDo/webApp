@@ -124,8 +124,7 @@ let userSchema = new mongoose.Schema({
         type: String
     },
     licensed_since: {
-        type: Date,
-        default: Date.now()
+        type: String
     },
     created_date: {
         type: Date,

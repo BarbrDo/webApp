@@ -307,6 +307,7 @@ exports.signupPost = function(req, res, next) {
   saveData.is_verified = true;
   saveData.is_online = false;
   saveData.is_available = false;
+  saveData.licensed_since = "";
   let email_encrypt = "";
   let generatedText = "";
   console.log("working");

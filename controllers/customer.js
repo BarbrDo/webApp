@@ -1428,6 +1428,7 @@ exports.allappointment = function(req, res) {
   var count = parseInt(req.body.count) || 100;
   var skipNo = (page - 1) * count;
   var query = {};
+  query.is_deleted = false;
   var searchStr = ""
   console.log("skipNo", skipNo);
   console.log("count", count);
@@ -1517,6 +1518,7 @@ exports.allappointment = function(req, res) {
   }, {
     $project: {
       _id: "$_id",
+      is_deleted:"$is_deleted",
       appointment_date: "$appointment_date",
       totalPrice: "$totalPrice",
       created_date: "$created_date",
@@ -1586,6 +1588,7 @@ exports.allappointment = function(req, res) {
       }, {
         $project: {
           _id: "$_id",
+          is_deleted:"$is_deleted",
           appointment_date: "$appointment_date",
           totalPrice: "$totalPrice",
           created_date: "$created_date",

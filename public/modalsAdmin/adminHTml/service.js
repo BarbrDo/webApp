@@ -486,6 +486,12 @@ angular.module('barbrdo').factory('Admin', function($http) {
         method: 'DELETE',
         url: '/api/v2/deleteshopAdmin/'+data._id
       });
-    }
+    },
+    deleteAppointment: function(data) {
+      return $http({
+        method: 'DELETE',
+        url: '/api/v2/deleteAppointment/'+data._id
+      });
+    },
   };
 });

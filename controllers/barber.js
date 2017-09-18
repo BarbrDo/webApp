@@ -2209,3 +2209,25 @@ exports.deleteBarber = function(req,res){
     }
   })
 }
+
+exports.deleteAppointment = function(req,res){
+  appointment.update({
+    _id: req.params._id
+  }, {
+    $set: {
+      is_deleted: true
+    }
+  }, function(err, data) {
+    if (err) {
+      res.status(400).send({
+        msg: constantObj.messages.errorRetreivingData,
+        "err": err
+      });
+    } else {
+      res.status(200).send({
+        msg: 'Successfully updated fields.',
+        "user": data,
+      });
+    }
+  })
+}

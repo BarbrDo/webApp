@@ -1269,5 +1269,17 @@ app_admin.controller("AdminCtrl", [
         toastr.error("Error in deleting customer.");
       })
     }
+    $scope.deleteAppointment = function(appId){
+      console.log(appId);
+      var id = {
+        _id:appId
+      }
+      Admin.deleteAppointment(id).then(function(response){
+        toastr.success("Customer Deleted.")
+        $scope.custAppoint();
+      }).catch(function(response){
+        toastr.error("Error in deleting customer.");
+      })
+    }
   }
 ]);

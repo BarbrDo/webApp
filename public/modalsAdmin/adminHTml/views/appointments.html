@@ -63,6 +63,9 @@
                         <td data-title="'Total Cost'">
                           ${{user.totalPrice | number:2}}
                         </td>
+                        <td data-title="'Delete'">
+                           <span ng-click="deleteAppointment(user._id)" style="cursor:pointer"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
+                        </td>
                         <td data-title="'View Detail'">
                              <a type="submit" ui-sref="detailed_appointment({_id:user._id})" class="glyphicon glyphicon-eye-open" style="font-size: 20px;margin-left: 20px;color: #9e0e0b;" data-toggle="tooltip" title="VIEW DETAILS"></a>
                         </td>

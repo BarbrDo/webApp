@@ -49,6 +49,10 @@ let appointmentSchema = new mongoose.Schema({
     request_check_in:{
         type:Date
     },
+    is_deleted: {
+        type: Boolean,
+        default: false
+    },
     request_cancel_on:{
         type:Date
     }

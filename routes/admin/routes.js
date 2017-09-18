@@ -50,7 +50,7 @@ module.exports = function(app, express) {
     app.post('/api/v2/barberunavailable/:_id', barberController.barberunavailable);
     app.post('/api/v2/barberavailable/:_id', barberController.barberavailable);
     app.delete('/api/v2/deleteBarber/:_id',barberController.deleteBarber);
-
+    app.delete('/api/v2/deleteAppointment/:_id',barberController.deleteAppointment);
 
     //Updation Of Shop
     app.delete('/api/v2/deleteshopAdmin/:shop_id', shopController.deleteshop);

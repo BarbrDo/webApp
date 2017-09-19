@@ -1376,7 +1376,7 @@ exports.referapp = function(req, res) {
             msg: "You already refer this person. Please try again with another email."
           });
         } else {
-          commonObj.sendMail(req.body.referee_email, from, subject, text, function(err, result) {
+          commonObj.sentMailTempalte(req.body.referee_email, from, subject, text, function(err, result) {
             console.log("mail in referapp", err, result)
             if (err) {
               return res.status(400).send({

@@ -31,15 +31,22 @@ const currency = {
 }
 
 const appleUrl = {
-    url : "Hello install this app \n"+"https://itunes.apple.com/us/app/keynote/id361285480?mt=8"
+    url : "https://itunes.apple.com/us/app/keynote/id361285480?mt=8"
 }
 
 const androidUrl = {
-    url : "Hello install the app \n"+"https://play.google.com/store/apps/dev?id=5700313618786177705"
+    url : "https://play.google.com/store/apps/dev?id=5700313618786177705"
 }
 
 const barbermailId = {
     mail : "hello@barbrdo.com"
+}
+
+const textToCustomers = {
+    text:"Welcome to BarbrDo.  Save time! Get our free BarbrDo App, the easiest way to get your haircut when you want it. "
+}
+const textToBarbers = {
+    text:"Welcome to BarbrDo!  Having a slow day at the shop?  Use our App to grow your business and attract new customers! "
 }
 
 var obj = {
@@ -49,7 +56,9 @@ var obj = {
     currency: currency,
     appleUrl:appleUrl,
     androidUrl:androidUrl,
-    barbermailId:barbermailId
+    barbermailId:barbermailId,
+    textToCustomers:textToCustomers,
+    textToBarbers:textToBarbers
 };
 
 

@@ -9,6 +9,8 @@ let geolib = require('geolib');
 let _ = require('lodash');
 let referal = require('../models/referral');
 let async = require('async');
+let fs = require('fs');
+let path = require('path');
 
 exports.getNearbyBarbers = function(req, res) {
   req.checkHeaders("user_id", "User ID is required").notEmpty();
@@ -1331,79 +1333,94 @@ exports.referapp = function(req, res) {
     });
   }
   console.log("device_type", req.headers.device_type)
-  var device_type = req.headers.device_type.toLowerCase();
-  if (req.body.referee_email) {
-    req.assert('referee_email', 'Email is not valid').isEmail();
-    req.assert('referee_email', 'Email cannot be blank').notEmpty();
-    let errors = req.validationErrors();
-    if (errors) {
+  user.findOne({
+    _id: req.headers.user_id
+  }, function(userErr, userData) {
+    var device_type = req.headers.device_type.toLowerCase();
+    if (req.body.referee_email) {
+      req.assert('referee_email', 'Email is not valid').isEmail();
+      req.assert('referee_email', 'Email cannot be blank').notEmpty();
+      let errors = req.validationErrors();
+      if (errors) {
+        return res.status(400).send({
+          msg: "error in your request",
+          err: errors
+        });
+      }
+      let from = constantObj.barbermailId.mail;
+      let subject = "Use our app";
+      let text = "";
+      if (req.body.invite_as == 'customer') {
+        text = fs.readFileSync(path.join(__dirname + './../email-template/CustomerEmailInvite.html'), 'utf-8');
+
+      }
+      if (req.body.invite_as == 'barber') {
+        text = fs.readFileSync(path.join(__dirname + './../email-template/BarberEmailInvite.html'), 'utf-8');
+      }
+      text = text.replace("{{username}}", userData.first_name+" "+userData.last_name);
+      text = text.replace("{{userimage}}", "http://" + req.headers.host + "/" + "uploadedFiles/"+userData.picture);
+      if (device_type == 'ios') {
+        // text = constantObj.appleUrl.url;
+      }
+      if (device_type == 'android') {
+        // text = constantObj.androidUrl.url;
+      }
+
+      let saveObj = req.body;
+      saveObj.referral = req.headers.user_id;
+
+      referal.find(saveObj, function(findErr, findResult) {
+        console.log("findResult length", findResult);
+        if (findResult.length > 0) {
+          return res.status(400).send({
+            msg: "You already refer this person. Please try again with another email."
+          });
+        } else {
+          commonObj.sendMail(req.body.referee_email, from, subject, text, function(err, result) {
+            console.log("mail in referapp", err, result)
+            if (err) {
+              return res.status(400).send({
+                msg: "Error in sending mail"
+              });
+            } else {
+              saveRefferApp(req, res);
+            }
+          })
+        }
+      })
+    } else if (req.body.referee_phone_number) {
+      let text = "";
+       if (req.body.invite_as == 'customer') {
+        text = constantObj.textToCustomers.text+"\n "+"iOS: "+constantObj.appleUrl.url+"\n "+"Android: "+constantObj.androidUrl.url;
+      }
+      if (req.body.invite_as == 'barber') {
+        text = constantObj.textToBarbers.text+"\n "+"iOS: "+constantObj.appleUrl.url+"\n "+"Android: "+constantObj.androidUrl.url;
+      }
+
+      let saveObj = req.body;
+      saveObj.referral = req.headers.user_id;
+
+      referal.find(saveObj, function(findErr, findResult) {
+      console.log("findResult length", findResult);
+        if (findResult.length > 0) {
+          return res.status(400).send({
+            msg: "You already refer this person. Please try again with another email."
+          });
+        } else {
+          commonObj.sentMessage(text, req.body.referee_phone_number, function(err, result) {
+            console.log("twilio in referapp", err, result)
+            if (result) {
+              saveRefferApp(req, res);
+            }
+          })
+        }
+      })
+    } else {
       return res.status(400).send({
-        msg: "error in your request",
-        err: errors
+        msg: "Please specify how you want to sent referral code."
       });
     }
-    let from = constantObj.barbermailId.mail;
-    let subject = "Use our app";
-    let text = "";
-    if (device_type == 'ios') {
-      text = constantObj.appleUrl.url;
-    }
-    if (device_type == 'android') {
-      text = constantObj.androidUrl.url;
-    }
-
-    let saveObj = req.body;
-    saveObj.referral = req.headers.user_id;
-    referal.find(saveObj, function(findErr, findResult) {
-      console.log("findResult length", findResult);
-      if (findResult.length > 0) {
-        return res.status(400).send({
-          msg: "You already refer this person. Please try again with another email."
-        });
-      } else {
-        commonObj.sendMail(req.body.referee_email, from, subject, text, function(err, result) {
-          console.log("mail in referapp", err, result)
-          if (err) {
-            return res.status(400).send({
-              msg: "Error in sending mail"
-            });
-          } else {
-            saveRefferApp(req, res);
-          }
-        })
-      }
-    })
-  } else if (req.body.referee_phone_number) {
-    let text = "";
-    if (device_type == 'ios') {
-      text = constantObj.appleUrl.url;
-    }
-    if (device_type == 'android') {
-      text = constantObj.androidUrl.url;
-    }
-
-    let saveObj = req.body;
-    saveObj.referral = req.headers.user_id;
-    referal.find(saveObj, function(findErr, findResult) {
-      console.log("findResult length", findResult);
-      if (findResult.length > 0) {
-        return res.status(400).send({
-          msg: "You already refer this person. Please try again with another email."
-        });
-      } else {
-        commonObj.sentMessage(text, req.body.referee_phone_number, function(err, result) {
-          console.log("twilio in referapp", err, result)
-          if (result) {
-            saveRefferApp(req, res);
-          }
-        })
-      }
-    })
-  } else {
-    return res.status(400).send({
-      msg: "Please specify how you want to sent referral code."
-    });
-  }
+  })
 }
 
 let saveRefferApp = function(req, res) {

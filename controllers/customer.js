@@ -1358,7 +1358,14 @@ exports.referapp = function(req, res) {
         text = fs.readFileSync(path.join(__dirname + './../email-template/BarberEmailInvite.html'), 'utf-8');
       }
       text = text.replace("{{username}}", userData.first_name+" "+userData.last_name);
-      text = text.replace("{{userimage}}", "http://" + req.headers.host + "/" + "uploadedFiles/"+userData.picture);
+      let imgUrl = "";
+      if(userData.picture){
+        imgUrl = "http://" + req.headers.host + "/" + "uploadedFiles/"+userData.picture
+      }
+      else{
+        imgUrl = "https://www.filepicker.io/api/file/OqRXT4JuRbmXSgbxccgK"
+      }
+      text = text.replace("{{userimage}}", imgUrl);
       if (device_type == 'ios') {
         // text = constantObj.appleUrl.url;
       }

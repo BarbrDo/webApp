@@ -34,13 +34,26 @@
                         <td data-title="'License'">{{user.license_number}}</td>
                         <td data-title="'Created Date'" sortable="'created_date'" filter="{name:'text'}">{{user.created_date| date:dd/mm/yyyy}}</td>
                         <td data-title="'Delete'">
-                           <span ng-click="deleteShop(user._id)" style="cursor:pointer"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
+                            <button type="button" ng-click="deleteShopScope(user._id)" class="fa fa-trash-o" data-toggle="modal" data-target="#shopDelete"></button>
                         </td>
                      </tr>
                 </table>
-               
-            </div>
-           
+            </div> 
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="shopDelete" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>Are You Sure!!!!!! You want to Delete.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" ng-click="deleteShop()" class="btn btn-default" data-dismiss="modal">Delete</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>

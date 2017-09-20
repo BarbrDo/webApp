@@ -1167,85 +1167,12 @@ let checkReference = function(objFind) {
     console.log("find result\n\n", appResult)
     async.waterfall([
       function(done) {
-        // this will used to get customer profile
-        user.findOne({
-          _id: appResult.customer_id
-        }, function(err, result) {
-          // console.log("cust_profile",result);
-          done(null, result);
-        })
-      },
-      function(result, done) {
         // this will used to get barber profile
         user.findOne({
           _id: appResult.barber_id
         }, function(err, barberData) {
           // console.log("bar_profi",barberData);
           done(null, result, barberData);
-        })
-      },
-      function(cus_profile, barber_profile, done) {
-        /*
-        ___________________________________________________________
-        This callback will check all scenarios of customer referral 
-        ___________________________________________________________
-        */
-        console.log("Customer Profile", JSON.stringify(cus_profile));
-        referal.find({
-          "is_refer_code_used": false,
-          "$or": [{
-            referee_phone_number: cus_profile.mobile_number
-          }, {
-            referee_email: cus_profile.email
-          }]
-        }).sort({
-          created_date: 1
-        }).exec(function(refErr, refResult) {
-          console.log("if customer reference ", refErr, refResult);
-          if (refResult) {
-            if (refResult.length > 0) {
-              appointment.find({
-                customer_id: cus_profile._id,
-                appointment_status: "completed"
-              }, function(apointErr, apointEesult) {
-                console.log("Total appointment of customer", apointEesult.length)
-                if (apointEesult.length == 1) {
-                  console.log("first appointment of the customer");
-                  async.waterfall([
-                    function(done) {
-                      referal.update({
-                        _id: refResult[0]._id
-                      }, {
-                        $set: {
-                          is_refer_code_used: true
-                        }
-                      }).exec(function(err, data) {
-                        console.log("update status of referal", data)
-                      })
-                    },
-                    function(done) {
-                      referal.find({
-                        referral: refResult[0].referral
-                      }, function(err, refCountResult) {
-                        if (refCountResult.length % 10 == 0) {
-                          // mail sent to the admin for the amazon gift card
-                          done(null, barber_profile);
-                        } else {
-                          done(null, barber_profile);
-                        }
-                      })
-                    }
-                  ])
-                } else {
-                  done(null, barber_profile);
-                }
-              })
-            } else {
-              done(null, barber_profile);
-            }
-          } else {
-            done(null, barber_profile);
-          }
         })
       },
       function(barber_profile, done) {
@@ -1274,7 +1201,7 @@ let checkReference = function(objFind) {
               }, function(apointErr, apointEesult) {
                 console.log("Total appointment of barber", apointEesult.length)
                 if (apointEesult.length == 1) {
-                  console.log("first appointment of the customer");
+                  console.log("first appointment of the barber");
                   async.waterfall([
                     function(done) {
                       referal.update({

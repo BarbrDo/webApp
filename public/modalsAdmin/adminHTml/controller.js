@@ -1235,10 +1235,13 @@ app_admin.controller("AdminCtrl", [
       })
     }
 
-    $scope.deleteBarber = function(barberId){
-      console.log(barberId);
+    $scope.deletebarberScope = function(id){
+      $rootScope.deleteBarberId = id;
+    }
+
+    $scope.deleteBarber = function(){
       var id = {
-        _id:barberId
+        _id:$rootScope.deleteBarberId
       }
       Admin.deletebarber(id).then(function(response){
         toastr.success("Barber Deleted.")
@@ -1247,10 +1250,13 @@ app_admin.controller("AdminCtrl", [
         toastr.error("Error in deleting barber.");
       })
     }
-    $scope.deleteShop = function(shopId) {
-      console.log(shopId);
+
+    $scope.deleteShopScope = function(id){
+      $rootScope.deleteShopId = id;
+    }
+    $scope.deleteShop = function() {
       var id = {
-        _id:shopId
+        _id:$rootScope.deleteShopId
       }
       Admin.deleteShop(id).then(function(response) {
         toastr.success("Shop Deleted.")
@@ -1259,10 +1265,12 @@ app_admin.controller("AdminCtrl", [
         toastr.error("Error in deleting shop");
       })
     };
-    $scope.deleteCustomer = function(barberId){
-      console.log(barberId);
+    $scope.deleteCustomerScope = function(id){
+      $rootScope.deleteCustId = id;
+    }
+    $scope.deleteCustomer = function(){
       var id = {
-        _id:barberId
+        _id:$rootScope.deleteCustId
       }
       Admin.deletebarber(id).then(function(response){
         toastr.success("Customer Deleted.")
@@ -1271,10 +1279,12 @@ app_admin.controller("AdminCtrl", [
         toastr.error("Error in deleting customer.");
       })
     }
-    $scope.deleteAppointment = function(appId){
-      console.log(appId);
+    $scope.deleteAppScope = function(id){
+      $rootScope.deleteAppId = id;
+    }
+    $scope.deleteAppointment = function(){
       var id = {
-        _id:appId
+        _id:$rootScope.deleteAppId
       }
       Admin.deleteAppointment(id).then(function(response){
         toastr.success("Customer Deleted.")

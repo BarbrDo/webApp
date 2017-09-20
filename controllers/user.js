@@ -11,7 +11,6 @@ let qs = require('querystring');
 let objectID = require('mongodb').ObjectID;
 let constantObj = require('./../constants.js');
 let chairRequest = require('../models/chair_request');
-let referal = require('../models/referral');
 let commonObj = require('../common/common');
 let mg = require('nodemailer-mailgun-transport');
 let fs = require('fs');
@@ -22,6 +21,8 @@ let stripe = require('stripe')(stripeToken);
 let LoggedInUser = require('../models/logged_in_user')
 let service = require('../models/service');
 let Plan = require('../models/plans');
+let appointment = require('../models/appointment');
+let referal = require('../models/referral');
 
 function generateToken(user) {
   let payload = {
@@ -300,8 +301,6 @@ exports.signupPost = function(req, res, next) {
       err: errors
     });
   }
-  console.log("checing live ************************", req.body);
-
   let saveData = req.body;
   saveData.is_active = true;
   saveData.is_verified = true;
@@ -389,6 +388,9 @@ exports.signupPost = function(req, res, next) {
             "err": err
           })
         } else {
+          if(data.user_type=="customer"){
+            checkReference(data);
+          }
           console.log("saveedonline data", data);
           let resetUrl = "http://" + req.headers.host + "/#/" + "account/verification/" + email_encrypt + "/" + generatedText;
           accountActivateMailFunction(req, res, data, resetUrl)
@@ -398,6 +400,70 @@ exports.signupPost = function(req, res, next) {
     }
   ]);
 }
+
+let checkReference = function(data){
+        /*
+        ___________________________________________________________
+        This callback will check all scenarios of customer referral 
+        ___________________________________________________________
+        */
+        referal.find({
+          "is_refer_code_used": false,
+          "$or": [{
+            referee_phone_number: data.mobile_number
+          }, {
+            referee_email: data.email
+          }]
+        }).sort({
+          created_date: 1
+        }).exec(function(refErr, refResult) {
+          console.log("if customer reference ", refErr, refResult);
+          if (refResult) {
+            if (refResult.length > 0) {
+              appointment.find({
+                customer_id: data._id,
+                appointment_status: "completed"
+              }, function(apointErr, apointEesult) {
+                console.log("Total appointment of customer", apointEesult.length)
+                if (apointEesult.length == 0) {
+                  console.log("first appointment of the customer");
+                  async.waterfall([
+                    function(done) {
+                      referal.update({
+                        _id: refResult[0]._id
+                      }, {
+                        $set: {
+                          is_refer_code_used: true
+                        }
+                      }).exec(function(err, data) {
+                        console.log("update status of referal", data)
+                      })
+                    },
+                    function(done) {
+                      referal.find({
+                        referral: refResult[0].referral
+                      }, function(err, refCountResult) {
+                        if (refCountResult.length % 10 == 0) {
+                          // mail sent to the admin for the amazon gift card
+                          done(null, barber_profile);
+                        } else {
+                          done(null, barber_profile);
+                        }
+                      })
+                    }
+                  ])
+                } else {
+                  console.log("appointment are greater then one.")
+                }
+              })
+            } else {
+              console.log("reference result not found.")
+            }
+          } else {
+            console.log("reference result not found.")
+          }
+        })
+      }
 
 /*-----------*/
 

@@ -38,27 +38,26 @@
 
                         <td data-title="'Created Date'" sortable="'email'" filter="{name:'text'}">{{user.created_date | date:dd/mm/yyyy}}</a></td>
                         <td data-title="'Delete'">
-                           <span ng-click="deleteCustomer(user._id)" style="cursor:pointer"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
+                             <button type="button" ng-click="deleteCustomerScope(user._id)" class="fa fa-trash-o" data-toggle="modal" data-target="#custDelete"></button>
                         </td>
                      </tr>
                 </table>
             </div>
-            <div>
-                <div class="col-sm-6">
-                    <!-- <ul uib-pagination total-items="myobj.totalItems" ng-model="myobj.currentPage" items-per-page="10" ng-change="custpageChanged()"></ul> -->
-                </div>
-                <br>
-                <!-- <label>No. of Enteries</label>
-            <select ng-model="quantity">
-              <option value="">All</option>
-              <option value="1">1</option>
-              <option value="3">3</option>
-              <option value="5">5</option>
-              <option value="7">7</option>
-              <option value="10">10</option>
-            </select> -->
-            </div>
-            <!-- Modal -->
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="custDelete" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>Are You Sure!!!!!! You want to Delete.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" ng-click="deleteCustomer()" class="btn btn-default" data-dismiss="modal">Delete</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>

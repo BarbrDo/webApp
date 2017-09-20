@@ -34,7 +34,7 @@ exports.getNearbyBarbers = function(req, res) {
     let lati = parseFloat(req.headers.device_latitude);
 
     var id = mongoose.Types.ObjectId(req.headers.user_id);
-    console.log("max distance to find",maxDistanceToFind);
+    console.log("max distance to find", maxDistanceToFind);
     user.aggregate([{
       $geoNear: {
         query: {
@@ -703,57 +703,70 @@ exports.customerAppointments = function(req, res) {
     });
   }
   let currentDate = moment().format("YYYY-MM-DD");
-  // below query will give us all those appointments who are pending and rescheduled
-  appointment.find({
-      "customer_id": {
-        $exists: true,
-        $eq: req.headers.user_id
-      },
-      "appointment_status": {
-        $in: ['confirm']
-      }
-    }).populate('barber_id', 'first_name last_name ratings picture created_date')
-    .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong is_active is_verified is_deleted ratings')
-    .populate('shop_id', 'name address zip city state gallery latLong created_date user_id')
-    .exec(function(err, result) {
-      if (err) {
-        return res.status(400).send({
-          msg: constantObj.messages.errorRetreivingData
-        });
-      } else {
-        // This will give all appointments who are completed
-        console.log("res", result);
-        appointment.find({
-            "customer_id": {
-              $exists: true,
-              $eq: req.headers.user_id
-            },
-            "appointment_status": {
-              $in: ['completed']
-            },
-            "is_rating_given": false
-          }).populate('barber_id', 'first_name last_name ratings picture created_date')
-          .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong is_active is_verified is_deleted ratings')
-          .populate('shop_id', 'name address city state gallery latLong created_date user_id')
-          .exec(function(err, data) {
+  user.findOne({
+    _id: req.headers.user_id
+  }, {
+    favourite_barber: 1
+  }, function(err, data) {
+    console.log(data);
+    let fevBarberArray = [];
+    for (var i = 0; i < data.favourite_barber.length; i++) {
+      fevBarberArray.push(data.favourite_barber[i].barber_id);
+    }
+    console.log(fevBarberArray);
+    // below query will give us all those appointments who are pending and rescheduled
+    appointment.find({
+        "customer_id": {
+          $exists: true,
+          $eq: req.headers.user_id
+        },
+        "appointment_status": {
+          $in: ['confirm']
+        }
+      }).populate('barber_id', 'first_name last_name ratings picture created_date')
+      .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong is_active is_verified is_deleted ratings')
+      .populate('shop_id', 'name address zip city state gallery latLong created_date user_id')
+      .exec(function(err, result) {
+        if (err) {
+          return res.status(400).send({
+            msg: constantObj.messages.errorRetreivingData
+          });
+        } else {
+          // This will give all appointments who are completed
+          console.log("res", result);
+          appointment.find({
+              "customer_id": {
+                $exists: true,
+                $eq: req.headers.user_id
+              },
+              "appointment_status": {
+                $in: ['completed']
+              },
+              "is_rating_given": false
+            }).populate('barber_id', 'first_name last_name ratings picture created_date')
+            .populate('customer_id', 'first_name last_name ratings picture created_date email mobile_number latLong is_active is_verified is_deleted ratings')
+            .populate('shop_id', 'name address city state gallery latLong created_date user_id')
+            .exec(function(err, data) {
 
-            if (err) {
-              return res.status(400).send({
-                msg: constantObj.messages.errorRetreivingData
-              });
-            } else {
-              console.log("result", data)
-              return res.status(200).send({
-                msg: constantObj.messages.successRetreivingData,
-                data: {
-                  confirm: result,
-                  complete: data
-                }
-              });
-            }
-          })
-      }
-    })
+              if (err) {
+                return res.status(400).send({
+                  msg: constantObj.messages.errorRetreivingData
+                });
+              } else {
+                console.log("result", data)
+                return res.status(200).send({
+                  msg: constantObj.messages.successRetreivingData,
+                  data: {
+                    confirm: result,
+                    complete: data,
+                    fevBarber: fevBarberArray
+                  }
+                });
+              }
+            })
+        }
+      })
+  })
 }
 exports.deactivecustomer = function(req, res) {
   console.log("custid", req.params.cust_id);
@@ -1357,12 +1370,11 @@ exports.referapp = function(req, res) {
       if (req.body.invite_as == 'barber') {
         text = fs.readFileSync(path.join(__dirname + './../email-template/BarberEmailInvite.html'), 'utf-8');
       }
-      text = text.replace("{{username}}", userData.first_name+" "+userData.last_name);
+      text = text.replace("{{username}}", userData.first_name + " " + userData.last_name);
       let imgUrl = "";
-      if(userData.picture){
-        imgUrl = "http://" + req.headers.host + "/" + "uploadedFiles/"+userData.picture
-      }
-      else{
+      if (userData.picture) {
+        imgUrl = "http://" + req.headers.host + "/" + "uploadedFiles/" + userData.picture
+      } else {
         imgUrl = "https://www.filepicker.io/api/file/OqRXT4JuRbmXSgbxccgK"
       }
       text = text.replace("{{userimage}}", imgUrl);
@@ -1397,18 +1409,18 @@ exports.referapp = function(req, res) {
       })
     } else if (req.body.referee_phone_number) {
       let text = "";
-       if (req.body.invite_as == 'customer') {
-        text = constantObj.textToCustomers.text+"\n "+"iOS: "+constantObj.appleUrl.url+"\n "+"Android: "+constantObj.androidUrl.url;
+      if (req.body.invite_as == 'customer') {
+        text = constantObj.textToCustomers.text + "\n " + "iOS: " + constantObj.appleUrl.url + "\n " + "Android: " + constantObj.androidUrl.url;
       }
       if (req.body.invite_as == 'barber') {
-        text = constantObj.textToBarbers.text+"\n "+"iOS: "+constantObj.appleUrl.url+"\n "+"Android: "+constantObj.androidUrl.url;
+        text = constantObj.textToBarbers.text + "\n " + "iOS: " + constantObj.appleUrl.url + "\n " + "Android: " + constantObj.androidUrl.url;
       }
 
       let saveObj = req.body;
       saveObj.referral = req.headers.user_id;
 
       referal.find(saveObj, function(findErr, findResult) {
-      console.log("findResult length", findResult);
+        console.log("findResult length", findResult);
         if (findResult.length > 0) {
           return res.status(400).send({
             msg: "You already refer this person. Please try again with another email."
@@ -1509,7 +1521,7 @@ exports.allappointment = function(req, res) {
     sortquery[sortkey ? sortkey : '_id'] = req.body.sort ? (req.body.sort[sortkey] == 'desc' ? -1 : 1) : -1;
   }
   console.log("query", JSON.stringify(query));
-  console.log("sortquery",sortquery);
+  console.log("sortquery", sortquery);
 
   appointment.aggregate([{
     $lookup: {
@@ -1542,7 +1554,7 @@ exports.allappointment = function(req, res) {
   }, {
     $project: {
       _id: "$_id",
-      is_deleted:"$is_deleted",
+      is_deleted: "$is_deleted",
       appointment_date: "$appointment_date",
       totalPrice: "$totalPrice",
       created_date: "$created_date",
@@ -1612,7 +1624,7 @@ exports.allappointment = function(req, res) {
       }, {
         $project: {
           _id: "$_id",
-          is_deleted:"$is_deleted",
+          is_deleted: "$is_deleted",
           appointment_date: "$appointment_date",
           totalPrice: "$totalPrice",
           created_date: "$created_date",

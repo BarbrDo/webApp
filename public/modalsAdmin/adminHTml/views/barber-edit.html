@@ -58,6 +58,22 @@
                   </span>
                 </div>
             </div>
+
+            <div class="clearfix">
+                <div class="col-sm-4 form-group">
+                    <label>License Number</label>
+                    <input type="text" class="form-control" name="license_number" data-ng-model="barberdetail.license_number" required/>
+                    <span style="color:red;" ng-show="editForm.email.$error.required">license_number cannot left blank</span>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label>Licensed Since</label>
+                    <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="barberdetail.licensed_since" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+                    <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+                  </span>
+                </div>
+            </div>
+
             <div class="clearfix">
                 <div class="col-sm-2 form-group">
                     <label>Is Active</label>

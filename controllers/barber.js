@@ -702,6 +702,7 @@ exports.barberdetail = function(req, res) {
       is_deleted: "$is_deleted",
       bio: "$bio",
       license_number: "$license_number",
+      licensed_since:"$licensed_since",
       is_active: "$is_active",
       is_online: "$is_online",
       is_available: "$is_available",

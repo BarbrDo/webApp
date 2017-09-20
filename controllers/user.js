@@ -492,7 +492,9 @@ exports.updateSubscribeDate = function(req, res, next) {
     "is_active": req.body.is_active,
     "is_verified": req.body.is_verified,
     "is_deleted": req.body.is_deleted,
-    "subscription_end_date": req.body.endDate
+    "subscription_end_date": req.body.endDate,
+    "license_number":req.body.license_number,
+    "licensed_since":req.body.licensed_since
   }
   console.log("updateData", updateData);
   User.update({

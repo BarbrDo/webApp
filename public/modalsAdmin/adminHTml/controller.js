@@ -448,7 +448,6 @@ app_admin.controller("AdminCtrl", [
         barber.is_verified = false
       }
       console.log(barber);
-      return false;
       Admin.updateBarberSubscription(barber).then(function(response) {
         $scope.loaderStart = false;
         toastr.success('Barber is updated Succesfully');
@@ -996,6 +995,8 @@ app_admin.controller("AdminCtrl", [
       Admin.barberDetail($stateParams.id).then(function(response) {
         $scope.loaderStart = false;
         $scope.barberdetail = response.data.data[0];
+        console.log(response.data.data[0]);
+        $scope.barberdetail.licensed_since = new Date(response.data.data[0].licensed_since);
         $scope.numberOfCuts = response.data.cuts;
         $scope.ratings = response.data.ratings;
         $scope.barberdetail.created_date = response.data.data[0].created_date;

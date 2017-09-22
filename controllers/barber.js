@@ -1124,75 +1124,75 @@ exports.availableBarber = function(req, res) {
     }
   })
 };
-exports.rateBarber = function(req, res) {
-  req.checkHeaders("user_id", "User id is required.").notEmpty();
-  req.assert("appointment_id", "Appointment _id is required.").notEmpty();
-  req.assert("barber_id", "Barber id is required.").notEmpty();
-  req.assert("score", "score is required.").notEmpty();
-  req.assert("next_in_chair", "Next in chair is required.").notEmpty();
-  let errors = req.validationErrors();
-  if (errors) {
-    return res.status(400).send({
-      msg: "error in your request",
-      err: errors
-    });
-  }
-  console.log(req.body);
-  console.log(req.headers);
-  let updateData = {
-    "$push": {
-      "ratings": {
-        "rated_by": req.headers.user_id,
-        "score": parseInt(req.body.score),
-        "appointment_id": req.body.appointment_id,
-        "next_in_chair": req.body.next_in_chair
-      }
-    }
-  }
-  console.log(updateData);
-  async.waterfall([
-    function(done) {
-      appointment.update({
-        _id: req.body.appointment_id
-      }, {
-        $set: {
-          is_rating_given: true,
-          rating_score: parseInt(req.body.score)
-        }
-      }, function(err, result) {
-        if (err) {
-          done("some error", err)
-        } else {
-          if (result.nModified == 0) {
-            return res.status(400).send({
-              msg: "no record found",
-              err: err
-            });
-          } else {
-            done(err, result);
-          }
-        }
-      })
-    },
-    function(status, done) {
-      user.update({
-        _id: req.body.barber_id
-      }, updateData, function(err, result) {
-        if (err) {
-          return res.status(400).send({
-            msg: constantObj.messages.userStatusUpdateFailure,
-            err: err
-          });
-        } else {
-          return res.status(200).send({
-            msg: constantObj.messages.userStatusUpdateSuccess
-          });
-          done(err);
-        }
-      })
-    }
-  ])
-}
+// exports.rateBarber = function(req, res) {
+//   req.checkHeaders("user_id", "User id is required.").notEmpty();
+//   req.assert("appointment_id", "Appointment _id is required.").notEmpty();
+//   req.assert("barber_id", "Barber id is required.").notEmpty();
+//   req.assert("score", "score is required.").notEmpty();
+//   req.assert("next_in_chair", "Next in chair is required.").notEmpty();
+//   let errors = req.validationErrors();
+//   if (errors) {
+//     return res.status(400).send({
+//       msg: "error in your request",
+//       err: errors
+//     });
+//   }
+//   console.log(req.body);
+//   console.log(req.headers);
+//   let updateData = {
+//     "$push": {
+//       "ratings": {
+//         "rated_by": req.headers.user_id,
+//         "score": parseInt(req.body.score),
+//         "appointment_id": req.body.appointment_id,
+//         "next_in_chair": req.body.next_in_chair
+//       }
+//     }
+//   }
+//   console.log(updateData);
+//   async.waterfall([
+//     function(done) {
+//       appointment.update({
+//         _id: req.body.appointment_id
+//       }, {
+//         $set: {
+//           is_rating_given: true,
+//           rating_score: parseInt(req.body.score)
+//         }
+//       }, function(err, result) {
+//         if (err) {
+//           done("some error", err)
+//         } else {
+//           if (result.nModified == 0) {
+//             return res.status(400).send({
+//               msg: "no record found",
+//               err: err
+//             });
+//           } else {
+//             done(err, result);
+//           }
+//         }
+//       })
+//     },
+//     function(status, done) {
+//       user.update({
+//         _id: req.body.barber_id
+//       }, updateData, function(err, result) {
+//         if (err) {
+//           return res.status(400).send({
+//             msg: constantObj.messages.userStatusUpdateFailure,
+//             err: err
+//           });
+//         } else {
+//           return res.status(200).send({
+//             msg: constantObj.messages.userStatusUpdateSuccess
+//           });
+//           done(err);
+//         }
+//       })
+//     }
+//   ])
+// }
 exports.goOnline = function(req, res) {
   console.log("goonline", req.headers);
   console.log("body", req.body);

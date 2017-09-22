@@ -1045,10 +1045,8 @@ exports.rateBarber = function(req, res) {
         }, function(err, data) {
           if (data.length) {
             let cuts = data.length;
-
             console.log("customer rating", totalRating);
             console.log("customer total cuts", cuts);
-
             user.update({
               _id: req.headers.user_id
             }, {

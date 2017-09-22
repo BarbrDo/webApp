@@ -1172,7 +1172,7 @@ let checkReference = function(objFind) {
           _id: appResult.barber_id
         }, function(err, barberData) {
           // console.log("bar_profi",barberData);
-          done(null, result, barberData);
+          done(null, barberData);
         })
       },
       function(barber_profile, done) {

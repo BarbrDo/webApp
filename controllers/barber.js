@@ -564,10 +564,14 @@ exports.countbarber = function(req, res) {
   }, function(err, barber) {
     user.find({
       user_type: "barber",
+      "is_deleted" : false,
+      "is_active" : true,
       "is_online": true
     }, function(activeErr, activeBar) {
       user.find({
         user_type: "barber",
+        "is_deleted" : false,
+        "is_active" : true,
         "is_online": false
       }, function(inActiveErr, inActiveData) {
         res.json({

@@ -1524,7 +1524,8 @@ exports.getGraphData = function(req, res) {
       "created_date": {
         $gte: firstDay,
         $lt: new Date()
-      }
+      },
+      is_deleted:false
     }
   }, {
     $project: {
@@ -1556,7 +1557,8 @@ exports.getGraphData = function(req, res) {
         "created_date": {
           $gte: firstDay,
           $lt: new Date()
-        }
+        },
+        is_deleted:false
       }
     }, {
       $project: {
@@ -1587,8 +1589,6 @@ exports.getGraphData = function(req, res) {
       let customer = [],
         barber = [],
         shop = [];
-
-
       for (var i = firstDay.getMonth() + 1; i <= 12; i++) {
         let customerCount = 0;
         let barberCount = 0;

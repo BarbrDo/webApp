@@ -550,7 +550,9 @@ let callNotification = function(type, to_user_id, from_user_id, data) {
 
 exports.countcustomer = function(req, res) {
   user.find({
-    user_type: "customer"
+    user_type: "customer",
+    "is_deleted" : false,
+    "is_active" : true
   }, function(err, barber) {
     res.json(barber);
   });

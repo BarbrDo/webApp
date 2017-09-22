@@ -1464,7 +1464,7 @@ exports.manageChair = function(req, res) {
 }
 
 exports.countshop = function(req, res) {
-    shop.find({}, function(err, barber) {
+    shop.find({is_deleted:false}, function(err, barber) {
         res.json(barber.length);
     });
 };

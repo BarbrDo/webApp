@@ -558,7 +558,9 @@ exports.viewAllServiesOfBarber = function(req, res) {
 }
 exports.countbarber = function(req, res) {
   user.find({
-    user_type: "barber"
+    user_type: "barber",
+    "is_deleted" : false,
+    "is_active" : true
   }, function(err, barber) {
     user.find({
       user_type: "barber",

@@ -110,7 +110,7 @@ module.exports = function(app, express) {
         app.get('/api/v2/plan/get/:id',adminController.getCurrentPlan);
         app.put('/api/v2/updatePlan',adminController.updatePlan);
 
-        app.get('/admin', function(req, res) {
+        app.get('/', function(req, res) {
             res.sendFile(path.join(__dirname + './../public/indexAdmin.html'));
         });
     }

@@ -286,9 +286,7 @@ exports.signupPost = function(req, res, next) {
     req.assert('password', 'Password must be at least 6 characters long').len(6);
   }
   req.assert('user_type', 'User type cannot be blank').notEmpty();
-  if (req.body.user_type == 'barber') {
-    req.assert('license_number', 'License number cannot be blank').notEmpty();
-  }
+  
 
   req.sanitize('email').normalizeEmail({
     remove_dots: false

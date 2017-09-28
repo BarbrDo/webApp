@@ -1290,11 +1290,14 @@ exports.referapp = function(req, res) {
       let from = constantObj.barbermailId.mail;
       let subject = "Use our app";
       let text = "";
-      if (req.body.invite_as == 'customer') {
-        text = fs.readFileSync(path.join(__dirname + './../email-template/CustomerEmailInvite.html'), 'utf-8');
 
+      if(userData.user_type=='customer' && req.body.invite_as == 'barber'){
+        text = fs.readFileSync(path.join(__dirname + './../email-template/Customer2BarberEmailInvite.html'), 'utf-8');
       }
-      if (req.body.invite_as == 'barber') {
+      if(userData.user_type=='barber' && req.body.invite_as == 'customer'){
+        text = fs.readFileSync(path.join(__dirname + './../email-template/CustomerEmailInvite.html'), 'utf-8');
+      }
+      if(userData.user_type=='barber' && req.body.invite_as == 'barber'){
         text = fs.readFileSync(path.join(__dirname + './../email-template/BarberEmailInvite.html'), 'utf-8');
       }
       text = text.replace("{{username}}", userData.first_name + " " + userData.last_name);

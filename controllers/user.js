@@ -1117,10 +1117,12 @@ exports.getProfiles = function(req, res) {
       err: errors
     });
   }
-  let id = mongoose.Types.ObjectId(req.params.id);
+  console.log(req.params.id);
+  let id = req.params.id;
   User.findOne({
     _id: id
   }).populate('barber_shop_id').populate("ratings.rated_by").exec(function(err, result) {
+    console.log(result);
     if (result) {
       if (err) {
         res.status(400).send({

@@ -237,12 +237,21 @@ let accountActivateMailFunction = function(req, res, user, resetUrl) {
       domain: process.env.MAILGUN_DOMAIN
     }
   }
+  let from = constantObj.barbermailId.mail;
+  let subject = "Use our app";
+  let text = "";
+  if(user.user_type=='customer'){
+    text = fs.readFileSync(path.join(__dirname + './../email-template/CustomerWelcomeEmail.html'), 'utf-8');
+  }
+  if(user.user_type=='barber'){
+    text = fs.readFileSync(path.join(__dirname + './../email-template/BarberWelcomeEmail.html'), 'utf-8');
+  }
   let nodemailerMailgun = nodemailer.createTransport(mg(auth));
   let mailOptions = {
     to: user.email,
     from: constantObj.messages.email,
     subject: '✔ Welcome to BarbrDo',
-    text: 'Welcome'
+    html: text
   };
   console.log(user);
   if (!user.facebook) {

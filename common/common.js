@@ -14,8 +14,8 @@ let crypto = require('crypto'),
 let options;
 options = {
   token: {
-    key: path.resolve("./common/AuthKey_4MVSAKPE86.p8"),
-    keyId: "4MVSAKPE86",
+    key: path.resolve("./common/AuthKey_U294353564.p8"),
+    keyId: "U294353564",
     teamId: "UKZ733R4T6"
   },
   production: false

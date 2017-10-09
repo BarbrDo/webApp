@@ -14,7 +14,7 @@ let crypto = require('crypto'),
 let options;
 options = {
   token: {
-    key: path.resolve("./common/AuthKey_U294353564.p8"),
+    key: path.resolve("./common/AuthKey_LF8RVUK2VY_latest.p8.p8"),
     keyId: "U294353564",
     teamId: "UKZ733R4T6"
   },

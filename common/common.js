@@ -15,7 +15,7 @@ let options;
 options = {
   token: {
     key: path.resolve("./common/AuthKey_LF8RVUK2VY_latest.p8"),
-    keyId: "U294353564",
+    keyId: "LF8RVUK2VY",
     teamId: "UKZ733R4T6"
   },
   production: false

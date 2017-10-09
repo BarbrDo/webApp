@@ -18,7 +18,7 @@ options = {
     keyId: "LF8RVUK2VY",
     teamId: "UKZ733R4T6"
   },
-  production: false
+  production: true
 };
 let nodemailer = require('nodemailer');
 let mg = require('nodemailer-mailgun-transport');
